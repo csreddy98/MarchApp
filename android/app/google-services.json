@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "441476196278",
+    "firebase_url": "https://march-5a1f0.firebaseio.com",
+    "project_id": "march-5a1f0",
+    "storage_bucket": "march-5a1f0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:441476196278:android:8c13d11fc5eb8f4bcf4317",
+        "android_client_info": {
+          "package_name": "com.example.march"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "441476196278-6e4d62n51kcp6hgl5vg7cq8066dhf9r4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcwL7p1kBqhmuTEoPVGtYCgt42VVJJHOc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "441476196278-6e4d62n51kcp6hgl5vg7cq8066dhf9r4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
