@@ -20,7 +20,7 @@ class _LoginState extends State<Login> {
   GoogleSignIn google = new GoogleSignIn();
   FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<String> _signIn() async{
+  Future _signIn() async{
     GoogleSignInAccount googleSignInAccount = await google.signIn();
     GoogleSignInAuthentication gsa = await googleSignInAccount.authentication;
     final AuthCredential credential = GoogleAuthProvider.getCredential(
@@ -50,12 +50,13 @@ class _LoginState extends State<Login> {
     Size size = MediaQuery.of(context).size;
     ScreenUtil.init(context,width: 750, height: 1300, allowFontScaling: true);
     return Scaffold(
+      backgroundColor: Color(0xff241332),
       body: SingleChildScrollView(
         child: Stack(
           children: <Widget>[
             Center(
               child: new Image.asset(
-                'images/bg.jpg',
+                'assets/images/image.png',
                 width: size.width,
                 height: size.height,
                 fit: BoxFit.cover,
@@ -65,7 +66,7 @@ class _LoginState extends State<Login> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(top:100.0),
-                  child: Center(child: Text("Welcome \nto March",style: TextStyle(fontSize: 30,fontWeight: FontWeight.bold,color: Colors.white),)),
+                  child: Center(child: Text("Welcome \nto March",style: TextStyle(fontFamily: 'montserrat' ,fontSize: 30,fontWeight: FontWeight.bold,color: Colors.white),)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top:180.0),
@@ -85,9 +86,10 @@ class _LoginState extends State<Login> {
                   padding: const EdgeInsets.fromLTRB(50.0,5,50,3),
                   child: ButtonTheme(
                     minWidth: size.width,
+                    height: 52.0,
                     child: RaisedButton(
                       shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(18.0),
+                          borderRadius: new BorderRadius.circular(50.0),
                           side: BorderSide(color: Colors.pink)),
                       onPressed: () {
 
@@ -103,85 +105,70 @@ class _LoginState extends State<Login> {
                         );
 
                         },
-                      color: Colors.pink,
+                      color: Color(0xffD47FA6),
                       textColor: Colors.white,
                       child: Text("PHONE",
                           style: TextStyle(fontSize: 14)),
                     ),
                   ),
                 ),
-
+                SizedBox(height: 10.0),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(50.0,0,50,5),
                   child: ButtonTheme(
                     minWidth: size.width,
+                    height: 52.0,
                     child: RaisedButton(
                       shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(18.0),
+                          borderRadius: new BorderRadius.circular(50.0),
                           side: BorderSide(color: Colors.red)),
                       onPressed: () {
                         _signIn();
 
                       },
-                      color: Colors.red,
+                      color: Color(0xFFDB4A39),
                       textColor: Colors.white,
                       child: Text("GOOGLE",
                           style: TextStyle(fontSize: 14)),
                     ),
                   ),
                 ),
-
+                SizedBox(height: 10.0),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(50.0,0,50,5),
                   child: ButtonTheme(
                     minWidth: size.width,
+                    height: 52.0,
                     child: RaisedButton(
                       shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(18.0),
-                          side: BorderSide(color: Colors.blue)),
-                      onPressed: () {
-
-                        Navigator.pushAndRemoveUntil(context,
-                          MaterialPageRoute(builder: (context) => Home()),
-                              (Route<dynamic> route) => false,);
-
-                      },
-                      color: Colors.blue,
+                          borderRadius: new BorderRadius.circular(50.0)),
+                      onPressed: () {},
+                      color: Color(0xFF4267B2),
                       textColor: Colors.white,
                       child: Text("FACEBOOK",
                           style: TextStyle(fontSize: 14)),
                     ),
                   ),
                 ),
-
                 Padding(
                   padding: const EdgeInsets.only(top:20.0),
                   child: Center(child: Column(
                     children: <Widget>[
-                      Text("By Signing up you agree to the",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color: Colors.deepPurple),),
+                      Text("By Signing up you agree to the",style: TextStyle(fontSize: 12,fontWeight: FontWeight.normal,color: Colors.white),),
                       GestureDetector(
                           onTap: (){
-
                             Navigator.pushAndRemoveUntil(context,
                                 MaterialPageRoute(builder: (context) => Select()),
                             (Route<dynamic> route) => false,);
 
                           },
                           child: Text("terms of use",
-                            style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,decoration: TextDecoration.underline,color: Colors.deepPurple),)),
+                            style: TextStyle(fontSize: 12,fontWeight: FontWeight.normal,decoration: TextDecoration.underline,color: Colors.white),)),
                     ],
                   )),
                 ),
-
-
               ],
             ),
-
-
-
-
-
-
           ],
         ),
       ),
