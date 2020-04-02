@@ -14,7 +14,7 @@ import 'package:http/http.dart' as http;
 
 class Register extends StatefulWidget {
 
-  String Phone;
+  final String Phone;
   Register(this.Phone);
   @override
   _RegisterState createState() => _RegisterState(Phone);

@@ -11,13 +11,13 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int _currentindex=0;
-  String title="Profile";
-  List<String> t=["Profile","Find People","Notifications","Inbox"];
+  String title="Find People";
+  List<String> t=["Find People","Track Goals","Inbox","Profile"];
   final tabs=[
-    Profile(),
     Find(),
     Notify(),
     Inbox(),
+    Profile(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -41,10 +41,10 @@ class _HomeState extends State<Home> {
             currentIndex: _currentindex,
             items:
             [
-              new BottomNavigationBarItem(icon: new Icon(Icons.person,size: 30,),title: Text("")),
               new BottomNavigationBarItem(icon: new Icon(Icons.people,size: 30,),title: Text("")),
-              new BottomNavigationBarItem(icon: new Icon(Icons.notifications,size: 30,),title: Text("")),
+              new BottomNavigationBarItem(icon: new Icon(Icons.calendar_today,size: 30,),title: Text("")),
               new BottomNavigationBarItem(icon: new Icon(Icons.message,size: 30,),title: Text("")),
+              new BottomNavigationBarItem(icon: new Icon(Icons.person,size: 30,),title: Text("")),
             ],
             selectedItemColor: Colors.deepPurple,
             onTap:(index){

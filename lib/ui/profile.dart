@@ -47,11 +47,9 @@ class _ProfileState extends State<Profile> {
                             child: Text("Bio:",style: TextStyle(fontSize: 18,),),
                           ),
                           Text("Koduri Srisaila Sri Rajamouli, professionally known as S. S. Rajamouli, is an Indian film director, screenwriter, and stunt choreographer",style: TextStyle(color: Colors.grey,fontSize: 14),),
-
                         ],
                       ),
                     ),
-
                     Expanded(
                       flex: 1,
                       child: Column(
@@ -121,27 +119,21 @@ class _ProfileState extends State<Profile> {
   }
 
   void _load() async{
-    FirebaseAuth.instance.currentUser().then((val) async {
-
+   /* FirebaseAuth.instance.currentUser().then((val) async {
        String uid=val.uid;
-
         var url = 'http://march.lbits.co/app/api/index.php?uid='+uid;
-
         var response = await http.get(url);
         if (response.statusCode == 200) {
-
           print(response.body);
           var jsonResponse = convert.jsonDecode(response.body);
-
            setState(() {
              name = jsonResponse["fullName"];
              bio=jsonResponse["bio"];
            });
-
         } else {
           print('Request failed with status: ${response.statusCode}.');
         }
     });
-
+*/
   }
 }

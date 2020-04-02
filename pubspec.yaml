@@ -32,6 +32,8 @@ dependencies:
   image_picker: ^0.6.4
   firebase_storage:
   http:
+  worm_indicator: ^0.2.4
+
 
 dev_dependencies:
   flutter_test:
