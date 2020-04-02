@@ -139,7 +139,13 @@ class _LoginState extends State<Login> {
                       shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(18.0),
                           side: BorderSide(color: Colors.blue)),
-                      onPressed: () {},
+                      onPressed: () {
+
+                        Navigator.pushAndRemoveUntil(context,
+                          MaterialPageRoute(builder: (context) => Home()),
+                              (Route<dynamic> route) => false,);
+
+                      },
                       color: Colors.blue,
                       textColor: Colors.white,
                       child: Text("FACEBOOK",

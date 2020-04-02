@@ -121,7 +121,7 @@ class _ProfileState extends State<Profile> {
   }
 
   void _load() async{
-    FirebaseAuth.instance.currentUser().then((val) async {
+   /* FirebaseAuth.instance.currentUser().then((val) async {
 
        String uid=val.uid;
 
@@ -142,6 +142,6 @@ class _ProfileState extends State<Profile> {
           print('Request failed with status: ${response.statusCode}.');
         }
     });
-
+*/
   }
 }
