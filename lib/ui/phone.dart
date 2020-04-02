@@ -4,6 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screenutil.dart';
 import 'package:march/ui/registration.dart';
+import 'package:http/http.dart' as http;
+
+import 'home.dart';
 
 class Phone extends StatefulWidget {
   @override
@@ -11,32 +14,31 @@ class Phone extends StatefulWidget {
 }
 
 class _PhoneState extends State<Phone> {
-
   String phoneNo;
   String smsCode;
   String verificationId;
-  final GlobalKey<ScaffoldState> _sk=GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _sk = GlobalKey<ScaffoldState>();
 
-  Future<void> verifyPhone() async{
-
-    final PhoneCodeAutoRetrievalTimeout autoRetrieve =(String verId){
-      this.verificationId=verId;
+  Future<void> verifyPhone() async {
+    final PhoneCodeAutoRetrievalTimeout autoRetrieve = (String verId) {
+      this.verificationId = verId;
     };
 
-    final PhoneCodeSent smsCodeSent =(String verId,[int forceCodeResend]){
-      this.verificationId=verId;
-      smsCodeDialog(context).then((value){
+    final PhoneCodeSent smsCodeSent = (String verId, [int forceCodeResend]) {
+      this.verificationId = verId;
+      smsCodeDialog(context).then((value) {
         print('Signed In');
       });
     };
 
-   final PhoneVerificationCompleted verifiedSuccess =(AuthCredential phoneAuthCredential){
-     print("verified");
-   };
+    final PhoneVerificationCompleted verifiedSuccess =
+        (AuthCredential phoneAuthCredential) {
+      print("verified");
+    };
 
-   final PhoneVerificationFailed verifiFailed=(AuthException exception){
-     print('${exception.message}');
-   };
+    final PhoneVerificationFailed verifiFailed = (AuthException exception) {
+      print('${exception.message}');
+    };
 
     await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: this.phoneNo,
@@ -47,72 +49,79 @@ class _PhoneState extends State<Phone> {
         codeAutoRetrievalTimeout: autoRetrieve);
   }
 
-  Future<bool> smsCodeDialog(BuildContext context){
+  Future<bool> smsCodeDialog(BuildContext context) {
     return showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context){
-       return new AlertDialog(
-         title: Text('Enter Sms Code'),
-         content: TextField(
-           onChanged: (value){
-             this.smsCode = value;
-           },
-         ),
-         contentPadding: EdgeInsets.all(10.0),
-         actions: <Widget>[
-           new FlatButton(onPressed: (){
-             FirebaseAuth.instance.currentUser().then((user){
-               if(user!=null){
-                 Navigator.of(context).pop();
-                 Navigator.pushAndRemoveUntil(context,
-                   MaterialPageRoute(builder: (context) => Register(this.phoneNo)),
-                       (Route<dynamic> route) => false,
-                 );
-
-
-               }
-               else{
-                 Navigator.of(context).pop();
-                 signIn();
-               }
-             });
-           }, child: Text('Done'))
-         ],
-       );
-      }
-    );
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return new AlertDialog(
+            title: Text('Enter Sms Code'),
+            content: TextField(
+              onChanged: (value) {
+                this.smsCode = value;
+              },
+            ),
+            contentPadding: EdgeInsets.all(10.0),
+            actions: <Widget>[
+              new FlatButton(
+                  onPressed: () {
+                    FirebaseAuth.instance.currentUser().then((user) async {
+                      if (user != null) {
+                        var uinfo = await http.get(
+                            "https://march.lbits.co/app/api/index.php?uid=${user.uid}");
+                        if(uinfo.body != 'null'){
+                          Navigator.of(context).pop();
+                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>Home()),(Route<dynamic> route) => false);
+                        }else{
+                          Navigator.of(context).pop();
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Register(this.phoneNo)),
+                            (Route<dynamic> route) => false,
+                          );
+                        }
+                        
+                      } else {
+                        Navigator.of(context).pop();
+                        signIn();
+                      }
+                    });
+                  },
+                  child: Text('Done'))
+            ],
+          );
+        });
   }
 
-  signIn() async{
-
-  AuthCredential  _authCredential = await PhoneAuthProvider.getCredential(
+  signIn() async {
+    AuthCredential _authCredential = await PhoneAuthProvider.getCredential(
         verificationId: verificationId, smsCode: smsCode);
 
-     FirebaseAuth.instance.signInWithCredential(_authCredential).then((user){
-       Navigator.pushAndRemoveUntil(context,
-         MaterialPageRoute(builder: (context) => Register(this.phoneNo)),
-             (Route<dynamic> route) => false,
-       );
-     }).catchError((e){
-       print(e);
-     });
-
+    FirebaseAuth.instance.signInWithCredential(_authCredential).then((user) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => Register(this.phoneNo)),
+        (Route<dynamic> route) => false,
+      );
+    }).catchError((e) {
+      print(e);
+    });
   }
 
   Widget _buildDropdownItem(Country country) => Container(
-    child: Row(
-      children: <Widget>[
-        SizedBox(
-          width: 8.0,
+        child: Row(
+          children: <Widget>[
+            SizedBox(
+              width: 8.0,
+            ),
+            Text("+${country.phoneCode}"),
+          ],
         ),
-        Text("+${country.phoneCode}"),
-      ],
-    ),
-  );
+      );
 
-  String code="+91";
-  String number="";
+  String code = "+91";
+  String number = "";
 
   @override
   Widget build(BuildContext context) {
@@ -122,54 +131,52 @@ class _PhoneState extends State<Phone> {
         child: Column(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(top:30.0),
-              child: Center(child: Text("Phone Number",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 28),)),
+              padding: const EdgeInsets.only(top: 30.0),
+              child: Center(
+                  child: Text(
+                "Phone Number",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
+              )),
             ),
-
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: <Widget>[
-                   Expanded(
-                     flex:1,
-                     child: CountryPickerDropdown(
-                        initialValue: 'in',
-                        itemBuilder: _buildDropdownItem,
-                        onValuePicked: (Country country) {
-                          setState(() {
-                            this.code="+"+country.phoneCode;
-                          });
-
-                        },
-                      ),
-                   ),
-
                   Expanded(
-                    flex:2,
+                    flex: 1,
+                    child: CountryPickerDropdown(
+                      initialValue: 'in',
+                      itemBuilder: _buildDropdownItem,
+                      onValuePicked: (Country country) {
+                        setState(() {
+                          this.code = "+" + country.phoneCode;
+                        });
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
                     child: TextField(
                       decoration: InputDecoration(
                         hintText: 'Enter Phone Number',
                       ),
-                      onChanged: (value){
-                       setState(() {
-                         this.phoneNo=code+value;
-                         this.number=value;
-                       });
+                      onChanged: (value) {
+                        setState(() {
+                          this.phoneNo = code + value;
+                          this.number = value;
+                        });
                       },
                     ),
                   ),
-
                 ],
               ),
             ),
-
-
             Padding(
-              padding: const EdgeInsets.fromLTRB(0,50,0,0),
+              padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
               child: InkWell(
                 child: Container(
-                  margin: EdgeInsets.only(top: 5, left: 10,right: 15),
-                  width: MediaQuery.of(context).size.width*0.8,
+                  margin: EdgeInsets.only(top: 5, left: 10, right: 15),
+                  width: MediaQuery.of(context).size.width * 0.8,
                   height: ScreenUtil().setHeight(80),
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -186,9 +193,10 @@ class _PhoneState extends State<Phone> {
                     child: InkWell(
                       splashColor: Colors.grey,
                       onTap: () {
-                        if(phoneNo==null){
+                        if (phoneNo == null) {
                           _sk.currentState.showSnackBar(SnackBar(
-                            content: Text("Enter Phone Number",
+                            content: Text(
+                              "Enter Phone Number",
                               style: TextStyle(
                                 fontStyle: FontStyle.italic,
                                 fontSize: 15,
@@ -201,10 +209,10 @@ class _PhoneState extends State<Phone> {
                             duration: Duration(seconds: 3),
                             backgroundColor: Colors.lightBlueAccent,
                           ));
-
-                        }else if(number.length!=10){
+                        } else if (number.length != 10) {
                           _sk.currentState.showSnackBar(SnackBar(
-                            content: Text("Enter Correct Number",
+                            content: Text(
+                              "Enter Correct Number",
                               style: TextStyle(
                                 fontStyle: FontStyle.italic,
                                 fontSize: 15,
@@ -217,11 +225,9 @@ class _PhoneState extends State<Phone> {
                             duration: Duration(seconds: 3),
                             backgroundColor: Colors.lightBlueAccent,
                           ));
-                        }
-                        else{
+                        } else {
                           verifyPhone();
                         }
-
                       },
                       child: Center(
                         child: Text("VERIFY",
@@ -235,7 +241,6 @@ class _PhoneState extends State<Phone> {
                 ),
               ),
             ),
-
           ],
         ),
       ),
