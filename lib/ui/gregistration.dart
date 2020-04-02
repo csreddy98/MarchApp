@@ -12,37 +12,35 @@ import 'package:http/http.dart' as http;
 
 
 
-class Register extends StatefulWidget {
+class GRegister extends StatefulWidget {
 
-  final String Phone;
-  Register(this.Phone);
   @override
-  _RegisterState createState() => _RegisterState(Phone);
+  _GRegisterState createState() => _GRegisterState();
 }
 
 class Gender{
- int id;
- String gender;
+  int id;
+  String gender;
 
- Gender(this.id,this.gender);
+  Gender(this.id,this.gender);
 
- static List<Gender> getGender(){
-   return <Gender> [
-     Gender(1,'Male'),
-     Gender(2,'Female'),
-     Gender(3,'Others'),
-   ];
- }
+  static List<Gender> getGender(){
+    return <Gender> [
+      Gender(1,'Male'),
+      Gender(2,'Female'),
+      Gender(3,'Others'),
+    ];
+  }
 }
 
-class _RegisterState extends State<Register> {
+class _GRegisterState extends State<GRegister> {
 
   final GlobalKey<ScaffoldState> _sk=GlobalKey<ScaffoldState>();
 
-  _RegisterState(this.Phone);
+
 
   String dob="";
-  String Phone;
+  String Phone="";
   String name="";
   String bio="";
   String gender="Male";
@@ -83,9 +81,9 @@ class _RegisterState extends State<Register> {
     // TODO: implement initState
 
     FirebaseAuth.instance.currentUser().then((val){
-     setState(() {
-       uid=val.uid;
-     });
+      setState(() {
+        uid=val.uid;
+      });
     });
 
     _dropdownMenuItems =buildDropDownMenuItems(_gender);
@@ -164,7 +162,7 @@ class _RegisterState extends State<Register> {
       key:_sk,
       body: SingleChildScrollView(
         child: Container(
-           child: Column(
+          child: Column(
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(top:30.0),
@@ -221,6 +219,26 @@ class _RegisterState extends State<Register> {
                       email = value;
                     } catch (exception) {
                       email ="";
+                    }
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20.0,20,20,0),
+                child: TextField(
+                  maxLines: 1,
+                  style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.black
+                  ),
+                  decoration: InputDecoration(
+                      labelText:" Phone Number",
+                      hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
+                  onChanged: (String value) {
+                    try {
+                      Phone = value;
+                    } catch (exception) {
+                      Phone ="";
                     }
                   },
                 ),
@@ -309,7 +327,7 @@ class _RegisterState extends State<Register> {
                         onTap: () async{
 
 
-                          if(_image==null||name==""||bio==""||dob==""||gender==""||email==""){
+                          if(_image==null||name==""||bio==""||dob==""||gender==""||email==""||Phone==""){
 
                             _sk.currentState.showSnackBar(SnackBar(
                               content: Text("All the fields should be filled",
@@ -342,34 +360,56 @@ class _RegisterState extends State<Register> {
                             print('File Uploaded');
                             storageReference.getDownloadURL().then((fileURL) async {
 
-                                _uploadedFileURL = fileURL;
-                                var url= 'http://march.lbits.co/app/api/index.php';
-                                var resp=await http.post(url,body: jsonEncode(<String, dynamic>{
-                                  'uid':uid,
-                                  'fullName':name,
-                                  'email': email,
-                                  'phone': Phone,
-                                  'bio':  bio,
-                                  'dob':dob,
-                                  'sex': gender,
-                                  'profile_pic': fileURL,
-                                  'status':'1',
-                                  'subscriptionType':'1',
-                                  'createdAt':now.toString(),
-                                  'LastModifiedAt':now.toString(),
-                                  'token':{
-                                    'tokenData':'Random',
-                                    'Date' : now.toString(),
-                                  }
-                                }));
+                              _uploadedFileURL = fileURL;
+                              var url= 'https://march.lbits.co/app/api/index.php';
+                              var resp=await http.post(url,body: jsonEncode(<String, dynamic>{
+                                'uid':uid,
+                                'fullName':name,
+                                'email': email,
+                                'phone': Phone,
+                                'bio':  bio,
+                                'dob':dob,
+                                'sex': gender,
+                                'profile_pic': fileURL,
+                                'status':'1',
+                                'subscriptionType':'1',
+                                'createdAt':now.toString(),
+                                'LastModifiedAt':now.toString(),
+                                'token':{
+                                  'tokenData':'Random',
+                                  'Date' : now.toString(),
+                                }
+                              }));
 
-                                print(resp.body);
+                              print(resp.body.toString());
+                              if(resp.body.toString()==' success'){
+
+                                Navigator.pushAndRemoveUntil(context,
+                                    MaterialPageRoute(builder: (context) => Select()),
+                                        (Route<dynamic> route) => false);
+
+                              }
+                              else{
+
+                                _sk.currentState.showSnackBar(SnackBar(
+                                  content: Text("There is Some Technical Problem Submit again",
+                                    style: TextStyle(
+                                      fontStyle: FontStyle.italic,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(12.0),
+                                          topRight: Radius.circular(12.0))),
+                                  duration: Duration(seconds: 3),
+                                  backgroundColor: Colors.lightBlueAccent,
+                                ));
+
+                              }
 
                             });
 
-                            Navigator.pushAndRemoveUntil(context,
-                                MaterialPageRoute(builder: (context) => Select()),
-                                    (Route<dynamic> route) => false);
 
                           }
 

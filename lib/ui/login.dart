@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screenutil.dart';
+import 'package:march/ui/gregistration.dart';
 import 'package:march/ui/phone.dart';
 import 'package:march/ui/registration.dart';
 import 'package:march/ui/select.dart';
@@ -38,7 +39,7 @@ class _LoginState extends State<Login> {
     print(user.displayName);
     print(user.uid);
     Navigator.pushAndRemoveUntil(context,
-      MaterialPageRoute(builder: (context) => Select()),
+      MaterialPageRoute(builder: (context) => GRegister()),
           (Route<dynamic> route) => false,);
 
   }
@@ -142,7 +143,12 @@ class _LoginState extends State<Login> {
                     child: RaisedButton(
                       shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(50.0)),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushAndRemoveUntil(context,
+                          MaterialPageRoute(builder: (context) => Select()),
+                              (Route<dynamic> route) => false,);
+
+                      },
                       color: Color(0xFF4267B2),
                       textColor: Colors.white,
                       child: Text("FACEBOOK",

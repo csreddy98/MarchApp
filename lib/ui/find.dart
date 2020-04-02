@@ -179,7 +179,7 @@ class _FindState extends State<Find> {
                             children: <Widget>[
                               Padding(
                                 padding: const EdgeInsets.only(right:3.0),
-                                child: Text("Football",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
+                                child: Text("ball",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
                               ),
                             ],
                           ),
@@ -302,7 +302,7 @@ class _FindState extends State<Find> {
                             children: <Widget>[
                               Padding(
                                 padding: const EdgeInsets.only(right:3.0),
-                                child: Text("Volleyball",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
+                                child: Text("ball",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
                               ),
                             ],
                           ),
