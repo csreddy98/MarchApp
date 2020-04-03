@@ -33,6 +33,7 @@ dependencies:
   firebase_storage:
   http:
   worm_indicator: ^0.2.4
+  shared_preferences:
 
 
 dev_dependencies:

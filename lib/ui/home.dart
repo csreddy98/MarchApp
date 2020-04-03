@@ -3,6 +3,7 @@ import 'package:march/ui/find.dart';
 import 'package:march/ui/inbox.dart';
 import 'package:march/ui/notify.dart';
 import 'package:march/ui/profile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -19,22 +20,22 @@ class _HomeState extends State<Home> {
     Inbox(),
     Profile(),
   ];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _load();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(30),
-          ),
-        ),
         backgroundColor: Color(0xFFFFFFFF),
-        title: Center(child: Text(title,style: TextStyle(color: Colors.deepPurple,fontSize: 25),)),
+        title: Center(child: Text(title,style: TextStyle(color: Colors.black,fontSize: 18),)),
       ),
       body:Center(child: tabs[_currentindex],) ,
-      bottomNavigationBar:  ClipRRect(
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(30),topRight: Radius.circular(30)),
-        child: BottomNavigationBar(
+      bottomNavigationBar:   BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
             iconSize: 20,
             backgroundColor: Color(0xFFFFFFFF),
@@ -54,7 +55,10 @@ class _HomeState extends State<Home> {
               });
             }
         ),
-      ),
     );
+  }
+  void _load() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('log', 1);
   }
 }

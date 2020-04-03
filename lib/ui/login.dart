@@ -145,7 +145,7 @@ class _LoginState extends State<Login> {
                           borderRadius: new BorderRadius.circular(50.0)),
                       onPressed: () {
                         Navigator.pushAndRemoveUntil(context,
-                          MaterialPageRoute(builder: (context) => Select()),
+                          MaterialPageRoute(builder: (context) => Home()),
                               (Route<dynamic> route) => false,);
 
                       },

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screenutil.dart';
 import 'package:march/ui/home.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Select extends StatefulWidget {
   @override
@@ -444,6 +445,9 @@ class _SelectState extends State<Select> {
                                     Navigator.pushAndRemoveUntil(context,
                                         MaterialPageRoute(builder: (context) => Home()),
                                             (Route<dynamic> route) => false);
+
+                                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                                    prefs.setInt('log', 1);
 
                                   }
                                   else if(resp.body.toString()==' success'){

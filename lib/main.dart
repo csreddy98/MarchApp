@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:march/ui/home.dart';
 import 'package:march/ui/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:splashscreen/splashscreen.dart';
 
 void main() => runApp(MyApp());
@@ -30,15 +32,34 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
+  int n;
+
+  @override
+  void initState() {
+    _load();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return SplashScreen(
       seconds: 5,
-      navigateAfterSeconds: new Login(),
+      navigateAfterSeconds:n==1?Home():Login(),
       image: new Image.network('https://cdn.pixabay.com/photo/2017/03/19/20/19/ball-2157465__340.png'),
       photoSize: 200,
       backgroundColor: Colors.black,
       loaderColor: Colors.red,
     );
+  }
+
+  void _load() async{
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int intValue = prefs.getInt('log')??0;
+    if(intValue==1){
+      setState(() {
+        n=1;
+      });
+    }
+
   }
 }
