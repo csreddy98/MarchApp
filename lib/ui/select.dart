@@ -219,6 +219,7 @@ class _SelectState extends State<Select> {
                                   if(added[1]==""&&added[2]==""){
                                     added[0]="";
                                     count=count-1;
+                                    _disable=0;
                                   }
 
     //                              added.removeAt(0);
@@ -259,6 +260,7 @@ class _SelectState extends State<Select> {
                                   if(added[2]==""){
                                     added[1]="";
                                     count=count-1;
+                                    _disable=0;
                                   }
 
   //                                added.removeAt(1);
@@ -298,6 +300,7 @@ class _SelectState extends State<Select> {
                                 setState(() {
                                     added[2]="";
                                     count=count-1;
+                                    _disable=0;
 //                                  added.removeAt(2);
                                 });
                               },

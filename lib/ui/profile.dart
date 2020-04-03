@@ -19,6 +19,10 @@ class _ProfileState extends State<Profile> {
   String dob;
   int age;
 
+  List names=["Rajamouli","Samantha Akinneni"];
+  List profile=["https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/S._S._Rajamouli_at_the_trailer_launch_of_Baahubali.jpg/220px-S._S._Rajamouli_at_the_trailer_launch_of_Baahubali.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Samantha_At_The_Irumbu_Thirai_Trailer_Launch.jpg/220px-Samantha_At_The_Irumbu_Thirai_Trailer_Launch.jpg"];
+  List data=[" SS Rajamouli, who never shies ","Samantha is outstanding "];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -40,13 +44,25 @@ class _ProfileState extends State<Profile> {
 
   Widget slide1(){
     return Container(
-      color: Colors.black12,
+      margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5.0),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 6.0,
+          ),
+        ],
+      ),
+
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Center(child: Text("CRICKET")),
+            Center(child: Text("CRICKET",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontFamily: 'montserrat'),)),
             Padding(
               padding: const EdgeInsets.only(top:8.0),
               child: Text("Target :"),
@@ -62,13 +78,25 @@ class _ProfileState extends State<Profile> {
 
   Widget slide2(){
     return Container(
-      color: Colors.black12,
+      margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5.0),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 6.0,
+          ),
+        ],
+      ),
+
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Center(child: Text("DANCE")),
+            Center(child: Text("DANCE",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontFamily: 'montserrat'),)),
             Padding(
               padding: const EdgeInsets.only(top:8.0),
               child: Text("Target :"),
@@ -83,13 +111,25 @@ class _ProfileState extends State<Profile> {
 
   Widget slide3(){
     return Container(
-      color: Colors.black12,
+      margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5.0),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 6.0,
+          ),
+        ],
+      ),
+
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Center(child: Text("SOCCER")),
+            Center(child: Text("SOCCER",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontFamily: 'montserrat'),)),
             Padding(
               padding: const EdgeInsets.only(top:8.0),
               child: Text("Target :"),
@@ -127,14 +167,14 @@ class _ProfileState extends State<Profile> {
               Center(child: Text(age!=null?age.toString()+" Years old":"",style: TextStyle(fontSize: 14,color: Colors.grey),)),
               Padding(
                 padding: const EdgeInsets.all(12.0),
-                child: Text(bio!=null?bio:"",style: TextStyle(color: Colors.grey,fontSize: 14),),
+                child: Text(bio!=null?bio:"",style: TextStyle(color: Colors.black,fontSize: 14),),
               ),
 
 
               Center(
                 child: Padding(
                   padding: const EdgeInsets.only(top:20.0),
-                  child: Text("Goals".toUpperCase(),style: TextStyle(fontSize: 16,color: Colors.blue),),
+                  child: Text("Goals".toUpperCase(),style: TextStyle(fontSize: 16,color: Color.fromRGBO(63, 92, 200, 1) ,fontFamily: 'montserrat'),),
                 ),
               ),
 
@@ -169,8 +209,66 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
 
-              Center(child: Text("Testimonials",style: TextStyle(color: Colors.blue),))
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(child: Text("Testimonials",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontFamily: 'montserrat'),)),
+              ),
 
+              SizedBox(
+                height: MediaQuery.of(context).size.height*0.6,
+                width: MediaQuery.of(context).size.width*0.75,
+                child: ListView.builder(
+                  itemCount: 2,
+                  itemBuilder: (context, i) {
+                    return  Padding(
+                      padding: const EdgeInsets.fromLTRB(15.0,5,15,5),
+                      child: Container(
+                        height: MediaQuery.of(context).size.height*0.1,
+                        margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5.0),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey,
+                              offset: Offset(0.0, 1.0), //(x,y)
+                              blurRadius: 6.0,
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: <Widget>[
+
+                              CircleAvatar(
+                                radius: 25.0,
+                                backgroundImage:
+                                NetworkImage(profile[i]),
+                                backgroundColor: Colors.transparent,
+                              ),
+
+                              Padding(
+                                padding: const EdgeInsets.only(left:50.0),
+                                child: Column(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom:3.0),
+                                      child: Text(names[i]),
+                                    ),
+                                    Text(data[i],style: TextStyle(fontSize: 10),)
+                                  ],
+                                ),
+                              )
+
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              )
 
 
 
@@ -188,7 +286,6 @@ class _ProfileState extends State<Profile> {
         var url = 'https://march.lbits.co/app/api/index.php?uid='+uid;
         var response = await http.get(url);
         if (response.statusCode == 200) {
-          print(response.body);
           var jsonResponse = convert.jsonDecode(response.body);
            setState(() {
              name = jsonResponse["fullName"];

@@ -21,54 +21,378 @@ class _NotifyState extends State<Notify> {
   }
 
 
+
+
   Widget slide1(){
     return Container(
-      color: Colors.black12,
+      margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5.0),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 6.0,
+          ),
+        ],
+      ),
+
       child: Column(
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text("Cricket",style: TextStyle(color: Colors.deepPurpleAccent,fontSize: 20,fontWeight: FontWeight.bold),),
+            child: Text("Cricket",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontWeight: FontWeight.bold,fontFamily: 'montserrat',fontSize: 20),),
           ),
           Text("Did you work on your goal today?"),
           const SizedBox(height: 10),
-          RaisedButton(
-            onPressed: () {},
-            child: Padding(
-              padding: const EdgeInsets.only(left:35.0,right: 35.0),
-              child: const Text(
-                  'Yes',
-                  style: TextStyle(fontSize: 16)
+          GestureDetector(
+            onTap: (){
+
+            },
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5.0),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    offset: Offset(0.0, 1.0), //(x,y)
+                    blurRadius: 6.0,
+                  ),
+                ],
+              ),
+
+              child: Padding(
+                padding: const EdgeInsets.only(left:50,right: 50,top:12,bottom: 12),
+                child: Text("Yes"),
               ),
             ),
           ),
-          RaisedButton(
-            onPressed: () {},
-            child: Padding(
-              padding: const EdgeInsets.only(left:35.0,right: 35.0),
-              child: const Text(
-                  'No',
-                  style: TextStyle(fontSize: 16)
+          GestureDetector(
+            onTap: (){
+
+            },
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5.0),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    offset: Offset(0.0, 1.0), //(x,y)
+                    blurRadius: 6.0,
+                  ),
+                ],
+              ),
+
+              child: Padding(
+                padding: const EdgeInsets.only(left:50,right: 50,top:12,bottom: 12),
+                child: Text("No"),
               ),
             ),
           ),
+
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0,8,0,0),
+            child: Row(
+              children: <Widget>[
+
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    child: Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(left:35.0),
+                          child: Text("0",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ),),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Container(),
+                ),
+
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(6.0),
+                      ),
+                      color: Color.fromRGBO(63, 92, 200, 1),
+                      onPressed: () {},
+                      child: const Text(
+                          'Remind me',
+                          style: TextStyle(fontSize: 12,color: Colors.white)
+                      ),
+                    ),
+                  ),
+                ),
+
+              ],
+            ),
+          )
+
+
         ],
       ),
     );
   }
 
+
+
+
   Widget slide2(){
     return Container(
-      color: Colors.black12,
+      margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5.0),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 6.0,
+          ),
+        ],
+      ),
+
+      child: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text("Cricket",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontWeight: FontWeight.bold,fontFamily: 'montserrat',fontSize: 20),),
+          ),
+          Text("Did you work on your goal today?"),
+          const SizedBox(height: 10),
+          GestureDetector(
+            onTap: (){
+
+            },
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5.0),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    offset: Offset(0.0, 1.0), //(x,y)
+                    blurRadius: 6.0,
+                  ),
+                ],
+              ),
+
+              child: Padding(
+                padding: const EdgeInsets.only(left:50,right: 50,top:12,bottom: 12),
+                child: Text("Yes"),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: (){
+
+            },
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5.0),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    offset: Offset(0.0, 1.0), //(x,y)
+                    blurRadius: 6.0,
+                  ),
+                ],
+              ),
+
+              child: Padding(
+                padding: const EdgeInsets.only(left:50,right: 50,top:12,bottom: 12),
+                child: Text("No"),
+              ),
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0,8,0,0),
+            child: Row(
+              children: <Widget>[
+
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    child: Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(left:35.0),
+                          child: Text("0",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ),),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Container(),
+                ),
+
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(6.0),
+                      ),
+                      color: Color.fromRGBO(63, 92, 200, 1) ,
+                      onPressed: () {},
+                      child: const Text(
+                          'Remind me',
+                          style: TextStyle(fontSize: 12,color: Colors.white)
+
+                      ),
+                    ),
+                  ),
+                ),
+
+              ],
+            ),
+          )
+
+        ],
+      ),
     );
   }
 
   Widget slide3(){
     return Container(
-      color: Colors.black12,
+      margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5.0),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey,
+            offset: Offset(0.0, 1.0), //(x,y)
+            blurRadius: 6.0,
+          ),
+        ],
+      ),
+
+      child: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text("Cricket",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontWeight: FontWeight.bold,fontFamily: 'montserrat',fontSize: 20),),
+          ),
+          Text("Did you work on your goal today?"),
+          const SizedBox(height: 10),
+          GestureDetector(
+            onTap: (){
+
+            },
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5.0),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    offset: Offset(0.0, 1.0), //(x,y)
+                    blurRadius: 6.0,
+                  ),
+                ],
+              ),
+
+              child: Padding(
+                padding: const EdgeInsets.only(left:50,right: 50,top:12,bottom: 12),
+                child: Text("Yes"),
+              ),
+            ),
+          ),
+          GestureDetector(
+            onTap: (){
+
+            },
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5.0),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    offset: Offset(0.0, 1.0), //(x,y)
+                    blurRadius: 6.0,
+                  ),
+                ],
+              ),
+
+              child: Padding(
+                padding: const EdgeInsets.only(left:50,right: 50,top:12,bottom: 12),
+                child: Text("No"),
+              ),
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0,8,0,0),
+            child: Row(
+              children: <Widget>[
+
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    child: Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(left:35.0),
+                          child: Text("0",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ),),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Container(),
+                ),
+
+                Expanded(
+                  flex: 1,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(6.0),
+                      ),
+                      color: Color.fromRGBO(63, 92, 200, 1) ,
+                      onPressed: () {},
+                      child: const Text(
+                          'Remind me',
+                          style: TextStyle(fontSize: 12,color: Colors.white)
+                      ),
+                    ),
+                  ),
+                ),
+
+              ],
+            ),
+          )
+
+        ],
+      ),
     );
   }
-
 
 
   @override
@@ -94,18 +418,22 @@ class _NotifyState extends State<Notify> {
             ],
           ),
 
-          Align(
-              alignment:Alignment.bottomCenter,
-              child: WormIndicator(
-                length: 3,
-                controller: _controller,
-                shape: Shape(
-                    size: 6,
-                    spacing: 3,
-                    shape: DotShape.Circle  // Similar for Square
+          Padding(
+            padding: const EdgeInsets.only(bottom:8.0),
+            child: Align(
+                alignment:Alignment.bottomCenter,
+                child: WormIndicator(
+                  length: 3,
+                  controller: _controller,
+                  shape: Shape(
+                      size: 6,
+                      spacing: 3,
+                      shape: DotShape.Circle // Similar for Square
+                  ),
                 ),
-              ),
+            ),
           ),
+
         ],
       )
     );

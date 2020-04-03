@@ -32,7 +32,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFFFFFFF),
-        title: Center(child: Text(title,style: TextStyle(color: Colors.black,fontSize: 18),)),
+        title: Center(child: Text(title,style: TextStyle(color: Colors.black,fontSize: 18,fontFamily: 'montserrat'),)),
       ),
       body:Center(child: tabs[_currentindex],) ,
       bottomNavigationBar:   BottomNavigationBar(
@@ -42,10 +42,10 @@ class _HomeState extends State<Home> {
             currentIndex: _currentindex,
             items:
             [
-              new BottomNavigationBarItem(icon: new Icon(Icons.people,size: 30,),title: Text("")),
-              new BottomNavigationBarItem(icon: new Icon(Icons.calendar_today,size: 30,),title: Text("")),
-              new BottomNavigationBarItem(icon: new Icon(Icons.message,size: 30,),title: Text("")),
-              new BottomNavigationBarItem(icon: new Icon(Icons.person,size: 30,),title: Text("")),
+              new BottomNavigationBarItem(icon: new Image.asset("assets/images/find.png"),title: Text("")),
+              new BottomNavigationBarItem(icon: new Image.asset("assets/images/calendar.png"),title: Text("")),
+              new BottomNavigationBarItem(icon: new Image.asset("assets/images/inbox.png"),title: Text("")),
+              new BottomNavigationBarItem(icon: new Icon(Icons.person,size: 30,color: Color.fromRGBO(63, 92, 200, 0.4),),title: Text("")),
             ],
             selectedItemColor: Colors.deepPurple,
             onTap:(index){

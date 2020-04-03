@@ -94,12 +94,6 @@ class _LoginState extends State<Login> {
                           side: BorderSide(color: Colors.pink)),
                       onPressed: () {
 
-                        String uid="";
-                        FirebaseAuth.instance.currentUser().then((val){
-                          uid=val.uid;
-                          print(val.uid);
-                        });
-
                         Navigator.pushAndRemoveUntil(context,
                           MaterialPageRoute(builder: (context) => Phone()),
                               (Route<dynamic> route) => false,
