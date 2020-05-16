@@ -2,11 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screenutil.dart';
+import 'package:march/ui/PhoneAuthScreen.dart';
 import 'package:march/ui/gregistration.dart';
 import 'package:march/ui/phone.dart';
 import 'package:march/ui/registration.dart';
 import 'package:march/ui/select.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
 
 
 import 'home.dart';
@@ -38,9 +41,42 @@ class _LoginState extends State<Login> {
     assert(user.uid == currentUser.uid);
     print(user.displayName);
     print(user.uid);
-    Navigator.pushAndRemoveUntil(context,
-      MaterialPageRoute(builder: (context) => GRegister()),
-          (Route<dynamic> route) => false,);
+
+    var url = 'https://march.lbits.co/app/api/goals.php?uid=' + user.uid;
+    var response = await http.get(url);
+    var jsonResponse = convert.jsonDecode(response.body);
+    if (jsonResponse.length!=0) {
+
+
+      Navigator.pushAndRemoveUntil(context,
+        MaterialPageRoute(builder: (context) => Home()),
+            (Route<dynamic> route) => false,);
+
+    } else {
+
+
+      var url = 'https://march.lbits.co/app/api/index.php?uid=' + user.uid;
+      var response = await http.get(url);
+      if (response.statusCode == 200) {
+
+        Navigator.pushAndRemoveUntil(context,
+          MaterialPageRoute(builder: (context) => GRegister()),
+              (Route<dynamic> route) => false,);
+
+      } else {
+
+        Navigator.pushAndRemoveUntil(context,
+          MaterialPageRoute(builder: (context) => Select()),
+              (Route<dynamic> route) => false,);
+
+        print('Request failed with status: ${response.statusCode}.');
+
+      }
+
+      print('Request failed with status: ${response.statusCode}.');
+
+    }
+
 
   }
   
@@ -94,8 +130,10 @@ class _LoginState extends State<Login> {
                           side: BorderSide(color: Colors.pink)),
                       onPressed: () {
 
+                       /* FirebaseAuth.instance.currentUser().then((val) async {
+                          print(val.uid);});*/
                         Navigator.pushAndRemoveUntil(context,
-                          MaterialPageRoute(builder: (context) => Phone()),
+                          MaterialPageRoute(builder: (context) => PhoneAuthScreen()),
                               (Route<dynamic> route) => false,
                         );
 

@@ -12,7 +12,7 @@ class Select extends StatefulWidget {
   @override
   _SelectState createState() => _SelectState();
 }
-
+// this is for drop down
 class Time{
   int id;
   String time;
@@ -47,11 +47,13 @@ class _SelectState extends State<Select> {
     "Treking",
     "KickBoxing",
   ];
-
+// drop down
   List<Time> _time=Time.getTime();
   List<DropdownMenuItem<Time>> _dropdownMenuItems;
   Time _selectedTime;
   String time="1 Month";
+// till here
+
   String target="";
   int cnt=1;
   String uid;
@@ -65,11 +67,14 @@ class _SelectState extends State<Select> {
         uid=val.uid;
       });
     });
-
+//drop down
     _dropdownMenuItems =buildDropDownMenuItems(_time);
     _selectedTime=_dropdownMenuItems[0].value;
+  //
     super.initState();
   }
+
+  //drop down
 
   List<DropdownMenuItem<Time>> buildDropDownMenuItems(List tim){
     List<DropdownMenuItem<Time>> items=List();
@@ -89,6 +94,9 @@ class _SelectState extends State<Select> {
       time=selectedTime.time;
     });
   }
+
+  //till here
+
 
   final myController = TextEditingController();
 
@@ -313,6 +321,8 @@ class _SelectState extends State<Select> {
               ],
             ),
 
+
+              //drop down
               Padding(
                 padding: const EdgeInsets.fromLTRB(25.0,60,20.0,0),
                 child: Row(
@@ -327,7 +337,7 @@ class _SelectState extends State<Select> {
                   ],
                 ),
               ),
-
+              //
               Padding(
                 padding: const EdgeInsets.only(top:25.0,left: 15),
                 child: Text("Mention the target for your goal"),

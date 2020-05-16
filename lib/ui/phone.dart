@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screenutil.dart';
 import 'package:march/ui/registration.dart';
 import 'package:http/http.dart' as http;
-
 import 'home.dart';
 
 class Phone extends StatefulWidget {
