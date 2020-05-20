@@ -133,9 +133,9 @@ class _NotifyState extends State<Notify> {
     String year=now.year.toString();
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(3.0),
       child: Container(
-        margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
+        margin: const EdgeInsets.only(bottom: 2.0), //Same as `blurRadius` i guess
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5.0),
           color: Colors.white,
@@ -170,7 +170,7 @@ class _NotifyState extends State<Notify> {
                 ),
 
               Text("Did you work on your goal today?"),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               GestureDetector(
                 onTap: () async{
                   if(d1.length>0){
@@ -204,8 +204,8 @@ class _NotifyState extends State<Notify> {
 
                 },
                 child: Container(
-                  height: 40,
-                  width: MediaQuery.of(context).size.width*0.5,
+                  height: MediaQuery.of(context).size.height*0.042,
+                  width: MediaQuery.of(context).size.width*0.45,
                   margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5.0),
@@ -231,8 +231,8 @@ class _NotifyState extends State<Notify> {
 
                 },
                 child: Container(
-                  height: 40,
-                  width: MediaQuery.of(context).size.width*0.5,
+                  height: MediaQuery.of(context).size.height*0.042,
+                  width: MediaQuery.of(context).size.width*0.45,
                   margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5.0),
@@ -254,7 +254,7 @@ class _NotifyState extends State<Notify> {
               ),
 
               Padding(
-                padding: const EdgeInsets.fromLTRB(0,8,0,0),
+                padding: const EdgeInsets.fromLTRB(15,8,0,0),
                 child: Row(
                   children: <Widget>[
 
@@ -274,7 +274,7 @@ class _NotifyState extends State<Notify> {
                     ),
 
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.fromLTRB(8,8,15,8),
                       child: RaisedButton(
                         shape: RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(6.0),
@@ -300,28 +300,32 @@ class _NotifyState extends State<Notify> {
               ),
 
 
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(current_mon+" "+year),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top:8.0),
-                        child: Calendarro(
-                          startDate: DateUtils.getFirstDayOfCurrentMonth(),
-                          endDate: DateUtils.getLastDayOfCurrentMonth(),
-                          displayMode: DisplayMode.MONTHS,
-                          selectionMode: SelectionMode.MULTI,
-                          selectedDates: date1!=null?date1:[],
-                          weekdayLabelsRow: CustomWeekdayLabelsRow(),
-                          dayTileBuilder: CustomDayTileBuilder(),
+              Container(
+                height: MediaQuery.of(context).size.height*0.415,
+                width: MediaQuery.of(context).size.width*0.85,
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(current_mon+" "+year),
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.only(top:8.0),
+                          child: Calendarro(
+                            startDate: DateUtils.getFirstDayOfCurrentMonth(),
+                            endDate: DateUtils.getLastDayOfCurrentMonth(),
+                            displayMode: DisplayMode.MONTHS,
+                            selectionMode: SelectionMode.MULTI,
+                            selectedDates: date1!=null?date1:[],
+                            weekdayLabelsRow: CustomWeekdayLabelsRow(),
+                            dayTileBuilder: CustomDayTileBuilder(),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               )
@@ -344,9 +348,9 @@ class _NotifyState extends State<Notify> {
     String year=now.year.toString();
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(3.0),
       child: Container(
-        margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
+        margin: const EdgeInsets.only(bottom: 2.0), //Same as `blurRadius` i guess
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5.0),
           color: Colors.white,
@@ -379,7 +383,7 @@ class _NotifyState extends State<Notify> {
                 ],
               ),
               Text("Did you work on your goal today?"),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               GestureDetector(
                 onTap: () async{
                   if(d2.length>0){
@@ -413,8 +417,8 @@ class _NotifyState extends State<Notify> {
 
                 },
                 child: Container(
-                  height: 40,
-                  width: MediaQuery.of(context).size.width*0.5,
+                  height: MediaQuery.of(context).size.height*0.042,
+                  width: MediaQuery.of(context).size.width*0.45,
                   margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5.0),
@@ -440,8 +444,8 @@ class _NotifyState extends State<Notify> {
 
                 },
                 child: Container(
-                  height: 40,
-                  width: MediaQuery.of(context).size.width*0.5,
+                  height: MediaQuery.of(context).size.height*0.042,
+                  width: MediaQuery.of(context).size.width*0.45,
                   margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5.0),
@@ -463,7 +467,7 @@ class _NotifyState extends State<Notify> {
               ),
 
               Padding(
-                padding: const EdgeInsets.fromLTRB(0,8,0,0),
+                padding: const EdgeInsets.fromLTRB(15,8,0,0),
                 child: Row(
                   children: <Widget>[
 
@@ -483,7 +487,7 @@ class _NotifyState extends State<Notify> {
                     ),
 
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.fromLTRB(8,8,15,8),
                       child: RaisedButton(
                         shape: RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(6.0),
@@ -509,28 +513,32 @@ class _NotifyState extends State<Notify> {
               ),
 
 
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(current_mon+" "+year),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top:8.0),
-                        child: Calendarro(
-                          startDate: DateUtils.getFirstDayOfCurrentMonth(),
-                          endDate: DateUtils.getLastDayOfCurrentMonth(),
-                          displayMode: DisplayMode.MONTHS,
-                          selectionMode: SelectionMode.MULTI,
-                          selectedDates: date2!=null?date2:[],
-                          weekdayLabelsRow: CustomWeekdayLabelsRow(),
-                          dayTileBuilder: CustomDayTileBuilder(),
+              Container(
+                height: MediaQuery.of(context).size.height*0.415,
+                width: MediaQuery.of(context).size.width*0.85,
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(current_mon+" "+year),
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.only(top:8.0),
+                          child: Calendarro(
+                            startDate: DateUtils.getFirstDayOfCurrentMonth(),
+                            endDate: DateUtils.getLastDayOfCurrentMonth(),
+                            displayMode: DisplayMode.MONTHS,
+                            selectionMode: SelectionMode.MULTI,
+                            selectedDates: date2!=null?date2:[],
+                            weekdayLabelsRow: CustomWeekdayLabelsRow(),
+                            dayTileBuilder: CustomDayTileBuilder(),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               )
@@ -550,9 +558,9 @@ class _NotifyState extends State<Notify> {
     String year=now.year.toString();
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(3.0),
       child: Container(
-        margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
+        margin: const EdgeInsets.only(bottom: 2.0), //Same as `blurRadius` i guess
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5.0),
           color: Colors.white,
@@ -586,7 +594,7 @@ class _NotifyState extends State<Notify> {
                 ],
               ),
               Text("Did you work on your goal today?"),
-              const SizedBox(height: 10),
+              const SizedBox(height: 12),
               GestureDetector(
                 onTap: () async{
                   if(d3.length>0){
@@ -620,8 +628,8 @@ class _NotifyState extends State<Notify> {
 
                 },
                 child: Container(
-                  height: 40,
-                  width: MediaQuery.of(context).size.width*0.5,
+                  height: MediaQuery.of(context).size.height*0.042,
+                  width: MediaQuery.of(context).size.width*0.45,
                   margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5.0),
@@ -647,8 +655,8 @@ class _NotifyState extends State<Notify> {
 
                 },
                 child: Container(
-                  height: 40,
-                  width: MediaQuery.of(context).size.width*0.5,
+                  height: MediaQuery.of(context).size.height*0.042,
+                  width: MediaQuery.of(context).size.width*0.45,
                   margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5.0),
@@ -670,7 +678,7 @@ class _NotifyState extends State<Notify> {
               ),
 
               Padding(
-                padding: const EdgeInsets.fromLTRB(0,8,0,0),
+                padding: const EdgeInsets.fromLTRB(15,8,0,0),
                 child: Row(
                   children: <Widget>[
 
@@ -690,7 +698,7 @@ class _NotifyState extends State<Notify> {
                     ),
 
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.fromLTRB(8,8,15,8),
                       child: RaisedButton(
                         shape: RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(6.0),
@@ -716,28 +724,32 @@ class _NotifyState extends State<Notify> {
               ),
 
 
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(current_mon+" "+year),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top:8.0),
-                        child: Calendarro(
-                          startDate: DateUtils.getFirstDayOfCurrentMonth(),
-                          endDate: DateUtils.getLastDayOfCurrentMonth(),
-                          displayMode: DisplayMode.MONTHS,
-                          selectionMode: SelectionMode.MULTI,
-                          selectedDates: date3!=null?date3:[],
-                          weekdayLabelsRow: CustomWeekdayLabelsRow(),
-                          dayTileBuilder: CustomDayTileBuilder(),
+              Container(
+                height: MediaQuery.of(context).size.height*0.415,
+                width: MediaQuery.of(context).size.width*0.85,
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(current_mon+" "+year),
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.only(top:8.0),
+                          child: Calendarro(
+                            startDate: DateUtils.getFirstDayOfCurrentMonth(),
+                            endDate: DateUtils.getLastDayOfCurrentMonth(),
+                            displayMode: DisplayMode.MONTHS,
+                            selectionMode: SelectionMode.MULTI,
+                            selectedDates: date3!=null?date3:[],
+                            weekdayLabelsRow: CustomWeekdayLabelsRow(),
+                            dayTileBuilder: CustomDayTileBuilder(),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               )
