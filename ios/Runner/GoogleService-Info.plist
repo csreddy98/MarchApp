@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>441476196278-hgu9keelaog9dou5e9de0gnenslo48u5.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.441476196278-hgu9keelaog9dou5e9de0gnenslo48u5</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>441476196278-c12h8dtlhoa9ne3i56d2at5blkuaknva.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAb6UPXGPTTO1Mky4nejZWCbPXgANPuvAU</string>
+	<key>GCM_SENDER_ID</key>
+	<string>441476196278</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.marchapp.goals</string>
+	<key>PROJECT_ID</key>
+	<string>march-5a1f0</string>
+	<key>STORAGE_BUCKET</key>
+	<string>march-5a1f0.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:441476196278:ios:834866a60dbad8bbcf4317</string>
+	<key>DATABASE_URL</key>
+	<string>https://march-5a1f0.firebaseio.com</string>
+</dict>
+</plist>

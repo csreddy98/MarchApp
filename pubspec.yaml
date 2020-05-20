@@ -29,7 +29,7 @@ dependencies:
   country_pickers: ^1.2.0
   google_sign_in:
   image_picker: ^0.6.4
-  firebase_storage:
+  firebase_storage: ^3.1.5
   http:
   worm_indicator: ^0.2.4
   shared_preferences:
