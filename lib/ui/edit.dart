@@ -144,7 +144,7 @@ class _Edit_ProfileState extends State<Edit_Profile> {
                               decoration: BoxDecoration(
                                 image: DecorationImage(
                                     fit: BoxFit.cover,
-                                    image:_image==null? NetworkImage(image!=null?image:""):FileImage(_image)
+                                    image:_image==null? NetworkImage(image!=null?image:"https://w7.pngwing.com/pngs/861/726/png-transparent-computer-icons-professional-avatar-avatar-heroes-public-relations-monochrome.png"):FileImage(_image)
                                 ),
                                 borderRadius: BorderRadius.all(Radius.circular(15.0)),
                                 color: Colors.transparent,

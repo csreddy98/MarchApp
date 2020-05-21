@@ -64,6 +64,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.14.12"
+  conditional_builder:
+    dependency: "direct main"
+    description:
+      name: conditional_builder
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   convert:
     dependency: transitive
     description:
@@ -167,6 +174,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
+  flutter_slidable:
+    dependency: "direct main"
+    description:
+      name: flutter_slidable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.4"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -385,6 +399,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.15"
+  toast:
+    dependency: "direct main"
+    description:
+      name: toast
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.5"
   typed_data:
     dependency: transitive
     description:

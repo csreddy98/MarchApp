@@ -1,9 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
-import 'package:march/ui/edit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:worm_indicator/shape.dart';
 
@@ -26,7 +24,7 @@ class _ProfileState extends State<Profile> {
   List time=["","",""];
   List target=["","",""];
   List names=["Rajamouli","Samantha Akinneni"];
-  List profile=["https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/S._S._Rajamouli_at_the_trailer_launch_of_Baahubali.jpg/220px-S._S._Rajamouli_at_the_trailer_launch_of_Baahubali.jpg","https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Samantha_At_The_Irumbu_Thirai_Trailer_Launch.jpg/220px-Samantha_At_The_Irumbu_Thirai_Trailer_Launch.jpg"];
+  List profile=["https://w0.pngwave.com/png/914/653/silhouette-avatar-business-people-silhouettes-png-clip-art.png","https://w0.pngwave.com/png/914/653/silhouette-avatar-business-people-silhouettes-png-clip-art.png"];
   List data=[" SS Rajamouli, who never shies ,","Samantha is outstanding Samantha is outstanding Samantha is outstanding"];
 
   @override
@@ -147,7 +145,7 @@ class _ProfileState extends State<Profile> {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                           fit: BoxFit.cover,
-                          image: NetworkImage(pic!=null?pic:"https://thumbs.dreamstime.com/t/man-woman-silhouette-icons-pare-business-business-people-abstract-avatar-person-face-couple-58191914.jpg")
+                          image: NetworkImage(pic!=null?pic:"https://w7.pngwing.com/pngs/861/726/png-transparent-computer-icons-professional-avatar-avatar-heroes-public-relations-monochrome.png")
                       ),
                       borderRadius: BorderRadius.all(Radius.circular(15.0)),
                       color: Colors.transparent,

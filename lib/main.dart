@@ -41,13 +41,15 @@ class _MyHomePageState extends State<MyHomePage> {
   }
   @override
   Widget build(BuildContext context) {
-    return SplashScreen(
-      seconds: 5,
-      navigateAfterSeconds:n==1?Home():Login(),
-      image: new Image.network('https://cdn.pixabay.com/photo/2017/03/19/20/19/ball-2157465__340.png'),
-      photoSize: 200,
-      backgroundColor: Colors.black,
-      loaderColor: Colors.red,
+    return Center(
+      child: SplashScreen(
+        seconds: 5,
+        navigateAfterSeconds:n==1?Home():Login(),
+        image: new Image.asset("assets/images/logo1x.jpeg"),
+        photoSize: 200,
+        backgroundColor: Colors.white,
+        loaderColor: Colors.red,
+      ),
     );
   }
 

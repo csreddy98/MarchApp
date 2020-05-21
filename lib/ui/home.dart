@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:march/ui/MessagesScreen.dart';
 import 'package:march/ui/find_screen.dart';
 import 'package:march/ui/inbox.dart';
 import 'package:march/ui/notify.dart';
@@ -19,7 +20,8 @@ class _HomeState extends State<Home> {
   final tabs=[
     FindScreen(),
     Notify(),
-    Inbox(),
+    //Inbox(),
+    MessagesScreen(),
     Profile(),
   ];
 

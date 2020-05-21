@@ -15,13 +15,16 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
+
     bool switch_val1=false;
     bool switch_val2=false;
+
     Size size = MediaQuery.of(context).size;
 
     onSwitched_1(bool newval){
       setState(() {
         switch_val1=newval;
+        print(switch_val1);
       });
     }
     onSwitched_2(bool newval){
@@ -172,11 +175,11 @@ class _SettingsState extends State<Settings> {
                             width: size.width,
                           ),),
                           Switch(
+                            value: switch_val1,
                             activeColor: Colors.white,
                             inactiveThumbColor: Colors.white,
                             activeTrackColor: Colors.green,
                             inactiveTrackColor: Colors.red,
-                            value: switch_val1,
                             onChanged: (newval){
                               onSwitched_1(newval);
                             },
@@ -212,9 +215,9 @@ class _SettingsState extends State<Settings> {
                             inactiveThumbColor: Colors.white,
                             activeTrackColor: Colors.green,
                             inactiveTrackColor: Colors.red,
-                            value: switch_val1,
+                            value: switch_val2,
                             onChanged: (newval){
-                              onSwitched_1(newval);
+                              onSwitched_2(newval);
                             },
                           )
                         ],

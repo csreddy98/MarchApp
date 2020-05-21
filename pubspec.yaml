@@ -37,7 +37,9 @@ dependencies:
   calendarro: ^1.0.0
   auto_size_text: ^2.1.0
   location: ^3.0.2
-
+  conditional_builder:
+  flutter_slidable:
+  toast:
 
 dev_dependencies:
   flutter_test:

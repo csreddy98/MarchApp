@@ -16,6 +16,8 @@ class _Account_SettingsState extends State<Account_Settings> {
 
   @override
   void initState() {
+    _controller_number = new TextEditingController(text: "+919090909090");
+
     _load();
     super.initState();
   }
@@ -86,7 +88,8 @@ class _Account_SettingsState extends State<Account_Settings> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String uid = prefs.getString('uid')??"";
-
+      print(uid);
+/*
 
     var url = 'https://march.lbits.co/app/api/index.php?uid=' + uid;
     var response = await http.get(url);
@@ -99,8 +102,8 @@ class _Account_SettingsState extends State<Account_Settings> {
       print('Request failed with status: ${response.statusCode}.');
     }
 
-
     _controller_number = new TextEditingController(text: number);
 
+*/
   }
 }
