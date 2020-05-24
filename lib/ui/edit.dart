@@ -342,10 +342,9 @@ class _Edit_ProfileState extends State<Edit_Profile> {
                         prefs.setString('bio', description);
                         prefs.setString('pic', fileURL);
 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Home()),
-                        );
+                        Navigator.pushAndRemoveUntil(context,
+                            MaterialPageRoute(builder: (context) => Home()),
+                                (Route<dynamic> route) => false);
 
                       } else {
                         print('Request failed with status: ${response.statusCode}.');

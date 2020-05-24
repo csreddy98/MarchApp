@@ -36,14 +36,14 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Color(0xFFFFFFFF),
+        backgroundColor:_currentindex==3? Color.fromRGBO(63, 92, 200, 1):Color(0xFFFFFFFF),
         title: _currentindex==3?Padding(
           padding: const EdgeInsets.only(left:45.0),
-          child: Center(child: Text(title,style: TextStyle(color: Colors.black,fontSize: 18,fontFamily: 'montserrat'),)),
+          child: Center(child: Text(title,style: TextStyle(color: Colors.white,fontSize: 18,fontFamily: 'montserrat'),)),
         ):Center(child: Text(title,style: TextStyle(color: Colors.black,fontSize: 18,fontFamily: 'montserrat'),)),
         actions: <Widget>[
          _currentindex==3? IconButton(
-            icon: Icon(Icons.list,color: Color.fromRGBO(63, 92, 200, 1),),
+            icon: Icon(Icons.tune,color: Colors.white,),
             onPressed: (){
               Navigator.push(
                 context,
@@ -62,12 +62,13 @@ class _HomeState extends State<Home> {
             currentIndex: _currentindex,
             items:
             [
-              new BottomNavigationBarItem(icon: new Image.asset("assets/images/find.png"),title: Text("")),
-              new BottomNavigationBarItem(icon: new Image.asset("assets/images/calendar.png"),title: Text("")),
-              new BottomNavigationBarItem(icon: new Image.asset("assets/images/inbox.png"),title: Text("")),
-              new BottomNavigationBarItem(icon: new Icon(Icons.person,size: 30,color: Color.fromRGBO(63, 92, 200, 0.4),),title: Text("")),
+              new BottomNavigationBarItem(icon: new Icon(Icons.group,size: 30,),title: Text("")),
+              new BottomNavigationBarItem(icon: new Icon(Icons.date_range,size: 30,),title: Text("")),
+              new BottomNavigationBarItem(icon: new Icon(Icons.chat_bubble,size: 30,),title: Text("")),
+              new BottomNavigationBarItem(icon: new Icon(Icons.person,size: 30,),title: Text("")),
             ],
-            selectedItemColor: Colors.deepPurple,
+            unselectedItemColor: Color.fromRGBO(63, 92, 200, 0.4),
+            selectedItemColor: Color.fromRGBO(63, 92, 200, 1),
             onTap:(index){
               setState(() {
                 _currentindex=index;

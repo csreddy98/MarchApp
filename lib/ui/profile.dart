@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:march/support/back_profile.dart';
 import 'dart:convert' as convert;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:worm_indicator/shape.dart';
@@ -36,7 +37,7 @@ class _ProfileState extends State<Profile> {
 
   PageController _controller = PageController(
       initialPage: 0,
-      viewportFraction: 0.95
+      viewportFraction: 0.85
   );
 
   @override
@@ -54,18 +55,30 @@ class _ProfileState extends State<Profile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Center(child: Text(goals[0]!=""?goals[0]:"",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontFamily: 'montserrat'),)),
             Padding(
-              padding: const EdgeInsets.only(top:8.0,left: 8.0),
-              child: Text("Target :"),
+              padding: const EdgeInsets.only(top:12.0,left: 8.0),
+              child: Text(goals[0]!=""?goals[0]:"",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontFamily: 'montserrat',fontWeight: FontWeight.bold),),
+            ),
+            Row(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top:8.0,left: 8.0),
+                  child: Text("Target :"),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left:8.0,top:3.0),
+                  child: AutoSizeText(target[0]!=""?target[0]:"",style: TextStyle(color: Colors.grey),maxLines: 2,),
+                ),
+              ],
             ),
             Padding(
               padding: const EdgeInsets.only(left:8.0,top:3.0),
-              child: Text(target[0]!=""?target[0]:"",style: TextStyle(color: Colors.grey),),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left:8.0,top:3.0),
-              child: Text("Time Frame : "+time[0]!=""?time[0]:""),
+              child: Row(
+                children: <Widget>[
+                  Text("Time Frame : "),
+                  Text(time[0]!=""?time[0]:"")
+                ],
+              ),
             ),
           ],
         ),
@@ -81,18 +94,30 @@ class _ProfileState extends State<Profile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Center(child: Text(goals[1]!=""?goals[1]:"",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontFamily: 'montserrat'),)),
             Padding(
-              padding: const EdgeInsets.only(top:8.0,left: 8.0),
-              child: Text("Target :"),
+              padding: const EdgeInsets.only(top:12.0,left: 8.0),
+              child: Text(goals[1]!=""?goals[1]:"",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontFamily: 'montserrat',fontWeight: FontWeight.bold),),
+            ),
+            Row(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top:8.0,left: 8.0),
+                  child: Text("Target :"),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left:8.0,top:3.0),
+                  child: AutoSizeText(target[1]!=""?target[1]:"",style: TextStyle(color: Colors.grey),maxLines: 2,),
+                ),
+              ],
             ),
             Padding(
               padding: const EdgeInsets.only(left:8.0,top:3.0),
-              child: Text(target[1]!=""?target[1]:"",style: TextStyle(color: Colors.grey),),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left:8.0,top:3.0),
-              child: Text("Time Frame : "+time[1]!=""?time[1]:""),
+              child: Row(
+                children: <Widget>[
+                  Text("Time Frame : "),
+                  Text(time[1]!=""?time[1]:"")
+                ],
+              ),
             ),
           ],
         ),
@@ -107,18 +132,30 @@ class _ProfileState extends State<Profile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Center(child: Text(goals[2]!=""?goals[2]:"",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontFamily: 'montserrat'),)),
             Padding(
-              padding: const EdgeInsets.only(top:8.0,left: 8.0),
-              child: Text("Target :"),
+              padding: const EdgeInsets.only(top:12.0,left: 8.0),
+              child: Text(goals[2]!=""?goals[2]:"",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontFamily: 'montserrat',fontWeight: FontWeight.bold),),
+            ),
+            Row(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top:8.0,left: 8.0),
+                  child: Text("Target :"),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left:8.0,top:3.0),
+                  child: AutoSizeText(target[2]!=""?target[2]:"",style: TextStyle(color: Colors.grey),maxLines: 2,),
+                ),
+              ],
             ),
             Padding(
               padding: const EdgeInsets.only(left:8.0,top:3.0),
-              child: Text(target[2]!=""?target[2]:"",style: TextStyle(color: Colors.grey),),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left:8.0,top:3.0),
-              child: Text("Time Frame : "+time[2]!=""?time[2]:""),
+              child: Row(
+                children: <Widget>[
+                  Text("Time Frame : "),
+                  Text(time[2]!=""?time[2]:"")
+                ],
+              ),
             ),
           ],
         ),
@@ -136,36 +173,63 @@ class _ProfileState extends State<Profile> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
 
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 10,top: 15),
-                  child:Container(
-                    width: 80.0,
-                    height: 80.0,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(pic!=null?pic:"https://w7.pngwing.com/pngs/861/726/png-transparent-computer-icons-professional-avatar-avatar-heroes-public-relations-monochrome.png")
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                      color: Colors.transparent,
+              Stack(
+                children: <Widget>[
+
+                  Container(
+                    height: MediaQuery.of(context).size.height*0.3,
+                    width: MediaQuery.of(context).size.width,
+                    child: CustomPaint(
+                      painter: BackProfile(),
                     ),
                   ),
 
-                ),
-              ),
-              Center(child: Text(name!=null?name:"",style: TextStyle(fontSize: 18,),)),
-              Center(child: Text(age!=null?age.toString()+" Years old":"",style: TextStyle(fontSize: 14,color: Colors.grey),)),
-              Padding(
-                padding: const EdgeInsets.only(left:25.0,top: 15.0),
-                child: AutoSizeText(bio!=null?bio:"",style: TextStyle(color: Colors.black,fontSize: 13),maxLines: 3,),
+                  Container(
+                    height: MediaQuery.of(context).size.height*0.3,
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      children: <Widget>[
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 10,top: 15),
+                            child:Container(
+                              width: 80.0,
+                              height: 80.0,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(pic!=null?pic:"https://w7.pngwing.com/pngs/861/726/png-transparent-computer-icons-professional-avatar-avatar-heroes-public-relations-monochrome.png")
+                                ),
+                                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                                color: Colors.transparent,
+                              ),
+                            ),
+
+                          ),
+                        ),
+                        Center(child: Text(name!=null?name:"",style: TextStyle(fontSize: 18,color: Colors.white),)),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom:12.0),
+                          child: Center(child: Text(age!=null?age.toString()+" Years old":"",style: TextStyle(fontSize: 14,color: Colors.white),)),
+                        ),
+
+                      ],
+                    ),
+                  )
+
+
+                ],
               ),
 
+              Padding(
+                padding: const EdgeInsets.only(left:25.0,right: 15.0,top:10),
+                child: Center(child: AutoSizeText(bio!=null?bio:"",style: TextStyle(color: Colors.black,fontSize: 13),maxLines: 3,)),
+              ),
 
               Center(
                 child: Padding(
                   padding: const EdgeInsets.only(top:20.0),
-                  child: Text("Goals".toUpperCase(),style: TextStyle(fontSize: 16,color: Color.fromRGBO(63, 92, 200, 1) ,fontFamily: 'montserrat'),),
+                  child: Text("Your Goals".toUpperCase(),style: TextStyle(fontSize: 16,color: Color.fromRGBO(63, 92, 200, 1) ,fontFamily: 'montserrat'),),
                 ),
               ),
 
@@ -191,6 +255,8 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
               WormIndicator(
+                indicatorColor: Color.fromRGBO(63, 92, 200, 1),
+                color: Color.fromRGBO(63, 92, 200, 0.4),
                 length: 3,
                 controller: _controller,
                 shape: Shape(

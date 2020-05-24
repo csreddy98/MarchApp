@@ -23,7 +23,7 @@ class _FindScreenState extends State<FindScreen> {
   PermissionStatus _permissionGranted;
   LocationData _locationData;
 //  bool _serviceEnabled;
-
+  int clicked=0;
 
 
   @override
@@ -39,15 +39,27 @@ class _FindScreenState extends State<FindScreen> {
     var response = await http.get(url);
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
-      for(var i=0;i<jsonResponse.length;i++){
-        people.add( Person(
-          imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKPndf5Lp-mSpZ914kUQSDwr6tkf4N5Pj265PZyotfQmM6wNxNejlry9oSew&s",
-          name: jsonResponse[i]['fullName'],
-          age: jsonResponse[i]['age']+" Years Old",
-          location: jsonResponse[i]['distance'].toString().substring(0,3)+" Km away",
-          goals: 'Cricket, Travel, Fitness',
-          id:jsonResponse[i]['uid'],
-        ),);
+      int l=jsonResponse.length;
+      if(jsonResponse.length>10){
+        l=10;
+      }
+
+      if(clicked==0){
+
+        for(var i=0;i<l;i++){
+          people.add( Person(
+            imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKPndf5Lp-mSpZ914kUQSDwr6tkf4N5Pj265PZyotfQmM6wNxNejlry9oSew&s",
+            name: jsonResponse[i]['fullName'],
+            age: jsonResponse[i]['age']+" Years Old",
+            location: jsonResponse[i]['distance'].toString().substring(0,3)+" Km away",
+            goals: convert.jsonEncode(['Cricket', 'Travel', 'Dance']),
+            id:jsonResponse[i]['uid'],
+          ),);
+        }
+
+        setState(() {
+          clicked=1;
+        });
       }
 
       return people;
@@ -147,9 +159,9 @@ class _FindScreenState extends State<FindScreen> {
                   IconButton(
                       icon: Icon(Icons.tune,color: Colors.grey,), iconSize: 26.0, onPressed: (){
 
-                    Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Slider_container()),
-                    );
+                    if(people.length>0){
+                      _navigateAndDisplaySelection(context);
+                    }
 
                   }),
                 ],
@@ -174,12 +186,13 @@ class _FindScreenState extends State<FindScreen> {
                       itemCount: snapshot.data.length,
                       itemBuilder: (BuildContext context, int index) {
                         Person person = people[index];
+                        List<dynamic> list=convert.jsonDecode(person.goals);
                         return Dismissible(
                           key: ObjectKey(people[index]),
                           child: GestureDetector(
                             onTap: (){
                               Navigator.pushAndRemoveUntil(context,
-                                  MaterialPageRoute(builder: (context) => ViewProfile(person.id,person.imageUrl,person.name,person.age,person.goals)),
+                                  MaterialPageRoute(builder: (context) => ViewProfile(person.id,person.imageUrl,person.name,person.age,list)),
                                       (Route<dynamic> route) => true);
                             },
                             child: Stack(
@@ -220,8 +233,9 @@ class _FindScreenState extends State<FindScreen> {
                                               ),
                                             ),
                                             IconButton(
-                                                icon: new Image.asset("assets/images/add-mentor-icon.png"),
-                                                iconSize: 30,
+                                                icon: Icon(Icons.person_add),
+                                                iconSize: 28,
+                                                color: Color.fromRGBO(63, 92, 200, 0.4),
                                                 onPressed: (){
                                                   showDialog(
                                                       context: context,
@@ -229,8 +243,7 @@ class _FindScreenState extends State<FindScreen> {
                                                         return Dialog(
                                                           shape: RoundedRectangleBorder(
                                                               borderRadius:
-                                                              BorderRadius.only(topRight: Radius.circular(75),
-                                                                  bottomLeft: Radius.circular(75))), //this right here
+                                                              BorderRadius.all(Radius.circular(15.0))), //this right here
                                                           child: Container(
                                                             height: 250,
                                                             child: Padding(
@@ -259,7 +272,7 @@ class _FindScreenState extends State<FindScreen> {
                                                                   Container(height:15,),
                                                                   Row(
                                                                     children: <Widget>[
-                                                                      Container(width: MediaQuery.of(context).size.width/2.6,),
+                                                                      Container(width: MediaQuery.of(context).size.width/2.2,),
                                                                       SizedBox(
                                                                         width: 100,
                                                                         child: RaisedButton(
@@ -271,7 +284,7 @@ class _FindScreenState extends State<FindScreen> {
                                                                               "Add",
                                                                               style: TextStyle(color: Colors.white),
                                                                             ),
-                                                                            color:Colors.deepPurple
+                                                                          color: Color.fromRGBO(63, 92, 200, 1),
                                                                         ),
                                                                       ),
                                                                     ],
@@ -326,7 +339,23 @@ class _FindScreenState extends State<FindScreen> {
                                                   letterSpacing: 0.8),
                                             ),
                                             Text(
-                                              person.goals,
+                                              list[0]+" , ",
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                color: Colors.black87,
+                                                letterSpacing: 0.8,
+                                              ),
+                                            ),
+                                            Text(
+                                              list[1]+" , ",
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                color: Colors.black87,
+                                                letterSpacing: 0.8,
+                                              ),
+                                            ),
+                                            Text(
+                                              list[2],
                                               style: TextStyle(
                                                 fontSize: 18,
                                                 color: Colors.black87,
@@ -416,6 +445,65 @@ class _FindScreenState extends State<FindScreen> {
       print("lat : "+_locationData.latitude.toString()+"long : "+_locationData.longitude.toString());
     }
 
+  }
+
+  _navigateAndDisplaySelection(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Slider_container("Cricket","Dance","Hockey")),
+    );
+    if(result!=null){
+      print(result);
+      int minAge=result[0];
+      int maxAge=result[1];
+      int distance=result[2];
+      List<dynamic> record=result[3];
+
+      for(var i=people.length-1;i>=0;i--) {
+
+        List<dynamic> l=convert.jsonDecode(people[i].goals);
+
+        if(int.parse(people[i].age.substring(0,2))<minAge){
+          setState(() {
+            people.removeAt(i);
+          });
+        }
+        else if(int.parse(people[i].age.substring(0,2))>maxAge){
+          setState(() {
+            people.removeAt(i);
+          });
+
+        }
+        else if(double.parse(people[i].location.substring(0,3))>double.parse(distance.toString())){
+          setState(() {
+            people.removeAt(i);
+          });
+        }
+        else if(record.length>2){
+          if(!l.contains(record[0]) || !l.contains(record[1]) || !l.contains(record[2])){
+            setState(() {
+              people.removeAt(i);
+            });
+          }
+        }
+        else if(record.length>1){
+          if(!l.contains(record[0]) || !l.contains(record[1])){
+            setState(() {
+              people.removeAt(i);
+            });
+          }
+        }
+        else if(record.length>0){
+          if(!l.contains(record[0])){
+            setState(() {
+              people.removeAt(i);
+            });
+          }
+        }
+
+      }
+
+    }
   }
 
 }

@@ -1620,6 +1620,8 @@ class _NotifyState extends State<Notify> {
             child: Align(
                 alignment:Alignment.bottomCenter,
                 child: WormIndicator(
+                  indicatorColor: Color.fromRGBO(63, 92, 200, 1),
+                  color: Color.fromRGBO(63, 92, 200, 0.4),
                   length: 3,
                   controller: _controller,
                   shape: Shape(

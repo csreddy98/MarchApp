@@ -7,7 +7,7 @@ class ViewProfile extends StatefulWidget {
   String imageUrl;
   String name;
   String age;
-  String goals;
+  List goals;
   String id;
 
   ViewProfile(this.id,this.imageUrl, this.name, this.age, this.goals);
@@ -20,7 +20,7 @@ class _ViewProfileState extends State<ViewProfile> {
   String imageUrl;
   String name;
   String age;
-  String goals;
+  List goals;
   String id;
   String bio;
 
@@ -47,6 +47,7 @@ class _ViewProfileState extends State<ViewProfile> {
               IconButton(
                   icon: Icon(Icons.person_add),
                   iconSize: 30,
+                  color: Color.fromRGBO(63, 92, 200, 0.4),
                   onPressed: (){
                     showDialog(
                         context: context,
@@ -142,7 +143,7 @@ class _ViewProfileState extends State<ViewProfile> {
                 child: Row(
                   children: <Widget>[
                     Text("Goals :  ",style: TextStyle(fontWeight: FontWeight.bold),),
-                    Text(goals!=null?goals:"")
+                    Text(goals!=null?goals[0]+" , "+goals[1]+" , "+goals[2]:" ")
                   ],
                 ),
               ),

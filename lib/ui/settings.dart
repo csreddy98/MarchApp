@@ -13,18 +13,19 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
+
+  bool switch_val1=false;
+  bool switch_val2=false;
+
+
   @override
   Widget build(BuildContext context) {
-
-    bool switch_val1=false;
-    bool switch_val2=false;
 
     Size size = MediaQuery.of(context).size;
 
     onSwitched_1(bool newval){
       setState(() {
         switch_val1=newval;
-        print(switch_val1);
       });
     }
     onSwitched_2(bool newval){
