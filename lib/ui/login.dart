@@ -42,7 +42,7 @@ class _LoginState extends State<Login> {
     print(user.displayName);
     print(user.uid);
 
-    var url = 'https://march.lbits.co/app/api/goals.php?uid=' + user.uid;
+   /* var url = 'https://march.lbits.co/app/api/goals.php?uid=' + user.uid;
     var response = await http.get(url);
     var jsonResponse = convert.jsonDecode(response.body);
     if (jsonResponse.length!=0) {
@@ -75,8 +75,11 @@ class _LoginState extends State<Login> {
 
       print('Request failed with status: ${response.statusCode}.');
 
-    }
+    }*/
 
+    Navigator.pushAndRemoveUntil(context,
+      MaterialPageRoute(builder: (context) => GRegister()),
+          (Route<dynamic> route) => false,);
 
   }
   

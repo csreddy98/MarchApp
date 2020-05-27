@@ -9,7 +9,8 @@ import 'package:path/path.dart' as Path;
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:march/utils/database_helper.dart';
+import 'package:march/models/user.dart';
 
 
 class GRegister extends StatefulWidget {
@@ -47,6 +48,7 @@ class _GRegisterState extends State<GRegister> {
   String uid="";
   String email="";
   var now = new DateTime.now();
+  String profession="";
 
   File _image;
   String _uploadedFileURL;
@@ -243,6 +245,29 @@ class _GRegisterState extends State<GRegister> {
                   },
                 ),
               ),
+
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20.0,20,20,0),
+                child: TextField(
+                  maxLines: 1,
+                  style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.black
+                  ),
+                  decoration: InputDecoration(
+                      labelText:"Profession",
+                      hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
+                  onChanged: (String value) {
+                    try {
+                      profession = value;
+                    } catch (exception) {
+                      profession ="";
+                    }
+                  },
+                ),
+              ),
+
+
               Padding(
                 padding: const EdgeInsets.fromLTRB(20.0,0.0,20.0,0),
                 child: TextField(
@@ -327,7 +352,7 @@ class _GRegisterState extends State<GRegister> {
                         onTap: () async{
 
 
-                          if(_image==null||name==""||bio==""||dob==""||gender==""||email==""||Phone==""){
+                          if(_image==null||name==""||bio==""||dob==""||gender==""||email==""||Phone==""||profession==""){
 
                             _sk.currentState.showSnackBar(SnackBar(
                               content: Text("All the fields should be filled",
@@ -361,28 +386,37 @@ class _GRegisterState extends State<GRegister> {
                             storageReference.getDownloadURL().then((fileURL) async {
 
                               _uploadedFileURL = fileURL;
-                              var url= 'https://march.lbits.co/app/api/index.php';
-                              var resp=await http.post(url,body: jsonEncode(<String, dynamic>{
+                              var url= 'https://march.lbits.co/api/worker.php';
+                              var resp=await http.post(url,body: json.encode(<String, dynamic>
+                              {
+                                'serviceName': "generatetoken",
+                                'work': "add user",
                                 'uid':uid,
-                                'fullName':name,
-                                'email': email,
-                                'phone': Phone,
-                                'bio':  bio,
+                                'userName': name,
+                                'userBio': bio,
+                                'email':email,
                                 'dob':dob,
-                                'sex': gender,
-                                'profile_pic': fileURL,
-                                'status':'1',
-                                'subscriptionType':'1',
-                                'createdAt':now.toString(),
-                                'LastModifiedAt':now.toString(),
-                                'token':{
-                                  'tokenData':'Random',
-                                  'Date' : now.toString(),
-                                }
-                              }));
+                                'gender':gender,
+                                'profession':profession,
+                                'userPic':fileURL,
+                                'phoneNumber': Phone,
+                              }),
+                              headers: {
+                                'Content-Type':
+                                'application/json',
+                              });
 
+                              print(profession+" "+fileURL);
                               print(resp.body.toString());
                               if(resp.body.toString()==' success'){
+
+                                var db = new DataBaseHelper();
+
+                               int savedUser =
+                                     await db.saveUser(new User(uid,name,bio,email,dob,gender,profession,_uploadedFileURL,Phone));
+
+                               print("user saved :$savedUser");
+
 
                                 Navigator.pushAndRemoveUntil(context,
                                     MaterialPageRoute(builder: (context) => Select()),

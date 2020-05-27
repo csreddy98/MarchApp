@@ -40,6 +40,8 @@ dependencies:
   conditional_builder:
   flutter_slidable:
   toast:
+  sqflite:
+  path_provider:
 
 dev_dependencies:
   flutter_test:
