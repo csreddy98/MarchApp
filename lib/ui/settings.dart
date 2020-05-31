@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:march/ui/account_settings.dart';
 import 'package:march/ui/edit.dart';
+import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'login.dart';
@@ -351,7 +352,23 @@ class _SettingsState extends State<Settings> {
                 onTap: () async {
                   SharedPreferences prefs = await SharedPreferences.getInstance();
                   prefs.setInt('log', 0);
-
+                  prefs.remove('token');
+                  prefs.remove('uid');
+                  var db = new DataBaseHelper();
+                  await db.deleteUser(1);
+                  int cnt=await db.getGoalCount();
+                  if(cnt>2){
+                    await db.deleteGoal(3);
+                    await db.deleteGoal(2);
+                    await db.deleteGoal(1);
+                  }
+                  else if(cnt>1){
+                    await db.deleteGoal(2);
+                    await db.deleteGoal(1);
+                  }
+                  else{
+                    await db.deleteGoal(1);
+                  }
                   Navigator.pop(context,true);
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Login()),);
 

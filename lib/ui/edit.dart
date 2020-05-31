@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:march/models/user.dart';
 import 'package:march/ui/home.dart';
+import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path/path.dart' as Path;
 import 'dart:io';
@@ -37,11 +41,14 @@ class _Edit_ProfileState extends State<Edit_Profile> {
   String Name;
   String uid;
   String image;
+  String token;
 //  String DOB="27-05-1997";
   String description;
+  String profession;
 //  String gender="Male";
-  TextEditingController _controller_name,_controller_dob,_controller_bio,_controller_gender,_controller_image;
-
+  TextEditingController _controller_name,_controller_bio,_controller_image,_controller_profession;
+  String email,gender,dob;
+  String phone;
 
   File _image;
   String _uploadedFileURL;
@@ -178,7 +185,7 @@ class _Edit_ProfileState extends State<Edit_Profile> {
               ),
               Container(
                 width: size.width/1.2,
-                height: size.height/4,
+                height: size.height/2.8,
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20)
@@ -209,6 +216,29 @@ class _Edit_ProfileState extends State<Edit_Profile> {
                       ),
                     ),
 
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: TextField(
+                        maxLines: 1,
+                        controller: _controller_profession,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18
+                        ),
+                        decoration: InputDecoration(
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black12),
+                          ),
+                        ),
+                        onChanged: (String value) {
+                          try {
+                            profession = value;
+                          } catch (exception) {
+                            profession="";
+                          }
+                        },
+                      ),
+                    ),
 
 
                    /* Padding(
@@ -281,21 +311,50 @@ class _Edit_ProfileState extends State<Edit_Profile> {
                     print(image);
                     print(uid+" \n"+description+"\n"+Name);
 
-                  var url = 'https://march.lbits.co/app/api/users/update-user-info.php?uid='+uid+'&fullName='+Name+'&bio='+description+'&profile_pic='+image;
-                  var response = await http.get(url);
-                  if (response.statusCode == 200) {
 
-                    SharedPreferences prefs = await SharedPreferences.getInstance();
-                    prefs.setString('name', Name);
-                    prefs.setString('bio', description);
-
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Home()),
+                    var url= 'https://march.lbits.co/api/worker.php';
+                    var resp=await http.post(url,
+                      headers: {
+                        'Content-Type':
+                        'application/json',
+                        'Authorization':
+                        'Bearer $token'
+                      },
+                      body: json.encode(<String, dynamic>
+                      {
+                        'serviceName': "",
+                        'work': "update user",
+                        'uid':uid,
+                        'userName': Name,
+                        'userBio': description,
+                        'profession':profession,
+                        'userPic': image,
+                      }),
                     );
 
-                  } else {
-                    print('Request failed with status: ${response.statusCode}.');
+                    print(profession);
+                    print(resp.body.toString());
+
+                    var result = json.decode(resp.body);
+                    if (result['response'] == 200) {
+                      var db = new DataBaseHelper();
+                      await db.updateUser(User(
+                          uid,
+                          Name,
+                          description,
+                          email,
+                          dob,
+                          gender,
+                          profession,
+                          image,
+                          phone));
+
+                      Navigator.pushAndRemoveUntil(context,
+                          MaterialPageRoute(builder: (context) => Home()),
+                              (Route<dynamic> route) => false);
+
+                    }
+                    else {
 
                     _sk.currentState.showSnackBar(SnackBar(
                       content: Text("There is Some Technical Problem Update again",
@@ -333,21 +392,49 @@ class _Edit_ProfileState extends State<Edit_Profile> {
                     storageReference.getDownloadURL().then((fileURL) async {
                       _uploadedFileURL = fileURL;
 
-                      var url = 'https://march.lbits.co/app/api/users/update-user-info.php?uid='+uid+'&fullName='+Name+'&bio='+description+'&profile_pic='+fileURL;
-                      var response = await http.get(url);
-                      if (response.statusCode == 200) {
+                      var url= 'https://march.lbits.co/api/worker.php';
+                      var resp=await http.post(url,
+                        headers: {
+                          'Content-Type':
+                          'application/json',
+                          'Authorization':
+                          'Bearer $token'
+                        },
+                        body: json.encode(<String, dynamic>
+                        {
+                          'serviceName': "",
+                          'work': "update user",
+                          'uid':uid,
+                          'userName': Name,
+                          'userBio': description,
+                          'profession':profession,
+                          'userPic': _uploadedFileURL,
+                        }),
+                      );
 
-                        SharedPreferences prefs = await SharedPreferences.getInstance();
-                        prefs.setString('name', Name);
-                        prefs.setString('bio', description);
-                        prefs.setString('pic', fileURL);
+                      print(profession);
+                      print(resp.body.toString());
+
+                      var result = json.decode(resp.body);
+                      if (result['response'] == 200) {
+                        var db = new DataBaseHelper();
+                        await db.updateUser(User(
+                            uid,
+                            Name,
+                            description,
+                            email,
+                            dob,
+                            gender,
+                            profession,
+                            _uploadedFileURL,
+                            phone));
 
                         Navigator.pushAndRemoveUntil(context,
                             MaterialPageRoute(builder: (context) => Home()),
                                 (Route<dynamic> route) => false);
 
-                      } else {
-                        print('Request failed with status: ${response.statusCode}.');
+                      }
+                      else {
 
                         _sk.currentState.showSnackBar(SnackBar(
                           content: Text("There is Some Technical Problem Update again",
@@ -461,8 +548,33 @@ class _Edit_ProfileState extends State<Edit_Profile> {
         });
   }
 
-
   void _load() async{
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userToken = prefs.getString('token')??"";
+
+    var db = new DataBaseHelper();
+    User user= await db.getUser(1);
+
+    setState(() {
+      token=userToken;
+      image=user.userPic;
+      description=user.userBio;
+      Name=user.username;
+      uid=user.userId;
+      profession=user.userProfession;
+      email=user.userEmail;
+      gender=user.userGender;
+      phone=user.userPhone;
+      dob=user.userDob;
+    });
+
+    _controller_name = new TextEditingController(text: Name);
+    _controller_bio = new TextEditingController(text: description);
+    _controller_image = new TextEditingController(text: image);
+    _controller_profession = new TextEditingController(text: profession);
+
+/*
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String profile_pic = prefs.getString('pic')??"";
     String profile_name = prefs.getString('name')??"";
@@ -478,9 +590,11 @@ class _Edit_ProfileState extends State<Edit_Profile> {
         description=profile_bio;
         Name=profile_name;
         uid=user_uid;
-    /*    DOB=profile_dob;
-        gender=profile_gender;
     */
+/*    DOB=profile_dob;
+        gender=profile_gender;
+    *//*
+
       });
     }
 
@@ -489,7 +603,7 @@ class _Edit_ProfileState extends State<Edit_Profile> {
     _controller_bio = new TextEditingController(text: description);
     _controller_image = new TextEditingController(text: image);
 
-  /*  _dropdownMenuItems =buildDropDownMenuItems(_gender);
+    _dropdownMenuItems =buildDropDownMenuItems(_gender);
     if(gender=="Male"){
       _selectedGender=_dropdownMenuItems[0].value;
     }

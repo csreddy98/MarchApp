@@ -9,6 +9,9 @@ import 'package:path/path.dart' as Path;
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:march/utils/database_helper.dart';
+import 'package:march/models/user.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 
@@ -49,7 +52,7 @@ class _RegisterState extends State<Register> {
   String uid="";
   String email="";
   var now = new DateTime.now();
-
+  String profession="";
   File _image;
   String _uploadedFileURL;
 
@@ -226,6 +229,26 @@ class _RegisterState extends State<Register> {
                 ),
               ),
               Padding(
+                padding: const EdgeInsets.fromLTRB(20.0,20,20,0),
+                child: TextField(
+                  maxLines: 1,
+                  style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.black
+                  ),
+                  decoration: InputDecoration(
+                      labelText:"Profession",
+                      hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
+                  onChanged: (String value) {
+                    try {
+                      profession = value;
+                    } catch (exception) {
+                      profession ="";
+                    }
+                  },
+                ),
+              ),
+              Padding(
                 padding: const EdgeInsets.fromLTRB(20.0,0.0,20.0,0),
                 child: TextField(
                   maxLines: 2,
@@ -256,6 +279,7 @@ class _RegisterState extends State<Register> {
                   ),
                   decoration: InputDecoration(
                       labelText:"Date of birth",
+                      hintText: "dd-mm-yyyy",
                       hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
                   onChanged: (String value) {
                     try {
@@ -311,7 +335,7 @@ class _RegisterState extends State<Register> {
                         onTap: () async{
 
 
-                          if(_image==null||name==""||bio==""||dob==""||gender==""||email==""){
+                          if(_image==null||name==""||bio==""||dob==""||gender==""||email==""||profession==""){
 
                             _sk.currentState.showSnackBar(SnackBar(
                               content: Text("All the fields should be filled",
@@ -345,7 +369,7 @@ class _RegisterState extends State<Register> {
                             storageReference.getDownloadURL().then((fileURL) async {
 
                                 _uploadedFileURL = fileURL;
-                                var url= 'http://march.lbits.co/app/api/index.php';
+                                /*var url= 'http://march.lbits.co/app/api/index.php';
                                 var resp=await http.post(url,body: jsonEncode(<String, dynamic>{
                                   'uid':uid,
                                   'fullName':name,
@@ -364,14 +388,74 @@ class _RegisterState extends State<Register> {
                                     'Date' : now.toString(),
                                   }
                                 }));
+                                   print(resp.body);
+*/
 
-                                print(resp.body);
+
+                                _uploadedFileURL = fileURL;
+                                var url= 'https://march.lbits.co/api/worker.php';
+                                var resp=await http.post(url,
+                                  headers: {
+                                    'Content-Type':
+                                    'application/json',
+                                  },
+                                  body: json.encode(<String, dynamic>
+                                  {
+                                    'serviceName': "generatetoken",
+                                    'work': "add user",
+                                    'uid':uid,
+                                    'userName': name,
+                                    'userBio': bio,
+                                    'email':email,
+                                    'dob':dob,
+                                    'gender':gender,
+                                    'profession':profession,
+                                    'userPic':fileURL,
+                                    'phoneNumber': Phone,
+                                  }),
+                                );
+
+                                print(resp.body.toString());
+                                var result = json.decode(resp.body);
+                                if (result['response'] == 200) {
+
+                                  var db = new DataBaseHelper();
+
+                                  int savedUser =
+                                  await db.saveUser(new User(uid,name,bio,email,dob,gender,profession,_uploadedFileURL,Phone));
+
+                                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                                  prefs.setString('token',result['result']);
+
+                                  print("user saved :$savedUser");
+
+                                  Navigator.pushAndRemoveUntil(context,
+                                      MaterialPageRoute(builder: (context) => Select()),
+                                          (Route<dynamic> route) => false);
+
+                                }
+                                else{
+
+                                  _sk.currentState.showSnackBar(SnackBar(
+                                    content: Text("There is Some Technical Problem Submit again",
+                                      style: TextStyle(
+                                        fontStyle: FontStyle.italic,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(12.0),
+                                            topRight: Radius.circular(12.0))),
+                                    duration: Duration(seconds: 3),
+                                    backgroundColor: Colors.lightBlueAccent,
+                                  ));
+
+                                }
+
+
 
                             });
-
-                            Navigator.pushAndRemoveUntil(context,
-                                MaterialPageRoute(builder: (context) => Select()),
-                                    (Route<dynamic> route) => false);
 
                           }
 

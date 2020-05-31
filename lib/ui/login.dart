@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screenutil.dart';
+import 'package:march/models/user.dart';
+import 'package:march/models/goal.dart';
 import 'package:march/ui/PhoneAuthScreen.dart';
 import 'package:march/ui/gregistration.dart';
 import 'package:march/ui/phone.dart';
@@ -9,7 +13,9 @@ import 'package:march/ui/registration.dart';
 import 'package:march/ui/select.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert' as convert;
+import 'package:march/utils/database_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 
 import 'home.dart';
@@ -77,9 +83,98 @@ class _LoginState extends State<Login> {
 
     }*/
 
-    Navigator.pushAndRemoveUntil(context,
-      MaterialPageRoute(builder: (context) => GRegister()),
-          (Route<dynamic> route) => false,);
+    var url= 'https://march.lbits.co/api/worker.php';
+    var resp=await http.post(url,
+      body: json.encode(<String, dynamic>
+      {
+        'serviceName': "generatetoken",
+        'work': "get user",
+        'uid':user.uid,
+      }),
+    );
+
+    print(resp.body.toString());
+    var result = json.decode(resp.body);
+    if (result['response'] == 200) {
+
+      var db = new DataBaseHelper();
+
+      int savedUser =
+      await db.saveUser(new User(
+          user.uid,
+          result['result']['user_info']['fullName'],
+          result['result']['user_info']['bio'],
+          result['result']['user_info']['email'],
+          "28-04-1998",
+          result['result']['user_info']['sex'],
+          result['result']['user_info']['profession'],
+          result['result']['user_info']['profile_pic'],
+          result['result']['user_info']['mobile']));
+
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('token',result['result']['token']);
+      User x= await db.getUser(1);
+      print(x.userPic);
+      print("user saved :$savedUser");
+
+      var res=await http.post(url,
+        headers: {
+          'Content-Type':
+          'application/json',
+          'Authorization':
+          'Bearer '+result['result']['token']
+        },
+        body: json.encode(<String, dynamic>
+        {
+          'serviceName': "",
+          'work': "get goals",
+          'uid':user.uid,
+        }),
+      );
+      print(res.body.toString());
+      var resultx = json.decode(res.body);
+      if(resultx['response'] == 200){
+        int cnt=resultx['result'].length;
+        for(var i=0;i<cnt;i++){
+
+          int savedGoal =
+          await db.saveGoal(new Goal(
+              user.uid,
+              resultx['result'][i]['goal'],
+              resultx['result'][i]['target'],
+              resultx['result'][i]['time_frame'],
+              resultx['result'][i]['goal_number']));
+
+          print("goal saved :$savedGoal");
+        }
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setInt('log', 1);
+
+        Navigator.pushAndRemoveUntil(context,
+            MaterialPageRoute(builder: (context) => Home()),
+                (Route<dynamic> route) => false);
+
+      }
+      else{
+
+        Navigator.pushAndRemoveUntil(context,
+            MaterialPageRoute(builder: (context) => Select()),
+                (Route<dynamic> route) => false);
+
+      }
+
+    }
+    else{
+
+      Navigator.pushAndRemoveUntil(context,
+        MaterialPageRoute(builder: (context) => GRegister()),
+            (Route<dynamic> route) => false,);
+
+    }
+
+
 
   }
   

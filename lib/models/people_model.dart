@@ -6,6 +6,7 @@ class Person {
   String location;
   String goals;
   String id;
+  String bio;
 
   Person({
     this.imageUrl,
@@ -13,7 +14,8 @@ class Person {
     this.age,
     this.location,
     this.goals,
-    this.id
+    this.id,
+    this.bio
   });
 
 }

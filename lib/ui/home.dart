@@ -16,10 +16,11 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _currentindex=0;
   String title="Find People";
-  List<String> t=["Find People","Track Goals","Inbox","Profile"];
+  //2nd tab track goals
+  List<String> t=["Find People","Inbox","Profile"];
   final tabs=[
     FindScreen(),
-    Notify(),
+    //Notify(),
     //Inbox(),
     MessagesScreen(),
     Profile(),
@@ -36,13 +37,14 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor:_currentindex==3? Color.fromRGBO(63, 92, 200, 1):Color(0xFFFFFFFF),
-        title: _currentindex==3?Padding(
+        backgroundColor:_currentindex==2? Color.fromRGBO(63, 92, 200, 1):Color(0xFFFFFFFF),
+        title: _currentindex==2?Padding(
           padding: const EdgeInsets.only(left:45.0),
           child: Center(child: Text(title,style: TextStyle(color: Colors.white,fontSize: 18,fontFamily: 'montserrat'),)),
         ):Center(child: Text(title,style: TextStyle(color: Colors.black,fontSize: 18,fontFamily: 'montserrat'),)),
         actions: <Widget>[
-         _currentindex==3? IconButton(
+          //if added change it to 3
+         _currentindex==2? IconButton(
             icon: Icon(Icons.tune,color: Colors.white,),
             onPressed: (){
               Navigator.push(
@@ -63,7 +65,7 @@ class _HomeState extends State<Home> {
             items:
             [
               new BottomNavigationBarItem(icon: new Icon(Icons.group,size: 30,),title: Text("")),
-              new BottomNavigationBarItem(icon: new Icon(Icons.date_range,size: 30,),title: Text("")),
+           //   new BottomNavigationBarItem(icon: new Icon(Icons.date_range,size: 30,),title: Text("")),
               new BottomNavigationBarItem(icon: new Icon(Icons.chat_bubble,size: 30,),title: Text("")),
               new BottomNavigationBarItem(icon: new Icon(Icons.person,size: 30,),title: Text("")),
             ],

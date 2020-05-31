@@ -6,7 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screenutil.dart';
 import 'package:march/ui/home.dart';
 import 'package:http/http.dart' as http;
+import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:march/models/goal.dart';
+
 
 class Select extends StatefulWidget {
   @override
@@ -49,6 +52,7 @@ class _SelectState extends State<Select> {
   ];
 // drop down
   List<Time> _time=Time.getTime();
+  var db = new DataBaseHelper();
   List<DropdownMenuItem<Time>> _dropdownMenuItems;
   Time _selectedTime;
   String time="1 Month";
@@ -57,6 +61,7 @@ class _SelectState extends State<Select> {
   String target="";
   int cnt=1;
   String uid;
+  String token;
 
   @override
   void initState() {
@@ -71,6 +76,7 @@ class _SelectState extends State<Select> {
     _dropdownMenuItems =buildDropDownMenuItems(_time);
     _selectedTime=_dropdownMenuItems[0].value;
   //
+    _load();
     super.initState();
   }
 
@@ -222,16 +228,36 @@ class _SelectState extends State<Select> {
                             child: Text(added[0],style: TextStyle(fontWeight: FontWeight.bold),),
                           ),
                           GestureDetector(
-                              onTap: (){
+                              onTap: () async{
                                 setState(() {
                                   if(added[1]==""&&added[2]==""){
                                     added[0]="";
                                     count=count-1;
                                     _disable=0;
                                   }
-
-    //                              added.removeAt(0);
+                                  //                              added.removeAt(0);
                                 });
+                                var url= 'https://march.lbits.co/api/worker.php';
+                                var resp=await http.post(url,
+                                  headers: {
+                                    'Content-Type':
+                                    'application/json',
+                                    'Authorization':
+                                    'Bearer $token'
+                                  },
+                                  body: json.encode(<String, dynamic>
+                                  {
+                                    'serviceName': "",
+                                    'work': "remove goal",
+                                    'uid':uid,
+                                    'goalNumber':"1",
+                                  }),
+                                );
+
+                                print("res "+resp.body.toString());
+
+                                await db.deleteGoal(1);
+
                               },
                               child: Icon(Icons.clear,size: 18,))
                         ],
@@ -263,16 +289,37 @@ class _SelectState extends State<Select> {
                             child: Text(added[1],style: TextStyle(fontWeight: FontWeight.bold),),
                           ),
                           GestureDetector(
-                              onTap: (){
-                                setState(() {
+                              onTap: () async {
+                                setState(() async{
                                   if(added[2]==""){
                                     added[1]="";
                                     count=count-1;
                                     _disable=0;
                                   }
-
   //                                added.removeAt(1);
                                 });
+
+                                var url= 'https://march.lbits.co/api/worker.php';
+                                var resp=await http.post(url,
+                                  headers: {
+                                    'Content-Type':
+                                    'application/json',
+                                    'Authorization':
+                                    'Bearer $token'
+                                  },
+                                  body: json.encode(<String, dynamic>
+                                  {
+                                    'serviceName': "",
+                                    'work': "remove goal",
+                                    'uid':uid,
+                                    'goalNumber':"2",
+                                  }),
+                                );
+
+                                print("res "+resp.body.toString());
+
+
+                                await db.deleteGoal(2);
                               },
                               child: Icon(Icons.clear,size: 18,))
                         ],
@@ -304,13 +351,34 @@ class _SelectState extends State<Select> {
                             child: Text(added[2],style: TextStyle(fontWeight: FontWeight.bold),),
                           ),
                           GestureDetector(
-                              onTap: (){
+                              onTap: () async{
                                 setState(() {
                                     added[2]="";
                                     count=count-1;
                                     _disable=0;
 //                                  added.removeAt(2);
                                 });
+
+                                var url= 'https://march.lbits.co/api/worker.php';
+                                var resp=await http.post(url,
+                                  headers: {
+                                    'Content-Type':
+                                    'application/json',
+                                    'Authorization':
+                                    'Bearer $token'
+                                  },
+                                  body: json.encode(<String, dynamic>
+                                  {
+                                    'serviceName': "",
+                                    'work': "remove goal",
+                                    'uid':uid,
+                                    'goalNumber':"3",
+                                  }),
+                                );
+
+                                print("res "+resp.body.toString());
+
+                                await db.deleteGoal(3);
                               },
                               child: Icon(Icons.clear,size: 18,))
                         ],
@@ -390,7 +458,10 @@ class _SelectState extends State<Select> {
                             color: Colors.transparent,
                             child: InkWell(
                               splashColor: Colors.grey,
-                              onTap: () {
+                              onTap: () async {
+
+                                SharedPreferences prefs = await SharedPreferences.getInstance();
+                                prefs.setInt('log', 1);
 
                                 Navigator.pushAndRemoveUntil(context,
                                     MaterialPageRoute(builder: (context) => Home()),
@@ -442,6 +513,7 @@ class _SelectState extends State<Select> {
                                    _onLoading();
                                   print('cnt :'+cnt.toString()+'time : '+time+' target :'+target);
 
+/*
                                   var url= 'https://march.lbits.co/app/api/goals.php';
                                   var resp=await http.post(url,body: jsonEncode(<String, dynamic>{
                                     'uid':uid,
@@ -450,20 +522,54 @@ class _SelectState extends State<Select> {
                                     'time_frame':time,
                                     'target':target
                                   }));
+*/
 
-                                  print(resp.body.toString());
+                                   var url= 'https://march.lbits.co/api/worker.php';
+                                   var resp=await http.post(url,
+                                     headers: {
+                                       'Content-Type':
+                                       'application/json',
+                                       'Authorization':
+                                       'Bearer $token'
+                                     },
+                                     body: json.encode(<String, dynamic>
+                                     {
+                                       'serviceName': "",
+                                       'work': "add goal",
+                                       'uid':uid,
+                                       'goalName':added[count-1],
+                                       'target':target,
+                                       'timeFrame':time,
+                                       'goalNumber':count.toString(),
+                                     }),
+                                   );
 
-                                  if(count==3 && resp.body.toString()==' success'){
+
+                                   print(resp.body.toString());
+                                   var result = json.decode(resp.body);
+                                  if(count==3 && result['response'] == 200){
 
                                     Navigator.pushAndRemoveUntil(context,
                                         MaterialPageRoute(builder: (context) => Home()),
                                             (Route<dynamic> route) => false);
 
+                                    int savedGoal =
+                                    await db.saveGoal(new Goal(uid,added[count-1],target,time,count.toString()));
+
+                                    print("goal saved :$savedGoal");
+
                                     SharedPreferences prefs = await SharedPreferences.getInstance();
                                     prefs.setInt('log', 1);
 
                                   }
-                                  else if(resp.body.toString()==' success'){
+                                  else if(result['response'] == 200){
+
+                                    int savedGoal =
+                                    await db.saveGoal(new Goal(uid,added[count-1],target,time,count.toString()));
+
+                                    print("goal saved :$savedGoal");
+
+
                                     Navigator.pop(context);
                                     setState(() {
                                       _disable=0;
@@ -565,6 +671,7 @@ class _SelectState extends State<Select> {
                             _onLoading();
                             print('cnt :'+cnt.toString()+'time : '+time+' target :'+target);
 
+/*
                             var url= 'https://march.lbits.co/app/api/goals.php';
                             var resp=await http.post(url,body: jsonEncode(<String, dynamic>{
                               'uid':uid,
@@ -573,9 +680,38 @@ class _SelectState extends State<Select> {
                               'time_frame':time,
                               'target':target
                             }));
+*/
+
+
+                            var url= 'https://march.lbits.co/api/worker.php';
+                            var resp=await http.post(url,
+                              headers: {
+                                'Content-Type':
+                                'application/json',
+                                'Authorization':
+                                'Bearer $token'
+                              },
+                              body: json.encode(<String, dynamic>
+                              {
+                                'serviceName': "",
+                                'work': "add goal",
+                                'uid':uid,
+                                'goalName':added[count-1],
+                                'target':target,
+                                'timeFrame':time,
+                                'goalNumber':count.toString(),
+                              }),
+                            );
 
                             print(resp.body.toString());
-                            if(resp.body.toString()==' success'){
+                            var result = json.decode(resp.body);
+                            if(result['response'] == 200){
+
+                              int savedGoal =
+                              await db.saveGoal(new Goal(uid,added[count-1],target,time,count.toString()));
+
+                              print("goal saved :$savedGoal");
+
                               Navigator.pop(context);
                               setState(() {
                                 _disable=0;
@@ -585,6 +721,7 @@ class _SelectState extends State<Select> {
                                 _selectedTime=_dropdownMenuItems[0].value;
                                 cnt=cnt+1;
                               });
+
                             }
                             else{
                               Navigator.pop(context);
@@ -674,5 +811,11 @@ class _SelectState extends State<Select> {
         );
       },
     );
+  }
+  void _load() async{
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    setState(() {
+      token = pref.getString('token');
+    });
   }
 }

@@ -11,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:march/utils/database_helper.dart';
 import 'package:march/models/user.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class GRegister extends StatefulWidget {
@@ -299,6 +300,7 @@ class _GRegisterState extends State<GRegister> {
                   ),
                   decoration: InputDecoration(
                       labelText:"Date of birth",
+                      hintText: "dd-mm-yyyy",
                       hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
                   onChanged: (String value) {
                     try {
@@ -387,8 +389,13 @@ class _GRegisterState extends State<GRegister> {
 
                               _uploadedFileURL = fileURL;
                               var url= 'https://march.lbits.co/api/worker.php';
-                              var resp=await http.post(url,body: json.encode(<String, dynamic>
-                              {
+                              var resp=await http.post(url,
+                                  headers: {
+                                    'Content-Type':
+                                    'application/json',
+                                  },
+                                body: json.encode(<String, dynamic>
+                                {
                                 'serviceName': "generatetoken",
                                 'work': "add user",
                                 'uid':uid,
@@ -401,22 +408,23 @@ class _GRegisterState extends State<GRegister> {
                                 'userPic':fileURL,
                                 'phoneNumber': Phone,
                               }),
-                              headers: {
-                                'Content-Type':
-                                'application/json',
-                              });
+                              );
 
                               print(profession+" "+fileURL);
                               print(resp.body.toString());
-                              if(resp.body.toString()==' success'){
+
+                              var result = json.decode(resp.body);
+                              if (result['response'] == 200) {
 
                                 var db = new DataBaseHelper();
 
                                int savedUser =
                                      await db.saveUser(new User(uid,name,bio,email,dob,gender,profession,_uploadedFileURL,Phone));
 
-                               print("user saved :$savedUser");
+                                SharedPreferences prefs = await SharedPreferences.getInstance();
+                                prefs.setString('token',result['result']);
 
+                                print("user saved :$savedUser");
 
                                 Navigator.pushAndRemoveUntil(context,
                                     MaterialPageRoute(builder: (context) => Select()),

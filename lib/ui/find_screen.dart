@@ -8,6 +8,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:march/ui/view_profile.dart';
 import 'package:location/location.dart';
+import 'dart:convert';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FindScreen extends StatefulWidget {
   @override
@@ -21,10 +24,18 @@ class _FindScreenState extends State<FindScreen> {
   Location location = new Location();
 
   PermissionStatus _permissionGranted;
+  bool _serviceEnabled;
   LocationData _locationData;
 //  bool _serviceEnabled;
   int clicked=0;
-
+  String lat;
+  String token;
+  String id;
+  String lng;
+  int minAge=18;
+  int maxAge=100;
+  int radius=100;
+  int check=0;
 
   @override
   void initState() {
@@ -35,38 +46,70 @@ class _FindScreenState extends State<FindScreen> {
 
   Future<List<Person>> _getPeople() async{
 
-    var url = 'https://march.lbits.co/app/api/people-finder/people-finder.php?uid=27492837528&lat=17.4542774&lng=78.3753191&distance=3&minAge=20&maxAge=40&goals=hey';
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      var jsonResponse = convert.jsonDecode(response.body);
-      int l=jsonResponse.length;
-      if(jsonResponse.length>10){
-        l=10;
-      }
+    if(token!=null && id!=null && check==1){
+      /*if(lat==null){
+        setState(() {
+          lat="17.453844";
+          lng="78.4166759";
+        });
+      }*/
+      var ur= 'https://march.lbits.co/api/worker.php';
+      var resp=await http.post(ur,
+        headers: {
+          'Content-Type':
+          'application/json',
+          'Authorization':
+          'Bearer $token'
+        },
+        body: json.encode(<String, dynamic>
+        {
+          'serviceName': "",
+          'work': "search with distance",
+          'lat':lat,
+          'lng':lng,
+          'goals':'Cricket',
+          'radius':radius,
+          'maxAge':maxAge,
+          'minAge':minAge,
+          'uid':id,
+        }),
+      );
 
-      if(clicked==0){
-
-        for(var i=0;i<l;i++){
-          people.add( Person(
-            imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKPndf5Lp-mSpZ914kUQSDwr6tkf4N5Pj265PZyotfQmM6wNxNejlry9oSew&s",
-            name: jsonResponse[i]['fullName'],
-            age: jsonResponse[i]['age']+" Years Old",
-            location: jsonResponse[i]['distance'].toString().substring(0,3)+" Km away",
-            goals: convert.jsonEncode(['Cricket', 'Travel', 'Dance']),
-            id:jsonResponse[i]['uid'],
-          ),);
+      print(resp.body.toString());
+      var result = json.decode(resp.body);
+      if (result['response'] == 200) {
+        var now = new DateTime.now();
+        int l=result['result'].length;
+        if(l>10){
+          l=10;
         }
 
-        setState(() {
-          clicked=1;
-        });
-      }
+        if(clicked==0){
 
-      return people;
+          for(var i=0;i<l;i++){
+
+            int age=int.parse(now.toString().substring(0, 4)) - int.parse(result['result'][0]['DOB'].toString().substring(0,4));
+            people.add( Person(
+              //result['result'][i]['profile_pic']
+              imageUrl: "https:\/\/loremflickr.com\/cache\/resized\/65535_49338807117_be0482d150_320_240_nofilter.jpg",
+              name: result['result'][i]['fullName'],
+              age: age.toString() +" Years Old",
+              location: result['result'][i]['distance'].toString().substring(0,3)+" Km away",
+              goals: convert.jsonEncode(['Cricket', 'Travel', 'Dance']),
+              id:result['result'][i]['uid'],
+              bio: result['result'][i]['bio']
+            ),);
+          }
+
+          setState(() {
+            clicked=1;
+          });
+        }
+        return people;
+      }
+      //else print error
     }
-    else {
-      print('Request failed with status: ${response.statusCode}.');
-    }
+
 
   }
   final GlobalKey<ScaffoldState> _sk=GlobalKey<ScaffoldState>();
@@ -192,7 +235,7 @@ class _FindScreenState extends State<FindScreen> {
                           child: GestureDetector(
                             onTap: (){
                               Navigator.pushAndRemoveUntil(context,
-                                  MaterialPageRoute(builder: (context) => ViewProfile(person.id,person.imageUrl,person.name,person.age,list)),
+                                  MaterialPageRoute(builder: (context) => ViewProfile(person.id,person.imageUrl,person.name,person.age,list,person.bio)),
                                       (Route<dynamic> route) => true);
                             },
                             child: Stack(
@@ -432,18 +475,137 @@ class _FindScreenState extends State<FindScreen> {
   }
 
   void _load() async{
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userToken = prefs.getString('token')??"";
+    String uid = prefs.getString('uid')??"";
+
+    setState(() {
+      token=userToken;
+      id=uid;
+    });
+
     _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
+
+    if(_permissionGranted==PermissionStatus.granted){
+
+      _serviceEnabled = await location.serviceEnabled();
+
+      if (!_serviceEnabled) {
+        _serviceEnabled = await location.requestService();
+        if (!_serviceEnabled) {
+          print("No Thanks");
+          setState(() {
+            lat="17.4538444";
+            lng="78.416675";
+            check=1;
+          });
+          return;
+        }
+        else{
+          print("Clicked Ok");
+          _locationData = await location.getLocation();
+          print("lat : "+_locationData.latitude.toString()+"long : "+_locationData.longitude.toString());
+          setState(() {
+            lat=_locationData.latitude.toString();
+            lng=_locationData.longitude.toString();
+            check=1;
+          });
+
+        }
+      }
+      else{
         _locationData = await location.getLocation();
         print("lat : "+_locationData.latitude.toString()+"long : "+_locationData.longitude.toString());
+        setState(() {
+          lat=_locationData.latitude.toString();
+          lng=_locationData.longitude.toString();
+          check=1;
+        });
       }
+
     }
     else{
-      _locationData = await location.getLocation();
-      print("lat : "+_locationData.latitude.toString()+"long : "+_locationData.longitude.toString());
+      //location permission in settings
+      _permissionGranted = await location.requestPermission();
+
+      if(_permissionGranted==PermissionStatus.granted){
+      //checking gps
+        _serviceEnabled = await location.serviceEnabled();
+
+        if (!_serviceEnabled) {
+          _serviceEnabled = await location.requestService();
+          if (!_serviceEnabled) {
+            print("No Thanks");
+            setState(() {
+              lat="17.4538444";
+              lng="78.416675";
+              check=1;
+            });
+            return;
+          }
+          else{
+            print("Clicked Ok");
+            _locationData = await location.getLocation();
+            print("lat : "+_locationData.latitude.toString()+"long : "+_locationData.longitude.toString());
+            setState(() {
+              lat=_locationData.latitude.toString();
+              lng=_locationData.longitude.toString();
+              check=1;
+            });
+
+          }
+        }
+        else{
+          _locationData = await location.getLocation();
+          print("lat : "+_locationData.latitude.toString()+"long : "+_locationData.longitude.toString());
+          setState(() {
+            lat=_locationData.latitude.toString();
+            lng=_locationData.longitude.toString();
+            check=1;
+          });
+        }
+
+      }
+      else{
+        //when location permission rejected
+        setState(() {
+          lat="17.09";
+          lng="78.05";
+          check=1;
+        });
+      }
     }
+
+   /* if (_permissionGranted == PermissionStatus.denied) {
+
+      *//*_permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        print("yes");
+        _locationData = await location.getLocation();
+        print("lat : "+_locationData.latitude.toString()+"long : "+_locationData.longitude.toString());
+        setState(() {
+          lat=_locationData.latitude.toString();
+          lng=_locationData.longitude.toString();
+        });
+      }
+      else{
+        print("permission not granted");
+      }
+      setState(() {
+        check=1;
+      });*//*
+    }
+    else{
+      *//*_locationData = await location.getLocation();
+      print("lat : "+_locationData.latitude.toString()+"long : "+_locationData.longitude.toString());
+      setState(() {
+        lat=_locationData.latitude.toString();
+        lng=_locationData.longitude.toString();
+        check=1;
+        print("location on");
+      });*//*
+    }*/
 
   }
 

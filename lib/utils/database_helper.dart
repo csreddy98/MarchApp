@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:march/models/user.dart';
+import 'package:march/models/goal.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
@@ -24,6 +25,14 @@ class DataBaseHelper{
   final String columnUserPic = "userPic";
   final String columnUserPhone = "userPhone";
 
+  final String goalTable = "goalTable";
+  final String columnGoalName = "goalName";
+  final String columnTarget = "target";
+  final String columnTimeFrame = "timeFrame";
+  final String columnGoalNumber = "goalNumber";
+
+
+
   Future<Database> get db async{
 
 
@@ -44,7 +53,7 @@ class DataBaseHelper{
 
     Directory documentDirectory = await getApplicationDocumentsDirectory();
 
-    String path = join(documentDirectory.path,"user.db");
+    String path = join(documentDirectory.path,"client.db");
     var ourDb =await openDatabase(path,version: 1,onCreate: _onCreate);
 
     return ourDb;
@@ -62,6 +71,14 @@ class DataBaseHelper{
        " $columnUserProfession TEXT,$columnUserPic TEXT,"
        " $columnUserPhone TEXT"
        ")" );
+
+    await db.execute(
+
+        "CREATE TABLE $goalTable( $columnId INTEGER PRIMARY KEY,"
+            " $columnUserId TEXT,$columnGoalName TEXT,"
+            " $columnTarget TEXT,$columnTimeFrame TEXT,"
+            " $columnGoalNumber TEXT"
+            ")" );
 
   }
 
@@ -109,11 +126,58 @@ class DataBaseHelper{
 
    Future<int> updateUser(User user) async{
    var dbClient =await db;
-    return await dbClient.update(userTable, user.toMap(),where: "$columnId=?",whereArgs: [user.id]);
+    return await dbClient.update(userTable, user.toMap(),where: "$columnUserId=?",whereArgs: [user.userId]);
 
    }
 
-   Future close() async{
+  Future<int> saveGoal(Goal goal) async{
+
+    var dbClient = await db;
+    int res = await dbClient.insert("$goalTable", goal.toMap());
+
+    return res;
+  }
+
+  Future<List> getAllGoals() async{
+
+    var dbClient = await db;
+    var result = await dbClient.rawQuery("SELECT * FROM $goalTable");
+
+    return result.toList();
+  }
+
+  Future<int> getGoalCount() async{
+
+    var dbClient = await db;
+    return Sqflite.firstIntValue(
+        await dbClient.rawQuery("SELECT COUNT(*) FROM $goalTable"));
+  }
+
+  Future<Goal> getGoal(int id) async{
+
+    var dbClient = await db;
+    var result = await dbClient.rawQuery(
+        "SELECT * FROM $goalTable WHERE $columnId =$id"
+    );
+
+    if(result.length==0) return null;
+    else return new Goal.fromMap(result.first);
+  }
+
+
+  Future<int> deleteGoal(int id) async{
+
+    var dbClient = await db;
+    return await dbClient.delete(goalTable,where: "$columnId=?",whereArgs: [id]);
+  }
+
+  Future<int> updateGoal(Goal goal) async{
+    var dbClient =await db;
+    return await dbClient.update(goalTable, goal.toMap(),where: "$columnId=?",whereArgs: [goal.goalNumber]);
+  }
+
+
+  Future close() async{
 
     var dbClient = await db;
     return dbClient.close();

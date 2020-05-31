@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:march/models/user.dart';
+import 'package:march/utils/database_helper.dart';
 import 'dart:convert' as convert;
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,8 +18,6 @@ class _Account_SettingsState extends State<Account_Settings> {
 
   @override
   void initState() {
-    _controller_number = new TextEditingController(text: "+919090909090");
-
     _load();
     super.initState();
   }
@@ -89,21 +89,12 @@ class _Account_SettingsState extends State<Account_Settings> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String uid = prefs.getString('uid')??"";
       print(uid);
-/*
+    var db = new DataBaseHelper();
+    User x= await db.getUser(1);
+    setState(() {
+      _controller_number = new TextEditingController(text: x.userPhone);
+    });
 
-    var url = 'https://march.lbits.co/app/api/index.php?uid=' + uid;
-    var response = await http.get(url);
-    if (response.statusCode == 200) {
-      var jsonResponse = convert.jsonDecode(response.body);
-      setState(() {
-        number = jsonResponse["mobile"];
-      });
-    } else {
-      print('Request failed with status: ${response.statusCode}.');
-    }
 
-    _controller_number = new TextEditingController(text: number);
-
-*/
   }
 }
