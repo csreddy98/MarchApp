@@ -202,7 +202,16 @@ class _SelectState extends State<Select> {
                ),
             ),
 
-               Row(
+              _disable==1?Padding(
+                padding: const EdgeInsets.fromLTRB(18.0,8,8,8),
+                child: Row(
+                  children: <Widget>[
+                    Text("Selected Goal: ",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1)),),
+                    Text(added[cnt-1])
+                  ],
+                ),
+              ):Container(),
+             /*  Row(
               children: <Widget>[
                added[0]!=""? Padding(
                  padding: const EdgeInsets.fromLTRB(25.0,0,8.0,8.0),
@@ -388,6 +397,7 @@ class _SelectState extends State<Select> {
                 ):Container(),
               ],
             ),
+*/
 
 
               //drop down
