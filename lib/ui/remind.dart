@@ -15,7 +15,7 @@ class RemindState extends State {
   int selectedHour=0;
   int selectedMin=0;
   int meridian;
-  String AMPM="AM";
+  String ampm="AM";
 
   TextEditingController myController = TextEditingController();
 
@@ -132,6 +132,7 @@ class RemindState extends State {
                         inactiveThumbColor: Colors.white,
                         inactiveTrackColor: Colors.red,
                         value: false,
+                        onChanged: null,
                       ),
                     ),
                   ],
@@ -157,7 +158,7 @@ class RemindState extends State {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
 
-                            Text('Remind me Everyday at $selectedHour:$selectedMin $AMPM',
+                            Text('Remind me Everyday at $selectedHour:$selectedMin $ampm',
                                 style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1),
                                     fontSize: 18)),
                             Padding(
@@ -253,12 +254,12 @@ class RemindState extends State {
                                         onSelectedItemChanged: (int index){
                                           if(index==0) {
                                             setState(() {
-                                              AMPM = "AM";
+                                              ampm = "AM";
                                             });
                                           }
                                           else{
                                             setState(() {
-                                              AMPM = "PM";
+                                              ampm = "PM";
                                             });
                                           }
                                         },

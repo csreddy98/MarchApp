@@ -29,7 +29,10 @@ class _Slider_containerState extends State<Slider_container> {
         elevation: 0,
         backgroundColor: Color(0xFFFFFFFF),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios,color: Colors.black,),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: Colors.black
+          ),
           onPressed: (){
             Navigator.pop(context);
           },

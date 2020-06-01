@@ -43,7 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Center(
       child: SplashScreen(
-        seconds: 5,
+        seconds: 2,
         navigateAfterSeconds:n==1?Home():Login(),
         image: new Image.asset("assets/images/logo1x.jpeg"),
         photoSize: 200,

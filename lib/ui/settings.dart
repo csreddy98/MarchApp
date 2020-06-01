@@ -104,6 +104,7 @@ class _SettingsState extends State<Settings> {
                             IconButton(
                               icon: Icon(Icons.arrow_forward_ios),
                               iconSize: 20,
+                              onPressed: null,
                             )
                           ],
                         ),
@@ -118,8 +119,6 @@ class _SettingsState extends State<Settings> {
                       },
                     ),
                     Divider(thickness: 1,),
-
-                    // Account Settings 2nd
                     InkWell(
                       child: Container(
                         child: Row(
@@ -141,7 +140,7 @@ class _SettingsState extends State<Settings> {
                             ),),
                             IconButton(
                               icon: Icon(Icons.arrow_forward_ios),
-                              iconSize: 20,
+                              iconSize: 20, onPressed: () {  },
                             )
                           ],
                         ),
@@ -156,8 +155,6 @@ class _SettingsState extends State<Settings> {
                       }
                     ),
                     Divider(thickness: 1,),
-
-                    // Push Notifications 3rd
                     Container(
                       child: Row(
                         children: <Widget>[
@@ -192,8 +189,6 @@ class _SettingsState extends State<Settings> {
                       width: double.infinity,
                     ),
                     Divider(thickness: 1,),
-
-                    //Allow My Location 4th
                     Container(
                       child: Row(
                         children: <Widget>[
@@ -209,9 +204,11 @@ class _SettingsState extends State<Settings> {
                                 ),),
                             ),
                           ),
-                          Expanded(child: Container(
-                            width: size.width,
-                          ),),
+                          Expanded(
+                            child: Container(
+                              width: size.width,
+                            ),
+                          ),
                           Switch(
                             activeColor: Colors.white,
                             inactiveThumbColor: Colors.white,
@@ -228,8 +225,6 @@ class _SettingsState extends State<Settings> {
                       width: double.infinity,
                     ),
                     Divider(thickness: 1,),
-
-                    // Privacy Policies 5th
                     InkWell(
                       child: Container(
                         child: Row(
@@ -240,10 +235,11 @@ class _SettingsState extends State<Settings> {
                                 child: Text("Privacy Policies",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w800,
-                                      color: Colors.black87
-                                  ),),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.black87
+                                  ),
+                                ),
                               ),
                             ),
                             Expanded(child: Container(
@@ -251,7 +247,7 @@ class _SettingsState extends State<Settings> {
                             ),),
                             IconButton(
                               icon: Icon(Icons.arrow_forward_ios),
-                              iconSize: 20,
+                              iconSize: 20, onPressed: () {  },
                             )
                           ],
                         ),
@@ -261,8 +257,6 @@ class _SettingsState extends State<Settings> {
                       onTap: ()=>debugPrint("Privacy Policies"),
                     ),
                     Divider(thickness: 1,),
-
-                    // Term Of Use 6th
                     InkWell(
                       child: Container(
                         child: Row(
@@ -284,7 +278,7 @@ class _SettingsState extends State<Settings> {
                             ),),
                             IconButton(
                               icon: Icon(Icons.arrow_forward_ios),
-                              iconSize: 20,
+                              iconSize: 20, onPressed: () {  },
                             )
                           ],
                         ),
@@ -294,8 +288,6 @@ class _SettingsState extends State<Settings> {
                       onTap: ()=>debugPrint("Terms Of Use"),
                     ),
                     Divider(thickness: 1,),
-
-                    // FAQ's 7th
                     InkWell(
                       child: Container(
                         child: Row(
@@ -309,15 +301,17 @@ class _SettingsState extends State<Settings> {
                                       fontSize: 16,
                                       fontWeight: FontWeight.w800,
                                       color: Colors.black87
-                                  ),),
+                                  ),
+                                ),
                               ),
                             ),
                             Expanded(child: Container(
                               width: size.width,
-                            ),),
+                            ),
+                          ),
                             IconButton(
                               icon: Icon(Icons.arrow_forward_ios),
-                              iconSize: 20,
+                              iconSize: 20, onPressed: () {},
                             )
                           ],
                         ),

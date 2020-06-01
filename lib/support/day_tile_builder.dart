@@ -1,6 +1,6 @@
 import 'package:calendarro/calendarro.dart';
 import 'package:calendarro/date_utils.dart';
-import 'package:calendarro/default_day_tile.dart';
+// import 'package:calendarro/default_day_tile.dart';
 import 'package:flutter/material.dart';
 
 class CalendarroDayItem extends StatelessWidget {
@@ -12,23 +12,25 @@ class CalendarroDayItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     bool isToday = DateUtils.isToday(date);
     calendarroState = Calendarro.of(context);
     bool daySelected = calendarroState.isDateSelected(date);
     var textColor = daySelected ? Colors.white : Colors.grey;
 
-
     BoxDecoration boxDecoration;
     if (daySelected) {
-      boxDecoration = BoxDecoration(color:Color.fromRGBO(63, 92, 200, 1) , shape: BoxShape.circle);
+      boxDecoration = BoxDecoration(
+        color:Color.fromRGBO(63, 92, 200, 1), 
+        shape: BoxShape.circle
+      );
     } else if (isToday) {
       boxDecoration = BoxDecoration(
-          border: Border.all(
-            color: Colors.white,
-            width: 1.0,
-          ),
-          shape: BoxShape.circle);
+        border: Border.all(
+          color: Colors.white,
+          width: 1.0,
+        ),
+        shape: BoxShape.circle
+      );
     }
 
     return Expanded(
@@ -67,4 +69,3 @@ class CustomDayTileBuilder extends DayTileBuilder {
     );
   }
 }
-
