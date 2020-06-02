@@ -152,7 +152,7 @@ class _SelectState extends State<Select> {
                 textChanged: (text) => currentText = text,
                 clearOnSubmit: true,
                 textSubmitted: (text) => setState(() {
-                  if (text != "") {
+                  if (text != "" &&_disable==0) {
 
                     if(count<3){
 
@@ -204,7 +204,7 @@ class _SelectState extends State<Select> {
                 child: Row(
                   children: <Widget>[
                     Text("Selected Goal: ",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1)),),
-                    Text(added[cnt-1])
+                    Text(added[count-1])
                   ],
                 ),
               ):Container(),

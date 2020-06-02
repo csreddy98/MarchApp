@@ -1,9 +1,15 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:march/models/goal.dart';
+import 'package:march/models/user.dart';
 import 'package:march/support/PhoneAuthCode.dart';
 import 'package:http/http.dart' as http;
 import 'package:march/ui/registration.dart';
 import 'package:march/ui/select.dart';
+import 'package:march/utils/database_helper.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert' as convert;
 
 import 'home.dart';
@@ -31,38 +37,99 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
       print("Hello There $state");
       if (state == PhoneAuthState.Verified) {
         FirebaseAuth.instance.currentUser().then((val) async {
-          print(val.uid);
-          var url = 'https://march.lbits.co/app/api/goals.php?uid=' + val.uid;
-          var response = await http.get(url);
-          var jsonResponse = convert.jsonDecode(response.body);
-          if (jsonResponse.length!=0) {
+          print(val.uid+" "+val.phoneNumber);
 
-            Navigator.pushAndRemoveUntil(context,
-              MaterialPageRoute(builder: (context) => Home()),
-                  (Route<dynamic> route) => false,);
+          var url= 'https://march.lbits.co/api/worker.php';
+          var resp=await http.post(url,
+            body: json.encode(<String, dynamic>
+            {
+              'serviceName': "generatetoken",
+              'work': "get user",
+              'uid':val.uid,
+            }),
+          );
 
-          } else {
+          print(resp.body.toString());
+          var result = json.decode(resp.body);
+          if (result['response'] == 200) {
+
+            var db = new DataBaseHelper();
+
+            int savedUser =
+            await db.saveUser(new User(
+                val.uid,
+                result['result']['user_info']['fullName'],
+                result['result']['user_info']['bio'],
+                result['result']['user_info']['email'],
+                "28-04-1998",
+                result['result']['user_info']['sex'],
+                result['result']['user_info']['profession'],
+                result['result']['user_info']['profile_pic'],
+                result['result']['user_info']['mobile']));
 
 
-            var url = 'https://march.lbits.co/app/api/index.php?uid=' + val.uid;
-            var response = await http.get(url);
-            if (response.statusCode == 200) {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            prefs.setString('token',result['result']['token']);
+            User x= await db.getUser(1);
+            print(x.userPic);
+            print("user saved :$savedUser");
+
+            var res=await http.post(url,
+              headers: {
+                'Content-Type':
+                'application/json',
+                'Authorization':
+                'Bearer '+result['result']['token']
+              },
+              body: json.encode(<String, dynamic>
+              {
+                'serviceName': "",
+                'work': "get goals",
+                'uid':val.uid,
+              }),
+            );
+            print(res.body.toString());
+            var resultx = json.decode(res.body);
+            if(resultx['response'] == 200){
+              int cnt=resultx['result'].length;
+              for(var i=0;i<cnt;i++){
+
+                int savedGoal =
+                await db.saveGoal(new Goal(
+                    val.uid,
+                    resultx['result'][i]['goal'],
+                    resultx['result'][i]['target'],
+                    resultx['result'][i]['time_frame'],
+                    resultx['result'][i]['goal_number']));
+
+                print("goal saved :$savedGoal");
+              }
+
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              prefs.setInt('log', 1);
+
               Navigator.pushAndRemoveUntil(context,
-                MaterialPageRoute(builder: (context) => Register(val.phoneNumber)),
-                    (Route<dynamic> route) => false,);
+                  MaterialPageRoute(builder: (context) => Home()),
+                      (Route<dynamic> route) => false);
 
-            } else {
+            }
+            else{
 
               Navigator.pushAndRemoveUntil(context,
-                MaterialPageRoute(builder: (context) => Select()),
-                    (Route<dynamic> route) => false,);
-
-              print('Request failed with status: ${response.statusCode}.');
+                  MaterialPageRoute(builder: (context) => Select()),
+                      (Route<dynamic> route) => false);
 
             }
 
-            print('Request failed with status: ${response.statusCode}.');
+          }
+          else{
 
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Register(val.phoneNumber)),
+                  (Route<dynamic> route) => false,
+            );
           }
 
         });

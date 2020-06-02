@@ -433,6 +433,7 @@ class _GRegisterState extends State<GRegister> {
                               }
                               else{
 
+                                Navigator.pop(context);
                                 _sk.currentState.showSnackBar(SnackBar(
                                   content: Text("There is Some Technical Problem Submit again",
                                     style: TextStyle(

@@ -8,7 +8,6 @@ import 'package:march/models/user.dart';
 import 'package:march/models/goal.dart';
 import 'package:march/ui/PhoneAuthScreen.dart';
 import 'package:march/ui/gregistration.dart';
-import 'package:march/ui/phone.dart';
 import 'package:march/ui/registration.dart';
 import 'package:march/ui/select.dart';
 import 'package:google_sign_in/google_sign_in.dart';
