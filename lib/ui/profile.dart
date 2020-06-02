@@ -242,7 +242,6 @@ class _ProfileState extends State<Profile> {
 
               Stack(
                 children: <Widget>[
-
                   Container(
                     height: MediaQuery.of(context).size.height*0.3,
                     width: MediaQuery.of(context).size.width,
@@ -376,7 +375,6 @@ class _ProfileState extends State<Profile> {
                                     ),
                                   ),
                                 )
-
                               ],
                             ),
                           ),

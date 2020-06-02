@@ -47,7 +47,6 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
             var url = 'https://march.lbits.co/app/api/index.php?uid=' + val.uid;
             var response = await http.get(url);
             if (response.statusCode == 200) {
-
               Navigator.pushAndRemoveUntil(context,
                 MaterialPageRoute(builder: (context) => Register(val.phoneNumber)),
                     (Route<dynamic> route) => false,);

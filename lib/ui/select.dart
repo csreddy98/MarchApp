@@ -152,7 +152,7 @@ class _SelectState extends State<Select> {
                 textChanged: (text) => currentText = text,
                 clearOnSubmit: true,
                 textSubmitted: (text) => setState(() {
-                  if (text != "" && _disable==0) {
+                  if (text != "") {
 
                     if(count<3){
 
@@ -194,9 +194,6 @@ class _SelectState extends State<Select> {
                       duration: Duration(seconds: 3),
                       backgroundColor: Colors.lightBlueAccent,
                     ));
-
-
-
                   }
                  }),
                ),

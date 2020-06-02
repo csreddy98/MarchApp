@@ -549,11 +549,29 @@ class _GRegisterState extends State<GRegister> {
         return Dialog(
           child: Padding(
             padding: const EdgeInsets.all(15.0),
-            child: new Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                new CircularProgressIndicator(),
-                new Text("Loading"),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+              children: <Widget>[
+                new Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    new CircularProgressIndicator(),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: new Text("Loading"),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: <Widget>[
+                    RaisedButton(
+                      onPressed:()=>Navigator.pop(context),
+                      child: Text('Back'),
+                    )
+                  ],
+                ),
               ],
             ),
           ),
