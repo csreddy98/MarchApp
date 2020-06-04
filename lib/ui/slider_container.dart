@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Slider_container extends StatefulWidget {
-  String goal1;
-  String goal2;
-  String goal3;
+  final String goal1;
+  final String goal2;
+  final String goal3;
 
   Slider_container(this.goal1, this.goal2, this.goal3);
 

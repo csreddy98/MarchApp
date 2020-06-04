@@ -42,7 +42,7 @@ class _GRegisterState extends State<GRegister> {
 
 
   String dob="";
-  String Phone="";
+  String phone="";
   String name="";
   String bio="";
   String gender="Male";
@@ -81,8 +81,6 @@ class _GRegisterState extends State<GRegister> {
 
   @override
   void initState() {
-    // TODO: implement initState
-
     FirebaseAuth.instance.currentUser().then((val){
       setState(() {
         uid=val.uid;
@@ -239,9 +237,9 @@ class _GRegisterState extends State<GRegister> {
                       hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
                   onChanged: (String value) {
                     try {
-                      Phone = value;
+                      phone = value;
                     } catch (exception) {
-                      Phone ="";
+                      phone ="";
                     }
                   },
                 ),
@@ -354,7 +352,7 @@ class _GRegisterState extends State<GRegister> {
                         onTap: () async{
 
 
-                          if(_image==null||name==""||bio==""||dob==""||gender==""||email==""||Phone==""||profession==""){
+                          if(_image==null||name==""||bio==""||dob==""||gender==""||email==""||phone==""||profession==""){
 
                             _sk.currentState.showSnackBar(SnackBar(
                               content: Text("All the fields should be filled",
@@ -406,7 +404,7 @@ class _GRegisterState extends State<GRegister> {
                                 'gender':gender,
                                 'profession':profession,
                                 'userPic':fileURL,
-                                'phoneNumber': Phone,
+                                'phoneNumber': phone,
                               }),
                               );
 
@@ -419,7 +417,7 @@ class _GRegisterState extends State<GRegister> {
                                 var db = new DataBaseHelper();
 
                                int savedUser =
-                                     await db.saveUser(new User(uid,name,bio,email,dob,gender,profession,_uploadedFileURL,Phone));
+                                     await db.saveUser(new User(uid,name,bio,email,dob,gender,profession,_uploadedFileURL,phone));
 
                                 SharedPreferences prefs = await SharedPreferences.getInstance();
                                 prefs.setString('token',result['result']);

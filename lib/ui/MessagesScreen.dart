@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:march/widgets/recent_chats.dart';
-import 'package:march/widgets/category_selector.dart';
+// import 'package:march/widgets/category_selector.dart';
 
 class MessagesScreen extends StatefulWidget {
   @override

@@ -10,8 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'home.dart';
 
 class EditGoal extends StatefulWidget {
-  String gno;
-  String uid;
+  final String gno;
+  final String uid;
   EditGoal(this.gno,this.uid);
   @override
   _EditGoalState createState() => _EditGoalState();

@@ -65,8 +65,6 @@ class _SelectState extends State<Select> {
 
   @override
   void initState() {
-    // TODO: implement initState
-
     FirebaseAuth.instance.currentUser().then((val){
       setState(() {
         uid=val.uid;

@@ -4,11 +4,12 @@ import 'package:calendarro/date_utils.dart';
 import 'package:flutter/material.dart';
 
 class CalendarroDayItem extends StatelessWidget {
-  CalendarroDayItem({this.date, this.calendarroState, this.onTap});
-
-  DateTime date;
+  
+  final DateTime date;
   CalendarroState calendarroState;
-  DateTimeCallback onTap;
+  final DateTimeCallback onTap;
+
+  CalendarroDayItem({this.date, this.calendarroState, this.onTap});
 
   @override
   Widget build(BuildContext context) {

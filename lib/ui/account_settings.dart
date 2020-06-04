@@ -11,7 +11,7 @@ class Account_Settings extends StatefulWidget {
 
 class _Account_SettingsState extends State<Account_Settings> {
 
-  TextEditingController _controller_number;
+  TextEditingController _controllerNumber;
   String number;
 
   @override
@@ -42,7 +42,7 @@ class _Account_SettingsState extends State<Account_Settings> {
                   padding: const EdgeInsets.all(12.0),
                   child: TextField(
                     maxLines: 1,
-                    controller: _controller_number,
+                    controller: _controllerNumber,
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 18
@@ -90,7 +90,7 @@ class _Account_SettingsState extends State<Account_Settings> {
     var db = new DataBaseHelper();
     User x= await db.getUser(1);
     setState(() {
-      _controller_number = new TextEditingController(text: x.userPhone);
+      _controllerNumber = new TextEditingController(text: x.userPhone);
     });
 
 

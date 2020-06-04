@@ -15,8 +15,8 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
 
-  bool switch_val1=false;
-  bool switch_val2=false;
+  bool switchVal1=false;
+  bool switchVal2=false;
 
 
   @override
@@ -26,12 +26,12 @@ class _SettingsState extends State<Settings> {
 
     onSwitched_1(bool newval){
       setState(() {
-        switch_val1=newval;
+        switchVal1=newval;
       });
     }
     onSwitched_2(bool newval){
       setState(() {
-        switch_val2=newval;
+        switchVal2=newval;
       });
     }
 
@@ -174,7 +174,7 @@ class _SettingsState extends State<Settings> {
                             width: size.width,
                           ),),
                           Switch(
-                            value: switch_val1,
+                            value: switchVal1,
                             activeColor: Colors.white,
                             inactiveThumbColor: Colors.white,
                             activeTrackColor: Colors.green,
@@ -214,7 +214,7 @@ class _SettingsState extends State<Settings> {
                             inactiveThumbColor: Colors.white,
                             activeTrackColor: Colors.green,
                             inactiveTrackColor: Colors.red,
-                            value: switch_val2,
+                            value: switchVal2,
                             onChanged: (newval){
                               onSwitched_2(newval);
                             },

@@ -31,7 +31,7 @@ dependencies:
   toast:
   sqflite:
   path_provider:
-  socket_io: ^0.9.3
+  flutter_socket_io: ^0.6.0
 
 
 dev_dependencies:

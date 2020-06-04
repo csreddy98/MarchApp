@@ -1,4 +1,4 @@
-import 'dart:async';
+// import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import './VerifyScreen.dart';
@@ -12,13 +12,13 @@ class PhoneAuthScreen extends StatefulWidget {
 }
 
 class _PhoneAuthGetPhoneState extends State<PhoneAuthScreen> {
-  int _currentPage = 0;
+  // int _currentPage = 0;
   String phoneNo;
   String smsCode;
   String verificationId;
-  final PageController _pageController = PageController(initialPage: 0);
+  // final PageController _pageController = PageController(initialPage: 0);
   TextEditingController _phoneNumberController = TextEditingController();
-  bool _isTyping = false;
+  // bool _isTyping = false;
   double _height, _width;
 
  /* @override

@@ -6,8 +6,8 @@ import 'package:march/support/back_profile.dart';
 import 'package:march/ui/edit_goals.dart';
 import 'package:march/ui/view_profile.dart';
 import 'package:march/utils/database_helper.dart';
-import 'dart:convert' as convert;
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'dart:convert' as convert;
+// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:worm_indicator/shape.dart';
 
 
@@ -39,7 +39,6 @@ class _ProfileState extends State<Profile> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _load();
     super.initState();
   }

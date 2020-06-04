@@ -98,7 +98,6 @@ class _NotifyState extends State<Notify> {
   String uid;
   @override
   void initState() {
-    // TODO: implement initState
      _load();
     _dropdownMenuItems =buildDropDownMenuItems(_time);
     _selectedTime1=_dropdownMenuItems[0].value;
@@ -129,7 +128,7 @@ class _NotifyState extends State<Notify> {
 
     var now = new DateTime.now();
     int month=int.parse(now.month.toString());
-    String current_mon = months[month-1];
+    String currentMon = months[month-1];
     String year=now.year.toString();
 
     return Padding(
@@ -310,7 +309,7 @@ class _NotifyState extends State<Notify> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text(current_mon+" "+year),
+                          child: Text(currentMon+" "+year),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top:8.0),
@@ -344,7 +343,7 @@ class _NotifyState extends State<Notify> {
 
     var now = new DateTime.now();
     int month=int.parse(now.month.toString());
-    String current_mon = months[month-1];
+    String currentMon = months[month-1];
     String year=now.year.toString();
 
     return Padding(
@@ -523,7 +522,7 @@ class _NotifyState extends State<Notify> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text(current_mon+" "+year),
+                          child: Text(currentMon+" "+year),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top:8.0),
@@ -554,7 +553,7 @@ class _NotifyState extends State<Notify> {
 
     var now = new DateTime.now();
     int month=int.parse(now.month.toString());
-    String current_mon = months[month-1];
+    String currentMon = months[month-1];
     String year=now.year.toString();
 
     return Padding(
@@ -734,7 +733,7 @@ class _NotifyState extends State<Notify> {
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text(current_mon+" "+year),
+                          child: Text(currentMon+" "+year),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top:8.0),

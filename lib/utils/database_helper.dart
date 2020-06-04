@@ -213,5 +213,10 @@ class DataBaseHelper{
 
    }
 
+   Future<int> insertNewRequest(newRequest) async {
+     var dbClient = await db;
+     return dbClient.insert(usersTable, newRequest.toMap());
+   }
+
 
 }

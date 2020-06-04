@@ -17,10 +17,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Register extends StatefulWidget {
 
-  final String Phone;
-  Register(this.Phone);
+  final String phone;
+  Register(this.phone);
   @override
-  _RegisterState createState() => _RegisterState(Phone);
+  _RegisterState createState() => _RegisterState(phone);
 }
 
 class Gender{
@@ -42,10 +42,10 @@ class _RegisterState extends State<Register> {
 
   final GlobalKey<ScaffoldState> _sk=GlobalKey<ScaffoldState>();
 
-  _RegisterState(this.Phone);
+  _RegisterState(this.phone);
 
   String dob="";
-  String Phone;
+  String phone;
   String name="";
   String bio="";
   String gender="Male";
@@ -83,8 +83,6 @@ class _RegisterState extends State<Register> {
 
   @override
   void initState() {
-    // TODO: implement initState
-
     FirebaseAuth.instance.currentUser().then((val){
      setState(() {
        uid=val.uid;
@@ -411,7 +409,7 @@ class _RegisterState extends State<Register> {
                                     'gender':gender,
                                     'profession':profession,
                                     'userPic':fileURL,
-                                    'phoneNumber': Phone,
+                                    'phoneNumber': phone,
                                   }),
                                 );
 
@@ -422,7 +420,7 @@ class _RegisterState extends State<Register> {
                                   var db = new DataBaseHelper();
 
                                   int savedUser =
-                                  await db.saveUser(new User(uid,name,bio,email,dob,gender,profession,_uploadedFileURL,Phone));
+                                  await db.saveUser(new User(uid,name,bio,email,dob,gender,profession,_uploadedFileURL,phone));
 
                                   SharedPreferences prefs = await SharedPreferences.getInstance();
                                   prefs.setString('token',result['result']);

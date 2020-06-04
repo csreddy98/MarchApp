@@ -9,8 +9,9 @@ import 'dart:convert' as convert;
 import 'package:march/ui/view_profile.dart';
 import 'package:location/location.dart';
 import 'dart:convert';
-import 'package:socket_io/socket_io.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_socket_io/flutter_socket_io.dart';
+import 'package:flutter_socket_io/socket_io_manager.dart';
 
 class FindScreen extends StatefulWidget {
   @override
@@ -18,27 +19,52 @@ class FindScreen extends StatefulWidget {
 }
 
 class _FindScreenState extends State<FindScreen> {
-
-  TextEditingController myController;
-  List<Person> people=[];
+  int check = 0;
+  int clicked = 0;
+  String id;
+  String lat;
+  String lng;
   Location location = new Location();
+  int maxAge = 100;
+  int minAge = 18;
+  TextEditingController myController;
+  List<Person> people = [];
+  int radius = 100;
+  SocketIO socketIO;
+  String token;
 
+  LocationData _locationData;
   PermissionStatus _permissionGranted;
   bool _serviceEnabled;
-  LocationData _locationData;
-  int clicked=0;
-  String lat;
-  String token;
-  String id;
-  String lng;
-  int minAge=18;
-  int maxAge=100;
-  int radius=100;
-  int check=0;
+  TextEditingController messageController = new TextEditingController();
 
   @override
   void initState() {
-    myController= TextEditingController();
+    socketIO = SocketIOManager().createSocketIO(
+      'https://glacial-waters-33471.herokuapp.com',
+      '/',
+    );
+    socketIO.init();
+    socketIO.subscribe('new message', (jsonData) async {
+      // print(jsonData);
+      if(jsonData != "A new user Connected"){
+        var data = jsonDecode(jsonData);
+        print("$data");
+      }else{
+        print("$jsonData");
+      }
+      // if (data['userId'].toString() == widget.userId) {
+      // setState(() async {
+      //   messages = await dbHelper.queryAllRows();
+      // });
+      // if (messages.length > 0) {}
+      // int d = await audioPlayer.play("asstes/audios/sent.mp3", isLocal: true);
+      // _scroller.jumpTo(_scroller.position.maxScrollExtent);
+      // }
+    });
+    socketIO.sendMessage("chat message", "A new user Connected");
+    //Connect to the socket
+    socketIO.connect();
     _load();
     super.initState();
   }
@@ -71,7 +97,6 @@ class _FindScreenState extends State<FindScreen> {
       print(resp.body.toString());
       var result = json.decode(resp.body);
       if (result['response'] == 200) {
-        var now = new DateTime.now();
         int l=result['result'].length;
         if(l>10){
           l=10;
@@ -80,8 +105,6 @@ class _FindScreenState extends State<FindScreen> {
         if(clicked==0){
 
           for(var i=0;i<l;i++){
-
-            int age=int.parse(now.toString().substring(0, 4)) - int.parse(result['result'][0]['DOB'].toString().substring(0,4));
             people.add( Person(
               //result['result'][i]['profile_pic']
               imageUrl: result['result'][i]['profile_pic'],
@@ -89,7 +112,7 @@ class _FindScreenState extends State<FindScreen> {
               age: result['result'][i]['age'].toString() +" Years Old",
               location: result['result'][i]['distance']+" Km away",
               goals: convert.jsonEncode(['Cricket', 'Travel', 'Dance']),
-              id:result['result'][i]['uid'],
+              id:result['result'][i]['id'],
               bio: result['result'][i]['bio']
             ),);
           }
@@ -103,8 +126,14 @@ class _FindScreenState extends State<FindScreen> {
     }
 
       return people;
-
   }
+
+  @override
+  void dispose(){
+    messageController.dispose();
+    super.dispose();
+  }
+
   final GlobalKey<ScaffoldState> _sk=GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
@@ -297,28 +326,48 @@ class _FindScreenState extends State<FindScreen> {
                                                                   TextField(
                                                                     keyboardType: TextInputType.multiline,
                                                                     maxLines: 3,
+                                                                    controller: messageController,
                                                                     decoration: InputDecoration(
                                                                         enabledBorder: OutlineInputBorder(
                                                                           borderSide: BorderSide(color: Colors.grey, width: 1.0),
                                                                         ),
                                                                         hintText: 'Enter a Message'),
+
                                                                   ),
-                                                                  Container(height:15,),
+                                                                  SizedBox(height:15,),
                                                                   Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.end,
                                                                     children: <Widget>[
                                                                       Container(width: MediaQuery.of(context).size.width/2.2,),
-                                                                      SizedBox(
-                                                                        width: 100,
-                                                                        child: RaisedButton(
-                                                                            shape: RoundedRectangleBorder(
-                                                                                borderRadius: BorderRadius.circular(35)
-                                                                            ),
-                                                                            onPressed: () {},
-                                                                            child: Text(
-                                                                              "Add",
-                                                                              style: TextStyle(color: Colors.white),
-                                                                            ),
-                                                                          color: Color.fromRGBO(63, 92, 200, 1),
+                                                                      Expanded(
+                                                                        child: SizedBox(
+                                                                          width: 100,
+                                                                          child: RaisedButton(
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  borderRadius: BorderRadius.circular(35)
+                                                                              ),
+                                                                              onPressed: () async {
+                                                                                var msg = messageController.text;
+                                                                                messageController.clear();
+                                                                                SharedPreferences prefs = await SharedPreferences.getInstance();
+                                                                                String uid = prefs.getString('uid')??"";
+                                                                                socketIO.sendMessage("New user Request", 
+                                                                                json.encode(
+                                                                                  {
+                                                                                    "sender": uid,
+                                                                                    "receiver": person.id,
+                                                                                    "message": msg,
+                                                                                    "time": DateTime.now().toString(),
+                                                                                  }
+                                                                                ));
+                                                                                Navigator.pop(context);
+                                                                              },
+                                                                              child: Text(
+                                                                                "Add",
+                                                                                style: TextStyle(color: Colors.white),
+                                                                              ),
+                                                                            color: Color.fromRGBO(63, 92, 200, 1),
+                                                                          ),
                                                                         ),
                                                                       ),
                                                                     ],

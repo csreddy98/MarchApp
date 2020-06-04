@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Message extends StatefulWidget {
-  String img;
-  String name;
+  final String img;
+  final String name;
   Message(this.img, this.name);
 
   @override

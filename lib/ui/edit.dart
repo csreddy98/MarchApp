@@ -16,7 +16,7 @@ import 'package:http/http.dart' as http;
 
 class Edit_Profile extends StatefulWidget {
   @override
-  _Edit_ProfileState createState() => _Edit_ProfileState();
+  _EditProfileState createState() => _EditProfileState();
 }
 
 class Gender{
@@ -36,9 +36,9 @@ class Gender{
 
 
 
-class _Edit_ProfileState extends State<Edit_Profile> {
+class _EditProfileState extends State<Edit_Profile> {
 
-  String Name;
+  String name;
   String uid;
   String image;
   String token;
@@ -208,9 +208,9 @@ class _Edit_ProfileState extends State<Edit_Profile> {
                         ),
                         onChanged: (String value) {
                           try {
-                            Name = value;
+                            name = value;
                           } catch (exception) {
-                            Name="";
+                            name="";
                           }
                         },
                       ),
@@ -309,7 +309,7 @@ class _Edit_ProfileState extends State<Edit_Profile> {
                   if(_image==null){
                     _onLoading();
                     print(image);
-                    print(uid+" \n"+description+"\n"+Name);
+                    print(uid+" \n"+description+"\n"+name);
 
 
                     var url= 'https://march.lbits.co/api/worker.php';
@@ -325,7 +325,7 @@ class _Edit_ProfileState extends State<Edit_Profile> {
                         'serviceName': "",
                         'work': "update user",
                         'uid':uid,
-                        'userName': Name,
+                        'userName': name,
                         'userBio': description,
                         'profession':profession,
                         'userPic': image,
@@ -340,7 +340,7 @@ class _Edit_ProfileState extends State<Edit_Profile> {
                       var db = new DataBaseHelper();
                       await db.updateUser(User(
                           uid,
-                          Name,
+                          name,
                           description,
                           email,
                           dob,
@@ -378,7 +378,7 @@ class _Edit_ProfileState extends State<Edit_Profile> {
                   }
                   else{
                     //here updated img url should be sent
-                    print(uid+" \n"+description+"\n"+Name);
+                    print(uid+" \n"+description+"\n"+name);
                     _onLoading();
                     StorageReference storageReference = FirebaseStorage
                         .instance
@@ -405,7 +405,7 @@ class _Edit_ProfileState extends State<Edit_Profile> {
                           'serviceName': "",
                           'work': "update user",
                           'uid':uid,
-                          'userName': Name,
+                          'userName': name,
                           'userBio': description,
                           'profession':profession,
                           'userPic': _uploadedFileURL,
@@ -420,7 +420,7 @@ class _Edit_ProfileState extends State<Edit_Profile> {
                         var db = new DataBaseHelper();
                         await db.updateUser(User(
                             uid,
-                            Name,
+                            name,
                             description,
                             email,
                             dob,
@@ -560,7 +560,7 @@ class _Edit_ProfileState extends State<Edit_Profile> {
       token=userToken;
       image=user.userPic;
       description=user.userBio;
-      Name=user.username;
+      name=user.username;
       uid=user.userId;
       profession=user.userProfession;
       email=user.userEmail;
@@ -569,7 +569,7 @@ class _Edit_ProfileState extends State<Edit_Profile> {
       dob=user.userDob;
     });
 
-    _controller_name = new TextEditingController(text: Name);
+    _controller_name = new TextEditingController(text: name);
     _controller_bio = new TextEditingController(text: description);
     _controller_image = new TextEditingController(text: image);
     _controller_profession = new TextEditingController(text: profession);

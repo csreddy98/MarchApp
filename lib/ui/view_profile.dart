@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 
 class ViewProfile extends StatefulWidget {
 
-  String imageUrl;
-  String name;
-  String age;
-  List goals;
-  String id;
-  String bio;
-
+  final String imageUrl;
+  final String name;
+  final String age;
+  final List goals;
+  final String id;
+  final String bio;
+  
   ViewProfile(this.id,this.imageUrl, this.name, this.age, this.goals,this.bio);
 
   @override
