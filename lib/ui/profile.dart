@@ -4,6 +4,7 @@ import 'package:march/models/goal.dart';
 import 'package:march/models/user.dart';
 import 'package:march/support/back_profile.dart';
 import 'package:march/ui/edit_goals.dart';
+import 'package:march/ui/view_profile.dart';
 import 'package:march/utils/database_helper.dart';
 import 'dart:convert' as convert;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -242,6 +243,7 @@ class _ProfileState extends State<Profile> {
 
               Stack(
                 children: <Widget>[
+
                   Container(
                     height: MediaQuery.of(context).size.height*0.3,
                     width: MediaQuery.of(context).size.width,
@@ -258,16 +260,19 @@ class _ProfileState extends State<Profile> {
                         Center(
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 6,top: 6),
-                            child:Container(
-                              width: 80.0,
-                              height: 80.0,
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: NetworkImage(pic!=null?pic:"https://w7.pngwing.com/pngs/861/726/png-transparent-computer-icons-professional-avatar-avatar-heroes-public-relations-monochrome.png")
+                            child:InkWell(
+                              onTap: ()=>Navigator.push(context, MaterialPageRoute(builder: (_)=>FullScreenImage(pic))),
+                              child: Container(
+                                width: 80.0,
+                                height: 80.0,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: NetworkImage(pic!=null?pic:"https://w7.pngwing.com/pngs/861/726/png-transparent-computer-icons-professional-avatar-avatar-heroes-public-relations-monochrome.png")
+                                  ),
+                                  borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                                  color: Colors.transparent,
                                 ),
-                                borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                                color: Colors.transparent,
                               ),
                             ),
 
@@ -375,6 +380,7 @@ class _ProfileState extends State<Profile> {
                                     ),
                                   ),
                                 )
+
                               ],
                             ),
                           ),

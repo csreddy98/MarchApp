@@ -9,7 +9,7 @@ import 'dart:convert' as convert;
 import 'package:march/ui/view_profile.dart';
 import 'package:location/location.dart';
 import 'dart:convert';
-
+import 'package:socket_io/socket_io.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FindScreen extends StatefulWidget {
@@ -26,7 +26,6 @@ class _FindScreenState extends State<FindScreen> {
   PermissionStatus _permissionGranted;
   bool _serviceEnabled;
   LocationData _locationData;
-//  bool _serviceEnabled;
   int clicked=0;
   String lat;
   String token;
@@ -47,12 +46,6 @@ class _FindScreenState extends State<FindScreen> {
   Future<List<Person>> _getPeople() async{
 
     if(token!=null && id!=null && check==1){
-      /*if(lat==null){
-        setState(() {
-          lat="17.453844";
-          lng="78.4166759";
-        });
-      }*/
       var ur= 'https://march.lbits.co/api/worker.php';
       var resp=await http.post(ur,
         headers: {
@@ -91,10 +84,10 @@ class _FindScreenState extends State<FindScreen> {
             int age=int.parse(now.toString().substring(0, 4)) - int.parse(result['result'][0]['DOB'].toString().substring(0,4));
             people.add( Person(
               //result['result'][i]['profile_pic']
-              imageUrl: "https:\/\/loremflickr.com\/cache\/resized\/65535_49338807117_be0482d150_320_240_nofilter.jpg",
+              imageUrl: result['result'][i]['profile_pic'],
               name: result['result'][i]['fullName'],
-              age: age.toString() +" Years Old",
-              location: result['result'][i]['distance'].toString().substring(0,3)+" Km away",
+              age: result['result'][i]['age'].toString() +" Years Old",
+              location: result['result'][i]['distance']+" Km away",
               goals: convert.jsonEncode(['Cricket', 'Travel', 'Dance']),
               id:result['result'][i]['uid'],
               bio: result['result'][i]['bio']
@@ -105,16 +98,14 @@ class _FindScreenState extends State<FindScreen> {
             clicked=1;
           });
         }
-        return people;
       }
       //else print error
     }
 
+      return people;
 
   }
   final GlobalKey<ScaffoldState> _sk=GlobalKey<ScaffoldState>();
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -220,7 +211,7 @@ class _FindScreenState extends State<FindScreen> {
                   if(snapshot.data ==null){
                     return Container(
                       child: Center(
-                        child: Text("Loading..."),
+                        child: CircularProgressIndicator(),
                       ),
                     );
                   }
@@ -578,7 +569,6 @@ class _FindScreenState extends State<FindScreen> {
     }
 
    /* if (_permissionGranted == PermissionStatus.denied) {
-
       *//*_permissionGranted = await location.requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
         print("yes");
@@ -669,5 +659,3 @@ class _FindScreenState extends State<FindScreen> {
   }
 
 }
-
-

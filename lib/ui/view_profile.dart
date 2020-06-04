@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert' as convert;
+// import 'package:http/http.dart' as http;
+// import 'dart:convert' as convert;
 
 class ViewProfile extends StatefulWidget {
 
@@ -125,18 +125,21 @@ class _ViewProfileState extends State<ViewProfile> {
               Center(
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 10, top: 15),
-                  child: Container(
-                    width: 80.0,
-                    height: 80.0,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: NetworkImage(imageUrl != null
-                              ? imageUrl
-                              : "https://thumbs.dreamstime.com/t/man-woman-silhouette-icons-pare-business-business-people-abstract-avatar-person-face-couple-58191914.jpg")
+                  child: InkWell(
+                    onTap: ()=>Navigator.push(context, MaterialPageRoute(builder: (_)=>FullScreenImage(imageUrl))),
+                    child: Container(
+                      width: 80.0,
+                      height: 80.0,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: NetworkImage(imageUrl != null
+                                ? imageUrl
+                                : "https://thumbs.dreamstime.com/t/man-woman-silhouette-icons-pare-business-business-people-abstract-avatar-person-face-couple-58191914.jpg")
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                        color: Colors.transparent,
                       ),
-                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                      color: Colors.transparent,
                     ),
                   ),
 
@@ -179,4 +182,32 @@ class _ViewProfileState extends State<ViewProfile> {
       ),
     );
   }
+}
+
+class FullScreenImage extends StatelessWidget{
+  final imageURL;
+  FullScreenImage(this.imageURL);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: InkWell(
+                  child: Icon(Icons.close),
+                  onTap: ()=> Navigator.pop(context),
+                ),
+              )
+            ],
+          ),
+          Image.network(imageURL)
+        ],
+      ),
+    );
+  }
+
 }

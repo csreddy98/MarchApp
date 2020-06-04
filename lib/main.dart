@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget  {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        scaffoldBackgroundColor: Colors.white,
         primaryColor: Color(0xFF4267B2),
         fontFamily: 'montserrat'
       ),
@@ -48,7 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
         image: new Image.asset("assets/images/logo1x.jpeg"),
         photoSize: 200,
         backgroundColor: Colors.white,
-        loaderColor: Colors.red,
+        loaderColor: Theme.of(context).primaryColor,
       ),
     );
   }

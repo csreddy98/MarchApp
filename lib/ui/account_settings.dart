@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:march/models/user.dart';
 import 'package:march/utils/database_helper.dart';
-import 'dart:convert' as convert;
 
 import 'package:shared_preferences/shared_preferences.dart';
 

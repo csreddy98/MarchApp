@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:march/models/people_model.dart';
 
 class Search extends StatefulWidget {
-  String search;
-  List<Person> person;
+  final String search;
+  final List<Person> person;
 
   Search(this.search,this.person);
   @override
@@ -20,7 +20,6 @@ class _SearchState extends State<Search> {
   TextEditingController myController = TextEditingController();
   @override
   void initState() {
-    // TODO: implement initState
     people=person.where((u)=>(u.name.toLowerCase().contains(search.toLowerCase()))).toList();
     myController.text=search;
     super.initState();

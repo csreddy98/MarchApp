@@ -2,11 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:march/ui/MessagesScreen.dart';
 import 'package:march/ui/find_screen.dart';
-import 'package:march/ui/inbox.dart';
-import 'package:march/ui/notify.dart';
+// import 'package:march/ui/inbox.dart';
+// import 'package:march/ui/notify.dart';
 import 'package:march/ui/profile.dart';
 import 'package:march/ui/settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:socket_io/socket_io.dart';
+
 
 class Home extends StatefulWidget {
   @override
@@ -16,7 +18,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _currentindex=0;
   String title="Find People";
-  //2nd tab track goals
   List<String> t=["Find People","Inbox","Profile"];
   final tabs=[
     FindScreen(),
@@ -28,10 +29,10 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _load();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,10 +65,10 @@ class _HomeState extends State<Home> {
             currentIndex: _currentindex,
             items:
             [
-              new BottomNavigationBarItem(icon: new Icon(Icons.group,size: 30,),title: Text("")),
+              new BottomNavigationBarItem(icon: new Icon(Icons.group,size: 30,),title: Text("Find People")),
            //   new BottomNavigationBarItem(icon: new Icon(Icons.date_range,size: 30,),title: Text("")),
-              new BottomNavigationBarItem(icon: new Icon(Icons.chat_bubble,size: 30,),title: Text("")),
-              new BottomNavigationBarItem(icon: new Icon(Icons.person,size: 30,),title: Text("")),
+              new BottomNavigationBarItem(icon: new Icon(Icons.chat_bubble,size: 30,),title: Text("Chats")),
+              new BottomNavigationBarItem(icon: new Icon(Icons.person,size: 30,),title: Text("Profile")),
             ],
             unselectedItemColor: Color.fromRGBO(63, 92, 200, 0.4),
             selectedItemColor: Color.fromRGBO(63, 92, 200, 1),

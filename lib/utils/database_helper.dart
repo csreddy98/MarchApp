@@ -31,6 +31,16 @@ class DataBaseHelper{
   final String columnTimeFrame = "timeFrame";
   final String columnGoalNumber = "goalNumber";
 
+  final String usersTable = "usersTable";
+  final String columnOtherUserId = "userId";
+  final String columnUserName = "userName";
+  final String columnUserDOB = "DOB";
+  final String columnprofilePic = "profilePic";
+  final String columnSex = "sex";
+  final String columnProfession = "profession";
+  final String columnRequestSent = "requestSent";
+  final String columnRequestReceived = "requestReceived";
+  final String columnRequestAccepted = "requestAccepted";
 
 
   Future<Database> get db async{
@@ -80,6 +90,19 @@ class DataBaseHelper{
             " $columnGoalNumber TEXT"
             ")" );
 
+    await db.execute(
+      "CREATE TABLE $usersTable("
+      "id INTEGER AUTO_INCREMENT PRIMARY KEY,"
+      "$columnOtherUserId INTEGER,"
+      "$columnUserName TEXT,"
+      "$columnUserDOB DATE,"
+      "$columnSex TEXT,"
+      "$columnProfession TEXT,"
+      "$columnRequestSent BOOLEAN,"
+      "$columnRequestReceived BOOLEAN,"
+      "$columnRequestAccepted BOOLEAN"
+      ")"
+    );
   }
 
 
@@ -174,6 +197,12 @@ class DataBaseHelper{
   Future<int> updateGoal(Goal goal) async{
     var dbClient =await db;
     return await dbClient.update(goalTable, goal.toMap(),where: "$columnId=?",whereArgs: [goal.goalNumber]);
+  }
+
+
+  Future<int> getUsers(userInfo) async {
+    var dbClient = await db;
+    return await dbClient.insert(usersTable, userInfo.toMap());
   }
 
 

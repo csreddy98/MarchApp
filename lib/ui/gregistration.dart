@@ -432,8 +432,7 @@ class _GRegisterState extends State<GRegister> {
 
                               }
                               else{
-
-                                Navigator.pop(context);
+                                
                                 _sk.currentState.showSnackBar(SnackBar(
                                   content: Text("There is Some Technical Problem Submit again",
                                     style: TextStyle(
@@ -448,12 +447,8 @@ class _GRegisterState extends State<GRegister> {
                                   duration: Duration(seconds: 3),
                                   backgroundColor: Colors.lightBlueAccent,
                                 ));
-
                               }
-
                             });
-
-
                           }
 
                         },
@@ -469,9 +464,6 @@ class _GRegisterState extends State<GRegister> {
                   ),
                 ),
               ),
-
-
-
             ],
           ),
         ),
@@ -550,29 +542,11 @@ class _GRegisterState extends State<GRegister> {
         return Dialog(
           child: Padding(
             padding: const EdgeInsets.all(15.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
-              children: <Widget>[
-                new Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    new CircularProgressIndicator(),
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: new Text("Loading"),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: <Widget>[
-                    RaisedButton(
-                      onPressed:()=>Navigator.pop(context),
-                      child: Text('Back'),
-                    )
-                  ],
-                ),
+            child: new Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                new CircularProgressIndicator(),
+                new Text("Loading"),
               ],
             ),
           ),

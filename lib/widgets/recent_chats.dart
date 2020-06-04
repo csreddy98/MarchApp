@@ -3,7 +3,13 @@ import 'package:march/models/message_model.dart';
 import 'package:march/ui/ChatScreen.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:toast/toast.dart';
-class RecentChats extends StatelessWidget {
+
+class RecentChats extends StatefulWidget {
+  @override
+  _RecentChatsScreen createState() => _RecentChatsScreen();
+}
+
+class _RecentChatsScreen extends State<RecentChats> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -30,21 +36,24 @@ class RecentChats extends StatelessWidget {
                 actionPane: SlidableDrawerActionPane(),
                 secondaryActions: <Widget>[
                   IconSlideAction(
-                    caption:  'Clear',
+                    caption: 'Clear',
                     color: Color(0xFFA8B2C8),
                     icon: Icons.edit,
                     closeOnTap: true,
                     foregroundColor: Colors.white,
-                    onTap: (){
-                    Toast.show('cleared', context,duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+                    onTap: () {
+                      Toast.show('cleared', context,
+                          duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
                     },
                   ),
-                  IconSlideAction(caption:  'Delete',
+                  IconSlideAction(
+                    caption: 'Delete',
                     color: Color(0xFFFF3B30),
                     icon: Icons.delete,
                     closeOnTap: true,
-                    onTap: (){
-                      Toast.show('Deleted', context,duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+                    onTap: () {
+                      Toast.show('Deleted', context,
+                          duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
                     },
                   ),
                 ],
@@ -54,7 +63,7 @@ class RecentChats extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (_) => TextingScreen(
                         user: chat.sender,
-                       ),
+                      ),
                     ),
                   ),
                   child: Container(
@@ -62,23 +71,20 @@ class RecentChats extends StatelessWidget {
                     padding:
                         EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
                     decoration: BoxDecoration(
-                        color: Color(0xFFFFFFFF),
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(20.0),
-                          bottomRight: Radius.circular(20.0),
-                        ),
+                      color: Color(0xFFFFFFFF),
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(20.0),
+                        bottomRight: Radius.circular(20.0),
                       ),
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Row(
                           children: <Widget>[
                             ClipRRect(
-                              child: Image.asset(
-                                  chat.sender.imageUrl,
-                                  height: 55,
-                                  width: 55,
-                                  fit: BoxFit.contain),
+                              child: Image.asset(chat.sender.imageUrl,
+                                  height: 55, width: 55, fit: BoxFit.contain),
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                             SizedBox(
@@ -97,7 +103,8 @@ class RecentChats extends StatelessWidget {
                                 ),
                                 SizedBox(height: 5.0),
                                 Container(
-                                  width: MediaQuery.of(context).size.width * 0.45,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.45,
                                   child: Text(
                                     chat.text,
                                     style: TextStyle(
@@ -114,7 +121,6 @@ class RecentChats extends StatelessWidget {
                         ),
                         Column(
                           children: <Widget>[
-                            
                             chat.unread
                                 ? Container(
                                     width: 20,
@@ -122,7 +128,8 @@ class RecentChats extends StatelessWidget {
                                     decoration: BoxDecoration(
                                       color: Theme.of(context).primaryColor,
                                       borderRadius:
-                                          BorderRadiusDirectional.circular(50.0),
+                                          BorderRadiusDirectional.circular(
+                                              50.0),
                                     ),
                                     alignment: Alignment.center,
                                     child: Text(
