@@ -226,8 +226,9 @@ class _GRegisterState extends State<GRegister> {
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(20.0,20,20,0),
-                child: TextField(
+                child: TextFormField(
                   maxLines: 1,
+                  initialValue: "+91",
                   style: TextStyle(
                       fontSize: 15,
                       color: Colors.black

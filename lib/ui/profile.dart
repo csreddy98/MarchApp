@@ -416,8 +416,9 @@ class _ProfileState extends State<Profile> {
      bio=user.userBio;
      name=user.username;
      profession=user.userProfession;
-     dob = user.userDob.substring(6,);
-     age = int.parse(now.toString().substring(0, 4)) - int.parse(dob);
+   //  dob = user.userDob.substring(6,);
+    // age = int.parse(now.toString().substring(0, 4)) - int.parse(dob);
+     age=calculateAge(user.userDob);
      goals[0]=goal1.goalName;
      time[0]=goal1.timeFrame;
      target[0]=goal1.target;
@@ -498,5 +499,22 @@ class _ProfileState extends State<Profile> {
 
 
     }*/
+  }
+
+  calculateAge(String birthDate) {
+    DateTime currentDate = DateTime.now();//27-06-1997
+    int age = currentDate.year - int.parse(birthDate.substring(6));
+    int month1 = currentDate.month;
+    int month2 = int.parse(birthDate.substring(3,5));
+    if (month2 > month1) {
+      age--;
+    } else if (month1 == month2) {
+      int day1 = currentDate.day;
+      int day2 = int.parse(birthDate.substring(0,2));
+      if (day2 > day1) {
+        age--;
+      }
+    }
+    return age;
   }
 }

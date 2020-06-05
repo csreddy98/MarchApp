@@ -64,7 +64,9 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
                 result['result']['user_info']['fullName'],
                 result['result']['user_info']['bio'],
                 result['result']['user_info']['email'],
-                result['result']['user_info']['DOB'],
+                result['result']['user_info']['DOB'][8]+result['result']['user_info']['DOB'][9]
+                    +"-"+result['result']['user_info']['DOB'][6]+result['result']['user_info']['DOB'][7]
+                    +"-"+result['result']['user_info']['DOB'].toString().substring(0,4),
                 result['result']['user_info']['sex'],
                 result['result']['user_info']['profession'],
                 result['result']['user_info']['profile_pic'],
@@ -72,9 +74,7 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
 
             SharedPreferences prefs = await SharedPreferences.getInstance();
             prefs.setString('token', result['result']['token']);
-            prefs.setString('id', result['result']['id']);
-            User x = await db.getUser(1);
-            print(x.userPic);
+            prefs.setString('id',result['result']['user_info']['id']);
             print("user saved :$savedUser");
 
             var res = await http.post(
