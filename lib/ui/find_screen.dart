@@ -47,10 +47,10 @@ class _FindScreenState extends State<FindScreen> {
     socketIO.init();
     socketIO.subscribe('new message', (jsonData) async {
       // print(jsonData);
-      if(jsonData != "A new user Connected"){
+      if (jsonData != "A new user Connected") {
         var data = jsonDecode(jsonData);
         print("$data");
-      }else{
+      } else {
         print("$jsonData");
       }
       // if (data['userId'].toString() == widget.userId) {
@@ -69,72 +69,70 @@ class _FindScreenState extends State<FindScreen> {
     super.initState();
   }
 
-  Future<List<Person>> _getPeople() async{
-
-    if(token!=null && id!=null && check==1){
-      var ur= 'https://march.lbits.co/api/worker.php';
-      var resp=await http.post(ur,
+  Future<List<Person>> _getPeople() async {
+    print("This is token: $token");
+    if (token != null && id != null && check == 1) {
+      var ur = 'https://march.lbits.co/api/worker.php';
+      var resp = await http.post(
+        ur,
         headers: {
-          'Content-Type':
-          'application/json',
-          'Authorization':
-          'Bearer $token'
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
         },
-        body: json.encode(<String, dynamic>
-        {
+        body: json.encode(<String, dynamic>{
           'serviceName': "",
           'work': "search with distance",
-          'lat':lat,
-          'lng':lng,
-          'goals':'Cricket',
-          'radius':radius,
-          'maxAge':maxAge,
-          'minAge':minAge,
-          'uid':id,
+          'lat': lat,
+          'lng': lng,
+          'goals': 'Cricket',
+          'radius': radius,
+          'maxAge': maxAge,
+          'minAge': minAge,
+          'uid': id,
         }),
       );
 
       print(resp.body.toString());
       var result = json.decode(resp.body);
       if (result['response'] == 200) {
-        int l=result['result'].length;
-        if(l>10){
-          l=10;
+        int l = result['result'].length;
+        if (l > 10) {
+          l = 10;
         }
 
-        if(clicked==0){
-
-          for(var i=0;i<l;i++){
-            people.add( Person(
+        if (clicked == 0) {
+          for (var i = 0; i < l; i++) {
+            people.add(
+              Person(
               //result['result'][i]['profile_pic']
               imageUrl: result['result'][i]['profile_pic'],
               name: result['result'][i]['fullName'],
-              age: result['result'][i]['age'].toString() +" Years Old",
-              location: result['result'][i]['distance']+" Km away",
+              age: result['result'][i]['age'].toString() + " Years Old",
+              location: result['result'][i]['distance'] + " Km away",
               goals: convert.jsonEncode(['Cricket', 'Travel', 'Dance']),
-              id:result['result'][i]['id'],
-              bio: result['result'][i]['bio']
-            ),);
+              id: result['result'][i]['id'],
+              bio: result['result'][i]['bio']),
+            );
           }
 
           setState(() {
-            clicked=1;
+            clicked = 1;
           });
         }
       }
       //else print error
     }
 
-      return people;
+    return people;
   }
 
   @override
-  void dispose(){
+  void dispose() {
     messageController.dispose();
     super.dispose();
   }
 
-  final GlobalKey<ScaffoldState> _sk=GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _sk = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -142,7 +140,7 @@ class _FindScreenState extends State<FindScreen> {
       body: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(left:15.0,right: 15.0),
+            padding: const EdgeInsets.only(left: 15.0, right: 15.0),
             child: Container(
               color: Colors.white,
               child: TextField(
@@ -150,26 +148,28 @@ class _FindScreenState extends State<FindScreen> {
                 style: TextStyle(fontSize: 16, color: Colors.grey[600]),
                 decoration: InputDecoration(
                   suffixIcon: IconButton(
-                    icon: Icon(Icons.search,
+                    icon: Icon(
+                      Icons.search,
                       color: Colors.blueGrey,
                     ),
                     iconSize: 25,
-                    onPressed: (){
-                      String name=myController.text;
+                    onPressed: () {
+                      String name = myController.text;
 
-                      if(people.length!=0){
-
-                        Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => Search(name,people)),
+                      if (people.length != 0) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => Search(name, people)),
                         );
-                        FocusScope.of(context).requestFocus(new FocusNode()); //remove focus
-                        WidgetsBinding.instance.addPostFrameCallback((_) => myController.clear());
-
-                      }
-                      else{
-
+                        FocusScope.of(context)
+                            .requestFocus(new FocusNode()); //remove focus
+                        WidgetsBinding.instance
+                            .addPostFrameCallback((_) => myController.clear());
+                      } else {
                         _sk.currentState.showSnackBar(SnackBar(
-                          content: Text("Wait....",
+                          content: Text(
+                            "Wait....",
                             style: TextStyle(
                               fontStyle: FontStyle.italic,
                               fontSize: 15,
@@ -182,14 +182,12 @@ class _FindScreenState extends State<FindScreen> {
                           duration: Duration(seconds: 1),
                           backgroundColor: Colors.lightBlueAccent,
                         ));
-
-
                       }
 
-
-                      FocusScope.of(context).requestFocus(new FocusNode()); //remove focus
-                      WidgetsBinding.instance.addPostFrameCallback((_) => myController.clear()); //
-
+                      FocusScope.of(context)
+                          .requestFocus(new FocusNode()); //remove focus
+                      WidgetsBinding.instance
+                          .addPostFrameCallback((_) => myController.clear()); //
                     },
                   ),
                   hintText: "Search People...",
@@ -220,315 +218,355 @@ class _FindScreenState extends State<FindScreen> {
                     ),
                   ),
                   IconButton(
-                      icon: Icon(Icons.tune,color: Colors.grey,), iconSize: 26.0, onPressed: (){
-
-                    if(people.length>0){
-                      _navigateAndDisplaySelection(context);
-                    }
-
-                  }),
+                      icon: Icon(
+                        Icons.tune,
+                        color: Colors.grey,
+                      ),
+                      iconSize: 26.0,
+                      onPressed: () {
+                        if (people.length > 0) {
+                          _navigateAndDisplaySelection(context);
+                        }
+                      }),
                 ],
               ),
             ),
           ),
           Expanded(
             child: Container(
-              color: Colors.white,
-              child: FutureBuilder(
-                future: _getPeople(),
-                builder: (BuildContext context,AsyncSnapshot snapshot){
-                  if(snapshot.data ==null){
-                    return Container(
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    );
-                  }
-                  else{
-                    return ListView.builder(
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        Person person = people[index];
-                        List<dynamic> list=convert.jsonDecode(person.goals);
-                        return Dismissible(
-                          key: ObjectKey(people[index]),
-                          child: GestureDetector(
-                            onTap: (){
-                              Navigator.pushAndRemoveUntil(context,
-                                  MaterialPageRoute(builder: (context) => ViewProfile(person.id,person.imageUrl,person.name,person.age,list,person.bio)),
-                                      (Route<dynamic> route) => true);
-                            },
-                            child: Stack(
-                              children: <Widget>[
-                                Container(
-                                  margin: EdgeInsets.fromLTRB(17, 5, 20, 5),
-                                  height: 170,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: [
-                                      BoxShadow(
-                                          color: Colors.black.withOpacity(0.2),
-                                          blurRadius: 6,
-                                          offset: Offset(1, 1)),
-                                    ],
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: EdgeInsets.fromLTRB(115, 0, 20, 0),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            SizedBox(
-                                              width:  MediaQuery.of(context).size.width*0.4,
-                                              child: AutoSizeText(
-                                                person.name,
-                                                style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.blue[900],
+                color: Colors.white,
+                child: FutureBuilder(
+                  future: _getPeople(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.data == null) {
+                      return Container(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    } else {
+                      return ListView.builder(
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          Person person = people[index];
+                          List<dynamic> list = convert.jsonDecode(person.goals);
+                          return Dismissible(
+                            key: ObjectKey(people[index]),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ViewProfile(
+                                            person.id,
+                                            person.imageUrl,
+                                            person.name,
+                                            person.age,
+                                            list,
+                                            person.bio)),
+                                    (Route<dynamic> route) => true);
+                              },
+                              child: Stack(
+                                children: <Widget>[
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(17, 5, 20, 5),
+                                    height: 170,
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color:
+                                                Colors.black.withOpacity(0.2),
+                                            blurRadius: 6,
+                                            offset: Offset(1, 1)),
+                                      ],
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: EdgeInsets.fromLTRB(
+                                              115, 0, 20, 0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.4,
+                                                child: AutoSizeText(
+                                                  person.name,
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.blue[900],
+                                                  ),
+                                                  maxLines: 1,
                                                 ),
-                                                maxLines:1,
                                               ),
-                                            ),
-                                            IconButton(
-                                                icon: Icon(Icons.person_add),
-                                                iconSize: 28,
-                                                color: Color.fromRGBO(63, 92, 200, 0.4),
-                                                onPressed: (){
-                                                  showDialog(
-                                                      context: context,
-                                                      builder: (BuildContext context) {
-                                                        return Dialog(
-                                                          shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                              BorderRadius.all(Radius.circular(15.0))), //this right here
-                                                          child: Container(
-                                                            height: 250,
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.all(20.0),
-                                                              child: Column(
-                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                children: [
-                                                                  Text("Send A Message",
-                                                                    style: TextStyle(
-                                                                        fontSize: 20,
-                                                                        color: Colors.black,
-                                                                        fontWeight: FontWeight.w600
-                                                                    ),),
-
-                                                                  Container(height:15,),
-                                                                  TextField(
-                                                                    keyboardType: TextInputType.multiline,
-                                                                    maxLines: 3,
-                                                                    controller: messageController,
-                                                                    decoration: InputDecoration(
-                                                                        enabledBorder: OutlineInputBorder(
-                                                                          borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                                              IconButton(
+                                                  icon: Icon(Icons.person_add),
+                                                  iconSize: 28,
+                                                  color: Color.fromRGBO(
+                                                      63, 92, 200, 0.4),
+                                                  onPressed: () {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return Dialog(
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            15.0))), //this right here
+                                                            child: Container(
+                                                              height: 250,
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        20.0),
+                                                                child: Column(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .center,
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Text(
+                                                                      "Send A Message",
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              20,
+                                                                          color: Colors
+                                                                              .black,
+                                                                          fontWeight:
+                                                                              FontWeight.w600),
+                                                                    ),
+                                                                    Container(
+                                                                      height:
+                                                                          15,
+                                                                    ),
+                                                                    TextField(
+                                                                      keyboardType:
+                                                                          TextInputType
+                                                                              .multiline,
+                                                                      maxLines:
+                                                                          3,
+                                                                      controller:
+                                                                          messageController,
+                                                                      decoration: InputDecoration(
+                                                                          enabledBorder: OutlineInputBorder(
+                                                                            borderSide:
+                                                                                BorderSide(color: Colors.grey, width: 1.0),
+                                                                          ),
+                                                                          hintText: 'Enter a Message'),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      height:
+                                                                          15,
+                                                                    ),
+                                                                    Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .end,
+                                                                      children: <
+                                                                          Widget>[
+                                                                        Container(
+                                                                          width:
+                                                                              MediaQuery.of(context).size.width / 2.2,
                                                                         ),
-                                                                        hintText: 'Enter a Message'),
-
-                                                                  ),
-                                                                  SizedBox(height:15,),
-                                                                  Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.end,
-                                                                    children: <Widget>[
-                                                                      Container(width: MediaQuery.of(context).size.width/2.2,),
-                                                                      Expanded(
-                                                                        child: SizedBox(
-                                                                          width: 100,
-                                                                          child: RaisedButton(
-                                                                              shape: RoundedRectangleBorder(
-                                                                                  borderRadius: BorderRadius.circular(35)
-                                                                              ),
+                                                                        Expanded(
+                                                                          child:
+                                                                              SizedBox(
+                                                                            width:
+                                                                                100,
+                                                                            child:
+                                                                                RaisedButton(
+                                                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
                                                                               onPressed: () async {
                                                                                 var msg = messageController.text;
                                                                                 messageController.clear();
                                                                                 SharedPreferences prefs = await SharedPreferences.getInstance();
-                                                                                String uid = prefs.getString('uid')??"";
-                                                                                socketIO.sendMessage("New user Request", 
-                                                                                json.encode(
-                                                                                  {
-                                                                                    "sender": uid,
-                                                                                    "receiver": person.id,
-                                                                                    "message": msg,
-                                                                                    "time": DateTime.now().toString(),
-                                                                                  }
-                                                                                ));
+                                                                                String id = prefs.getString('id') ?? "";
+                                                                                socketIO.sendMessage(
+                                                                                    "New user Request",
+                                                                                    json.encode({
+                                                                                      "sender": id,
+                                                                                      "receiver": person.id,
+                                                                                      "message": msg,
+                                                                                      "time": DateTime.now().toString(),
+                                                                                    }));
                                                                                 Navigator.pop(context);
                                                                               },
                                                                               child: Text(
                                                                                 "Add",
                                                                                 style: TextStyle(color: Colors.white),
                                                                               ),
-                                                                            color: Color.fromRGBO(63, 92, 200, 1),
+                                                                              color: Color.fromRGBO(63, 92, 200, 1),
+                                                                            ),
                                                                           ),
                                                                         ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-
-                                                                ],
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                ),
                                                               ),
                                                             ),
-                                                          ),
-                                                        );
-                                                      });
-
-                                                }),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.fromLTRB(115, 0, 20, 0),
-                                        child: Text(
-                                          person.age,
-                                          style: TextStyle(
-                                            fontSize: 15,
+                                                          );
+                                                        });
+                                                  }),
+                                            ],
                                           ),
                                         ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.fromLTRB(95, 0, 20, 0),
-                                        child: Row(
-                                          children: <Widget>[
-                                            IconButton(
-                                                icon: Icon(
-                                                  Icons.location_on,
-                                                  color: Colors.grey[400],
-                                                ),
-                                                onPressed: null),
-                                            Text(
-                                              person.location,
-                                              style: TextStyle(fontSize: 15),
+                                        Padding(
+                                          padding: EdgeInsets.fromLTRB(
+                                              115, 0, 20, 0),
+                                          child: Text(
+                                            person.age,
+                                            style: TextStyle(
+                                              fontSize: 15,
                                             ),
-                                          ],
+                                          ),
                                         ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.fromLTRB(20, 5, 20, 0),
-                                        child: Row(
-                                          children: <Widget>[
-                                            Text(
-                                              'Goals:  ',
-                                              style: TextStyle(
+                                        Padding(
+                                          padding:
+                                              EdgeInsets.fromLTRB(95, 0, 20, 0),
+                                          child: Row(
+                                            children: <Widget>[
+                                              IconButton(
+                                                  icon: Icon(
+                                                    Icons.location_on,
+                                                    color: Colors.grey[400],
+                                                  ),
+                                                  onPressed: null),
+                                              Text(
+                                                person.location,
+                                                style: TextStyle(fontSize: 15),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              EdgeInsets.fromLTRB(20, 5, 20, 0),
+                                          child: Row(
+                                            children: <Widget>[
+                                              Text(
+                                                'Goals:  ',
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                    letterSpacing: 0.8),
+                                              ),
+                                              Text(
+                                                list[0] + " , ",
+                                                style: TextStyle(
                                                   fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                  letterSpacing: 0.8),
-                                            ),
-                                            Text(
-                                              list[0]+" , ",
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                color: Colors.black87,
-                                                letterSpacing: 0.8,
+                                                  color: Colors.black87,
+                                                  letterSpacing: 0.8,
+                                                ),
                                               ),
-                                            ),
-                                            Text(
-                                              list[1]+" , ",
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                color: Colors.black87,
-                                                letterSpacing: 0.8,
+                                              Text(
+                                                list[1] + " , ",
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  color: Colors.black87,
+                                                  letterSpacing: 0.8,
+                                                ),
                                               ),
-                                            ),
-                                            Text(
-                                              list[2],
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                color: Colors.black87,
-                                                letterSpacing: 0.8,
+                                              Text(
+                                                list[2],
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  color: Colors.black87,
+                                                  letterSpacing: 0.8,
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Positioned(
-                                  left: 30,
-                                  top: 15,
-                                  bottom: 70,
-                                  child: Container(
-                                    width: 90.0,
-                                    height: 90.0,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: NetworkImage(person.imageUrl),
-                                      ),
-                                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                                      color: Colors.transparent,
+                                      ],
                                     ),
                                   ),
-                                ),
-                              ],
+                                  Positioned(
+                                    left: 30,
+                                    top: 15,
+                                    bottom: 70,
+                                    child: Container(
+                                      width: 90.0,
+                                      height: 90.0,
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: NetworkImage(person.imageUrl),
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(15.0)),
+                                        color: Colors.transparent,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
+                            onDismissed: (direction) {
+                              Person item = people[index];
 
-                          onDismissed: (direction){
-                            Person item = people[index];
+                              deleteItem(index);
 
-                            deleteItem(index);
-
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                                content: Text("Profile deleted"),
-                                action: SnackBarAction(
-                                    label: "UNDO",
-                                    onPressed: () {
-                                      undoDeletion(index, item);
-                                    })));
-                          },
-
-                        );
-                      },
-                    );
-                  }
-
-
-
-                },
-              )
-            ),
+                              Scaffold.of(context).showSnackBar(SnackBar(
+                                  content: Text("Profile deleted"),
+                                  action: SnackBarAction(
+                                      label: "UNDO",
+                                      onPressed: () {
+                                        undoDeletion(index, item);
+                                      })));
+                            },
+                          );
+                        },
+                      );
+                    }
+                  },
+                )),
           ),
         ],
       ),
     );
   }
 
-  void deleteItem(index){
-    setState((){
+  void deleteItem(index) {
+    setState(() {
       people.removeAt(index);
     });
   }
 
-  void undoDeletion(index, item){
-    setState((){
+  void undoDeletion(index, item) {
+    setState(() {
       people.insert(index, item);
     });
   }
 
-  void _load() async{
-
+  void _load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String userToken = prefs.getString('token')??"";
-    String uid = prefs.getString('uid')??"";
+    String userToken = prefs.getString('token') ?? "";
+    String uid = prefs.getString('uid') ?? "";
 
     setState(() {
-      token=userToken;
-      id=uid;
+      token = userToken;
+      id = uid;
     });
 
     _permissionGranted = await location.hasPermission();
 
-    if(_permissionGranted==PermissionStatus.granted){
-
+    if (_permissionGranted == PermissionStatus.granted) {
       _serviceEnabled = await location.serviceEnabled();
 
       if (!_serviceEnabled) {
@@ -536,41 +574,42 @@ class _FindScreenState extends State<FindScreen> {
         if (!_serviceEnabled) {
           print("No Thanks");
           setState(() {
-            lat="17.4538444";
-            lng="78.416675";
-            check=1;
+            lat = "17.4538444";
+            lng = "78.416675";
+            check = 1;
           });
           return;
-        }
-        else{
+        } else {
           print("Clicked Ok");
           _locationData = await location.getLocation();
-          print("lat : "+_locationData.latitude.toString()+"long : "+_locationData.longitude.toString());
+          print("lat : " +
+              _locationData.latitude.toString() +
+              "long : " +
+              _locationData.longitude.toString());
           setState(() {
-            lat=_locationData.latitude.toString();
-            lng=_locationData.longitude.toString();
-            check=1;
+            lat = _locationData.latitude.toString();
+            lng = _locationData.longitude.toString();
+            check = 1;
           });
-
         }
-      }
-      else{
+      } else {
         _locationData = await location.getLocation();
-        print("lat : "+_locationData.latitude.toString()+"long : "+_locationData.longitude.toString());
+        print("lat : " +
+            _locationData.latitude.toString() +
+            "long : " +
+            _locationData.longitude.toString());
         setState(() {
-          lat=_locationData.latitude.toString();
-          lng=_locationData.longitude.toString();
-          check=1;
+          lat = _locationData.latitude.toString();
+          lng = _locationData.longitude.toString();
+          check = 1;
         });
       }
-
-    }
-    else{
+    } else {
       //location permission in settings
       _permissionGranted = await location.requestPermission();
 
-      if(_permissionGranted==PermissionStatus.granted){
-      //checking gps
+      if (_permissionGranted == PermissionStatus.granted) {
+        //checking gps
         _serviceEnabled = await location.serviceEnabled();
 
         if (!_serviceEnabled) {
@@ -578,47 +617,48 @@ class _FindScreenState extends State<FindScreen> {
           if (!_serviceEnabled) {
             print("No Thanks");
             setState(() {
-              lat="17.4538444";
-              lng="78.416675";
-              check=1;
+              lat = "17.4538444";
+              lng = "78.416675";
+              check = 1;
             });
             return;
-          }
-          else{
+          } else {
             print("Clicked Ok");
             _locationData = await location.getLocation();
-            print("lat : "+_locationData.latitude.toString()+"long : "+_locationData.longitude.toString());
+            print("lat : " +
+                _locationData.latitude.toString() +
+                "long : " +
+                _locationData.longitude.toString());
             setState(() {
-              lat=_locationData.latitude.toString();
-              lng=_locationData.longitude.toString();
-              check=1;
+              lat = _locationData.latitude.toString();
+              lng = _locationData.longitude.toString();
+              check = 1;
             });
-
           }
-        }
-        else{
+        } else {
           _locationData = await location.getLocation();
-          print("lat : "+_locationData.latitude.toString()+"long : "+_locationData.longitude.toString());
+          print("lat : " +
+              _locationData.latitude.toString() +
+              "long : " +
+              _locationData.longitude.toString());
           setState(() {
-            lat=_locationData.latitude.toString();
-            lng=_locationData.longitude.toString();
-            check=1;
+            lat = _locationData.latitude.toString();
+            lng = _locationData.longitude.toString();
+            check = 1;
           });
         }
-
-      }
-      else{
+      } else {
         //when location permission rejected
         setState(() {
-          lat="17.09";
-          lng="78.05";
-          check=1;
+          lat = "17.09";
+          lng = "78.05";
+          check = 1;
         });
       }
     }
 
-   /* if (_permissionGranted == PermissionStatus.denied) {
-      *//*_permissionGranted = await location.requestPermission();
+    /* if (_permissionGranted == PermissionStatus.denied) {
+      */ /*_permissionGranted = await location.requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
         print("yes");
         _locationData = await location.getLocation();
@@ -633,78 +673,71 @@ class _FindScreenState extends State<FindScreen> {
       }
       setState(() {
         check=1;
-      });*//*
+      });*/ /*
     }
     else{
-      *//*_locationData = await location.getLocation();
+      */ /*_locationData = await location.getLocation();
       print("lat : "+_locationData.latitude.toString()+"long : "+_locationData.longitude.toString());
       setState(() {
         lat=_locationData.latitude.toString();
         lng=_locationData.longitude.toString();
         check=1;
         print("location on");
-      });*//*
+      });*/ /*
     }*/
-
   }
 
   _navigateAndDisplaySelection(BuildContext context) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Slider_container("Cricket","Dance","Hockey")),
+      MaterialPageRoute(
+          builder: (context) => Slider_container("Cricket", "Dance", "Hockey")),
     );
-    if(result!=null){
+    if (result != null) {
       print(result);
-      int minAge=result[0];
-      int maxAge=result[1];
-      int distance=result[2];
-      List<dynamic> record=result[3];
+      int minAge = result[0];
+      int maxAge = result[1];
+      int distance = result[2];
+      List<dynamic> record = result[3];
 
-      for(var i=people.length-1;i>=0;i--) {
+      for (var i = people.length - 1; i >= 0; i--) {
+        List<dynamic> l = convert.jsonDecode(people[i].goals);
 
-        List<dynamic> l=convert.jsonDecode(people[i].goals);
-
-        if(int.parse(people[i].age.substring(0,2))<minAge){
+        if (int.parse(people[i].age.substring(0, 2)) < minAge) {
           setState(() {
             people.removeAt(i);
           });
-        }
-        else if(int.parse(people[i].age.substring(0,2))>maxAge){
+        } else if (int.parse(people[i].age.substring(0, 2)) > maxAge) {
           setState(() {
             people.removeAt(i);
           });
-
-        }
-        else if(double.parse(people[i].location.substring(0,3))>double.parse(distance.toString())){
+        } else if (double.parse(people[i].location.substring(0, 3)) >
+            double.parse(distance.toString())) {
           setState(() {
             people.removeAt(i);
           });
-        }
-        else if(record.length>2){
-          if(!l.contains(record[0]) || !l.contains(record[1]) || !l.contains(record[2])){
+        } else if (record.length > 2) {
+          if (!l.contains(record[0]) ||
+              !l.contains(record[1]) ||
+              !l.contains(record[2])) {
+            setState(() {
+              people.removeAt(i);
+            });
+          }
+        } else if (record.length > 1) {
+          if (!l.contains(record[0]) || !l.contains(record[1])) {
+            setState(() {
+              people.removeAt(i);
+            });
+          }
+        } else if (record.length > 0) {
+          if (!l.contains(record[0])) {
             setState(() {
               people.removeAt(i);
             });
           }
         }
-        else if(record.length>1){
-          if(!l.contains(record[0]) || !l.contains(record[1])){
-            setState(() {
-              people.removeAt(i);
-            });
-          }
-        }
-        else if(record.length>0){
-          if(!l.contains(record[0])){
-            setState(() {
-              people.removeAt(i);
-            });
-          }
-        }
-
       }
-
     }
   }
-
 }

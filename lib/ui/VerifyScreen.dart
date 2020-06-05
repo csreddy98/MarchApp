@@ -6,6 +6,7 @@ import 'package:march/models/goal.dart';
 import 'package:march/models/user.dart';
 import 'package:march/support/PhoneAuthCode.dart';
 import 'package:http/http.dart' as http;
+import 'package:march/ui/login.dart';
 import 'package:march/ui/registration.dart';
 import 'package:march/ui/select.dart';
 import 'package:march/utils/database_helper.dart';
@@ -52,6 +53,9 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
 
           print(resp.body.toString());
           var result = json.decode(resp.body);
+          if (result['response'] == 300) {
+            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => Login()));
+          }
           if (result['response'] == 200) {
             var db = new DataBaseHelper();
 
@@ -60,7 +64,7 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
                 result['result']['user_info']['fullName'],
                 result['result']['user_info']['bio'],
                 result['result']['user_info']['email'],
-                "28-04-1998",
+                result['result']['user_info']['DOB'],
                 result['result']['user_info']['sex'],
                 result['result']['user_info']['profession'],
                 result['result']['user_info']['profile_pic'],
@@ -68,7 +72,7 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
 
             SharedPreferences prefs = await SharedPreferences.getInstance();
             prefs.setString('token', result['result']['token']);
-            prefs.setString('token', result['result']['id']);
+            prefs.setString('id', result['result']['id']);
             User x = await db.getUser(1);
             print(x.userPic);
             print("user saved :$savedUser");
