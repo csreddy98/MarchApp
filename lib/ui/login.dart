@@ -112,6 +112,7 @@ class _LoginState extends State<Login> {
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('token',result['result']['token']);
+      prefs.setString('token',result['result']['id']);
       User x= await db.getUser(1);
       print(x.userPic);
       print("user saved :$savedUser");
