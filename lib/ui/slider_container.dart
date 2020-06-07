@@ -9,10 +9,10 @@ class Slider_container extends StatefulWidget {
   Slider_container(this.goal1, this.goal2, this.goal3);
 
   @override
-  _Slider_containerState createState() => _Slider_containerState();
+  _SlidercontainerState createState() => _SlidercontainerState();
 }
 
-class _Slider_containerState extends State<Slider_container> {
+class _SlidercontainerState extends State<Slider_container> {
   static int age_range_min = 18;
   int age_range_max = 100;
   int maxDistance = 0;

@@ -31,16 +31,16 @@ class DataBaseHelper {
   final String columnTimeFrame = "timeFrame";
   final String columnGoalNumber = "goalNumber";
 
-  final String usersTable = "usersTable";
-  final String columnOtherUserId = "userId";
-  final String columnUserName = "userName";
-  final String columnUserDOB = "DOB";
-  final String columnprofilePic = "profilePic";
-  final String columnSex = "sex";
-  final String columnProfession = "profession";
-  final String columnRequestSent = "requestSent";
-  final String columnRequestReceived = "requestReceived";
-  final String columnRequestAccepted = "requestAccepted";
+
+  final String messagesTable = "messages";
+  final messageId = "messageId";
+  static final messageSender = "senderId";
+  static final messageReceiver = "receiverId";
+  static final messageText = "message";
+  static final messageContainsImage = "containsImage";
+  static final messageImage = "ImageUrl";
+  static final seenStatus = "seenStatus";
+  static final messageTime = "time";
 
   Future<Database> get db async {
     if (_db != null) {
@@ -76,17 +76,16 @@ class DataBaseHelper {
         " $columnTarget TEXT,$columnTimeFrame TEXT,"
         " $columnGoalNumber TEXT"
         ")");
-
-    await db.execute("CREATE TABLE $usersTable("
-        "id INTEGER AUTO_INCREMENT PRIMARY KEY,"
-        "$columnOtherUserId INTEGER,"
-        "$columnUserName TEXT,"
-        "$columnUserDOB DATE,"
-        "$columnSex TEXT,"
-        "$columnProfession TEXT,"
-        "$columnRequestSent BOOLEAN,"
-        "$columnRequestReceived BOOLEAN,"
-        "$columnRequestAccepted BOOLEAN"
+        
+    await db.execute("CREATE TABLE $messagesTable("
+        "$messageId INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "$messageSender TEXT,"
+        "$messageReceiver TEXT,"
+        "$messageText DATE,"
+        "$messageContainsImage BOOLEAN,"
+        "$messageImage TEXT,"
+        "$seenStatus TEXT,"
+        "$messageTime TEXT"
         ")");
   }
 
@@ -176,18 +175,14 @@ class DataBaseHelper {
         where: "$columnId=?", whereArgs: [goal.goalNumber]);
   }
 
-  Future<int> getUsers(userInfo) async {
+
+  Future<int> addMessage(Map messageInfo) async {
     var dbClient = await db;
-    return await dbClient.insert(usersTable, userInfo.toMap());
+    return await dbClient.insert(messagesTable, messageInfo);
   }
 
   Future close() async {
     var dbClient = await db;
     return dbClient.close();
-  }
-
-  Future<int> insertNewRequest(newRequest) async {
-    var dbClient = await db;
-    return dbClient.insert(usersTable, newRequest.toMap());
   }
 }

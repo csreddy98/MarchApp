@@ -13,8 +13,6 @@ import 'package:march/utils/database_helper.dart';
 import 'package:march/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-
 class Register extends StatefulWidget {
 
   final String phone;

@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:march/ui/view_profile.dart';
 import 'package:location/location.dart';
+import 'package:march/utils/database_helper.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_socket_io/flutter_socket_io.dart';
@@ -24,53 +25,39 @@ class _FindScreenState extends State<FindScreen> {
   String id;
   String lat;
   String lng;
+  String uid;
   Location location = new Location();
-  int maxAge = 100;
-  int minAge = 18;
+  final int maxAge = 100;
+  final int minAge = 18;
   TextEditingController myController;
   List<Person> people = [];
   int radius = 100;
   SocketIO socketIO;
   String token;
-
+  DataBaseHelper db = DataBaseHelper();
   LocationData _locationData;
   PermissionStatus _permissionGranted;
   bool _serviceEnabled;
   TextEditingController messageController = new TextEditingController();
-
+  List myUsers = [];
   @override
   void initState() {
+    _load();
     socketIO = SocketIOManager().createSocketIO(
       'https://glacial-waters-33471.herokuapp.com',
       '/',
     );
     socketIO.init();
-    socketIO.subscribe('new message', (jsonData) async {
-      // print(jsonData);
-      if (jsonData != "A new user Connected") {
-        var data = jsonDecode(jsonData);
-        print("$data");
-      } else {
-        print("$jsonData");
-      }
-      // if (data['userId'].toString() == widget.userId) {
-      // setState(() async {
-      //   messages = await dbHelper.queryAllRows();
-      // });
-      // if (messages.length > 0) {}
-      // int d = await audioPlayer.play("asstes/audios/sent.mp3", isLocal: true);
-      // _scroller.jumpTo(_scroller.position.maxScrollExtent);
-      // }
-    });
-    socketIO.sendMessage("chat message", "A new user Connected");
-    //Connect to the socket
     socketIO.connect();
-    _load();
+    print("This is uid before sending $uid");
+    socketIO.subscribe('new message', (data) {
+      print("This is the data received $data");
+    });
+
     super.initState();
   }
 
   Future<List<Person>> _getPeople() async {
-    print("This is token: $token");
     if (token != null && id != null && check == 1) {
       var ur = 'https://march.lbits.co/api/worker.php';
       var resp = await http.post(
@@ -91,8 +78,7 @@ class _FindScreenState extends State<FindScreen> {
           'uid': id,
         }),
       );
-
-      print(resp.body.toString());
+      print("This is response: ${json.decode(resp.body)['response']}");
       var result = json.decode(resp.body);
       if (result['response'] == 200) {
         int l = result['result'].length;
@@ -102,16 +88,17 @@ class _FindScreenState extends State<FindScreen> {
 
         if (clicked == 0) {
           for (var i = 0; i < l; i++) {
+            if (!myUsers.contains(result['result'][i]['id'])) {}
             people.add(
               Person(
-              //result['result'][i]['profile_pic']
-              imageUrl: result['result'][i]['profile_pic'],
-              name: result['result'][i]['fullName'],
-              age: result['result'][i]['age'].toString() + " Years Old",
-              location: result['result'][i]['distance'] + " Km away",
-              goals: convert.jsonEncode(['Cricket', 'Travel', 'Dance']),
-              id: result['result'][i]['id'],
-              bio: result['result'][i]['bio']),
+                  imageUrl: result['result'][i]['profile_pic'],
+                  name: result['result'][i]['fullName'],
+                  gender: result['result'][i]['sex'],
+                  age: result['result'][i]['age'].toString() + " Years Old",
+                  location: result['result'][i]['distance'] + " Km away",
+                  goals: convert.jsonEncode(['Cricket', 'Travel', 'Dance']),
+                  id: result['result'][i]['id'],
+                  bio: result['result'][i]['bio']),
             );
           }
 
@@ -369,10 +356,6 @@ class _FindScreenState extends State<FindScreen> {
                                                                           ),
                                                                           hintText: 'Enter a Message'),
                                                                     ),
-                                                                    SizedBox(
-                                                                      height:
-                                                                          15,
-                                                                    ),
                                                                     Row(
                                                                       mainAxisAlignment:
                                                                           MainAxisAlignment
@@ -393,17 +376,47 @@ class _FindScreenState extends State<FindScreen> {
                                                                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
                                                                               onPressed: () async {
                                                                                 var msg = messageController.text;
+                                                                                var db = DataBaseHelper();
                                                                                 messageController.clear();
                                                                                 SharedPreferences prefs = await SharedPreferences.getInstance();
                                                                                 String id = prefs.getString('id') ?? "";
-                                                                                socketIO.sendMessage(
-                                                                                    "New user Request",
-                                                                                    json.encode({
-                                                                                      "sender": id,
-                                                                                      "receiver": person.id,
-                                                                                      "message": msg,
-                                                                                      "time": DateTime.now().toString(),
-                                                                                    }));
+                                                                                await http.post('https://march.lbits.co/api/worker.php',
+                                                                                    body: json.encode(<String, dynamic>{
+                                                                                      "serviveName": "",
+                                                                                      "work": "add new request",
+                                                                                      "uid": "$uid",
+                                                                                      "sender": "$id",
+                                                                                      "receiver": "${person.id}",
+                                                                                      "message": "$msg",
+                                                                                      "requestStatus": "pending"
+                                                                                    }),
+                                                                                    headers: {
+                                                                                      'Authorization': 'Bearer $token',
+                                                                                      'Content-Type': 'application/json'
+                                                                                    }).then((value) {
+                                                                                  var resp = json.decode(value.body);
+                                                                                  if (resp['response'] == 200) {
+                                                                                    socketIO.sendMessage(
+                                                                                        "New user Request",
+                                                                                        json.encode({
+                                                                                          "sender": id,
+                                                                                          "receiver": person.id,
+                                                                                          "message": msg,
+                                                                                          "time": DateTime.now().toString(),
+                                                                                        }));
+                                                                                    Map<String, dynamic> messageMap = {
+                                                                                      DataBaseHelper.messageSender: id,
+                                                                                      DataBaseHelper.messageReceiver: person.id,
+                                                                                      DataBaseHelper.messageText: msg,
+                                                                                      DataBaseHelper.messageContainsImage: 0,
+                                                                                      DataBaseHelper.messageImage: null,
+                                                                                      DataBaseHelper.messageTime: "${DateTime.now()}"
+                                                                                    };
+                                                                                    db.addMessage(messageMap);
+                                                                                  } else {
+                                                                                    print("$resp");
+                                                                                  }
+                                                                                });
                                                                                 Navigator.pop(context);
                                                                               },
                                                                               child: Text(
@@ -557,13 +570,15 @@ class _FindScreenState extends State<FindScreen> {
   void _load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userToken = prefs.getString('token') ?? "";
-    String uid = prefs.getString('uid') ?? "";
+    uid = prefs.getString('uid') ?? "";
+    id = prefs.getString('id') ?? "";
 
     setState(() {
       token = userToken;
-      id = uid;
+      uid = uid;
     });
-
+    socketIO.sendMessage('update my status',
+        json.encode({"uid": "$id", "time": "${DateTime.now()}"}));
     _permissionGranted = await location.hasPermission();
 
     if (_permissionGranted == PermissionStatus.granted) {

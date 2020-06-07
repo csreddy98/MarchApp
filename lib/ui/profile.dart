@@ -6,11 +6,7 @@ import 'package:march/support/back_profile.dart';
 import 'package:march/ui/edit_goals.dart';
 import 'package:march/ui/view_profile.dart';
 import 'package:march/utils/database_helper.dart';
-// import 'dart:convert' as convert;
-// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:worm_indicator/shape.dart';
-
-
 import 'package:worm_indicator/worm_indicator.dart';
 
 class Profile extends StatefulWidget {
@@ -400,8 +396,6 @@ class _ProfileState extends State<Profile> {
   }
 
   void _load() async{
-
-   var now = new DateTime.now();
    user= await db.getUser(1);
    goal1= await db.getGoal(1);
    int gCount= await db.getGoalCount();

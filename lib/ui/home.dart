@@ -1,12 +1,16 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_socket_io/socket_io_manager.dart';
 import 'package:march/ui/MessagesScreen.dart';
 import 'package:march/ui/find_screen.dart';
-// import 'package:march/ui/inbox.dart';
-// import 'package:march/ui/notify.dart';
 import 'package:march/ui/profile.dart';
 import 'package:march/ui/settings.dart';
+import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_socket_io/flutter_socket_io.dart';
+import 'package:http/http.dart' as http;
 
 class Home extends StatefulWidget {
   @override
@@ -17,6 +21,10 @@ class _HomeState extends State<Home> {
   int _currentindex = 0;
   String title = "Find People";
   List<String> t = ["Find People", "Inbox", "Profile"];
+  SocketIO socketIO;
+  String token, uid;
+  String myId;
+  final db = DataBaseHelper();
   final tabs = [
     FindScreen(),
     //Notify(),
@@ -28,6 +36,73 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     _load();
+    
+    socketIO = SocketIOManager().createSocketIO(
+      'https://glacial-waters-33471.herokuapp.com',
+      '/',
+    );
+    socketIO.init();
+    socketIO.connect();
+    socketIO.subscribe('new message', (data) => print("$data"));
+    socketIO.subscribe('New user Request', (jsonData) {
+      var data = json.decode(jsonData);
+      print(data['receiver']);
+      if (data['receiver'] == myId) {
+        http.post('https://march.lbits.co/api/worker.php',
+            body: json.encode({
+              'serviceName': '',
+              'work': 'get user info',
+              'userId': data['sender']
+            }),
+            headers: {
+              'Authorization': 'Bearer $token',
+              'Content-Type': 'application/json'
+            }).then((value) {
+          Map<String, dynamic> messageMap = {
+            DataBaseHelper.messageSender: data['sender'],
+            DataBaseHelper.messageReceiver: data['receiver'],
+            DataBaseHelper.messageText: data['message'],
+            DataBaseHelper.messageContainsImage: false,
+            DataBaseHelper.messageImage: null,
+            DataBaseHelper.messageTime: data['time']
+          };
+          db.addMessage(messageMap);
+        });
+      }
+    });
+    // socketIO = SocketIOManager().createSocketIO(
+    //   'https://glacial-waters-33471.herokuapp.com',
+    //   '/',
+    // );
+    // socketIO.init();
+    // socketIO.connect();
+    // socke
+    // socketIO.subscribe('New user Request', (jsonData) async {
+    //   var data = json.decode(jsonData);
+    //   print(data['receiver']);
+    //   if (data['receiver'] == myId) {
+    //     http.post('https://march.lbits.co/api/worker.php',
+    //         body: json.encode({
+    //           'serviceName': '',
+    //           'work': 'get user info',
+    //           'userId': data['sender']
+    //         }),
+    //         headers: {
+    //           'Authorization': 'Bearer $token',
+    //           'Content-Type': 'application/json'
+    //         }).then((value) {
+    //       Map<String, dynamic> messageMap = {
+    //         DataBaseHelper.messageSender: data['sender'],
+    //         DataBaseHelper.messageReceiver: data['receiver'],
+    //         DataBaseHelper.messageText: data['message'],
+    //         DataBaseHelper.messageContainsImage: false,
+    //         DataBaseHelper.messageImage: null,
+    //         DataBaseHelper.messageTime: data['time']
+    //       };
+    //       db.addMessage(messageMap);
+    //     });
+    //   }
+    // });
     super.initState();
   }
 
@@ -120,6 +195,9 @@ class _HomeState extends State<Home> {
 
   void _load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('token');
+    myId = prefs.getString('id');
+    uid = prefs.getString('uid');
     prefs.setInt('log', 1);
     FirebaseAuth.instance.currentUser().then((val) async {
       String uid = val.uid;

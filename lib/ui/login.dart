@@ -46,41 +46,6 @@ class _LoginState extends State<Login> {
     print(user.displayName);
     print(user.uid);
 
-   /* var url = 'https://march.lbits.co/app/api/goals.php?uid=' + user.uid;
-    var response = await http.get(url);
-    var jsonResponse = convert.jsonDecode(response.body);
-    if (jsonResponse.length!=0) {
-
-
-      Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => Home()),
-            (Route<dynamic> route) => false,);
-
-    } else {
-
-
-      var url = 'https://march.lbits.co/app/api/index.php?uid=' + user.uid;
-      var response = await http.get(url);
-      if (response.statusCode == 200) {
-
-        Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (context) => GRegister()),
-              (Route<dynamic> route) => false,);
-
-      } else {
-
-        Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (context) => Select()),
-              (Route<dynamic> route) => false,);
-
-        print('Request failed with status: ${response.statusCode}.');
-
-      }
-
-      print('Request failed with status: ${response.statusCode}.');
-
-    }*/
-
     var url= 'https://march.lbits.co/api/worker.php';
     var resp=await http.post(url,
       body: json.encode(<String, dynamic>

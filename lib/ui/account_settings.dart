@@ -6,10 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Account_Settings extends StatefulWidget {
   @override
-  _Account_SettingsState createState() => _Account_SettingsState();
+  _AccountSettingsState createState() => _AccountSettingsState();
 }
 
-class _Account_SettingsState extends State<Account_Settings> {
+class _AccountSettingsState extends State<Account_Settings> {
 
   TextEditingController _controllerNumber;
   String number;
