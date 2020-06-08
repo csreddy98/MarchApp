@@ -47,7 +47,15 @@ class _HomeState extends State<Home> {
     );
     socketIO.init();
     socketIO.connect();
-    socketIO.subscribe('new message', (data) => print("$data"));
+
+    // socketIO.sendMessage('update my status',
+    //     json.encode({"uid": "$id", "time": "${DateTime.now()}"}));
+    socketIO.subscribe('new message', (data) {
+      updateStatus().then((value) {
+        socketIO.sendMessage('update my status', json.encode(value));
+      });
+      print("$data");
+    });
     socketIO.subscribe('New user Request', (jsonData) {
       var data = json.decode(jsonData);
       print(data['receiver']);
@@ -78,17 +86,6 @@ class _HomeState extends State<Home> {
         });
       }
     });
-    // setState(() {
-    //   if (widget.pageName == 'requests') {
-    //     _currentindex = 1;
-    //     title = t[_currentindex];
-    //     chatsPage = widget.pageName;
-    //   } else if (widget.pageName == 'chats') {
-    //     _currentindex = 1;
-    //     title = t[_currentindex];
-    //     chatsPage = widget.pageName;
-    //   }
-    // });
     super.initState();
     var initializationSettingsAndroid =
         new AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -109,6 +106,15 @@ class _HomeState extends State<Home> {
       chatsPage = "requests";
     });
     // });
+  }
+
+  Future<Map<String, String>> updateStatus() async {
+    var prefs = await SharedPreferences.getInstance();
+    Map myMap = {
+      'uid': prefs.getString('id'),
+      'time': DateTime.now().toString()
+    };
+    return myMap;
   }
 
   Widget appBar() {
