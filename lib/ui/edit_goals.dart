@@ -317,7 +317,7 @@ class _EditGoalState extends State<EditGoal> {
                                         print(g.goalName+" "+g.goalNumber);*/
 
                                         Navigator.pushAndRemoveUntil(context,
-                                            MaterialPageRoute(builder: (context) => Home()),
+                                            MaterialPageRoute(builder: (context) => Home('')),
                                                 (Route<dynamic> route) => false);
 
                                       }
@@ -329,7 +329,7 @@ class _EditGoalState extends State<EditGoal> {
                                         print("goal saved :$savedGoal");
 
                                         Navigator.pushAndRemoveUntil(context,
-                                            MaterialPageRoute(builder: (context) => Home()),
+                                            MaterialPageRoute(builder: (context) => Home('')),
                                                 (Route<dynamic> route) => false);
 
                                       }

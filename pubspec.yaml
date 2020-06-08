@@ -33,6 +33,7 @@ dependencies:
   path_provider:
   flutter_socket_io: ^0.6.0
   intl: ^0.16.1
+  flutter_local_notifications:
 
 
 dev_dependencies:

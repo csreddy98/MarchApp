@@ -45,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Center(
       child: SplashScreen(
         seconds: 2,
-        navigateAfterSeconds:n==1?Home():Login(),
+        navigateAfterSeconds:n==1?Home(''):Login(),
         image: new Image.asset("assets/images/logo1x.jpeg"),
         photoSize: 200,
         backgroundColor: Colors.white,

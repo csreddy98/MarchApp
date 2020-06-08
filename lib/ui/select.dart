@@ -469,7 +469,7 @@ class _SelectState extends State<Select> {
                                 prefs.setInt('log', 1);
 
                                 Navigator.pushAndRemoveUntil(context,
-                                    MaterialPageRoute(builder: (context) => Home()),
+                                    MaterialPageRoute(builder: (context) => Home('')),
                                         (Route<dynamic> route) => false);
 
 
@@ -555,7 +555,7 @@ class _SelectState extends State<Select> {
                                   if(count==3 && result['response'] == 200){
 
                                     Navigator.pushAndRemoveUntil(context,
-                                        MaterialPageRoute(builder: (context) => Home()),
+                                        MaterialPageRoute(builder: (context) => Home('')),
                                             (Route<dynamic> route) => false);
 
                                     int savedGoal =

@@ -350,7 +350,7 @@ class _EditProfileState extends State<Edit_Profile> {
                           phone));
 
                       Navigator.pushAndRemoveUntil(context,
-                          MaterialPageRoute(builder: (context) => Home()),
+                          MaterialPageRoute(builder: (context) => Home('')),
                               (Route<dynamic> route) => false);
 
                     }
@@ -430,7 +430,7 @@ class _EditProfileState extends State<Edit_Profile> {
                             phone));
 
                         Navigator.pushAndRemoveUntil(context,
-                            MaterialPageRoute(builder: (context) => Home()),
+                            MaterialPageRoute(builder: (context) => Home('')),
                                 (Route<dynamic> route) => false);
 
                       }

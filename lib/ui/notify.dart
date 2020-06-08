@@ -960,7 +960,7 @@ class _NotifyState extends State<Notify> {
                                   print(resp.body.toString());
                                   if(resp.body.toString()==' success'){
                                     Navigator.pushAndRemoveUntil(context,
-                                        MaterialPageRoute(builder: (context) => Home()),
+                                        MaterialPageRoute(builder: (context) => Home('')),
                                             (Route<dynamic> route) => false);
 
                                   }
@@ -1236,7 +1236,7 @@ class _NotifyState extends State<Notify> {
                                   print(resp.body.toString());
                                   if(resp.body.toString()==' success'){
                                     Navigator.pushAndRemoveUntil(context,
-                                        MaterialPageRoute(builder: (context) => Home()),
+                                        MaterialPageRoute(builder: (context) => Home('')),
                                             (Route<dynamic> route) => false);
 
                                   }
@@ -1512,7 +1512,7 @@ class _NotifyState extends State<Notify> {
                                  print(resp.body.toString());
                                  if(resp.body.toString()==' success'){
                                    Navigator.pushAndRemoveUntil(context,
-                                       MaterialPageRoute(builder: (context) => Home()),
+                                       MaterialPageRoute(builder: (context) => Home('')),
                                            (Route<dynamic> route) => false);
 
                                  }

@@ -117,7 +117,7 @@ class _LoginState extends State<Login> {
         prefs.setInt('log', 1);
 
         Navigator.pushAndRemoveUntil(context,
-            MaterialPageRoute(builder: (context) => Home()),
+            MaterialPageRoute(builder: (context) => Home('')),
                 (Route<dynamic> route) => false);
 
       }
@@ -239,7 +239,7 @@ class _LoginState extends State<Login> {
                           borderRadius: new BorderRadius.circular(50.0)),
                       onPressed: () {
                         Navigator.pushAndRemoveUntil(context,
-                          MaterialPageRoute(builder: (context) => Home()),
+                          MaterialPageRoute(builder: (context) => Home('')),
                               (Route<dynamic> route) => false,);
 
                       },

@@ -109,7 +109,7 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
 
               Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => Home()),
+                  MaterialPageRoute(builder: (context) => Home('')),
                   (Route<dynamic> route) => false);
             } else {
               Navigator.pushAndRemoveUntil(
@@ -148,7 +148,7 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
         //     } else {
         //       Navigator.pushAndRemoveUntil(
         //           context,
-        //           MaterialPageRoute(builder: (context) => Home()),
+        //           MaterialPageRoute(builder: (context) => Home('')),
         //           (route) => false);
         //     }
         //   }

@@ -12,8 +12,10 @@ import 'package:toast/toast.dart';
 import 'package:intl/intl.dart';
 
 class MessagesScreen extends StatefulWidget {
+  final String screenState;
+  MessagesScreen(this.screenState);
   @override
-  _MessagesScreenState createState() => _MessagesScreenState();
+  _MessagesScreenState createState() => _MessagesScreenState(this.screenState);
 }
 
 class _MessagesScreenState extends State<MessagesScreen> {
@@ -21,7 +23,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
   List<String> categories = ['Chats', 'Requests'];
   bool chats;
   String token, myId, uid;
-
+  final String screenState;
+  _MessagesScreenState(this.screenState);
   List newReqs = [];
   List accepted = [];
   // List pending = [];
@@ -29,7 +32,9 @@ class _MessagesScreenState extends State<MessagesScreen> {
   void initState() {
     _load();
     super.initState();
-    chats = true;
+    setState(() {
+      (widget.screenState == 'requests') ? chats = false : chats = true;
+    });
   }
 
   @override
@@ -602,9 +607,10 @@ class _MessagesScreenState extends State<MessagesScreen> {
   }
 
   String durationCalculator(String pastDate) {
-    DateTime newDate = DateTime.parse(pastDate);
+    DateTime newDate =
+        DateTime.parse(pastDate).toUtc().add(Duration(hours: 5, minutes: 30));
     var diff = DateTime.now().difference(newDate);
-    print(diff.inDays % 365);
+    print(diff.inMinutes);
     String output = "";
     if (diff.inDays > 0) {
       if (diff.inDays > 7) {
