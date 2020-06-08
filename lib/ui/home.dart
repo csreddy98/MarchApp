@@ -52,6 +52,7 @@ class _HomeState extends State<Home> {
     //     json.encode({"uid": "$id", "time": "${DateTime.now()}"}));
     socketIO.subscribe('new message', (data) {
       updateStatus().then((value) {
+        print('$value');
         socketIO.sendMessage('update my status', json.encode(value));
       });
       print("$data");
@@ -108,7 +109,7 @@ class _HomeState extends State<Home> {
     // });
   }
 
-  Future<Map<String, String>> updateStatus() async {
+  Future<Map> updateStatus() async {
     var prefs = await SharedPreferences.getInstance();
     Map myMap = {
       'uid': prefs.getString('id'),
