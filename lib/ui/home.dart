@@ -226,7 +226,9 @@ class _HomeState extends State<Home> {
   Future _showNotification(name, message) async {
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
         'your channel id', 'your channel name', 'your channel description',
-        importance: Importance.Max, priority: Priority.High);
+        importance: Importance.Max,
+        priority: Priority.High,
+        styleInformation: BigTextStyleInformation(''));
     var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
     var platformChannelSpecifics = new NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);

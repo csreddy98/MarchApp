@@ -86,7 +86,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
               child: FutureBuilder(
                   future: http.post("https://march.lbits.co/api/worker.php",
                       body: json
-                          .encode({'work': 'get my requests', 'uid': '$uid'}),
+                          .encode({'work': 'get my requests', 'uid': '$uid', 'id': '$myId'}),
                       headers: {
                         'Content-Type': 'application/json',
                         'Authorization': 'Bearer $token'
@@ -95,8 +95,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
                     if (snapshot.data != null) {
                       var data = json.decode(snapshot.data.body);
                       if (data['response'] == 200) {
-                        // cacheMemory = data;
-                        // print("this is the accepted data ${data['result']['accepted']}");
                         var pending = data['result']['pending'];
                         List accepted = data['result']['accepted'];
 
@@ -304,8 +302,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                                         'Bearer $token'
                                                                   }).then(
                                                                   (value) {
-                                                                print(
-                                                                    value.body);
                                                                 var resp = json
                                                                     .decode(value
                                                                         .body);
@@ -387,8 +383,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                                         'Bearer $token'
                                                                   }).then(
                                                                   (value) {
-                                                                print(
-                                                                    value.body);
                                                                 var resp = json
                                                                     .decode(value
                                                                         .body);
@@ -451,8 +445,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
   }
 
   Widget recentChats(List usersList) {
-    // print("$usersList");
-
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -610,7 +602,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
     DateTime newDate =
         DateTime.parse(pastDate).toUtc().add(Duration(hours: 5, minutes: 30));
     var diff = DateTime.now().difference(newDate);
-    print(diff.inMinutes);
     String output = "";
     if (diff.inDays > 0) {
       if (diff.inDays > 7) {

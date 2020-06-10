@@ -6,18 +6,16 @@ import 'package:splashscreen/splashscreen.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget  {
-  // This widget is the root of your application.
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.white,
-        primaryColor: Color(0xFF4267B2),
-        fontFamily: 'montserrat'
-      ),
+          scaffoldBackgroundColor: Colors.white,
+          primaryColor: Color(0xFF4267B2),
+          fontFamily: 'montserrat'),
       home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
@@ -32,7 +30,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   int n;
 
   @override
@@ -40,12 +37,13 @@ class _MyHomePageState extends State<MyHomePage> {
     _load();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: SplashScreen(
         seconds: 2,
-        navigateAfterSeconds:n==1?Home(''):Login(),
+        navigateAfterSeconds: n == 1 ? Home('') : Login(),
         image: new Image.asset("assets/images/logo1x.jpeg"),
         photoSize: 200,
         backgroundColor: Colors.white,
@@ -54,15 +52,13 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _load() async{
-
+  void _load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    int intValue = prefs.getInt('log')??0;
-    if(intValue==1){
+    int intValue = prefs.getInt('log') ?? 0;
+    if (intValue == 1) {
       setState(() {
-        n=1;
+        n = 1;
       });
     }
-
   }
 }
