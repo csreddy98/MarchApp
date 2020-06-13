@@ -50,11 +50,9 @@ class _FindScreenState extends State<FindScreen> {
     );
     socketIO.init();
     socketIO.connect();
-    print("This is uid before sending $uid");
-    socketIO.subscribe('new message', (data) {
-      print("This is the data received $data");
-    });
-
+    // socketIO.subscribe('new message', (data) {
+    //   print("MESSAGE: $data");
+    // });
     super.initState();
   }
 
@@ -108,7 +106,6 @@ class _FindScreenState extends State<FindScreen> {
           });
         }
       }
-      //else print error
     }
 
     return people;
@@ -154,7 +151,7 @@ class _FindScreenState extends State<FindScreen> {
                   initialData: [],
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     print("SNAPSHOT: ${snapshot.data}");
-                    if ( snapshot.data.length == 0) {
+                    if (snapshot.data.length == 0) {
                       return Container(
                         child: Center(
                           child: CircularProgressIndicator(),

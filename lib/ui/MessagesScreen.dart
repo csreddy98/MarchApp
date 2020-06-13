@@ -7,7 +7,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:march/ui/ChatScreen.dart';
 import 'package:http/http.dart' as http;
+import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:toast/toast.dart';
 import 'package:intl/intl.dart';
 
@@ -27,6 +29,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
   _MessagesScreenState(this.screenState);
   List newReqs = [];
   List accepted = [];
+  DataBaseHelper db = DataBaseHelper();
   // List pending = [];
   @override
   void initState() {
@@ -85,8 +88,11 @@ class _MessagesScreenState extends State<MessagesScreen> {
             child: Container(
               child: FutureBuilder(
                   future: http.post("https://march.lbits.co/api/worker.php",
-                      body: json
-                          .encode({'work': 'get my requests', 'uid': '$uid', 'id': '$myId'}),
+                      body: json.encode({
+                        'work': 'get my requests',
+                        'uid': '$uid',
+                        'id': '$myId'
+                      }),
                       headers: {
                         'Content-Type': 'application/json',
                         'Authorization': 'Bearer $token'
@@ -461,6 +467,14 @@ class _MessagesScreenState extends State<MessagesScreen> {
         child: ListView.builder(
           itemCount: usersList.length,
           itemBuilder: (BuildContext context, int index) {
+            Map lastMessage;
+            db.getLastMessage(usersList[index]['id']).then((value) {
+              setState(() {
+                lastMessage = value[0];
+              });
+              print('$lastMessage');
+            });
+
             return Slidable(
               key: ValueKey(index),
               closeOnScroll: true,
@@ -489,10 +503,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
                 ),
               ],
               child: GestureDetector(
-                onTap: () => Navigator.push(
-                  context,
-                  _createRoute(usersList[index])
-                ),
+                onTap: () =>
+                    Navigator.push(context, _createRoute(usersList[index])),
                 child: Container(
                   margin: EdgeInsets.only(top: 5.0, bottom: 5.0, right: 5.0),
                   padding:
@@ -535,7 +547,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                               Container(
                                 width: MediaQuery.of(context).size.width * 0.45,
                                 child: Text(
-                                  "${usersList[index]['message']}",
+                                  "${lastMessage['message']}",
                                   style: TextStyle(
                                     color: Colors.blueGrey,
                                     fontSize: 13.0,
@@ -619,8 +631,9 @@ class _MessagesScreenState extends State<MessagesScreen> {
 
   Route _createRoute(Map userMap) {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) =>
-          TextingScreen(user: userMap,),
+      pageBuilder: (context, animation, secondaryAnimation) => TextingScreen(
+        user: userMap,
+      ),
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
         var begin = Offset(10.0, 0.0);
         var end = Offset.zero;

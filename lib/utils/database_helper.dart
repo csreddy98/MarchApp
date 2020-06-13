@@ -31,16 +31,15 @@ class DataBaseHelper {
   final String columnTimeFrame = "timeFrame";
   final String columnGoalNumber = "goalNumber";
 
-
   final String messagesTable = "messages";
   final messageId = "messageId";
-  static final messageSender = "senderId";
-  static final messageReceiver = "receiverId";
-  static final messageText = "message";
-  static final messageContainsImage = "containsImage";
-  static final messageImage = "ImageUrl";
-  static final seenStatus = "seenStatus";
-  static final messageTime = "time";
+  static String messageSender = "senderId";
+  static String messageReceiver = "receiverId";
+  static String messageText = "message";
+  static String messageContainsImage = "containsImage";
+  static String messageImage = "ImageUrl";
+  static String seenStatus = "seenStatus";
+  static String messageTime = "time";
 
   Future<Database> get db async {
     if (_db != null) {
@@ -76,7 +75,7 @@ class DataBaseHelper {
         " $columnTarget TEXT,$columnTimeFrame TEXT,"
         " $columnGoalNumber TEXT"
         ")");
-        
+
     await db.execute("CREATE TABLE $messagesTable("
         "$messageId INTEGER PRIMARY KEY AUTOINCREMENT,"
         "$messageSender TEXT,"
@@ -175,10 +174,21 @@ class DataBaseHelper {
         where: "$columnId=?", whereArgs: [goal.goalNumber]);
   }
 
-
-  Future<int> addMessage(Map messageInfo) async {
+  Future<int> addMessage(Map<String, String> messageInfo) async {
     var dbClient = await db;
     return await dbClient.insert(messagesTable, messageInfo);
+  }
+
+  Future<List<Map>> getMessage(String userId) async {
+    var dbClient = await db;
+    return await dbClient.rawQuery(
+        "SELECT * FROM $messagesTable WHERE $messageReceiver = '$userId' OR $messageSender = '$userId'");
+  }
+
+  Future<List<Map>> getLastMessage(String userId) async {
+    var dbClient = await db;
+    return await dbClient.rawQuery(
+        "SELECT * FROM $messagesTable WHERE $messageSender = '$userId' OR $messageReceiver = '$userId' ORDER BY $messageId DESC LIMIT 1");
   }
 
   Future close() async {

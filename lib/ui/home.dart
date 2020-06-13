@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_socket_io/socket_io_manager.dart';
-import 'package:march/support/PhoneAuthCode.dart';
 import 'package:march/ui/MessagesScreen.dart';
 import 'package:march/ui/find_screen.dart';
 import 'package:march/ui/profile.dart';
@@ -37,57 +36,10 @@ class _HomeState extends State<Home> {
   void initState() {
     tabs = [
       FindScreen(),
-      //Notify(),
-      //Inbox(),
       MessagesScreen('$chatsPage'),
       Profile(),
     ];
     _load();
-    socketIO = SocketIOManager().createSocketIO(
-      'https://glacial-waters-33471.herokuapp.com',
-      '/',
-    );
-    socketIO.init();
-    socketIO.connect();
-
-    // socketIO.sendMessage('update my status',
-    //     json.encode({"uid": "$id", "time": "${DateTime.now()}"}));
-    socketIO.subscribe('new message', (data) {
-      updateStatus().then((value) {
-        print('$value');
-        socketIO.sendMessage('update my status', json.encode(value));
-      });
-      print("$data");
-    });
-    socketIO.subscribe('New user Request', (jsonData) {
-      var data = json.decode(jsonData);
-      print(data['receiver']);
-      if (data['receiver'] == myId) {
-        http.post('https://march.lbits.co/api/worker.php',
-            body: json.encode({
-              'serviceName': '',
-              'work': 'get user info',
-              'userId': data['sender']
-            }),
-            headers: {
-              'Authorization': 'Bearer $token',
-              'Content-Type': 'application/json'
-            }).then((value) {
-          var datax = json.decode(value.body);
-          print('datax: $datax');
-          Map<String, dynamic> messageMap = {
-            DataBaseHelper.messageSender: data['sender'],
-            DataBaseHelper.messageReceiver: data['receiver'],
-            DataBaseHelper.messageText: data['message'],
-            DataBaseHelper.messageContainsImage: false,
-            DataBaseHelper.messageImage: null,
-            DataBaseHelper.messageTime: data['time']
-          };
-          db.addMessage(messageMap);
-        });
-      }
-    });
-    // print();
     super.initState();
     getUserToken().then((value) {
       print("Token: $value");
@@ -129,28 +81,29 @@ class _HomeState extends State<Home> {
   }
 
   void message() async {
-    _fcm.configure(onMessage: (Map<String, dynamic> message) async {
-      print("onMessage: $message");
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          content: ListTile(
-            title: Text(message['notification']['title']),
-            subtitle: Text(message['notification']['body']),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Ok'),
-              onPressed: () => Navigator.of(context).pop(),
+    _fcm.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: ListTile(
+              title: Text(message['notification']['title']),
+              subtitle: Text(message['notification']['body']),
             ),
-          ],
-        ),
-      );
-    }, onLaunch: (Map<String, dynamic> message) async {
-      print("onLaunch: $message");
-    }, onResume: (Map<String, dynamic> message) async {
-      print("onResume: $message");
-    });
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Ok'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          ),
+        );
+      }, onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+      }, onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+      });
   }
 
   Future<Map> updateStatus() async {
