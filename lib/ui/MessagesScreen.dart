@@ -491,11 +491,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
               child: GestureDetector(
                 onTap: () => Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => TextingScreen(
-                      user: usersList[index]['sender_id'],
-                    ),
-                  ),
+                  _createRoute(usersList[index])
                 ),
                 child: Container(
                   margin: EdgeInsets.only(top: 5.0, bottom: 5.0, right: 5.0),
@@ -619,6 +615,26 @@ class _MessagesScreenState extends State<MessagesScreen> {
       output = "now";
     }
     return output;
+  }
+
+  Route _createRoute(Map userMap) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          TextingScreen(user: userMap,),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(10.0, 0.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
   }
 
   void _load() async {

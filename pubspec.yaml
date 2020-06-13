@@ -33,8 +33,8 @@ dependencies:
   path_provider:
   flutter_socket_io: ^0.6.0
   intl: ^0.16.1
-  flutter_local_notifications:
-  workmanager: ^0.2.0
+  firebase_core:
+  firebase_messaging:
 
 
 dev_dependencies:

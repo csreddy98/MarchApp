@@ -40,6 +40,7 @@ class _FindScreenState extends State<FindScreen> {
   bool _serviceEnabled;
   TextEditingController messageController = new TextEditingController();
   List myUsers = [];
+  bool loadPage = false;
   @override
   void initState() {
     _load();
@@ -127,96 +128,22 @@ class _FindScreenState extends State<FindScreen> {
       body: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(left: 15.0, right: 15.0),
-            child: Container(
-              color: Colors.white,
-              child: TextField(
-                controller: myController,
-                style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                decoration: InputDecoration(
-                  suffixIcon: IconButton(
+            padding: const EdgeInsets.only(right: 25.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                IconButton(
                     icon: Icon(
-                      Icons.search,
-                      color: Colors.blueGrey,
+                      Icons.tune,
+                      color: Colors.grey,
                     ),
-                    iconSize: 25,
+                    iconSize: 26.0,
                     onPressed: () {
-                      String name = myController.text;
-
-                      if (people.length != 0) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => Search(name, people)),
-                        );
-                        FocusScope.of(context)
-                            .requestFocus(new FocusNode()); //remove focus
-                        WidgetsBinding.instance
-                            .addPostFrameCallback((_) => myController.clear());
-                      } else {
-                        _sk.currentState.showSnackBar(SnackBar(
-                          content: Text(
-                            "Wait....",
-                            style: TextStyle(
-                              fontStyle: FontStyle.italic,
-                              fontSize: 15,
-                            ),
-                          ),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(12.0),
-                                  topRight: Radius.circular(12.0))),
-                          duration: Duration(seconds: 1),
-                          backgroundColor: Colors.lightBlueAccent,
-                        ));
+                      if (people.length > 0) {
+                        _navigateAndDisplaySelection(context);
                       }
-
-                      FocusScope.of(context)
-                          .requestFocus(new FocusNode()); //remove focus
-                      WidgetsBinding.instance
-                          .addPostFrameCallback((_) => myController.clear()); //
-                    },
-                  ),
-                  hintText: "Search People...",
-                  contentPadding: const EdgeInsets.only(
-                    left: 16,
-                    right: 20,
-                    top: 14,
-                    bottom: 14,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Container(
-            height: 60,
-            color: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    'Featured',
-                    style: TextStyle(
-                      color: Colors.blue[900],
-                      fontSize: 20.0,
-                      letterSpacing: 0.4,
-                    ),
-                  ),
-                  IconButton(
-                      icon: Icon(
-                        Icons.tune,
-                        color: Colors.grey,
-                      ),
-                      iconSize: 26.0,
-                      onPressed: () {
-                        if (people.length > 0) {
-                          _navigateAndDisplaySelection(context);
-                        }
-                      }),
-                ],
-              ),
+                    }),
+              ],
             ),
           ),
           Expanded(
@@ -224,8 +151,10 @@ class _FindScreenState extends State<FindScreen> {
                 color: Colors.white,
                 child: FutureBuilder(
                   future: _getPeople(),
+                  initialData: [],
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    if (snapshot.data == null) {
+                    print("SNAPSHOT: ${snapshot.data}");
+                    if ( snapshot.data.length == 0) {
                       return Container(
                         child: Center(
                           child: CircularProgressIndicator(),

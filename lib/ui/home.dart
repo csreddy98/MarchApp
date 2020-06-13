@@ -1,9 +1,9 @@
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_socket_io/socket_io_manager.dart';
+import 'package:march/support/PhoneAuthCode.dart';
 import 'package:march/ui/MessagesScreen.dart';
 import 'package:march/ui/find_screen.dart';
 import 'package:march/ui/profile.dart';
@@ -12,6 +12,7 @@ import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_socket_io/flutter_socket_io.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class Home extends StatefulWidget {
   final pageName;
@@ -28,8 +29,9 @@ class _HomeState extends State<Home> {
   String token, uid;
   String myId;
   String chatsPage;
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   final db = DataBaseHelper();
+  final FirebaseMessaging _fcm = FirebaseMessaging();
+  var iosSubscription;
   List tabs;
   @override
   void initState() {
@@ -81,32 +83,74 @@ class _HomeState extends State<Home> {
             DataBaseHelper.messageImage: null,
             DataBaseHelper.messageTime: data['time']
           };
-          _showNotification('${datax['result']['user_info']['fullName']}',
-              'You have a new request from ${datax['result']['user_info']['fullName']}.\nMessage: ${data['message']}');
           db.addMessage(messageMap);
         });
       }
     });
+    // print();
     super.initState();
-    var initializationSettingsAndroid =
-        new AndroidInitializationSettings('@mipmap/ic_launcher');
-    var initializationSettingsIOS = new IOSInitializationSettings();
-    var initializationSettings = new InitializationSettings(
-        initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: onSelectNotification);
+    getUserToken().then((value) {
+      print("Token: $value");
+    });
   }
 
-  Future onSelectNotification(String payload) async {
-    await flutterLocalNotificationsPlugin.cancelAll();
-    // await Navigator.push(context, MaterialPageRoute(builder: (context) => Home('requests'))).then((value) {
-    setState(() {
-      _currentindex = 1;
-      title = t[1];
-      chatsPage = "requests";
+  void checkforIosPermission() async {
+    await _fcm.requestNotificationPermissions(
+        IosNotificationSettings(sound: true, badge: true, alert: true));
+    _fcm.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
+      print("Settings registered: $settings");
     });
-    // });
+  }
+
+  Future<String> getUserToken() async {
+    var tkn;
+    if (Platform.isIOS) checkforIosPermission();
+    await _fcm.getToken().then((value) {
+      tkn = value;
+      if (token != null && uid != null) {
+        print("token: $token && UID: $uid");
+        http.post('https://march.lbits.co/api/worker.php',
+            body: json.encode({
+              'serviceName': '',
+              'work': 'save token',
+              'uid': uid,
+              'token': tkn
+            }),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $token'
+            }).then((value) {
+          var val = json.decode(value.body);
+          print("$val");
+        });
+      }
+    });
+    return tkn;
+  }
+
+  void message() async {
+    _fcm.configure(onMessage: (Map<String, dynamic> message) async {
+      print("onMessage: $message");
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          content: ListTile(
+            title: Text(message['notification']['title']),
+            subtitle: Text(message['notification']['body']),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Ok'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
+      );
+    }, onLaunch: (Map<String, dynamic> message) async {
+      print("onLaunch: $message");
+    }, onResume: (Map<String, dynamic> message) async {
+      print("onResume: $message");
+    });
   }
 
   Future<Map> updateStatus() async {
@@ -217,27 +261,11 @@ class _HomeState extends State<Home> {
     myId = prefs.getString('id');
     uid = prefs.getString('uid');
     prefs.setInt('log', 1);
-    FirebaseAuth.instance.currentUser().then((val) async {
-      String uid = val.uid;
-      prefs.setString('uid', uid);
-    });
-  }
-
-  Future _showNotification(name, message) async {
-    var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
-        'your channel id', 'your channel name', 'your channel description',
-        importance: Importance.Max,
-        priority: Priority.High,
-        styleInformation: BigTextStyleInformation(''));
-    var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
-    var platformChannelSpecifics = new NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(
-      0,
-      '$name',
-      '$message',
-      platformChannelSpecifics,
-      payload: 'Custom_Sound',
-    );
+    if(uid == null){
+      FirebaseAuth.instance.currentUser().then((val) async {
+        String uid = val.uid;
+        prefs.setString('uid', uid);
+      });
+    }
   }
 }
