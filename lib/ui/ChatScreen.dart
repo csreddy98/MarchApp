@@ -38,8 +38,8 @@ class _TextingScreenState extends State<TextingScreen> {
         // loadMessages();
         print('$data');
         Map newMessage = <String, String>{
-          DataBaseHelper.messageSender: data['sender'],
-          DataBaseHelper.messageReceiver: data['receiver'],
+          DataBaseHelper.messageOtherId: data['sender'] != myId ? data['sender'] : data['receiver'],
+          DataBaseHelper.messageSentBy: data['sender'],
           DataBaseHelper.messageText: data['message'],
           DataBaseHelper.messageContainsImage: '0',
           DataBaseHelper.messageImage: "null",
@@ -143,7 +143,7 @@ class _TextingScreenState extends State<TextingScreen> {
                       controller: _scroller,
                       scrollDirection: Axis.vertical,
                       itemBuilder: (BuildContext context, int index) {
-                        return (messages[index]['senderId'] != this.myId)
+                        return (messages[index]['otherId'] == this.myId)
                             ? Column(
                                 children: <Widget>[
                                   Row(

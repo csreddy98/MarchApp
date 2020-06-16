@@ -33,8 +33,8 @@ class DataBaseHelper {
 
   final String messagesTable = "messages";
   final messageId = "messageId";
-  static String messageSender = "senderId";
-  static String messageReceiver = "receiverId";
+  static String messageOtherId = "otherId";
+  static String messageSentBy = "sentBy";
   static String messageText = "message";
   static String messageContainsImage = "containsImage";
   static String messageImage = "ImageUrl";
@@ -78,8 +78,8 @@ class DataBaseHelper {
 
     await db.execute("CREATE TABLE $messagesTable("
         "$messageId INTEGER PRIMARY KEY AUTOINCREMENT,"
-        "$messageSender TEXT,"
-        "$messageReceiver TEXT,"
+        "$messageOtherId TEXT,"
+        "$messageSentBy TEXT,"
         "$messageText DATE,"
         "$messageContainsImage BOOLEAN,"
         "$messageImage TEXT,"
@@ -182,13 +182,13 @@ class DataBaseHelper {
   Future<List<Map>> getMessage(String userId) async {
     var dbClient = await db;
     return await dbClient.rawQuery(
-        "SELECT * FROM $messagesTable WHERE $messageReceiver = '$userId' OR $messageSender = '$userId'");
+        "SELECT * FROM $messagesTable WHERE $messageOtherId = '$userId'");
   }
 
-  Future<List<Map>> getLastMessage(String userId) async {
+  Future<List<Map>> getLastMessage(String otherId) async {
     var dbClient = await db;
-    return await dbClient.rawQuery(
-        "SELECT * FROM $messagesTable WHERE $messageSender = '$userId' OR $messageReceiver = '$userId' ORDER BY $messageId DESC LIMIT 1");
+    // return await dbClient.rawQuery("SELECT * FROM $messagesTable WHERE $messageOtherId = $otherId ORDER BY $messageId DESC LIMIT 1");
+    return await dbClient.rawQuery("SELECT *, datetime(time) AS time FROM $messagesTable GROUP BY $messageId ORDER BY $messageId DESC");
   }
 
   Future close() async {

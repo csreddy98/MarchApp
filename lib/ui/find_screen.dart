@@ -331,8 +331,8 @@ class _FindScreenState extends State<FindScreen> {
                                                                                           "time": DateTime.now().toString(),
                                                                                         }));
                                                                                     Map<String, dynamic> messageMap = {
-                                                                                      DataBaseHelper.messageSender: id,
-                                                                                      DataBaseHelper.messageReceiver: person.id,
+                                                                                      DataBaseHelper.messageOtherId: person.id,
+                                                                                      DataBaseHelper.messageSentBy: id,
                                                                                       DataBaseHelper.messageText: msg,
                                                                                       DataBaseHelper.messageContainsImage: 0,
                                                                                       DataBaseHelper.messageImage: null,

@@ -30,6 +30,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
   List newReqs = [];
   List accepted = [];
   DataBaseHelper db = DataBaseHelper();
+  List lastMessages = [];
   // List pending = [];
   @override
   void initState() {
@@ -451,6 +452,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
   }
 
   Widget recentChats(List usersList) {
+    _getLastMessages();
+    // String lastMessage;
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -467,14 +470,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
         child: ListView.builder(
           itemCount: usersList.length,
           itemBuilder: (BuildContext context, int index) {
-            Map lastMessage;
-            db.getLastMessage(usersList[index]['id']).then((value) {
-              setState(() {
-                lastMessage = value[0];
-              });
-              print('$lastMessage');
-            });
-
             return Slidable(
               key: ValueKey(index),
               closeOnScroll: true,
@@ -547,7 +542,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                               Container(
                                 width: MediaQuery.of(context).size.width * 0.45,
                                 child: Text(
-                                  "${lastMessage['message']}",
+                                  '${lastMessages[index]['message']}',
                                   style: TextStyle(
                                     color: Colors.blueGrey,
                                     fontSize: 13.0,
@@ -562,31 +557,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
                       ),
                       Column(
                         children: <Widget>[
-                          //     chat.unread
-                          //         ? Container(
-                          //             width: 20,
-                          //             height: 20,
-                          //             decoration: BoxDecoration(
-                          //               color: Theme.of(context).primaryColor,
-                          //               borderRadius:
-                          //                   BorderRadiusDirectional.circular(
-                          //                       50.0),
-                          //             ),
-                          //             alignment: Alignment.center,
-                          //             child: Text(
-                          //               '1',
-                          //               style: TextStyle(
-                          //                   color: Colors.white,
-                          //                   fontSize: 12.0,
-                          //                   fontWeight: FontWeight.bold),
-                          //             ),
-                          //           )
-                          //         : Text(''),
-                          // SizedBox(
-                          //   height: 10.0,
-                          // ),
                           Text(
-                            "${durationCalculator(usersList[index]['time'])}",
+                            "${durationCalculator(lastMessages[index]['time'])}",
                             style: TextStyle(
                               color: Colors.grey,
                               fontSize: 12.0,
@@ -648,6 +620,14 @@ class _MessagesScreenState extends State<MessagesScreen> {
         );
       },
     );
+  }
+
+  _getLastMessages() {
+    db.getLastMessage('00').then((value) {
+      setState(() {
+        this.lastMessages = value;
+      });
+    });
   }
 
   void _load() async {
