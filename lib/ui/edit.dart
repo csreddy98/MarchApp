@@ -337,6 +337,9 @@ class _EditProfileState extends State<Edit_Profile> {
 
                     var result = json.decode(resp.body);
                     if (result['response'] == 200) {
+                      var userAge = result['result']['user_info']['age'];
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      prefs.setString('age', userAge);
                       var db = new DataBaseHelper();
                       await db.updateUser(User(
                           uid,

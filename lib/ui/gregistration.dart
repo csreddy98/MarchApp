@@ -416,13 +416,12 @@ class _GRegisterState extends State<GRegister> {
                               if (result['response'] == 200) {
 
                                 var db = new DataBaseHelper();
-
-                               int savedUser =
-                                     await db.saveUser(new User(uid,name,bio,email,dob,gender,profession,_uploadedFileURL,phone));
+                               int savedUser = await db.saveUser(new User(uid,name,bio,email, dob, gender,profession,_uploadedFileURL,phone));
 
                                 SharedPreferences prefs = await SharedPreferences.getInstance();
-                                prefs.setString('token',result['result']);
-
+                                prefs.setString('token',result['result']['token']);
+                                prefs.setString('id', result['result']['user_info']['id']);
+                                prefs.setString('age', result['result']['user_info']['age']);
                                 print("user saved :$savedUser");
 
                                 Navigator.pushAndRemoveUntil(context,
