@@ -33,11 +33,13 @@ class _TextingScreenState extends State<TextingScreen> {
     socketIO.init();
     socketIO.subscribe('new message', (jsonData) {
       var data = json.decode(jsonData);
-      if (data['receiver'].toString() == myId || data['sender'].toString() == myId) {
+      if (data['receiver'].toString() == myId ||
+          data['sender'].toString() == myId) {
         // loadMessages();
         print('$data');
         Map newMessage = <String, String>{
-          DataBaseHelper.messageOtherId: (data['receiver'] != myId)? data['receiver'] : data['sender'],
+          DataBaseHelper.messageOtherId:
+              (data['receiver'] != myId) ? data['receiver'] : data['sender'],
           DataBaseHelper.messageSentBy: data['sender'],
           DataBaseHelper.messageText: data['message'],
           DataBaseHelper.messageContainsImage: '0',
@@ -59,6 +61,7 @@ class _TextingScreenState extends State<TextingScreen> {
   void dispose() {
     messageController.dispose();
     _scroller.dispose();
+    socketIO.unSubscribesAll();
     super.dispose();
   }
 
