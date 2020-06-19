@@ -410,11 +410,11 @@ class _GRegisterState extends State<GRegister> {
                               );
 
                               print(profession+" "+fileURL);
-                              print(resp.body.toString());
+                              // print(resp.body.toString());
 
                               var result = json.decode(resp.body);
                               if (result['response'] == 200) {
-
+                                print("This is json decoded result: $result");
                                 var db = new DataBaseHelper();
                                int savedUser = await db.saveUser(new User(uid,name,bio,email, dob, gender,profession,_uploadedFileURL,phone));
 

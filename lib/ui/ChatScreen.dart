@@ -33,18 +33,19 @@ class _TextingScreenState extends State<TextingScreen> {
     socketIO.init();
     socketIO.subscribe('new message', (jsonData) {
       var data = json.decode(jsonData);
-      if (data['sender'].toString() == myId ||
-          data['receiver'].toString() == myId) {
+      if (data['receiver'].toString() == myId || data['sender'].toString() == myId) {
         // loadMessages();
         print('$data');
         Map newMessage = <String, String>{
-          DataBaseHelper.messageOtherId: data['sender'] != myId ? data['sender'] : data['receiver'],
+          DataBaseHelper.messageOtherId: (data['receiver'] != myId)? data['receiver'] : data['sender'],
           DataBaseHelper.messageSentBy: data['sender'],
           DataBaseHelper.messageText: data['message'],
           DataBaseHelper.messageContainsImage: '0',
           DataBaseHelper.messageImage: "null",
           DataBaseHelper.messageTime: data['time']
         };
+
+        print("This is map: $newMessage");
         db.addMessage(newMessage);
         // setState(() {
         //   messages.add(data);
@@ -64,12 +65,10 @@ class _TextingScreenState extends State<TextingScreen> {
   void loadMessages() {
     db.getMessage(widget.user['id']).then((value) {
       messages.clear();
+      print("$value");
       setState(() {
         messages.addAll(value);
       });
-      print("Messages: $messages");
-      // _scroller.animateTo(_scroller.position.maxScrollExtent,
-      // duration: Duration(microseconds: 500), curve: Curves.easeOut);
       _scroller.jumpTo(_scroller.position.maxScrollExtent);
     });
   }
@@ -139,11 +138,11 @@ class _TextingScreenState extends State<TextingScreen> {
                   ? Center(child: Text(""))
                   : ListView.builder(
                       addRepaintBoundaries: false,
-                      itemCount: messages.length,
+                      itemCount: (messages.length != 0) ? messages.length : 0,
                       controller: _scroller,
                       scrollDirection: Axis.vertical,
                       itemBuilder: (BuildContext context, int index) {
-                        return (messages[index]['otherId'] == this.myId)
+                        return (messages[index]['sentBy'] != this.myId)
                             ? Column(
                                 children: <Widget>[
                                   Row(
@@ -348,19 +347,10 @@ class _TextingScreenState extends State<TextingScreen> {
                             "chat message",
                             jsonEncode(<String, dynamic>{
                               "message": text,
-                              "myId": this.myId,
-                              "otherId": widget.user['id'],
+                              "sender": this.myId,
+                              "receiver": widget.user['id'],
                               "sentBy": this.myId
                             }));
-
-                        // int sentId = await rootBundle
-                        //     .load("assets/audios/open-up.mp3")
-                        //     .then((ByteData soundData) {
-                        //   return pool.load(soundData);
-                        // });
-                        // int streamSentId = await pool.play(sentId);
-
-                        // print("$streamSentId");
                       },
                     ),
                   ),

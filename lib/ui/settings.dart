@@ -349,6 +349,7 @@ class _SettingsState extends State<Settings> {
                   prefs.remove('token');
                   prefs.remove('uid');
                   prefs.remove('id');
+                  prefs.remove('age');
                   var db = new DataBaseHelper();
                   await db.deleteUser(1);
                   int cnt=await db.getGoalCount();

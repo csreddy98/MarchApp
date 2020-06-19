@@ -174,7 +174,7 @@ class DataBaseHelper {
         where: "$columnId=?", whereArgs: [goal.goalNumber]);
   }
 
-  Future<int> addMessage(Map<String, String> messageInfo) async {
+  Future<int> addMessage(Map<String, dynamic> messageInfo) async {
     var dbClient = await db;
     return await dbClient.insert(messagesTable, messageInfo);
   }
@@ -182,13 +182,12 @@ class DataBaseHelper {
   Future<List<Map>> getMessage(String userId) async {
     var dbClient = await db;
     return await dbClient.rawQuery(
-        "SELECT * FROM $messagesTable WHERE $messageOtherId = '$userId'");
+        "SELECT * FROM $messagesTable WHERE $messageOtherId = $userId");
   }
 
-  Future<List<Map>> getLastMessage(String otherId) async {
+  Future<List<Map>> getLastMessage() async {
     var dbClient = await db;
-    // return await dbClient.rawQuery("SELECT * FROM $messagesTable WHERE $messageOtherId = $otherId ORDER BY $messageId DESC LIMIT 1");
-    return await dbClient.rawQuery("SELECT *, datetime(time) AS time FROM $messagesTable GROUP BY $messageId ORDER BY $messageId DESC");
+    return await dbClient.rawQuery("SELECT DISTINCT *, datetime(time) AS time FROM $messagesTable ORDER BY $messageId DESC");
   }
 
   Future close() async {

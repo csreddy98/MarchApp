@@ -9,7 +9,6 @@ import 'package:march/ui/ChatScreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:toast/toast.dart';
 import 'package:intl/intl.dart';
 
@@ -36,9 +35,10 @@ class _MessagesScreenState extends State<MessagesScreen> {
   void initState() {
     _load();
     super.initState();
-    setState(() {
-      (widget.screenState == 'requests') ? chats = false : chats = true;
-    });
+    // setState(() {
+    //   (widget.screenState == 'requests') ? chats = false : chats = true;
+    // });
+    chats = true;
   }
 
   @override
@@ -102,9 +102,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
                     if (snapshot.data != null) {
                       var data = json.decode(snapshot.data.body);
                       if (data['response'] == 200) {
-                        var pending = data['result']['pending'];
+                        List pending = data['result']['pending'];
                         List accepted = data['result']['accepted'];
-
                         return chats == true
                             ? accepted.length > 0
                                 ? recentChats(accepted)
@@ -453,135 +452,143 @@ class _MessagesScreenState extends State<MessagesScreen> {
 
   Widget recentChats(List usersList) {
     _getLastMessages();
-    // String lastMessage;
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
+    if (usersList.isNotEmpty) {
+      // String lastMessage;
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
         ),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
-        ),
-        child: ListView.builder(
-          itemCount: usersList.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Slidable(
-              key: ValueKey(index),
-              closeOnScroll: true,
-              actionPane: SlidableDrawerActionPane(),
-              secondaryActions: <Widget>[
-                IconSlideAction(
-                  caption: 'Clear',
-                  color: Color(0xFFA8B2C8),
-                  icon: Icons.edit,
-                  closeOnTap: true,
-                  foregroundColor: Colors.white,
-                  onTap: () {
-                    Toast.show('cleared', context,
-                        duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
-                  },
-                ),
-                IconSlideAction(
-                  caption: 'Delete',
-                  color: Color(0xFFFF3B30),
-                  icon: Icons.delete,
-                  closeOnTap: true,
-                  onTap: () {
-                    Toast.show('Deleted', context,
-                        duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
-                  },
-                ),
-              ],
-              child: GestureDetector(
-                onTap: () =>
-                    Navigator.push(context, _createRoute(usersList[index])),
-                child: Container(
-                  margin: EdgeInsets.only(top: 5.0, bottom: 5.0, right: 5.0),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                  decoration: BoxDecoration(
-                    color: Color(0xFFFFFFFF),
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(20.0),
-                      bottomRight: Radius.circular(20.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
+          child: ListView.builder(
+            itemCount: usersList.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Slidable(
+                key: ValueKey(index),
+                closeOnScroll: true,
+                actionPane: SlidableDrawerActionPane(),
+                secondaryActions: <Widget>[
+                  IconSlideAction(
+                    caption: 'Clear',
+                    color: Color(0xFFA8B2C8),
+                    icon: Icons.edit,
+                    closeOnTap: true,
+                    foregroundColor: Colors.white,
+                    onTap: () {
+                      Toast.show('cleared', context,
+                          duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+                    },
+                  ),
+                  IconSlideAction(
+                    caption: 'Delete',
+                    color: Color(0xFFFF3B30),
+                    icon: Icons.delete,
+                    closeOnTap: true,
+                    onTap: () {
+                      Toast.show('Deleted', context,
+                          duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+                    },
+                  ),
+                ],
+                child: GestureDetector(
+                  onTap: () =>
+                      Navigator.push(context, _createRoute(usersList[index])),
+                  child: Container(
+                    margin: EdgeInsets.only(top: 5.0, bottom: 5.0, right: 5.0),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFFFFFFF),
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(20.0),
+                        bottomRight: Radius.circular(20.0),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            ClipRRect(
+                              child: Image.network(
+                                  usersList[index]['profile_pic'],
+                                  height: 55,
+                                  width: 55,
+                                  fit: BoxFit.cover),
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            SizedBox(
+                              width: 10.0,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  usersList[index]['fullName'],
+                                  style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontSize: 15.0,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                ),
+                                SizedBox(height: 5.0),
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.45,
+                                  child: Text(
+                                    '${(lastMessages.isNotEmpty) ? lastMessages[index]['message'] : 'None'}',
+                                    style: TextStyle(
+                                      color: Colors.blueGrey,
+                                      fontSize: 13.0,
+                                      fontWeight: FontWeight.w200,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: <Widget>[
+                            Text(
+                              "${lastMessages.isNotEmpty ? durationCalculator(lastMessages[index]['time']) : ""}",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 12.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          ],
+                        )
+                      ],
                     ),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          ClipRRect(
-                            child: Image.network(
-                                usersList[index]['profile_pic'],
-                                height: 55,
-                                width: 55,
-                                fit: BoxFit.cover),
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          SizedBox(
-                            width: 10.0,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                usersList[index]['fullName'],
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  fontSize: 15.0,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                              ),
-                              SizedBox(height: 5.0),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.45,
-                                child: Text(
-                                  '${lastMessages[index]['message']}',
-                                  style: TextStyle(
-                                    color: Colors.blueGrey,
-                                    fontSize: 13.0,
-                                    fontWeight: FontWeight.w200,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      Column(
-                        children: <Widget>[
-                          Text(
-                            "${durationCalculator(lastMessages[index]['time'])}",
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      return Center(
+        child: Text("loading"),
+      );
+    }
   }
 
   String durationCalculator(String pastDate) {
     DateTime newDate =
-        DateTime.parse(pastDate).toUtc().add(Duration(hours: 5, minutes: 30));
-    var diff = DateTime.now().difference(newDate);
+        DateTime.parse(pastDate);
+    var diff = newDate.difference(
+        DateTime.now());
     String output = "";
     if (diff.inDays > 0) {
       if (diff.inDays > 7) {
@@ -623,7 +630,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
   }
 
   _getLastMessages() {
-    db.getLastMessage('00').then((value) {
+    db.getLastMessage().then((value) {
+      print("${value}");
       setState(() {
         this.lastMessages = value;
       });
