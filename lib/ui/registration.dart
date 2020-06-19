@@ -421,8 +421,9 @@ class _RegisterState extends State<Register> {
                                   await db.saveUser(new User(uid,name,bio,email,dob,gender,profession,_uploadedFileURL,phone));
 
                                   SharedPreferences prefs = await SharedPreferences.getInstance();
-                                  prefs.setString('token',result['result']);
-
+                                  prefs.setString('token',result['result']['token']);
+                                  prefs.setString('id', result['result']['user_info']['id']);
+                                  prefs.setString('age', result['result']['user_info']['age']);
                                   print("user saved :$savedUser");
 
                                   Navigator.pushAndRemoveUntil(context,
