@@ -313,7 +313,16 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                               DataBaseHelper.friendLastMessage: pending[i]['user_info']['message'],
                                                               DataBaseHelper.friendLastMessageTime: '${DateTime.now()}'
                                                             };
+                                                            var newMessage = {
+                                                              DataBaseHelper.messageText: pending[i]['user_info']['message'],
+                                                              DataBaseHelper.messageOtherId: pending[i]['user_info']['sender_id'],
+                                                              DataBaseHelper.messageImage: "null",
+                                                              DataBaseHelper.messageContainsImage: '0',
+                                                              DataBaseHelper.messageSentBy: pending[i]['user_info']['sender_id'],
+                                                              DataBaseHelper.messageTime: '${DateTime.now()}'
+                                                            };
                                                             db.addUser(addNewUser);
+                                                            db.addMessage(newMessage);
                                                             pending.removeAt(i);
                                                             chats = true;
                                                           });
