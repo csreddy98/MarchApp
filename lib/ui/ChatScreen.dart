@@ -36,7 +36,7 @@ class _TextingScreenState extends State<TextingScreen> {
       if (data['receiver'].toString() == myId ||
           data['sender'].toString() == myId) {
         // loadMessages();
-        print('$data');
+        // print('$data');
         Map newMessage = <String, String>{
           DataBaseHelper.messageOtherId:
               (data['receiver'] != myId) ? data['receiver'] : data['sender'],
@@ -47,7 +47,7 @@ class _TextingScreenState extends State<TextingScreen> {
           DataBaseHelper.messageTime: data['time']
         };
 
-        print("This is map: $newMessage");
+        // print("This is map: $newMessage");
         db.addMessage(newMessage);
         // setState(() {
         //   messages.add(data);
@@ -61,16 +61,17 @@ class _TextingScreenState extends State<TextingScreen> {
   void dispose() {
     messageController.dispose();
     _scroller.dispose();
-    socketIO.unSubscribesAll();
+    // socketIO.unSubscribesAll();
     super.dispose();
   }
 
   void loadMessages() {
-    db.getMessage(widget.user['id']).then((value) {
-      messages.clear();
-      print("$value");
+    // print("${widget.user['receiver_id']}");
+    db.getMessage(widget.user['receiver_id']).then((value) {
+      // messages.clear();
+      // print("$value");
       setState(() {
-        messages.addAll(value);
+        messages = value;
       });
       _scroller.jumpTo(_scroller.position.maxScrollExtent);
     });
@@ -141,10 +142,11 @@ class _TextingScreenState extends State<TextingScreen> {
                   ? Center(child: Text(""))
                   : ListView.builder(
                       addRepaintBoundaries: false,
-                      itemCount: (messages.length != 0) ? messages.length : 0,
+                      itemCount: messages.length,
                       controller: _scroller,
                       scrollDirection: Axis.vertical,
                       itemBuilder: (BuildContext context, int index) {
+                        // print("This is $index: ${messages[index]}");
                         return (messages[index]['sentBy'] != this.myId)
                             ? Column(
                                 children: <Widget>[

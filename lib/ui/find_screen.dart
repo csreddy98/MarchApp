@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:march/models/people_model.dart';
+import 'package:march/support/PhoneAuthCode.dart';
 import 'package:march/ui/search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:march/ui/slider_container.dart';
@@ -306,6 +307,7 @@ class _FindScreenState extends State<FindScreen> {
                                                                                 messageController.clear();
                                                                                 SharedPreferences prefs = await SharedPreferences.getInstance();
                                                                                 String id = prefs.getString('id') ?? "";
+                                                                                print("UID IS EMPTY? $uid");
                                                                                 await http.post('https://march.lbits.co/api/worker.php',
                                                                                     body: json.encode(<String, dynamic>{
                                                                                       "serviveName": "",
@@ -497,12 +499,18 @@ class _FindScreenState extends State<FindScreen> {
   void _load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userToken = prefs.getString('token') ?? "";
-    uid = prefs.getString('uid') ?? "";
+    // uid = prefs.getString('uid') ?? "";
     id = prefs.getString('id') ?? "";
+
+
+    // SQLITE
+
+    var user= await db.getUser(1);
+
 
     setState(() {
       token = userToken;
-      uid = uid;
+      uid = user.userId;
     });
     socketIO.sendMessage('update my status',
         json.encode({"uid": "$id", "time": "${DateTime.now()}"}));

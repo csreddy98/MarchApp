@@ -631,7 +631,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
 
   _getLastMessages() {
     db.getLastMessage().then((value) {
-      print("${value}");
+      // print("${value}");
       setState(() {
         this.lastMessages = value;
       });
