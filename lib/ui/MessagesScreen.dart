@@ -305,7 +305,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                             .decode(value.body);
                                                         if (resp['response'] ==
                                                             200) {
-                                                          setState(() {
+                                                              
                                                             var addNewUser = {
                                                               DataBaseHelper.friendId: pending[i]['user_info']['sender_id'],
                                                               DataBaseHelper.friendName: pending[i]['user_info']['fullName'],
@@ -319,10 +319,12 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                               DataBaseHelper.messageImage: "null",
                                                               DataBaseHelper.messageContainsImage: '0',
                                                               DataBaseHelper.messageSentBy: pending[i]['user_info']['sender_id'],
+                                                              DataBaseHelper.seenStatus: '0',
                                                               DataBaseHelper.messageTime: '${DateTime.now()}'
                                                             };
                                                             db.addUser(addNewUser);
                                                             db.addMessage(newMessage);
+                                                          setState(() {
                                                             pending.removeAt(i);
                                                             chats = true;
                                                           });
