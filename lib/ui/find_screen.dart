@@ -78,7 +78,6 @@ class _FindScreenState extends State<FindScreen> {
           'uid': id,
         }),
       );
-      print("This is response: ${json.decode(resp.body)['response']}");
       var result = json.decode(resp.body);
       if (result['response'] == 200) {
         int l = result['result'].length;

@@ -28,6 +28,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
   _MessagesScreenState(this.screenState);
   List newReqs = [];
   List accepted = [];
+  // List accepted = [];
+  List pending = [];
   DataBaseHelper db = DataBaseHelper();
   List lastMessages = [];
   // List pending = [];
@@ -38,12 +40,38 @@ class _MessagesScreenState extends State<MessagesScreen> {
     // setState(() {
     //   (widget.screenState == 'requests') ? chats = false : chats = true;
     // });
-    db.getUsersList().then((value) => lastMessages = value);
     chats = true;
+  }
+
+  updateLastMessages() async {
+    await db.getUsersList().then((value) {
+      setState(() {
+        lastMessages = value;
+      });
+    });
+  }
+
+  dataReceiver() {
+    http.post("https://march.lbits.co/api/worker.php",
+        body: json
+            .encode({'work': 'get my requests', 'uid': '$uid', 'id': '$myId'}),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        }).then((value) {
+      var resp = json.decode(value.body);
+
+      setState(() {
+        accepted = resp['result']['accepted'];
+        pending = resp['result']['pending'];
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    updateLastMessages();
+    dataReceiver();
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -88,363 +116,312 @@ class _MessagesScreenState extends State<MessagesScreen> {
           ),
           Expanded(
             child: Container(
-              child: FutureBuilder(
-                  future: http.post("https://march.lbits.co/api/worker.php",
-                      body: json.encode({
-                        'work': 'get my requests',
-                        'uid': '$uid',
-                        'id': '$myId'
-                      }),
-                      headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer $token'
-                      }),
-                  builder: (_, snapshot) {
-                    if (snapshot.data != null) {
-                      var data = json.decode(snapshot.data.body);
-                      if (data['response'] == 200) {
-                        List pending = data['result']['pending'];
-                        List accepted = data['result']['accepted'];
-                        return chats == true
-                            ? accepted.length > 0
-                                ? recentChats(accepted)
-                                : Center(
-                                    child: Text(
-                                        "Oops... Seems like you haven't texted anyone yet"),
-                                  )
-                            : pending.length == 0
-                                ? Center(
-                                    child: Text(
-                                        "Seems like nobody has sent you a Request"),
-                                  )
-                                : ListView.builder(
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.vertical,
-                                    itemCount: pending.length,
-                                    itemBuilder: (con, i) {
-                                      List goals = pending[i]['goals'];
-                                      var goalString = StringBuffer();
-                                      List goalsList = [];
-                                      goals.forEach((element) {
-                                        goalsList.add(element['goal']);
-                                      });
-                                      goalString.writeAll(goalsList, ', ');
-                                      return Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Card(
-                                            child: Row(
-                                              children: <Widget>[
-                                                Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      12.0),
-                                                  child: ClipRRect(
-                                                    child: Image.network(
-                                                        pending[i]['user_info']
-                                                            ['profile_pic'],
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            4.5,
-                                                        // height: MediaQuery.of(_).size.height,
-                                                        fit: BoxFit.cover),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10.0),
+                child: chats == true
+                    ? lastMessages.length > 0
+                        ? recentChats(accepted)
+                        : Center(
+                            child: Text(
+                                "Oops... Seems like you haven't texted anyone yet"),
+                          )
+                    : pending.length == 0
+                        ? Center(
+                            child: Text(
+                                "Seems like nobody has sent you a Request"),
+                          )
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            itemCount: pending.length,
+                            itemBuilder: (con, i) {
+                              List goals = pending[i]['goals'];
+                              var goalString = StringBuffer();
+                              List goalsList = [];
+                              goals.forEach((element) {
+                                goalsList.add(element['goal']);
+                              });
+                              goalString.writeAll(goalsList, ', ');
+                              return Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Card(
+                                    child: Row(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: ClipRRect(
+                                            child: Image.network(
+                                                pending[i]['user_info']
+                                                    ['profile_pic'],
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    4.5,
+                                                // height: MediaQuery.of(_).size.height,
+                                                fit: BoxFit.cover),
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                          ),
+                                        ),
+                                        Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            RichText(
+                                              text: TextSpan(
+                                                  text: "Name: ",
+                                                  style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .primaryColor,
+                                                      fontSize: 19),
+                                                  children: [
+                                                    TextSpan(
+                                                        text:
+                                                            "${pending[i]['user_info']['fullName']}",
+                                                        style: TextStyle(
+                                                          color: Colors.black,
+                                                        ))
+                                                  ]),
+                                            ),
+                                            RichText(
+                                              text: TextSpan(
+                                                  text: "Age: ",
+                                                  style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .primaryColor,
+                                                      fontSize: 19),
+                                                  children: [
+                                                    TextSpan(
+                                                        text:
+                                                            "${pending[i]['user_info']['age']}",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.black))
+                                                  ]),
+                                            ),
+                                            RichText(
+                                              text: TextSpan(
+                                                  text: "Goals: ",
+                                                  style: TextStyle(
+                                                      color: Theme.of(context)
+                                                          .primaryColor,
+                                                      fontSize: 19),
+                                                  children: [
+                                                    TextSpan(
+                                                        text: "$goalString",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.black)),
+                                                  ]),
+                                            ),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
+                                            InkWell(
+                                              child: Container(
+                                                child: Padding(
+                                                  padding: EdgeInsets.all(5.0),
+                                                  child: Text(
+                                                    "Show Message",
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    maxLines: 3,
+                                                    softWrap: true,
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.w600),
                                                   ),
                                                 ),
-                                                Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceEvenly,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    RichText(
-                                                      text: TextSpan(
-                                                          text: "Name: ",
-                                                          style: TextStyle(
-                                                              color: Theme.of(
-                                                                      context)
+                                              ),
+                                              onTap: () {
+                                                showDialog(
+                                                    context: context,
+                                                    child: AlertDialog(
+                                                      title: Text(
+                                                          "${pending[i]['user_info']['fullName']}"),
+                                                      content: Text(
+                                                          "${pending[i]['user_info']['message']}"),
+                                                      actions: <Widget>[
+                                                        RaisedButton(
+                                                          color:
+                                                              Theme.of(context)
                                                                   .primaryColor,
-                                                              fontSize: 19),
-                                                          children: [
-                                                            TextSpan(
-                                                                text:
-                                                                    "${pending[i]['user_info']['fullName']}",
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .black,
-                                                                ))
-                                                          ]),
-                                                    ),
-                                                    RichText(
-                                                      text: TextSpan(
-                                                          text: "Age: ",
-                                                          style: TextStyle(
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .primaryColor,
-                                                              fontSize: 19),
-                                                          children: [
-                                                            TextSpan(
-                                                                text:
-                                                                    "${pending[i]['user_info']['age']}",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .black))
-                                                          ]),
-                                                    ),
-                                                    RichText(
-                                                      text: TextSpan(
-                                                          text: "Goals: ",
-                                                          style: TextStyle(
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .primaryColor,
-                                                              fontSize: 19),
-                                                          children: [
-                                                            TextSpan(
-                                                                text:
-                                                                    "$goalString",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .black)),
-                                                          ]),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 5,
-                                                    ),
-                                                    InkWell(
-                                                      child: Container(
+                                                          child: Text("Back"),
+                                                          onPressed: () =>
+                                                              Navigator.pop(
+                                                                  context),
+                                                        )
+                                                      ],
+                                                    ));
+                                              },
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 10.0),
+                                              child: Row(
+                                                children: <Widget>[
+                                                  InkWell(
+                                                    onTap: () async {
+                                                      showDialog(
+                                                          context: context,
+                                                          child: AlertDialog(
+                                                              title: Text(
+                                                                  "Adding User"),
+                                                              content: Row(
+                                                                children: <
+                                                                    Widget>[
+                                                                  CircularProgressIndicator(),
+                                                                  Padding(
+                                                                    padding:
+                                                                        const EdgeInsets.all(
+                                                                            8.0),
+                                                                    child: Text(
+                                                                        "Please wait"),
+                                                                  )
+                                                                ],
+                                                              )));
+                                                      await http.post(
+                                                          'https://march.lbits.co/api/worker.php',
+                                                          body: json.encode({
+                                                            'work':
+                                                                "accept request",
+                                                            'sender': pending[i]
+                                                                    [
+                                                                    'user_info']
+                                                                ['sender_id'],
+                                                            'receiver': pending[
+                                                                        i][
+                                                                    'user_info']
+                                                                ['receiver_id']
+                                                          }),
+                                                          headers: {
+                                                            'Content-Type':
+                                                                'application/json',
+                                                            'Authorization':
+                                                                'Bearer $token'
+                                                          }).then((value) {
+                                                        var resp = json
+                                                            .decode(value.body);
+                                                        if (resp['response'] ==
+                                                            200) {
+                                                          setState(() {
+                                                            var addNewUser = {
+                                                              DataBaseHelper.friendId: pending[i]['user_info']['sender_id'],
+                                                              DataBaseHelper.friendName: pending[i]['user_info']['fullName'],
+                                                              DataBaseHelper.friendPic: pending[i]['user_info']['profile_pic'],
+                                                              DataBaseHelper.friendLastMessage: pending[i]['user_info']['message'],
+                                                              DataBaseHelper.friendLastMessageTime: '${DateTime.now()}'
+                                                            };
+                                                            db.addUser(addNewUser);
+                                                            pending.removeAt(i);
+                                                            chats = true;
+                                                          });
+                                                          Navigator.pop(
+                                                              context);
+                                                        }
+                                                      });
+                                                    },
+                                                    child: Container(
+                                                        color: Theme.of(context)
+                                                            .primaryColor,
                                                         child: Padding(
                                                           padding:
-                                                              EdgeInsets.all(
-                                                                  5.0),
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  vertical: 10,
+                                                                  horizontal:
+                                                                      15),
                                                           child: Text(
-                                                            "Show Message",
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            maxLines: 3,
-                                                            softWrap: true,
+                                                            "Accept",
                                                             style: TextStyle(
                                                                 color: Colors
-                                                                    .black,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600),
+                                                                    .white),
                                                           ),
-                                                        ),
-                                                      ),
-                                                      onTap: () {
-                                                        showDialog(
-                                                            context: context,
-                                                            child: AlertDialog(
+                                                        )),
+                                                    // color: Theme.of(context).primaryColor,
+                                                  ),
+                                                  SizedBox(width: 40),
+                                                  InkWell(
+                                                    onTap: () async {
+                                                      showDialog(
+                                                          context: context,
+                                                          child: AlertDialog(
                                                               title: Text(
-                                                                  "${pending[i]['user_info']['fullName']}"),
-                                                              content: Text(
-                                                                  "${pending[i]['user_info']['message']}"),
-                                                              actions: <Widget>[
-                                                                RaisedButton(
-                                                                  color: Theme.of(
-                                                                          context)
-                                                                      .primaryColor,
-                                                                  child: Text(
-                                                                      "Back"),
-                                                                  onPressed: () =>
-                                                                      Navigator.pop(
-                                                                          context),
-                                                                )
-                                                              ],
-                                                            ));
-                                                      },
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              vertical: 10.0),
-                                                      child: Row(
-                                                        children: <Widget>[
-                                                          InkWell(
-                                                            onTap: () async {
-                                                              showDialog(
-                                                                  context:
-                                                                      context,
-                                                                  child: AlertDialog(
-                                                                      title: Text("Adding User"),
-                                                                      content: Row(
-                                                                        children: <
-                                                                            Widget>[
-                                                                          CircularProgressIndicator(),
-                                                                          Padding(
-                                                                            padding:
-                                                                                const EdgeInsets.all(8.0),
-                                                                            child:
-                                                                                Text("Please wait"),
-                                                                          )
-                                                                        ],
-                                                                      )));
-                                                              await http.post(
-                                                                  'https://march.lbits.co/api/worker.php',
-                                                                  body: json.encode({
-                                                                    'work':
-                                                                        "accept request",
-                                                                    'sender': pending[i]
-                                                                            [
-                                                                            'user_info']
-                                                                        [
-                                                                        'sender_id'],
-                                                                    'receiver': pending[i]
-                                                                            [
-                                                                            'user_info']
-                                                                        [
-                                                                        'receiver_id']
-                                                                  }),
-                                                                  headers: {
-                                                                    'Content-Type':
-                                                                        'application/json',
-                                                                    'Authorization':
-                                                                        'Bearer $token'
-                                                                  }).then(
-                                                                  (value) {
-                                                                var resp = json
-                                                                    .decode(value
-                                                                        .body);
-                                                                if (resp[
-                                                                        'response'] ==
-                                                                    200) {
-                                                                  setState(() {
-                                                                    pending
-                                                                        .removeAt(
-                                                                            i);
-                                                                    chats =
-                                                                        true;
-                                                                  });
-                                                                  Navigator.pop(
-                                                                      context);
-                                                                }
-                                                              });
-                                                            },
-                                                            child: Container(
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .primaryColor,
-                                                                child: Padding(
-                                                                  padding: const EdgeInsets
-                                                                          .symmetric(
-                                                                      vertical:
-                                                                          10,
-                                                                      horizontal:
-                                                                          15),
-                                                                  child: Text(
-                                                                    "Accept",
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .white),
-                                                                  ),
-                                                                )),
-                                                            // color: Theme.of(context).primaryColor,
+                                                                  "Adding User"),
+                                                              content: Row(
+                                                                children: <
+                                                                    Widget>[
+                                                                  CircularProgressIndicator(),
+                                                                  Padding(
+                                                                    padding:
+                                                                        const EdgeInsets.all(
+                                                                            8.0),
+                                                                    child: Text(
+                                                                        "Please wait"),
+                                                                  )
+                                                                ],
+                                                              )));
+                                                      await http.post(
+                                                          'https://march.lbits.co/api/worker.php',
+                                                          body: json.encode({
+                                                            'work':
+                                                                "reject request",
+                                                            'sender': pending[i]
+                                                                    [
+                                                                    'user_info']
+                                                                ['sender_id'],
+                                                            'receiver': pending[
+                                                                        i][
+                                                                    'user_info']
+                                                                ['receiver_id']
+                                                          }),
+                                                          headers: {
+                                                            'Content-Type':
+                                                                'application/json',
+                                                            'Authorization':
+                                                                'Bearer $token'
+                                                          }).then((value) {
+                                                        var resp = json
+                                                            .decode(value.body);
+                                                        if (resp['response'] ==
+                                                            200) {
+                                                          setState(() {
+                                                            pending.removeAt(i);
+                                                          });
+                                                          Navigator.pop(
+                                                              context);
+                                                        }
+                                                      });
+                                                    },
+                                                    child: Container(
+                                                        color: Theme.of(context)
+                                                            .primaryColor,
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  vertical: 10,
+                                                                  horizontal:
+                                                                      15),
+                                                          child: Text(
+                                                            "Reject",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .white),
                                                           ),
-                                                          SizedBox(width: 40),
-                                                          InkWell(
-                                                            onTap: () async {
-                                                              showDialog(
-                                                                  context:
-                                                                      context,
-                                                                  child: AlertDialog(
-                                                                      title: Text("Adding User"),
-                                                                      content: Row(
-                                                                        children: <
-                                                                            Widget>[
-                                                                          CircularProgressIndicator(),
-                                                                          Padding(
-                                                                            padding:
-                                                                                const EdgeInsets.all(8.0),
-                                                                            child:
-                                                                                Text("Please wait"),
-                                                                          )
-                                                                        ],
-                                                                      )));
-                                                              await http.post(
-                                                                  'https://march.lbits.co/api/worker.php',
-                                                                  body: json.encode({
-                                                                    'work':
-                                                                        "reject request",
-                                                                    'sender': pending[i]
-                                                                            [
-                                                                            'user_info']
-                                                                        [
-                                                                        'sender_id'],
-                                                                    'receiver': pending[i]
-                                                                            [
-                                                                            'user_info']
-                                                                        [
-                                                                        'receiver_id']
-                                                                  }),
-                                                                  headers: {
-                                                                    'Content-Type':
-                                                                        'application/json',
-                                                                    'Authorization':
-                                                                        'Bearer $token'
-                                                                  }).then(
-                                                                  (value) {
-                                                                var resp = json
-                                                                    .decode(value
-                                                                        .body);
-                                                                if (resp[
-                                                                        'response'] ==
-                                                                    200) {
-                                                                  setState(() {
-                                                                    pending
-                                                                        .removeAt(
-                                                                            i);
-                                                                  });
-                                                                  Navigator.pop(
-                                                                      context);
-                                                                }
-                                                              });
-                                                            },
-                                                            child: Container(
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .primaryColor,
-                                                                child: Padding(
-                                                                  padding: const EdgeInsets
-                                                                          .symmetric(
-                                                                      vertical:
-                                                                          10,
-                                                                      horizontal:
-                                                                          15),
-                                                                  child: Text(
-                                                                    "Reject",
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .white),
-                                                                  ),
-                                                                )),
-                                                            // color: Theme.of(context).primaryColor,
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
+                                                        )),
+                                                    // color: Theme.of(context).primaryColor,
+                                                  )
+                                                ],
+                                              ),
                                             ),
-                                          ));
-                                    });
-                      } else {
-                        return Center(
-                          child: Text("Token Error"),
-                        );
-                      }
-                    } else {
-                      return Center(child: CircularProgressIndicator());
-                    }
-                  }),
-            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ));
+                            })),
           ),
         ],
       ),
