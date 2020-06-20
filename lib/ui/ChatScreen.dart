@@ -296,14 +296,6 @@ class _TextingScreenState extends State<TextingScreen> {
                       onTap: () async {
                         final text = messageController.text;
                         messageController.clear();
-                        // socketIO.sendMessage(
-                        //     "chat message",
-                        //     json.encode(<String, dynamic>{
-                        //       "message": text,
-                        //       "sender": this.myId,
-                        //       "receiver": widget.user['id'],
-                        //       "time": '${DateTime.now()}'
-                        //     }));
                         socketIO.sendMessage(
                             'chat message',
                             json.encode({
@@ -312,15 +304,6 @@ class _TextingScreenState extends State<TextingScreen> {
                               "receiver": widget.user['user_id'],
                               "time": '${DateTime.now()}'
                             }));
-
-                        // int sentId = await rootBundle
-                        //     .load("assets/audios/open-up.mp3")
-                        //     .then((ByteData soundData) {
-                        //   return pool.load(soundData);
-                        // });
-                        // int streamSentId = await pool.play(sentId);
-
-                        // print("$streamSentId");
                       },
                       onDoubleTap: () async {
                         final text = messageController.text;

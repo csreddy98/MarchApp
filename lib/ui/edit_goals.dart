@@ -279,7 +279,7 @@ class _EditGoalState extends State<EditGoal> {
                                   if(selectedGoal!=""&&myController.text!=""){
 
                                     _onLoading();
-                                    print('time : '+time+' target :'+target+" "+widget.uid+" "+widget.gno);
+                                    // print('time : '+time+' target :'+target+" "+widget.uid+" "+widget.gno);
 
                                     var url= 'https://march.lbits.co/api/worker.php';
                                     var resp=await http.post(url,

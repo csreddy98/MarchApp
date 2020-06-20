@@ -60,6 +60,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
           'Authorization': 'Bearer $token'
         }).then((value) {
       var resp = json.decode(value.body);
+      print(resp);
 
       setState(() {
         accepted = resp['result']['accepted'];
@@ -305,25 +306,65 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                             .decode(value.body);
                                                         if (resp['response'] ==
                                                             200) {
-                                                              
-                                                            var addNewUser = {
-                                                              DataBaseHelper.friendId: pending[i]['user_info']['sender_id'],
-                                                              DataBaseHelper.friendName: pending[i]['user_info']['fullName'],
-                                                              DataBaseHelper.friendPic: pending[i]['user_info']['profile_pic'],
-                                                              DataBaseHelper.friendLastMessage: pending[i]['user_info']['message'],
-                                                              DataBaseHelper.friendLastMessageTime: '${DateTime.now()}'
-                                                            };
-                                                            var newMessage = {
-                                                              DataBaseHelper.messageText: pending[i]['user_info']['message'],
-                                                              DataBaseHelper.messageOtherId: pending[i]['user_info']['sender_id'],
-                                                              DataBaseHelper.messageImage: "null",
-                                                              DataBaseHelper.messageContainsImage: '0',
-                                                              DataBaseHelper.messageSentBy: pending[i]['user_info']['sender_id'],
-                                                              DataBaseHelper.seenStatus: '0',
-                                                              DataBaseHelper.messageTime: '${DateTime.now()}'
-                                                            };
-                                                            db.addUser(addNewUser);
-                                                            db.addMessage(newMessage);
+                                                          var addNewUser = {
+                                                            DataBaseHelper
+                                                                .friendId: pending[
+                                                                        i][
+                                                                    'user_info']
+                                                                ['sender_id'],
+                                                            DataBaseHelper
+                                                                    .friendName:
+                                                                pending[i][
+                                                                        'user_info']
+                                                                    [
+                                                                    'fullName'],
+                                                            DataBaseHelper
+                                                                .friendPic: pending[
+                                                                        i][
+                                                                    'user_info']
+                                                                ['profile_pic'],
+                                                            DataBaseHelper
+                                                                    .friendLastMessage:
+                                                                pending[i][
+                                                                        'user_info']
+                                                                    ['message'],
+                                                            DataBaseHelper
+                                                                    .friendLastMessageTime:
+                                                                '${DateTime.now()}'
+                                                          };
+                                                          var newMessage = {
+                                                            DataBaseHelper
+                                                                    .messageText:
+                                                                pending[i][
+                                                                        'user_info']
+                                                                    ['message'],
+                                                            DataBaseHelper
+                                                                .messageOtherId: pending[
+                                                                        i][
+                                                                    'user_info']
+                                                                ['sender_id'],
+                                                            DataBaseHelper
+                                                                    .messageImage:
+                                                                "null",
+                                                            DataBaseHelper
+                                                                    .messageContainsImage:
+                                                                '0',
+                                                            DataBaseHelper
+                                                                .messageSentBy: pending[
+                                                                        i][
+                                                                    'user_info']
+                                                                ['sender_id'],
+                                                            DataBaseHelper
+                                                                    .seenStatus:
+                                                                '0',
+                                                            DataBaseHelper
+                                                                    .messageTime:
+                                                                '${DateTime.now()}'
+                                                          };
+                                                          db.addUser(
+                                                              addNewUser);
+                                                          db.addMessage(
+                                                              newMessage);
                                                           setState(() {
                                                             pending.removeAt(i);
                                                             chats = true;
@@ -440,8 +481,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
   }
 
   Widget recentChats(List usersList) {
-    // _getLastMessages();
-    print(lastMessages);
     if (usersList.isNotEmpty) {
       // String lastMessage;
       return Container(
@@ -619,15 +658,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
       },
     );
   }
-
-  // _getLastMessages() {
-  //   db.getLastMessage().then((value) {
-  //     // print("${value}");
-  //     setState(() {
-  //       this.lastMessages = value;
-  //     });
-  //   });
-  // }
 
   void _load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

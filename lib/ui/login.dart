@@ -219,7 +219,6 @@ class _LoginState extends State<Login> {
                           side: BorderSide(color: Colors.red)),
                       onPressed: () {
                         _signIn();
-
                       },
                       color: Color(0xFFDB4A39),
                       textColor: Colors.white,

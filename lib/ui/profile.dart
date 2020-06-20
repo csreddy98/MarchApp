@@ -35,7 +35,6 @@ class _ProfileState extends State<Profile> {
 
   @override
   void initState() {
-    _load();
     super.initState();
   }
 
@@ -228,6 +227,7 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    _load();
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
