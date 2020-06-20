@@ -26,6 +26,30 @@ class _TextingScreenState extends State<TextingScreen> {
   @override
   void initState() {
     _load();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    messageController.dispose();
+    _scroller.dispose();
+    // socketIO.unSubscribesAll();
+    super.dispose();
+  }
+
+  void loadMessages() {
+    // print("${widget.user['receiver_id']}");
+    db.getMessage(widget.user['receiver_id']).then((value) {
+      // messages.clear();
+      print("$value");
+      setState(() {
+        messages = value;
+      });
+      _scroller.jumpTo(_scroller.position.maxScrollExtent);
+    });
+  }
+
+  void socketConnector() {
     socketIO = SocketIOManager().createSocketIO(
       'https://glacial-waters-33471.herokuapp.com',
       '/',
@@ -54,32 +78,12 @@ class _TextingScreenState extends State<TextingScreen> {
         // });
       }
     });
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    messageController.dispose();
-    _scroller.dispose();
-    // socketIO.unSubscribesAll();
-    super.dispose();
-  }
-
-  void loadMessages() {
-    // print("${widget.user['receiver_id']}");
-    db.getMessage(widget.user['receiver_id']).then((value) {
-      // messages.clear();
-      // print("$value");
-      setState(() {
-        messages = value;
-      });
-      _scroller.jumpTo(_scroller.position.maxScrollExtent);
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     loadMessages();
+    socketConnector();
     return Scaffold(
       backgroundColor: Color(0xFFFBFCFE),
       appBar: AppBar(
@@ -332,7 +336,7 @@ class _TextingScreenState extends State<TextingScreen> {
                             json.encode({
                               "message": text,
                               "sender": this.myId,
-                              "receiver": widget.user['id'],
+                              "receiver": widget.user['receiver_id'],
                               "time": '${DateTime.now()}'
                             }));
 
@@ -353,7 +357,7 @@ class _TextingScreenState extends State<TextingScreen> {
                             jsonEncode(<String, dynamic>{
                               "message": text,
                               "sender": this.myId,
-                              "receiver": widget.user['id'],
+                              "receiver": widget.user['receiver_id'],
                               "sentBy": this.myId
                             }));
                       },
