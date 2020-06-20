@@ -31,6 +31,14 @@ class DataBaseHelper {
   final String columnTimeFrame = "timeFrame";
   final String columnGoalNumber = "goalNumber";
 
+  final String friendsTable = "myFriends";
+  final String friendRowId = "id";
+  static String friendId = "user_id";
+  static String friendName = "name";
+  static String friendPic = "profile_pic";
+  static String friendLastMessage = "lastMessage";
+  static String friendLastMessageTime = "LastMessageTime";
+
   final String messagesTable = "messages";
   final messageId = "messageId";
   static String messageOtherId = "otherId";
@@ -74,6 +82,13 @@ class DataBaseHelper {
         " $columnUserId TEXT,$columnGoalName TEXT,"
         " $columnTarget TEXT,$columnTimeFrame TEXT,"
         " $columnGoalNumber TEXT"
+        ")");
+
+    await db.execute("CREATE TABLE $friendsTable("
+        " $friendRowId INTEGER PRIMARY KEY,"
+        " $friendId TEXT, $friendName TEXT,"
+        " $friendPic TEXT, $friendLastMessage TEXT,"
+        " $friendLastMessageTime TEXT"
         ")");
 
     await db.execute("CREATE TABLE $messagesTable("
@@ -174,6 +189,21 @@ class DataBaseHelper {
         where: "$columnId=?", whereArgs: [goal.goalNumber]);
   }
 
+  Future<int> addUser(Map userInfo) async {
+    var dbClient = await db;
+    return await dbClient.insert(friendsTable, userInfo);
+  }
+
+  Future<int> updateLastMessage(Map messageInfo) async {
+    var dbClient = await db;
+    return await dbClient.rawUpdate("UPDATE $friendsTable SET $friendLastMessage='${messageInfo['message']}', $friendLastMessageTime='${messageInfo['messageTime']}' WHERE $friendId = '${messageInfo['otherId']}'");
+  }
+
+  Future<List> getUsersList() async {
+    var dbClient = await db;
+    return await dbClient.rawQuery("SELECT * FROM $friendsTable ORDER BY DATETIME($friendLastMessageTime)");
+  }
+
   Future<int> addMessage(Map<String, dynamic> messageInfo) async {
     var dbClient = await db;
     return await dbClient.insert(messagesTable, messageInfo);
@@ -187,7 +217,8 @@ class DataBaseHelper {
 
   Future<List<Map>> getLastMessage() async {
     var dbClient = await db;
-    return await dbClient.rawQuery("SELECT DISTINCT *, datetime(time) AS time FROM $messagesTable ORDER BY $messageId DESC");
+    return await dbClient.rawQuery(
+        "SELECT DISTINCT *, datetime(time) AS time FROM $messagesTable ORDER BY $messageId DESC");
   }
 
   Future close() async {

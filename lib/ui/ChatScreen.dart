@@ -39,51 +39,24 @@ class _TextingScreenState extends State<TextingScreen> {
 
   void loadMessages() {
     // print("${widget.user['receiver_id']}");
-    db.getMessage(widget.user['receiver_id']).then((value) {
+    db.getMessage(widget.user['user_id']).then((value) {
       // messages.clear();
       print("$value");
       setState(() {
         messages = value;
       });
-      _scroller.jumpTo(_scroller.position.maxScrollExtent);
-    });
-  }
-
-  void socketConnector() {
-    socketIO = SocketIOManager().createSocketIO(
-      'https://glacial-waters-33471.herokuapp.com',
-      '/',
-    );
-    socketIO.init();
-    socketIO.subscribe('new message', (jsonData) {
-      var data = json.decode(jsonData);
-      if (data['receiver'].toString() == myId ||
-          data['sender'].toString() == myId) {
-        // loadMessages();
-        // print('$data');
-        Map newMessage = <String, String>{
-          DataBaseHelper.messageOtherId:
-              (data['receiver'] != myId) ? data['receiver'] : data['sender'],
-          DataBaseHelper.messageSentBy: data['sender'],
-          DataBaseHelper.messageText: data['message'],
-          DataBaseHelper.messageContainsImage: '0',
-          DataBaseHelper.messageImage: "null",
-          DataBaseHelper.messageTime: data['time']
-        };
-
-        // print("This is map: $newMessage");
-        db.addMessage(newMessage);
-        // setState(() {
-        //   messages.add(data);
-        // });
-      }
+      // _scroller.jumpTo(_scroller.position.maxScrollExtent);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     loadMessages();
-    socketConnector();
+    socketIO = SocketIOManager().createSocketIO(
+      'https://glacial-waters-33471.herokuapp.com',
+      '/',
+    );
+    socketIO.init();
     return Scaffold(
       backgroundColor: Color(0xFFFBFCFE),
       appBar: AppBar(
@@ -122,7 +95,7 @@ class _TextingScreenState extends State<TextingScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    widget.user['fullName'],
+                    widget.user['name'],
                     style: TextStyle(
                         color: Theme.of(context).primaryColor, fontSize: 20.0),
                     textAlign: TextAlign.start,
@@ -336,7 +309,7 @@ class _TextingScreenState extends State<TextingScreen> {
                             json.encode({
                               "message": text,
                               "sender": this.myId,
-                              "receiver": widget.user['receiver_id'],
+                              "receiver": widget.user['user_id'],
                               "time": '${DateTime.now()}'
                             }));
 
@@ -357,7 +330,7 @@ class _TextingScreenState extends State<TextingScreen> {
                             jsonEncode(<String, dynamic>{
                               "message": text,
                               "sender": this.myId,
-                              "receiver": widget.user['receiver_id'],
+                              "receiver": widget.user['user_id'],
                               "sentBy": this.myId
                             }));
                       },

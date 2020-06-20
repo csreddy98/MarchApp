@@ -341,6 +341,14 @@ class _FindScreenState extends State<FindScreen> {
                                                                                       DataBaseHelper.messageImage: 'null',
                                                                                       DataBaseHelper.messageTime: "${DateTime.now()}"
                                                                                     };
+                                                                                    Map<String, dynamic> friendsMap = {
+                                                                                      DataBaseHelper.friendId: person.id,
+                                                                                      DataBaseHelper.friendName: person.name,
+                                                                                      DataBaseHelper.friendPic: person.imageUrl,
+                                                                                      DataBaseHelper.friendLastMessage: msg,
+                                                                                      DataBaseHelper.friendLastMessageTime: "${DateTime.now()}"
+                                                                                    };
+                                                                                    db.addUser(friendsMap);
                                                                                     db.addMessage(messageMap);
                                                                                   } else {
                                                                                     print("$resp");
@@ -502,11 +510,9 @@ class _FindScreenState extends State<FindScreen> {
     // uid = prefs.getString('uid') ?? "";
     id = prefs.getString('id') ?? "";
 
-
     // SQLITE
 
-    var user= await db.getUser(1);
-
+    var user = await db.getUser(1);
 
     setState(() {
       token = userToken;

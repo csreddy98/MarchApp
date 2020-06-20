@@ -38,6 +38,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
     // setState(() {
     //   (widget.screenState == 'requests') ? chats = false : chats = true;
     // });
+    db.getUsersList().then((value) => lastMessages = value);
     chats = true;
   }
 
@@ -451,7 +452,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
   }
 
   Widget recentChats(List usersList) {
-    _getLastMessages();
+    // _getLastMessages();
+    print(lastMessages);
     if (usersList.isNotEmpty) {
       // String lastMessage;
       return Container(
@@ -468,7 +470,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
             topRight: Radius.circular(30),
           ),
           child: ListView.builder(
-            itemCount: usersList.length,
+            itemCount: lastMessages.length,
             itemBuilder: (BuildContext context, int index) {
               return Slidable(
                 key: ValueKey(index),
@@ -498,8 +500,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
                   ),
                 ],
                 child: GestureDetector(
-                  onTap: () =>
-                      Navigator.push(context, _createRoute(usersList[index])),
+                  onTap: () => Navigator.push(
+                      context, _createRoute(lastMessages[index])),
                   child: Container(
                     margin: EdgeInsets.only(top: 5.0, bottom: 5.0, right: 5.0),
                     padding:
@@ -518,7 +520,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                           children: <Widget>[
                             ClipRRect(
                               child: Image.network(
-                                  usersList[index]['profile_pic'],
+                                  lastMessages[index]['profile_pic'],
                                   height: 55,
                                   width: 55,
                                   fit: BoxFit.cover),
@@ -531,7 +533,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  usersList[index]['fullName'],
+                                  lastMessages[index]['name'],
                                   style: TextStyle(
                                     color: Theme.of(context).primaryColor,
                                     fontSize: 15.0,
@@ -543,7 +545,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                   width:
                                       MediaQuery.of(context).size.width * 0.45,
                                   child: Text(
-                                    '${(lastMessages.isNotEmpty) ? lastMessages[index]['message'] : 'None'}',
+                                    '${(lastMessages.isNotEmpty) ? lastMessages[index]['lastMessage'] : 'None'}',
                                     style: TextStyle(
                                       color: Colors.blueGrey,
                                       fontSize: 13.0,
@@ -559,7 +561,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
                         Column(
                           children: <Widget>[
                             Text(
-                              "${lastMessages.isNotEmpty ? durationCalculator(lastMessages[index]['time']) : ""}",
+                              // "${lastMessages[index]['LastMessageTime']}",
+                              "${lastMessages.isNotEmpty ? durationCalculator(lastMessages[index]['LastMessageTime']) : ""}",
                               style: TextStyle(
                                 color: Colors.grey,
                                 fontSize: 12.0,
@@ -585,10 +588,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
   }
 
   String durationCalculator(String pastDate) {
-    DateTime newDate =
-        DateTime.parse(pastDate);
-    var diff = newDate.difference(
-        DateTime.now());
+    DateTime newDate = DateTime.parse(pastDate);
+    var diff = DateTime.now().difference(newDate);
     String output = "";
     if (diff.inDays > 0) {
       if (diff.inDays > 7) {
@@ -604,6 +605,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
       output = "${diff.inMinutes}m";
     } else if (diff.inSeconds > 0) {
       output = "now";
+    } else {
+      output = "${diff.inSeconds}";
     }
     return output;
   }
@@ -629,14 +632,14 @@ class _MessagesScreenState extends State<MessagesScreen> {
     );
   }
 
-  _getLastMessages() {
-    db.getLastMessage().then((value) {
-      // print("${value}");
-      setState(() {
-        this.lastMessages = value;
-      });
-    });
-  }
+  // _getLastMessages() {
+  //   db.getLastMessage().then((value) {
+  //     // print("${value}");
+  //     setState(() {
+  //       this.lastMessages = value;
+  //     });
+  //   });
+  // }
 
   void _load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

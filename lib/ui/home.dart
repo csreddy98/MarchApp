@@ -44,6 +44,35 @@ class _HomeState extends State<Home> {
     getUserToken().then((value) {
       print("Token: $value");
     });
+    socketIO = SocketIOManager().createSocketIO(
+      'https://glacial-waters-33471.herokuapp.com',
+      '/',
+    );
+    socketIO.init();
+    socketIO.subscribe('new message', (jsonData) {
+      var data = json.decode(jsonData);
+      if (data['receiver'].toString() == myId ||
+          data['sender'].toString() == myId) {
+        // loadMessages();
+        // print('$data');
+        Map newMessage = <String, String>{
+          DataBaseHelper.messageOtherId:
+              (data['receiver'] != myId) ? data['receiver'] : data['sender'],
+          DataBaseHelper.messageSentBy: data['sender'],
+          DataBaseHelper.messageText: data['message'],
+          DataBaseHelper.messageContainsImage: '0',
+          DataBaseHelper.messageImage: "null",
+          DataBaseHelper.messageTime: data['time']
+        };
+        Map updateLastMessage = <String, String>{
+          'message': data['message'],
+          'messageTime': data['time'],
+          'otherId': (data['receiver'] != myId) ? data['receiver'] : data['sender']
+        };
+        db.addMessage(newMessage);
+        db.updateLastMessage(updateLastMessage);
+      }
+    });
   }
 
   void checkforIosPermission() async {
@@ -81,29 +110,28 @@ class _HomeState extends State<Home> {
   }
 
   void message() async {
-    _fcm.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            content: ListTile(
-              title: Text(message['notification']['title']),
-              subtitle: Text(message['notification']['body']),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Ok'),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ],
+    _fcm.configure(onMessage: (Map<String, dynamic> message) async {
+      print("onMessage: $message");
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          content: ListTile(
+            title: Text(message['notification']['title']),
+            subtitle: Text(message['notification']['body']),
           ),
-        );
-      }, onLaunch: (Map<String, dynamic> message) async {
-        print("onLaunch: $message");
-      }, onResume: (Map<String, dynamic> message) async {
-        print("onResume: $message");
-      });
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Ok'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
+      );
+    }, onLaunch: (Map<String, dynamic> message) async {
+      print("onLaunch: $message");
+    }, onResume: (Map<String, dynamic> message) async {
+      print("onResume: $message");
+    });
   }
 
   Future<Map> updateStatus() async {
@@ -214,7 +242,7 @@ class _HomeState extends State<Home> {
     myId = prefs.getString('id');
     uid = prefs.getString('uid');
     prefs.setInt('log', 1);
-    if(uid == null){
+    if (uid == null) {
       FirebaseAuth.instance.currentUser().then((val) async {
         String uid = val.uid;
         prefs.setString('uid', uid);
