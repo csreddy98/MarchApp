@@ -13,8 +13,8 @@ class Slider_container extends StatefulWidget {
 }
 
 class _SlidercontainerState extends State<Slider_container> {
-  static int age_range_min = 18;
-  int age_range_max = 100;
+  static int ageRangeMin = 18;
+  int ageRangeMax = 100;
   int maxDistance = 0;
   RangeValues values = RangeValues(18, 100);
   bool goal_1 = false;
@@ -70,7 +70,7 @@ class _SlidercontainerState extends State<Slider_container> {
                           top: 20,
                           right: 20),
                       child: Text(
-                          "$age_range_min-$age_range_max",
+                          "$ageRangeMin-$ageRangeMax",
                           style: TextStyle(
                             color: Colors.black,
                             letterSpacing: 0.4,
@@ -94,9 +94,9 @@ class _SlidercontainerState extends State<Slider_container> {
                     values: values,
                     onChanged: (value) {
                       setState(() {
-                        age_range_min =
+                        ageRangeMin =
                             value.start.toInt();
-                        age_range_max =
+                        ageRangeMax =
                             value.end.toInt();
                         values = value;
 
@@ -327,7 +327,7 @@ class _SlidercontainerState extends State<Slider_container> {
                         n.add(widget.goal3);
                       }
 
-                      Navigator.pop(context,[age_range_min,age_range_max,maxDistance,n]);
+                      Navigator.pop(context,[ageRangeMin,ageRangeMax,maxDistance,n]);
                     },
                     child:  Container(
                       width: size.width/3,
