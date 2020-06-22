@@ -69,52 +69,59 @@ class _PhoneAuthGetPhoneState extends State<PhoneAuthScreen> {
           width: _width,
           color: Colors.white,
           child: Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.fromLTRB(20,5,20,20),
             child:  Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.all(20),
+                    padding: EdgeInsets.fromLTRB(20,0,20,20),
                     child: Column(
                       children: <Widget>[
                         Text(
                           "Phone Number",
                           style: TextStyle(
                               color: Colors.black,
-                              fontSize: 34.0,
+                              fontSize: 25.0,
                               fontWeight: FontWeight.w400),
                         ),
-                        Text(
-                          "To Verify your account,\nPlease enter your phone number",
-                          style: TextStyle(fontSize: 16.0, color: Colors.black45),textAlign: TextAlign.center,
+                        Padding(
+                          padding: const EdgeInsets.only(top:15.0),
+                          child: Text(
+                            "To Verify your account,\nPlease enter your phone number",
+                            style: TextStyle(fontSize: 16.0, color: Colors.black45),textAlign: TextAlign.center,
+                          ),
                         )
                       ],
                     ),
                   ),
-                  TextField(
-                    style: TextStyle(fontSize: 18, color: Colors.black54),
-                    onChanged: (value) {
-                      this.phoneNo = value;
-                    },
-                    controller: _phoneNumberController,
+                  Padding(
+                    padding: const EdgeInsets.only(left:20,right: 20),
+                    child: TextField(
+                      style: TextStyle(fontSize: 23, color: Colors.black),
+                      onChanged: (value) {
+                        this.phoneNo = value;
+                      },
+                      controller: _phoneNumberController,
 
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Color(0x33E0E7FF),
-                      hintText: '000 000 0000',
-                      labelText: "Phone Number",
-                      prefix: Text("+91 "),
-                      contentPadding: const EdgeInsets.all(15),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black26),
-                        borderRadius: BorderRadius.circular(5),
+                      decoration: InputDecoration(
+               //       filled: true,
+//                      fillColor: Color(0x33E0E7FF),
+                        hintText: '000 000 0000',
+                        labelText: "Enter Phone Number",
+                        labelStyle: TextStyle(fontSize: 18),
+                        prefix: Text("+91 ",style: TextStyle(color: Colors.black),),
+                        contentPadding: const EdgeInsets.fromLTRB(15,15,15,5),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.blueAccent),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
                       ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black38),
-                        borderRadius: BorderRadius.circular(5),
-                      ),
+                      keyboardType: TextInputType.phone,
                     ),
-                    keyboardType: TextInputType.phone,
                   ),
                   SizedBox(
                     height: 20,
@@ -122,24 +129,27 @@ class _PhoneAuthGetPhoneState extends State<PhoneAuthScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      FlatButton(
-                        child: Text(
-                          'VERIFY',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'montserrat'
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20.0,20,20,0),
+                        child: FlatButton(
+                          child: Text(
+                            'VERIFY',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'montserrat'
+                            ),
                           ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          padding: const EdgeInsets.all(15),
+                          color: Theme.of(context).primaryColor,
+                          textColor: Colors.white,
+                          onPressed: () {
+                            startPhoneAuth();
+                          },
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        padding: const EdgeInsets.all(15),
-                        color: Theme.of(context).primaryColor,
-                        textColor: Colors.white,
-                        onPressed: () {
-                          startPhoneAuth();
-                        },
                       ),
                     ],
                   ),
@@ -155,7 +165,12 @@ class _PhoneAuthGetPhoneState extends State<PhoneAuthScreen> {
     FirebasePhoneAuth.instantiate(
         phoneNumber: "+91" + _phoneNumberController.text);
 
-    Navigator.of(context).pushReplacement(CupertinoPageRoute(
-        builder: (BuildContext context) => PhoneAuthVerify()));
+    /*Navigator.of(context).pushReplacement(CupertinoPageRoute(
+        builder: (BuildContext context) => ));*/
+
+    Navigator.pushAndRemoveUntil(context,
+      MaterialPageRoute(builder: (context) =>PhoneAuthVerify('+91'+_phoneNumberController.text.toString())),
+          (Route<dynamic> route) => true,);
+    
   }
 }

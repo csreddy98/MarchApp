@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:march/ui/select.dart';
 import 'package:path/path.dart' as Path;
 import 'dart:io';
@@ -79,6 +78,18 @@ class _RegisterState extends State<Register> {
 
 
 
+  String _value = '';
+
+  Future _selectDate() async {
+    DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: new DateTime.now(),
+        firstDate: new DateTime(1930),
+        lastDate: new DateTime(2022)
+    );
+    if(picked != null) setState(() => _value = picked.toString());
+  }
+
   @override
   void initState() {
     FirebaseAuth.instance.currentUser().then((val){
@@ -127,7 +138,8 @@ class _RegisterState extends State<Register> {
             width: 80.0,
             height: 80.0,
             decoration: new BoxDecoration(
-              shape: BoxShape.circle,
+              borderRadius: BorderRadius.circular(15.0),
+              shape: BoxShape.rectangle,
               image: new DecorationImage(
                 image:new FileImage(_image),
                 fit: BoxFit.cover,
@@ -142,7 +154,7 @@ class _RegisterState extends State<Register> {
           width: 80,
           margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30.0),
+            borderRadius: BorderRadius.circular(60.0),
             color: Colors.white,
             boxShadow: [
               BoxShadow(
@@ -161,14 +173,16 @@ class _RegisterState extends State<Register> {
 
     return Scaffold(
       key:_sk,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text("Registration",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 24,color: Colors.black)),
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
         child: Container(
            child: Column(
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top:30.0),
-                child: Center(child: Text("Registration",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 28),)),
-              ),
               Padding(
                 padding: const EdgeInsets.only(top:15.0),
                 child: GestureDetector(
@@ -265,7 +279,7 @@ class _RegisterState extends State<Register> {
                 ),
               ),
 
-              Padding(
+              /*Padding(
                 padding: const EdgeInsets.fromLTRB(20.0,0.0,20.0,0),
                 child: TextField(
                   maxLines: 2,
@@ -286,51 +300,96 @@ class _RegisterState extends State<Register> {
                   },
                 ),
               ),
-
-
-
+*/
 
               Padding(
-                padding: const EdgeInsets.fromLTRB(20.0,10,20.0,0),
+                padding: const EdgeInsets.fromLTRB(20.0,0.0,20.0,0),
                 child: Row(
                   children: <Widget>[
-                    Text('Gender: '),
-                    SizedBox(width: 20,),
-                    DropdownButton(
-                      value: _selectedGender,
-                      items: _dropdownMenuItems,
-                      onChanged: onChangeDropDownItem,
+                    _value==''?
+                    Expanded(
+                      flex: 1,
+                      child:SizedBox(
+                        width: 100,
+                        child: GestureDetector(
+                          onTap: (){
+                            _selectDate();
+                          },
+                          child: Text('Date of birth',
+                            style: TextStyle(
+                              fontSize: 15,
+                              decoration: TextDecoration.underline,
+                            ),),
+                        ),
+                      ),
+                    )
+                    :Row(
+                    children: <Widget>[
+                      Text(_value.substring(8,10)+"-"+_value.substring(5,7)+"-"+_value.substring(0,4)),
+                      IconButton(
+                        icon: Icon(Icons.edit),
+                        onPressed: (){
+                          _selectDate();
+                        },
+                      ),
+                    ],
+                  ),
+
+                    Expanded(
+                      flex: 2,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(20.0,10,20.0,0),
+                        child: Row(
+                          children: <Widget>[
+                            Text('Gender: ',style: TextStyle(fontSize: 15),),
+                            SizedBox(width: 20,),
+                            DropdownButton(
+                              value: _selectedGender,
+                              items: _dropdownMenuItems,
+                              onChanged: onChangeDropDownItem,
+                            ),
+                          ],
+                        ),
+                      ),
+
                     ),
+
+
+
                   ],
                 ),
+
               ),
 
 
 
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0,50,0,0),
-                child: InkWell(
-                  child: Container(
-                    margin: EdgeInsets.only(top: 5, left: 10,right: 15),
-                    width: MediaQuery.of(context).size.width*0.8,
-                    height: ScreenUtil().setHeight(80),
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [Colors.red, Colors.deepPurple]),
-                        borderRadius: BorderRadius.circular(20.0),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Color(0xFF6078ea).withOpacity(.3),
-                              offset: Offset(0.0, 8.0),
-                              blurRadius: 8.0)
-                        ]),
-                    child: Container(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        splashColor: Colors.grey,
-                        onTap: () async{
 
 
+
+
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20.0,20,20,0),
+                    child: FlatButton(
+                      child: Text(
+                        'NEXT',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'montserrat'
+                        ),
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      padding: const EdgeInsets.all(15),
+                      color: Theme.of(context).primaryColor,
+                      textColor: Colors.white,
+                        onPressed: () async{
+                          dob=_value.substring(8,10)+"-"+_value.substring(5,7)+"-"+_value.substring(0,4);
+                          print(dob);
                           if(_image==null||name==""||bio==""||dob==""||gender==""||email==""||profession==""){
 
                             _sk.currentState.showSnackBar(SnackBar(
@@ -364,8 +423,8 @@ class _RegisterState extends State<Register> {
                             print('File Uploaded');
                             storageReference.getDownloadURL().then((fileURL) async {
 
-                                _uploadedFileURL = fileURL;
-                                /*var url= 'http://march.lbits.co/app/api/index.php';
+                              _uploadedFileURL = fileURL;
+                              /*var url= 'http://march.lbits.co/app/api/index.php';
                                 var resp=await http.post(url,body: jsonEncode(<String, dynamic>{
                                   'uid':uid,
                                   'fullName':name,
@@ -388,68 +447,68 @@ class _RegisterState extends State<Register> {
 */
 
 
-                                _uploadedFileURL = fileURL;
-                                var url= 'https://march.lbits.co/api/worker.php';
-                                var resp=await http.post(url,
-                                  headers: {
-                                    'Content-Type':
-                                    'application/json',
-                                  },
-                                  body: json.encode(<String, dynamic>
-                                  {
-                                    'serviceName': "generatetoken",
-                                    'work': "add user",
-                                    'uid':uid,
-                                    'userName': name,
-                                    'userBio': bio,
-                                    'email':email,
-                                    'dob':dob,
-                                    'gender':gender,
-                                    'profession':profession,
-                                    'userPic':fileURL,
-                                    'phoneNumber': phone,
-                                  }),
-                                );
+                              _uploadedFileURL = fileURL;
+                              var url= 'https://march.lbits.co/api/worker.php';
+                              var resp=await http.post(url,
+                                headers: {
+                                  'Content-Type':
+                                  'application/json',
+                                },
+                                body: json.encode(<String, dynamic>
+                                {
+                                  'serviceName': "generatetoken",
+                                  'work': "add user",
+                                  'uid':uid,
+                                  'userName': name,
+                                  'userBio': bio,
+                                  'email':email,
+                                  'dob':dob,
+                                  'gender':gender,
+                                  'profession':profession,
+                                  'userPic':fileURL,
+                                  'phoneNumber': phone,
+                                }),
+                              );
 
-                                print(resp.body.toString());
-                                var result = json.decode(resp.body);
-                                if (result['response'] == 200) {
+                              print(resp.body.toString());
+                              var result = json.decode(resp.body);
+                              if (result['response'] == 200) {
 
-                                  var db = new DataBaseHelper();
+                                var db = new DataBaseHelper();
 
-                                  int savedUser =
-                                  await db.saveUser(new User(uid,name,bio,email,dob,gender,profession,_uploadedFileURL,phone));
+                                int savedUser =
+                                await db.saveUser(new User(uid,name,bio,email,dob,gender,profession,_uploadedFileURL,phone));
 
-                                  SharedPreferences prefs = await SharedPreferences.getInstance();
-                                  prefs.setString('token',result['result']['token']);
-                                  prefs.setString('id', result['result']['user_info']['id']);
-                                  prefs.setString('age', result['result']['user_info']['age']);
-                                  print("user saved :$savedUser");
+                                SharedPreferences prefs = await SharedPreferences.getInstance();
+                                prefs.setString('token',result['result']['token']);
+                                prefs.setString('id', result['result']['user_info']['id']);
+                                prefs.setString('age', result['result']['user_info']['age']);
+                                print("user saved :$savedUser");
 
-                                  Navigator.pushAndRemoveUntil(context,
-                                      MaterialPageRoute(builder: (context) => Select()),
-                                          (Route<dynamic> route) => false);
+                                Navigator.pushAndRemoveUntil(context,
+                                    MaterialPageRoute(builder: (context) => Select()),
+                                        (Route<dynamic> route) => false);
 
-                                }
-                                else{
+                              }
+                              else{
 
-                                  Navigator.pop(context);
-                                  _sk.currentState.showSnackBar(SnackBar(
-                                    content: Text("There is Some Technical Problem Submit again",
-                                      style: TextStyle(
-                                        fontStyle: FontStyle.italic,
-                                        fontSize: 15,
-                                      ),
+                                Navigator.pop(context);
+                                _sk.currentState.showSnackBar(SnackBar(
+                                  content: Text(result['response']+result['result'].toString(),
+                                    style: TextStyle(
+                                      fontStyle: FontStyle.italic,
+                                      fontSize: 15,
                                     ),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(12.0),
-                                            topRight: Radius.circular(12.0))),
-                                    duration: Duration(seconds: 3),
-                                    backgroundColor: Colors.lightBlueAccent,
-                                  ));
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(12.0),
+                                          topRight: Radius.circular(12.0))),
+                                  duration: Duration(seconds: 3),
+                                  backgroundColor: Colors.lightBlueAccent,
+                                ));
 
-                                }
+                              }
 
 
 
@@ -457,19 +516,12 @@ class _RegisterState extends State<Register> {
 
                           }
 
-                        },
-                        child: Center(
-                          child: Text("NEXT",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  letterSpacing: 1.0)),
-                        ),
-                      ),
+                        }
                     ),
                   ),
-                ),
+                ],
               ),
+
 
 
 

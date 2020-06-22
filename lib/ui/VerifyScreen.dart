@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:march/models/goal.dart';
@@ -18,19 +19,27 @@ import 'home.dart';
 class PhoneAuthVerify extends StatefulWidget {
   final Color cardBackgroundColor = Color(0xFFFCA967);
   final String appName = "Flowance app";
+  String number ;
+
+
+  PhoneAuthVerify(this.number);
 
   @override
   _PhoneAuthVerifyState createState() => _PhoneAuthVerifyState();
 }
 
 class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
-  FocusNode focusNode1 = FocusNode();
+  /*FocusNode focusNode1 = FocusNode();
   FocusNode focusNode2 = FocusNode();
   FocusNode focusNode3 = FocusNode();
   FocusNode focusNode4 = FocusNode();
   FocusNode focusNode5 = FocusNode();
   FocusNode focusNode6 = FocusNode();
+  */
+  TextEditingController _controller = new TextEditingController();
   String code = "";
+  int maxLength = 6;
+
 
   @override
   void initState() {
@@ -75,6 +84,7 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
             SharedPreferences prefs = await SharedPreferences.getInstance();
             prefs.setString('token', result['result']['token']);
             prefs.setString('id',result['result']['user_info']['id']);
+            prefs.setString('age', result['result']['user_info']['age']);
             print("user saved :$savedUser");
 
             var res = await http.post(
@@ -161,32 +171,18 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-          preferredSize: Size.fromHeight(80.0),
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: AppBar(
-              title: Text(
-                "Verification Code",
-                style: TextStyle(color: Colors.black),
-              ),
-              leading: RaisedButton.icon(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(Icons.arrow_back_ios, size: 12.0),
-                label: Text(""),
-                color: Colors.white,
-                elevation: 0.0,
-                shape: RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(50.0),
-                ),
-              ),
-              backgroundColor: Colors.transparent,
-              centerTitle: true,
-              elevation: 0.0,
-            ),
-          )),
+      appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          centerTitle: true,
+          title: Text('Verification',style: TextStyle(color: Colors.black),),
+          leading: RaisedButton(
+            onPressed: ()=>Navigator.pop(context),
+            child: Icon(Icons.arrow_back_ios),
+            color: Colors.white,
+            elevation: 0,
+          )
+      ),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Center(
@@ -209,22 +205,24 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
                     fontSize: 24.0,
                     fontWeight: FontWeight.w700)),
             //  Info text
-            Row(
-              children: <Widget>[
-                SizedBox(width: 22.0),
-                Expanded(
-                    child: Text(
-                  "SMS with code has been sent to mobile.",
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w300),
-                  textAlign: TextAlign.center,
-                )),
-                SizedBox(width: 16.0),
-              ],
+            Center(
+              child: Text(
+                "SMS with code has been sent",
+                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w300),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Center(
+              child: Text(
+                "to "+widget.number,
+                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w300),
+                textAlign: TextAlign.center,
+              ),
             ),
 
             SizedBox(height: 46.0),
 
-            Row(
+            /*Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 getPinField(key: "1", focusNode: focusNode1),
@@ -241,7 +239,49 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
                 getPinField(key: "6", focusNode: focusNode6),
                 SizedBox(width: 5.0),
               ],
+            ),*/
+
+            /*Padding(
+              padding: const EdgeInsets.only(left:20.0,right: 20),
+              child: TextField(
+                maxLengthEnforced: false,
+                textAlign: TextAlign.center,
+                cursorColor: Colors.black,
+                keyboardType: TextInputType.number,
+                style: TextStyle(
+                    fontSize: 20.0, fontWeight: FontWeight.w600, color: Colors.black),
+              ),
+            ),*/
+
+            Container(
+              width: MediaQuery.of(context).size.width / 1.8,
+              child: TextField(
+                // key: Key(key),
+                //  expands: false,
+                // autofocus: key.contains("1") ? true : false,
+                // focusNode: focusNode,
+                controller: _controller,
+                onChanged: (String newVal) {
+                  if(newVal.length <= maxLength){
+                    code = newVal;
+                  }else{
+                    _controller.text = code;
+                  }
+
+                },
+                inputFormatters: [
+                  WhitelistingTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(6),
+                ],
+                textAlign: TextAlign.center,
+                cursorColor: Colors.black,
+                keyboardType: TextInputType.number,
+                style: TextStyle(
+                    letterSpacing: 5,
+                    fontSize: 25.0, fontWeight: FontWeight.w500, color: Colors.black),
+              ),
             ),
+
             SizedBox(height: 10.0),
             Center(
                 child: Row(
@@ -255,17 +295,27 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                FlatButton(
-                  onPressed: signIn,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(30.0,20,30,0),
+                  child: FlatButton(
                     child: Text(
-                      'VERIFY',
-                      style: TextStyle(color: Colors.white, fontSize: 18.0),
+                      'SUBMIT',
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'montserrat'
+                      ),
                     ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    padding: const EdgeInsets.all(15),
+                    color: Theme.of(context).primaryColor,
+                    textColor: Colors.white,
+                    onPressed: () {
+                      signIn();
+                    },
                   ),
-                  color: Theme.of(context).primaryColor,
-                  padding: const EdgeInsets.all(12),
                 ),
               ],
             ),
@@ -281,7 +331,7 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
     FirebasePhoneAuth.signInWithPhoneNumber(smsCode: code);
   }
 
-  Widget getPinField({String key, FocusNode focusNode}) => SizedBox(
+ /* Widget getPinField({String key, FocusNode focusNode}) => SizedBox(
         height: 40.0,
         width: 35.0,
         child: TextField(
@@ -321,5 +371,5 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
           style: TextStyle(
               fontSize: 20.0, fontWeight: FontWeight.w600, color: Colors.black),
         ),
-      );
+      );*/
 }

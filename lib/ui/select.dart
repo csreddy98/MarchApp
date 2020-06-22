@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/screenutil.dart';
 import 'package:march/ui/home.dart';
 import 'package:http/http.dart' as http;
 import 'package:march/utils/database_helper.dart';
@@ -34,7 +33,7 @@ class Time{
 }
 
 
-class _SelectState extends State<Select> {
+class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
 
   List<String> added = ["","",""];
   String currentText = "";
@@ -63,6 +62,15 @@ class _SelectState extends State<Select> {
   String uid;
   String token;
 
+  Color activeColor= Color(0xFF4267B2);
+  AnimationController animationController;
+  Animation d1, p1, d2, p2, d3, p3, d4, p4, d5;
+  TextEditingController nameController;
+  TextEditingController numberController;
+  TextEditingController dateController;
+  TextEditingController cvvController;
+
+
   @override
   void initState() {
     FirebaseAuth.instance.currentUser().then((val){
@@ -76,7 +84,34 @@ class _SelectState extends State<Select> {
   //
     _load();
     super.initState();
+    nameController = TextEditingController();
+    numberController = TextEditingController();
+    dateController = TextEditingController();
+    cvvController = TextEditingController();
+
+    animationController = AnimationController(
+      duration: Duration(seconds: 3),
+      vsync: this,
+    );
+    d1 = ColorTween(begin: Colors.white, end: activeColor).animate(
+        CurvedAnimation(
+            parent: animationController,
+            curve: Interval(0.3, 0.5, curve: Curves.linear)));
+    p1 = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+        parent: animationController, curve: Interval(0.5, 0.6)));
+    d2 = ColorTween(begin: Colors.white, end: activeColor).animate(
+        CurvedAnimation(
+            parent: animationController,
+            curve: Interval(0.6, 0.8, curve: Curves.linear)));
+    p2 = Tween(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: animationController, curve: Interval(0.8, 1)));
+    d3 = ColorTween(begin: Colors.white, end: activeColor).animate(
+        CurvedAnimation(
+            parent: animationController,
+            curve: Interval(0.8, 1, curve: Curves.linear)));
+    animationController.forward();
   }
+
 
   //drop down
 
@@ -107,6 +142,7 @@ class _SelectState extends State<Select> {
   @override
   void dispose() {
     myController.dispose();
+    animationController.dispose();
     super.dispose();
   }
 
@@ -117,6 +153,8 @@ class _SelectState extends State<Select> {
 
   @override
   Widget build(BuildContext context) {
+    final dotSize = 20.0;
+
     return Scaffold(
       key: _sk,
       body: SingleChildScrollView(
@@ -131,13 +169,115 @@ class _SelectState extends State<Select> {
                 child: Center(child: Text("Select Your Goals",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25),)),
               ),
 
-               Center(child: Text("Goal "+cnt.toString()+" of 3")),
+
+              AnimatedBuilder(
+                animation: animationController,
+                builder:(BuildContext context,Widget child)=>Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                          margin: EdgeInsets.only(top: 30),
+                          padding: EdgeInsets.all(12),
+                          width: MediaQuery.of(context).size.width,
+                          child: Row(children: <Widget>[
+                            Container(
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(width: 0.5, color: activeColor)),
+                              width: dotSize + 15,
+                              height: dotSize + 15,
+                              child: Center(
+                                child: Container(
+                                    width: dotSize,
+                                    height: dotSize,
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                        BorderRadius.circular(dotSize / 2),
+                                        color: activeColor)),
+                              ),
+                            ),
+                            Container(
+                              child: Center(
+                                child: Container(
+                                  height: 3,
+                                  width: MediaQuery.of(context).size.width * 0.35,
+                                  child: LinearProgressIndicator(
+                                    backgroundColor: cnt>=2?activeColor:Colors.grey,
+                                    valueColor:
+                                    AlwaysStoppedAnimation<Color>(cnt>=2?activeColor:Colors.grey),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(width: 0.5, color: cnt>=2?activeColor:Colors.grey)),
+                              width: dotSize + 15,
+                              height: dotSize + 15,
+                              child: Center(
+                                child: Container(
+                                  width: dotSize,
+                                  height: dotSize,
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                      BorderRadius.circular(dotSize / 2),
+                                      color: cnt>=2?activeColor:Colors.grey),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              child: Center(
+                                child: Container(
+                                  height: 3,
+                                  width: MediaQuery.of(context).size.width * 0.3,
+                                  child: LinearProgressIndicator(
+                                    backgroundColor: cnt>=3?activeColor:Colors.grey,
+                                    //  value: p1.value,
+                                    valueColor:
+                                    AlwaysStoppedAnimation<Color>(cnt>=3?activeColor:Colors.grey),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(width: 0.5,
+                                    color: cnt>=3?activeColor:Colors.grey,
+                                    // color: activeColor
+                                  )),
+                              width: dotSize + 15,
+                              height: dotSize + 15,
+                              child: Center(
+                                child: Container(
+                                  width: dotSize,
+                                  height: dotSize,
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                      BorderRadius.circular(dotSize / 2),
+                                      //    color: d3.value
+                                      color: cnt>=3?activeColor:Colors.grey
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ])),
+                    ],
+                  ),
+                ) ,
+              ),
+
+
+         //      Center(child: Text("Goal "+cnt.toString()+" of 3")),
 
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: SimpleAutoCompleteTextField(
                 key: key,
                 decoration: new InputDecoration(
+                  contentPadding:  const EdgeInsets.fromLTRB(15,15,15,5),
                   hintText: "Enter Your Goals",
                   border: new OutlineInputBorder(
                     borderRadius: const BorderRadius.all(
@@ -206,193 +346,6 @@ class _SelectState extends State<Select> {
                   ],
                 ),
               ):Container(),
-             /*  Row(
-              children: <Widget>[
-               added[0]!=""? Padding(
-                 padding: const EdgeInsets.fromLTRB(25.0,0,8.0,8.0),
-                 child: Container(
-                   margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
-                   decoration: BoxDecoration(
-                     borderRadius: BorderRadius.circular(20.0),
-                     color: Colors.white,
-                     boxShadow: [
-                       BoxShadow(
-                         color: Colors.grey,
-                         offset: Offset(0.0, 1.0), //(x,y)
-                         blurRadius: 6.0,
-                       ),
-                     ],
-                   ),
-                   child: Padding(
-                     padding: const EdgeInsets.all(8.0),
-                     child: Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(right:3.0),
-                            child: Text(added[0],style: TextStyle(fontWeight: FontWeight.bold),),
-                          ),
-                          GestureDetector(
-                              onTap: () async{
-                                setState(() {
-                                  if(added[1]==""&&added[2]==""){
-                                    added[0]="";
-                                    count=count-1;
-                                    _disable=0;
-                                  }
-                                  //                              added.removeAt(0);
-                                });
-                                var url= 'https://march.lbits.co/api/worker.php';
-                                var resp=await http.post(url,
-                                  headers: {
-                                    'Content-Type':
-                                    'application/json',
-                                    'Authorization':
-                                    'Bearer $token'
-                                  },
-                                  body: json.encode(<String, dynamic>
-                                  {
-                                    'serviceName': "",
-                                    'work': "remove goal",
-                                    'uid':uid,
-                                    'goalNumber':"1",
-                                  }),
-                                );
-
-                                print("res "+resp.body.toString());
-
-                                await db.deleteGoal(1);
-
-                              },
-                              child: Icon(Icons.clear,size: 18,))
-                        ],
-                      ),
-                   ),
-                  ),
-               ):Container(),
-                added[1]!=""? Padding(
-                  padding: const EdgeInsets.fromLTRB(8.0,0,8.0,8.0),
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey,
-                          offset: Offset(0.0, 1.0), //(x,y)
-                          blurRadius: 6.0,
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(right:3.0),
-                            child: Text(added[1],style: TextStyle(fontWeight: FontWeight.bold),),
-                          ),
-                          GestureDetector(
-                              onTap: () async {
-                                setState(() async{
-                                  if(added[2]==""){
-                                    added[1]="";
-                                    count=count-1;
-                                    _disable=0;
-                                  }
-  //                                added.removeAt(1);
-                                });
-
-                                var url= 'https://march.lbits.co/api/worker.php';
-                                var resp=await http.post(url,
-                                  headers: {
-                                    'Content-Type':
-                                    'application/json',
-                                    'Authorization':
-                                    'Bearer $token'
-                                  },
-                                  body: json.encode(<String, dynamic>
-                                  {
-                                    'serviceName': "",
-                                    'work': "remove goal",
-                                    'uid':uid,
-                                    'goalNumber':"2",
-                                  }),
-                                );
-
-                                print("res "+resp.body.toString());
-
-
-                                await db.deleteGoal(2);
-                              },
-                              child: Icon(Icons.clear,size: 18,))
-                        ],
-                      ),
-                    ),
-                  ),
-                ):Container(),
-                added[2]!=""? Padding(
-                  padding: const EdgeInsets.fromLTRB(8.0,0,8.0,8.0),
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey,
-                          offset: Offset(0.0, 1.0), //(x,y)
-                          blurRadius: 6.0,
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(right:3.0),
-                            child: Text(added[2],style: TextStyle(fontWeight: FontWeight.bold),),
-                          ),
-                          GestureDetector(
-                              onTap: () async{
-                                setState(() {
-                                    added[2]="";
-                                    count=count-1;
-                                    _disable=0;
-//                                  added.removeAt(2);
-                                });
-
-                                var url= 'https://march.lbits.co/api/worker.php';
-                                var resp=await http.post(url,
-                                  headers: {
-                                    'Content-Type':
-                                    'application/json',
-                                    'Authorization':
-                                    'Bearer $token'
-                                  },
-                                  body: json.encode(<String, dynamic>
-                                  {
-                                    'serviceName': "",
-                                    'work': "remove goal",
-                                    'uid':uid,
-                                    'goalNumber':"3",
-                                  }),
-                                );
-
-                                print("res "+resp.body.toString());
-
-                                await db.deleteGoal(3);
-                              },
-                              child: Icon(Icons.clear,size: 18,))
-                        ],
-                      ),
-                    ),
-                  ),
-                ):Container(),
-              ],
-            ),
-*/
 
 
               //drop down
@@ -442,28 +395,28 @@ class _SelectState extends State<Select> {
                 children: <Widget>[
                   Expanded(
                     flex: 1,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(0,50,0,0),
-                      child: InkWell(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 5, left: 10,right: 15),
-                          width: MediaQuery.of(context).size.width*0.3,
-                          height: ScreenUtil().setHeight(80),
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  colors: [Colors.red, Colors.deepPurple]),
-                              borderRadius: BorderRadius.circular(20.0),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Color(0xFF6078ea).withOpacity(.3),
-                                    offset: Offset(0.0, 8.0),
-                                    blurRadius: 8.0)
-                              ]),
-                          child: Container(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              splashColor: Colors.grey,
-                              onTap: () async {
+                    child:
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20.0,20,20,0),
+                          child: FlatButton(
+                            child: Text(
+                              'SKIP',
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'montserrat'
+                              ),
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            padding: const EdgeInsets.all(15),
+                            color: Theme.of(context).primaryColor,
+                            textColor: Colors.white,
+                              onPressed: () async {
 
                                 SharedPreferences prefs = await SharedPreferences.getInstance();
                                 prefs.setInt('log', 1);
@@ -473,50 +426,47 @@ class _SelectState extends State<Select> {
                                         (Route<dynamic> route) => false);
 
 
-                              },
-                              child: Center(
-                                child: Text("SKIP",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 14,
-                                        letterSpacing: 1.0)),
-                              ),
-                            ),
+                              }
                           ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
 
+                  /*
+
+
+
+                  */
+
                   Expanded(
                     flex: 1,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(0,50,0,0),
-                      child: InkWell(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 5, left: 10,right: 15),
-                          width: MediaQuery.of(context).size.width*0.3,
-                          height: ScreenUtil().setHeight(80),
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  colors: [Colors.red, Colors.deepPurple]),
-                              borderRadius: BorderRadius.circular(20.0),
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Color(0xFF6078ea).withOpacity(.3),
-                                    offset: Offset(0.0, 8.0),
-                                    blurRadius: 8.0)
-                              ]),
-                          child: Container(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              splashColor: Colors.grey,
-                              onTap: () async {
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20.0,20,20,0),
+                          child: FlatButton(
+                              child: Text(
+                                'NEXT',
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'montserrat'
+                                ),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              padding: const EdgeInsets.all(15),
+                              color: Theme.of(context).primaryColor,
+                              textColor: Colors.white,
+                            onPressed: () async {
 
-                                if(target!="" && added[count-1]!=""){
+                              if(target!="" && added[count-1]!=""){
 
-                                   _onLoading();
-                                  print('cnt :'+cnt.toString()+'time : '+time+' target :'+target);
+                                _onLoading();
+                                print('cnt :'+cnt.toString()+'time : '+time+' target :'+target);
 
 /*
                                   var url= 'https://march.lbits.co/app/api/goals.php';
@@ -529,96 +479,77 @@ class _SelectState extends State<Select> {
                                   }));
 */
 
-                                   var url= 'https://march.lbits.co/api/worker.php';
-                                   var resp=await http.post(url,
-                                     headers: {
-                                       'Content-Type':
-                                       'application/json',
-                                       'Authorization':
-                                       'Bearer $token'
-                                     },
-                                     body: json.encode(<String, dynamic>
-                                     {
-                                       'serviceName': "",
-                                       'work': "add goal",
-                                       'uid':uid,
-                                       'goalName':added[count-1],
-                                       'target':target,
-                                       'timeFrame':time,
-                                       'goalNumber':count.toString(),
-                                     }),
-                                   );
+                                var url= 'https://march.lbits.co/api/worker.php';
+                                var resp=await http.post(url,
+                                  headers: {
+                                    'Content-Type':
+                                    'application/json',
+                                    'Authorization':
+                                    'Bearer $token'
+                                  },
+                                  body: json.encode(<String, dynamic>
+                                  {
+                                    'serviceName': "",
+                                    'work': "add goal",
+                                    'uid':uid,
+                                    'goalName':added[count-1],
+                                    'target':target,
+                                    'timeFrame':time,
+                                    'goalNumber':count.toString(),
+                                  }),
+                                );
 
 
-                                   print(resp.body.toString());
-                                   var result = json.decode(resp.body);
-                                  if(count==3 && result['response'] == 200){
+                                print(resp.body.toString());
+                                var result = json.decode(resp.body);
+                                if(count==3 && result['response'] == 200){
 
-                                    Navigator.pushAndRemoveUntil(context,
-                                        MaterialPageRoute(builder: (context) => Home('')),
-                                            (Route<dynamic> route) => false);
+                                  Navigator.pushAndRemoveUntil(context,
+                                      MaterialPageRoute(builder: (context) => Home('')),
+                                          (Route<dynamic> route) => false);
 
-                                    int savedGoal =
-                                    await db.saveGoal(new Goal(uid,added[count-1],target,time,count.toString()));
+                                  int savedGoal =
+                                  await db.saveGoal(new Goal(uid,added[count-1],target,time,count.toString()));
 
-                                    print("goal saved :$savedGoal");
+                                  print("goal saved :$savedGoal");
 
-                                    SharedPreferences prefs = await SharedPreferences.getInstance();
-                                    prefs.setInt('log', 1);
+                                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                                  prefs.setInt('log', 1);
 
-                                  }
-                                  else if(result['response'] == 200){
+                                }
+                                else if(result['response'] == 200){
 
-                                    int savedGoal =
-                                    await db.saveGoal(new Goal(uid,added[count-1],target,time,count.toString()));
+                                  int savedGoal =
+                                  await db.saveGoal(new Goal(uid,added[count-1],target,time,count.toString()));
 
-                                    print("goal saved :$savedGoal");
-
-
-                                    Navigator.pop(context);
-                                    setState(() {
-                                      _disable=0;
-                                      target="";
-                                      myController.clear();
-                                      time="1 Month";
-                                      _selectedTime=_dropdownMenuItems[0].value;
-                                      cnt=cnt+1;
-                                    });
-                                  }
-                                  else{
-                                    Navigator.pop(context);
-                                    setState(() {
-                                      _disable=0;
-                                      target="";
-                                      myController.clear();
-                                      time="1 Month";
-                                      _selectedTime=_dropdownMenuItems[0].value;
-                                      cnt=cnt-1;
-                                      added[count-1]="";
-                                      count=count-1;
-                                    });
-
-                                    _sk.currentState.showSnackBar(SnackBar(
-                                      content: Text("There is Some Technical Problem Submit again",
-                                        style: TextStyle(
-                                          fontStyle: FontStyle.italic,
-                                          fontSize: 15,
-                                        ),
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(12.0),
-                                              topRight: Radius.circular(12.0))),
-                                      duration: Duration(seconds: 3),
-                                      backgroundColor: Colors.lightBlueAccent,
-                                    ));
+                                  print("goal saved :$savedGoal");
 
 
-                                  }
+                                  Navigator.pop(context);
+                                  setState(() {
+                                    _disable=0;
+                                    target="";
+                                    myController.clear();
+                                    time="1 Month";
+                                    _selectedTime=_dropdownMenuItems[0].value;
+                                    cnt=cnt+1;
+                                  });
                                 }
                                 else{
+                                  Navigator.pop(context);
+                                  setState(() {
+                                    _disable=0;
+                                    target="";
+                                    myController.clear();
+                                    time="1 Month";
+                                    _selectedTime=_dropdownMenuItems[0].value;
+                                    cnt=cnt-1;
+                                    added[count-1]="";
+                                    count=count-1;
+                                  });
+
                                   _sk.currentState.showSnackBar(SnackBar(
-                                    content: Text("Enter all details and Submit next",
+                                    content: Text("There is Some Technical Problem Submit again",
                                       style: TextStyle(
                                         fontStyle: FontStyle.italic,
                                         fontSize: 15,
@@ -632,49 +563,59 @@ class _SelectState extends State<Select> {
                                     backgroundColor: Colors.lightBlueAccent,
                                   ));
 
+
                                 }
-
-
-                              },
-                              child: Center(
-                                child: Text("NEXT",
+                              }
+                              else{
+                                _sk.currentState.showSnackBar(SnackBar(
+                                  content: Text("Enter all details and Submit next",
                                     style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 14,
-                                        letterSpacing: 1.0)),
-                              ),
-                            ),
+                                      fontStyle: FontStyle.italic,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(12.0),
+                                          topRight: Radius.circular(12.0))),
+                                  duration: Duration(seconds: 3),
+                                  backgroundColor: Colors.lightBlueAccent,
+                                ));
+
+                              }
+
+
+                            },
                           ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
                 ],
-              ):Padding(
-                padding: const EdgeInsets.fromLTRB(0,50,0,0),
-                child: InkWell(
-                  child: Container(
-                    margin: EdgeInsets.only(top: 5, left: 10,right: 15),
-                    width: MediaQuery.of(context).size.width*0.8,
-                    height: ScreenUtil().setHeight(80),
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [Colors.red, Colors.deepPurple]),
-                        borderRadius: BorderRadius.circular(20.0),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Color(0xFF6078ea).withOpacity(.3),
-                              offset: Offset(0.0, 8.0),
-                              blurRadius: 8.0)
-                        ]),
-                    child: Container(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        splashColor: Colors.grey,
-                        onTap: () async {
-                          if(target!="" && added[0]!=""){
-                            _onLoading();
-                            print('cnt :'+cnt.toString()+'time : '+time+' target :'+target);
+              ):Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20.0,20,20,0),
+                    child: FlatButton(
+                      child: Text(
+                        'NEXT',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'montserrat'
+                        ),
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      padding: const EdgeInsets.all(15),
+                      color: Theme.of(context).primaryColor,
+                      textColor: Colors.white,
+                      onPressed: () async {
+                        if(target!="" && added[0]!=""){
+                          _onLoading();
+                          print('cnt :'+cnt.toString()+'time : '+time+' target :'+target);
 
 /*
                             var url= 'https://march.lbits.co/app/api/goals.php';
@@ -688,80 +629,61 @@ class _SelectState extends State<Select> {
 */
 
 
-                            var url= 'https://march.lbits.co/api/worker.php';
-                            var resp=await http.post(url,
-                              headers: {
-                                'Content-Type':
-                                'application/json',
-                                'Authorization':
-                                'Bearer $token'
-                              },
-                              body: json.encode(<String, dynamic>
-                              {
-                                'serviceName': "",
-                                'work': "add goal",
-                                'uid':uid,
-                                'goalName':added[count-1],
-                                'target':target,
-                                'timeFrame':time,
-                                'goalNumber':count.toString(),
-                              }),
-                            );
+                          var url= 'https://march.lbits.co/api/worker.php';
+                          var resp=await http.post(url,
+                            headers: {
+                              'Content-Type':
+                              'application/json',
+                              'Authorization':
+                              'Bearer $token'
+                            },
+                            body: json.encode(<String, dynamic>
+                            {
+                              'serviceName': "",
+                              'work': "add goal",
+                              'uid':uid,
+                              'goalName':added[count-1],
+                              'target':target,
+                              'timeFrame':time,
+                              'goalNumber':count.toString(),
+                            }),
+                          );
 
-                            print(resp.body.toString());
-                            var result = json.decode(resp.body);
-                            if(result['response'] == 200){
+                          print(resp.body.toString());
+                          var result = json.decode(resp.body);
+                          if(result['response'] == 200){
 
-                              int savedGoal =
-                              await db.saveGoal(new Goal(uid,added[count-1],target,time,count.toString()));
+                            int savedGoal =
+                            await db.saveGoal(new Goal(uid,added[count-1],target,time,count.toString()));
 
-                              print("goal saved :$savedGoal");
+                            print("goal saved :$savedGoal");
 
-                              Navigator.pop(context);
-                              setState(() {
-                                _disable=0;
-                                target="";
-                                myController.clear();
-                                time="1 Month";
-                                _selectedTime=_dropdownMenuItems[0].value;
-                                cnt=cnt+1;
-                              });
+                            Navigator.pop(context);
+                            setState(() {
+                              _disable=0;
+                              target="";
+                              myController.clear();
+                              time="1 Month";
+                              _selectedTime=_dropdownMenuItems[0].value;
+                              cnt=cnt+1;
+                            });
 
-                            }
-                            else{
-                              Navigator.pop(context);
-                              setState(() {
-                                _disable=0;
-                                target="";
-                                myController.clear();
-                                time="1 Month";
-                                _selectedTime=_dropdownMenuItems[0].value;
-                                cnt=cnt+1;
-                                added[count-1]="";
-                                count=count-1;
-                              });
-
-                              _sk.currentState.showSnackBar(SnackBar(
-                                content: Text("There is Some Technical Problem Submit again",
-                                  style: TextStyle(
-                                    fontStyle: FontStyle.italic,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(12.0),
-                                        topRight: Radius.circular(12.0))),
-                                duration: Duration(seconds: 3),
-                                backgroundColor: Colors.lightBlueAccent,
-                              ));
-
-
-                            }
                           }
                           else{
+                            Navigator.pop(context);
+                            setState(() {
+                              _disable=0;
+                              target="";
+                              myController.clear();
+                              time="1 Month";
+                              _selectedTime=_dropdownMenuItems[0].value;
+                              cnt=cnt+1;
+                              added[count-1]="";
+                              count=count-1;
+                            });
+
                             _sk.currentState.showSnackBar(SnackBar(
-                              content: Text("Enter all details and Submit next",
+                              content: Text("There is Some Technical Problem Submit again",
                                 style: TextStyle(
                                   fontStyle: FontStyle.italic,
                                   fontSize: 15,
@@ -775,20 +697,31 @@ class _SelectState extends State<Select> {
                               backgroundColor: Colors.lightBlueAccent,
                             ));
 
-                          }
 
-                        },
-                        child: Center(
-                          child: Text("NEXT",
+                          }
+                        }
+                        else{
+                          _sk.currentState.showSnackBar(SnackBar(
+                            content: Text("Enter all details and Submit next",
                               style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  letterSpacing: 1.0)),
-                        ),
-                      ),
+                                fontStyle: FontStyle.italic,
+                                fontSize: 15,
+                              ),
+                            ),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(12.0),
+                                    topRight: Radius.circular(12.0))),
+                            duration: Duration(seconds: 3),
+                            backgroundColor: Colors.lightBlueAccent,
+                          ));
+
+                        }
+
+                      },
                     ),
                   ),
-                ),
+                ],
               ),
             ],
           ),
@@ -797,6 +730,11 @@ class _SelectState extends State<Select> {
     );
   }
 
+
+  /*
+
+
+   */
   void _onLoading() {
     showDialog(
       context: context,

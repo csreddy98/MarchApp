@@ -1,8 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:march/models/people_model.dart';
-import 'package:march/support/PhoneAuthCode.dart';
-import 'package:march/ui/search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:march/ui/slider_container.dart';
 import 'package:http/http.dart' as http;
@@ -125,10 +123,13 @@ class _FindScreenState extends State<FindScreen> {
       body: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(right: 25.0),
+            padding: const EdgeInsets.only(right: 25.0,left: 25.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
+                Expanded(
+                    flex:1,
+                    child: Text('Featured',style: TextStyle(fontSize: 20),)),
                 IconButton(
                     icon: Icon(
                       Icons.tune,

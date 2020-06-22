@@ -80,6 +80,7 @@ class _LoginState extends State<Login> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('token',result['result']['token']);
       prefs.setString('id',result['result']['user_info']['id']);
+      prefs.setString('age', result['result']['user_info']['age']);
       print("user saved :$savedUser");
 
       var res=await http.post(url,
@@ -189,14 +190,14 @@ class _LoginState extends State<Login> {
                     child: RaisedButton(
                       shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(50.0),
-                          side: BorderSide(color: Colors.pink)),
+                          side: BorderSide(color: Color(0xffD47FA6))),
                       onPressed: () {
 
                        /* FirebaseAuth.instance.currentUser().then((val) async {
                           print(val.uid);});*/
                         Navigator.pushAndRemoveUntil(context,
                           MaterialPageRoute(builder: (context) => PhoneAuthScreen()),
-                              (Route<dynamic> route) => false,
+                              (Route<dynamic> route) => true,
                         );
 
                         },

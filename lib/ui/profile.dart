@@ -33,10 +33,6 @@ class _ProfileState extends State<Profile> {
   List profile=["https://w0.pngwave.com/png/914/653/silhouette-avatar-business-people-silhouettes-png-clip-art.png","https://w0.pngwave.com/png/914/653/silhouette-avatar-business-people-silhouettes-png-clip-art.png"];
   List data=[" SS Rajamouli, who never shies ,","Samantha is outstanding Samantha is outstanding Samantha is outstanding"];
 
-  @override
-  void initState() {
-    super.initState();
-  }
 
   PageController _controller = PageController(
       initialPage: 0,
@@ -47,6 +43,12 @@ class _ProfileState extends State<Profile> {
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    _load();
+    super.initState();
   }
 
 
@@ -227,7 +229,7 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    _load();
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
