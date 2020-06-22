@@ -8,6 +8,7 @@ import 'package:march/ui/view_profile.dart';
 import 'package:march/utils/database_helper.dart';
 import 'package:worm_indicator/shape.dart';
 import 'package:worm_indicator/worm_indicator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -15,13 +16,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  String name;
-  String bio;
-  String pic;
-  String dob;
-  String uid;
-  int age;
-  String profession;
+  String name, bio, pic, dob, uid, age, profession;
   var db = new DataBaseHelper();
   User user;
   Goal goal1,goal2,goal3;
@@ -400,7 +395,9 @@ class _ProfileState extends State<Profile> {
   void _load() async{
    user= await db.getUser(1);
    goal1= await db.getGoal(1);
-   int gCount= await db.getGoalCount();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+   
+    int gCount= await db.getGoalCount();
    if(gCount>1){
      goal2= await db.getGoal(2);
    }
@@ -414,7 +411,7 @@ class _ProfileState extends State<Profile> {
      profession=user.userProfession;
    //  dob = user.userDob.substring(6,);
     // age = int.parse(now.toString().substring(0, 4)) - int.parse(dob);
-     age=calculateAge(user.userDob);
+     age=prefs.getString('age');
      goals[0]=goal1.goalName;
      time[0]=goal1.timeFrame;
      target[0]=goal1.target;
