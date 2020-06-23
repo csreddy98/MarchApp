@@ -13,6 +13,25 @@ import 'package:flutter_socket_io/flutter_socket_io.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+Future myBackgroundMessageHandler(Map<String, dynamic> message) async {
+  DataBaseHelper db = DataBaseHelper();
+  if (message['data']['type'] == 'message') {
+    db.addMessage(<String, String>{
+      DataBaseHelper.messageOtherId: message['data']['sender'],
+      DataBaseHelper.messageSentBy: message['data']['sender'],
+      DataBaseHelper.messageText: message['data']['message'],
+      DataBaseHelper.messageContainsImage: '0',
+      DataBaseHelper.messageImage: 'null',
+      DataBaseHelper.messageTime: message['data']['time'],
+    });
+    db.updateLastMessage(<String, String>{
+      DataBaseHelper.friendLastMessage: message['data']['message'],
+      DataBaseHelper.friendLastMessageTime: message['data']['time'],
+      DataBaseHelper.friendId: message['data']['sender']
+    });
+  }
+}
+
 class Home extends StatefulWidget {
   final pageName;
   Home(this.pageName);
@@ -41,14 +60,13 @@ class _HomeState extends State<Home> {
     ];
     _load();
     super.initState();
-    getUserToken().then((value) {
-      print("Token: $value");
-    });
     socketIO = SocketIOManager().createSocketIO(
       'https://glacial-waters-33471.herokuapp.com',
       '/',
     );
     socketIO.init();
+    socketIO.sendMessage('update my status',
+        json.encode({"uid": "$myId", "time": "${DateTime.now()}"}));
     socketIO.subscribe('new message', (jsonData) {
       var data = json.decode(jsonData);
       if (data['receiver'].toString() == myId ||
@@ -74,43 +92,67 @@ class _HomeState extends State<Home> {
         db.updateLastMessage(updateLastMessage);
       }
     });
-    _fcm.configure(onMessage: (Map<String, dynamic> message) async {
-      print("onMessage: $message");
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          content: ListTile(
-            title: Text(message['notification']['title']),
-            subtitle: Text(message['notification']['body'] + "${message['data']}"),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Ok'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        ),
-      );
-      if(message['data']['type'] == 'message' && message['data']['status'] == 'offline'){  
-        db.addMessage(<String, String>{
-          DataBaseHelper.messageOtherId: message['data']['sender'],
-          DataBaseHelper.messageSentBy: message['data']['sender'],
-          DataBaseHelper.messageText: message['data']['message'],
-          DataBaseHelper.messageContainsImage: '0',
-          DataBaseHelper.messageImage: 'null',
-          DataBaseHelper.messageTime: message['data']['time'],
-        });
-        db.updateLastMessage(<String, String>{
-          DataBaseHelper.friendLastMessage: message['data']['message'],
-          DataBaseHelper.friendLastMessageTime: message['data']['time'],
-          DataBaseHelper.friendId: message['data']['sender']
-        });
-      }
-    }, onLaunch: (Map<String, dynamic> message) async {
-      print("onLaunch: $message");
-    }, onResume: (Map<String, dynamic> message) async {
-      print("onResume: $message");
+    getUserToken().then((value) {
+      print("Token: $value");
     });
+    _fcm.configure(
+        onBackgroundMessage: myBackgroundMessageHandler,
+        onMessage: (Map<String, dynamic> message) async {
+          print("onMessage: $message");
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              content: ListTile(
+                title: Text(message['notification']['title']),
+                subtitle: Text(
+                    message['notification']['body'] + "${message['data']}"),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('Ok'),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
+            ),
+          );
+          // if (message['data']['type'] == 'message') {
+          //   db.addMessage(<String, String>{
+          //     DataBaseHelper.messageOtherId: message['data']['sender'],
+          //     DataBaseHelper.messageSentBy: message['data']['sender'],
+          //     DataBaseHelper.messageText: message['data']['message'],
+          //     DataBaseHelper.messageContainsImage: '0',
+          //     DataBaseHelper.messageImage: 'null',
+          //     DataBaseHelper.messageTime: message['data']['time'],
+          //   });
+          //   db.updateLastMessage(<String, String>{
+          //     DataBaseHelper.friendLastMessage: message['data']['message'],
+          //     DataBaseHelper.friendLastMessageTime: message['data']['time'],
+          //     DataBaseHelper.friendId: message['data']['sender']
+          //   });
+          // }
+        },
+        onLaunch: (Map<String, dynamic> message) async {
+          print("onLaunch: $message");
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              content: ListTile(
+                title: Text(message['notification']['title']),
+                subtitle: Text(
+                    message['notification']['body'] + "${message['data']}"),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('Ok'),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
+            ),
+          );
+        },
+        onResume: (Map<String, dynamic> message) async {
+          print("onResume: $message");
+        });
   }
 
   void checkforIosPermission() async {

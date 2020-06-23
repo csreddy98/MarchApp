@@ -529,8 +529,6 @@ class _FindScreenState extends State<FindScreen> {
       token = userToken;
     //   uid = user.userId;
     });
-    socketIO.sendMessage('update my status',
-        json.encode({"uid": "$id", "time": "${DateTime.now()}"}));
     _permissionGranted = await location.hasPermission();
 
     if (_permissionGranted == PermissionStatus.granted) {

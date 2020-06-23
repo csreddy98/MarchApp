@@ -208,7 +208,7 @@ class DataBaseHelper {
   Future<List> getUsersList() async {
     var dbClient = await db;
     return await dbClient.rawQuery(
-        "SELECT * FROM $friendsTable ORDER BY $friendLastMessageTime");
+        "SELECT * FROM $friendsTable ORDER BY $friendLastMessageTime DESC");
   }
 
   Future<int> addMessage(Map<String, dynamic> messageInfo) async {

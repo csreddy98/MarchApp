@@ -46,7 +46,7 @@ class _TextingScreenState extends State<TextingScreen> {
       setState(() {
         messages = value;
       });
-      _scroller.animateTo(_scroller.position.maxScrollExtent, duration: Duration(milliseconds: 200), curve: null);
+      _scroller.animateTo(_scroller.position.maxScrollExtent, duration: Duration(microseconds: 200), curve: Curves.easeOutSine);
     });
   }
 
@@ -208,14 +208,14 @@ class _TextingScreenState extends State<TextingScreen> {
                                           ),
                                           Row(
                                             children: <Widget>[
-                                              Text("9:45",
+                                              Text("${DateFormat('kk:mm').format((DateTime.parse(messages[index]['time'])))}",
                                                   style: TextStyle(
                                                       color: Colors.grey)),
-                                              SizedBox(width: 10.0),
-                                              Icon(
-                                                Icons.done_all,
-                                                size: 20.0,
-                                              ),
+                                              // SizedBox(width: 10.0),
+                                              // Icon(
+                                              //   Icons.done_all,
+                                              //   size: 20.0,
+                                              // ),
                                             ],
                                           )
                                         ],
@@ -295,10 +295,12 @@ class _TextingScreenState extends State<TextingScreen> {
                         Icons.send,
                         color: Colors.white,
                       ),
+                      on
                       onTap: () async {
                         final text = messageController.text;
                         messageController.clear();
-                        socketIO.sendMessage(
+                        if(text != ""){
+                          socketIO.sendMessage(
                             'chat message',
                             json.encode({
                               "message": text,
@@ -306,20 +308,25 @@ class _TextingScreenState extends State<TextingScreen> {
                               "receiver": widget.user['user_id'],
                               "time": '${DateTime.now()}'
                             }));
-                        _scroller.animateTo(_scroller.position.maxScrollExtent,
-                            duration: Duration(milliseconds: 300), curve: null);
+                          _scroller.animateTo(_scroller.position.maxScrollExtent,
+                            duration: Duration(microseconds: 300), curve: Curves.easeOutSine);
+                        }
                       },
                       onDoubleTap: () async {
                         final text = messageController.text;
                         messageController.clear();
-                        socketIO.sendMessage(
-                            "chat message",
-                            jsonEncode(<String, dynamic>{
+                        if(text != ""){
+                          socketIO.sendMessage(
+                            'chat message',
+                            json.encode({
                               "message": text,
                               "sender": this.myId,
                               "receiver": widget.user['user_id'],
-                              "sentBy": this.myId
+                              "time": '${DateTime.now()}'
                             }));
+                          _scroller.animateTo(_scroller.position.maxScrollExtent,
+                            duration: Duration(milliseconds: 300), curve: Curves.bounceInOut);
+                        }
                       },
                     ),
                   ),
