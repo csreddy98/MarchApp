@@ -59,8 +59,6 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
               'uid': val.uid,
             }),
           );
-
-          print(resp.body.toString());
           var result = json.decode(resp.body);
           if (result['response'] == 300) {
             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => Login()));
@@ -80,7 +78,23 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
                 result['result']['user_info']['profession'],
                 result['result']['user_info']['profile_pic'],
                 result['result']['user_info']['mobile']));
-
+            
+            var chatList = result['result']['chats_info'];
+            print("$chatList");
+            chatList.forEach((val) {
+              db.getSingleUser(val['sender_id'] != result['result']['user_info']['id'] ? val['sender_id']: val['receiver_id']).then((value){
+                if(value[0]['user_count'].toString() != '1'){
+                  db.addUser(<String, String>{
+                    DataBaseHelper.friendId: val['userId'],
+                    DataBaseHelper.friendName: val['fullName'],
+                    DataBaseHelper.friendPic: val['profile_pic'],
+                    DataBaseHelper.friendLastMessage: "",
+                    DataBaseHelper.friendLastMessageTime: DateTime.parse(val['time']).toString()
+                  });
+                  // db.addUser()
+                }
+              });
+            });
             SharedPreferences prefs = await SharedPreferences.getInstance();
             prefs.setString('token', result['result']['token']);
             prefs.setString('id',result['result']['user_info']['id']);

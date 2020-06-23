@@ -67,11 +67,49 @@ class _HomeState extends State<Home> {
         Map updateLastMessage = <String, String>{
           'message': data['message'],
           'messageTime': data['time'],
-          'otherId': (data['receiver'] != myId) ? data['receiver'] : data['sender']
+          'otherId':
+              (data['receiver'] != myId) ? data['receiver'] : data['sender']
         };
         db.addMessage(newMessage);
         db.updateLastMessage(updateLastMessage);
       }
+    });
+    _fcm.configure(onMessage: (Map<String, dynamic> message) async {
+      print("onMessage: $message");
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          content: ListTile(
+            title: Text(message['notification']['title']),
+            subtitle: Text(message['notification']['body'] + "${message['data']}"),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Ok'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
+      );
+      if(message['data']['type'] == 'message' && message['data']['status'] == 'offline'){  
+        db.addMessage(<String, String>{
+          DataBaseHelper.messageOtherId: message['data']['sender'],
+          DataBaseHelper.messageSentBy: message['data']['sender'],
+          DataBaseHelper.messageText: message['data']['message'],
+          DataBaseHelper.messageContainsImage: '0',
+          DataBaseHelper.messageImage: 'null',
+          DataBaseHelper.messageTime: message['data']['time'],
+        });
+        db.updateLastMessage(<String, String>{
+          DataBaseHelper.friendLastMessage: message['data']['message'],
+          DataBaseHelper.friendLastMessageTime: message['data']['time'],
+          DataBaseHelper.friendId: message['data']['sender']
+        });
+      }
+    }, onLaunch: (Map<String, dynamic> message) async {
+      print("onLaunch: $message");
+    }, onResume: (Map<String, dynamic> message) async {
+      print("onResume: $message");
     });
   }
 
@@ -107,31 +145,6 @@ class _HomeState extends State<Home> {
       }
     });
     return tkn;
-  }
-
-  void message() async {
-    _fcm.configure(onMessage: (Map<String, dynamic> message) async {
-      print("onMessage: $message");
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          content: ListTile(
-            title: Text(message['notification']['title']),
-            subtitle: Text(message['notification']['body']),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('Ok'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        ),
-      );
-    }, onLaunch: (Map<String, dynamic> message) async {
-      print("onLaunch: $message");
-    }, onResume: (Map<String, dynamic> message) async {
-      print("onResume: $message");
-    });
   }
 
   Future<Map> updateStatus() async {

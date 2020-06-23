@@ -77,6 +77,7 @@ class _FindScreenState extends State<FindScreen> {
         }),
       );
       var result = json.decode(resp.body);
+      print("This is the result: $result");
       if (result['response'] == 200) {
         int l = result['result'].length;
         if (l > 10) {
@@ -123,13 +124,16 @@ class _FindScreenState extends State<FindScreen> {
       body: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.only(right: 25.0,left: 25.0),
+            padding: const EdgeInsets.only(right: 25.0, left: 25.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 Expanded(
-                    flex:1,
-                    child: Text('Featured',style: TextStyle(fontSize: 20),)),
+                    flex: 1,
+                    child: Text(
+                      'Featured',
+                      style: TextStyle(fontSize: 20),
+                    )),
                 IconButton(
                     icon: Icon(
                       Icons.tune,
@@ -473,12 +477,15 @@ class _FindScreenState extends State<FindScreen> {
                               deleteItem(index);
 
                               Scaffold.of(context).showSnackBar(SnackBar(
-                                  content: Text("Profile deleted"),
-                                  action: SnackBarAction(
-                                      label: "UNDO",
-                                      onPressed: () {
-                                        undoDeletion(index, item);
-                                      })));
+                                content: Text("Profile deleted"),
+                                action: SnackBarAction(
+                                    label: "UNDO",
+                                    onPressed: () {
+                                      undoDeletion(index, item);
+                                    }
+                                  )
+                                )
+                              );
                             },
                           );
                         },
@@ -512,11 +519,15 @@ class _FindScreenState extends State<FindScreen> {
 
     // SQLITE
 
-    var user = await db.getUser(1);
-
+    // var user = await db.getUser(1);
+    db.getUser(1).then((value) {
+      setState(() {
+        uid = value.userId;  
+      });
+    });
     setState(() {
       token = userToken;
-      uid = user.userId;
+    //   uid = user.userId;
     });
     socketIO.sendMessage('update my status',
         json.encode({"uid": "$id", "time": "${DateTime.now()}"}));

@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_socket_io/flutter_socket_io.dart';
 import 'package:flutter_socket_io/socket_io_manager.dart';
+import 'package:intl/intl.dart';
 import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -41,11 +42,11 @@ class _TextingScreenState extends State<TextingScreen> {
     // print("${widget.user['receiver_id']}");
     db.getMessage(widget.user['user_id']).then((value) {
       // messages.clear();
-      print("$value");
+      // print("$value");
       setState(() {
         messages = value;
       });
-      // _scroller.jumpTo(_scroller.position.maxScrollExtent);
+      _scroller.animateTo(_scroller.position.maxScrollExtent, duration: Duration(milliseconds: 200), curve: null);
     });
   }
 
@@ -121,6 +122,7 @@ class _TextingScreenState extends State<TextingScreen> {
                       addRepaintBoundaries: false,
                       itemCount: messages.length,
                       controller: _scroller,
+                      shrinkWrap: true,
                       scrollDirection: Axis.vertical,
                       itemBuilder: (BuildContext context, int index) {
                         // print("This is $index: ${messages[index]}");
@@ -160,7 +162,7 @@ class _TextingScreenState extends State<TextingScreen> {
                                           Row(
                                             children: <Widget>[
                                               SizedBox(width: 10.0),
-                                              Text("9:45",
+                                              Text("${DateFormat('kk:mm').format((DateTime.parse(messages[index]['time'])))}",
                                                   style: TextStyle(
                                                       color: Colors.grey)),
                                             ],
@@ -304,6 +306,8 @@ class _TextingScreenState extends State<TextingScreen> {
                               "receiver": widget.user['user_id'],
                               "time": '${DateTime.now()}'
                             }));
+                        _scroller.animateTo(_scroller.position.maxScrollExtent,
+                            duration: Duration(milliseconds: 300), curve: null);
                       },
                       onDoubleTap: () async {
                         final text = messageController.text;

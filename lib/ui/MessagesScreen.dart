@@ -36,11 +36,18 @@ class _MessagesScreenState extends State<MessagesScreen> {
   @override
   void initState() {
     _load();
+    dataReceiver();
     super.initState();
+
     // setState(() {
     //   (widget.screenState == 'requests') ? chats = false : chats = true;
     // });
     chats = true;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   updateLastMessages() async {
@@ -51,16 +58,18 @@ class _MessagesScreenState extends State<MessagesScreen> {
     });
   }
 
-  dataReceiver() {
+  dataReceiver() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    print("This is token ${prefs.getString('token')}");
     http.post("https://march.lbits.co/api/worker.php",
         body: json
             .encode({'work': 'get my requests', 'uid': '$uid', 'id': '$myId'}),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token'
+          'Authorization': 'Bearer ${prefs.getString('token')}'
         }).then((value) {
       var resp = json.decode(value.body);
-      print(resp);
+      print("This is Response $resp");
 
       setState(() {
         accepted = resp['result']['accepted'];
@@ -72,7 +81,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
   @override
   Widget build(BuildContext context) {
     updateLastMessages();
-    dataReceiver();
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(

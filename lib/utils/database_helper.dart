@@ -196,12 +196,19 @@ class DataBaseHelper {
 
   Future<int> updateLastMessage(Map messageInfo) async {
     var dbClient = await db;
-    return await dbClient.rawUpdate("UPDATE $friendsTable SET $friendLastMessage='${messageInfo['message']}', $friendLastMessageTime='${messageInfo['messageTime']}' WHERE $friendId = '${messageInfo['otherId']}'");
+    return await dbClient.rawUpdate(
+        "UPDATE $friendsTable SET $friendLastMessage='${messageInfo['message']}', $friendLastMessageTime='${messageInfo['messageTime']}' WHERE $friendId = '${messageInfo['otherId']}'");
+  }
+
+  Future<List> getSingleUser(String userId) async {
+    var dbClient = await db;
+    return await dbClient.rawQuery("SELECT COUNT(1) AS user_count FROM $friendsTable WHERE $friendId = $userId");
   }
 
   Future<List> getUsersList() async {
     var dbClient = await db;
-    return await dbClient.rawQuery("SELECT * FROM $friendsTable ORDER BY DATETIME($friendLastMessageTime)");
+    return await dbClient.rawQuery(
+        "SELECT * FROM $friendsTable ORDER BY $friendLastMessageTime");
   }
 
   Future<int> addMessage(Map<String, dynamic> messageInfo) async {
