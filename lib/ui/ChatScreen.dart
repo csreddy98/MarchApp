@@ -295,7 +295,6 @@ class _TextingScreenState extends State<TextingScreen> {
                         Icons.send,
                         color: Colors.white,
                       ),
-                      on
                       onTap: () async {
                         final text = messageController.text;
                         messageController.clear();

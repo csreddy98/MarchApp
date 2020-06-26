@@ -66,7 +66,7 @@ class _HomeState extends State<Home> {
     );
     socketIO.init();
     socketIO.sendMessage('update my status',
-        json.encode({"uid": "$myId", "time": "${DateTime.now()}"}));
+        json.encode({"uid": "$myId", "time": "${DateTime.now()}"}));      
     socketIO.subscribe('new message', (jsonData) {
       var data = json.decode(jsonData);
       if (data['receiver'].toString() == myId ||

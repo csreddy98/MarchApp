@@ -21,32 +21,6 @@ class _PhoneAuthGetPhoneState extends State<PhoneAuthScreen> {
   // bool _isTyping = false;
   double _height, _width;
 
- /* @override
-  void initState() {
-    super.initState();
-    Timer.periodic(Duration(seconds: 5), (Timer timer) {
-      if (_currentPage < 2) {
-        _currentPage++;
-      } else {
-        _currentPage = 0;
-      }
-
-      _pageController.animateToPage(
-        _currentPage,
-
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeIn,
-      );
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _pageController.dispose();
-  }*/
-
-
   @override
   Widget build(BuildContext context) {
     _height = MediaQuery.of(context).size.height;
@@ -88,7 +62,7 @@ class _PhoneAuthGetPhoneState extends State<PhoneAuthScreen> {
                           padding: const EdgeInsets.only(top:15.0),
                           child: Text(
                             "To Verify your account,\nPlease enter your phone number",
-                            style: TextStyle(fontSize: 16.0, color: Colors.black45),textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 16.0, color: Colors.black),textAlign: TextAlign.center,
                           ),
                         )
                       ],
@@ -102,11 +76,9 @@ class _PhoneAuthGetPhoneState extends State<PhoneAuthScreen> {
                         this.phoneNo = value;
                       },
                       controller: _phoneNumberController,
-
+                      maxLength: 10,
+                      
                       decoration: InputDecoration(
-               //       filled: true,
-//                      fillColor: Color(0x33E0E7FF),
-                        hintText: '000 000 0000',
                         labelText: "Enter Phone Number",
                         labelStyle: TextStyle(fontSize: 18),
                         prefix: Text("+91 ",style: TextStyle(color: Colors.black),),
