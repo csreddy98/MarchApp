@@ -12,6 +12,7 @@ import 'package:march/ui/registration.dart';
 import 'package:march/ui/select.dart';
 import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dotted_border/dotted_border.dart';
 // import 'dart:convert' as convert;
 
 import 'home.dart';
@@ -46,6 +47,7 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
     FirebasePhoneAuth.phoneAuthState.stream
         .listen((PhoneAuthState state) async {
       print("Hello There $state");
+
       if (state == PhoneAuthState.Verified) {
         FirebaseAuth.instance.currentUser().then((val) async {
           print(val.uid + " " + val.phoneNumber);
@@ -150,33 +152,6 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
             );
           }
         });
-
-        //   FirebaseAuth.instance.currentUser().then((value) async {
-        //   var reg = await http
-        //       .get("https://march.lbits.co/app/api/index.php?uid=${value.uid}");
-        //   if (reg.body == "null") {
-        //     print("This is user data ${reg.body}");
-        //     Navigator.pushAndRemoveUntil(
-        //         context,
-        //         MaterialPageRoute(builder: (context) => Register()),
-        //         (route) => false);
-        //   } else {
-        //     var goals = await http
-        //         .get("https://march.lbits.co/app/api/goals.php?uid=${value.uid}");
-        //     print("This is goals ${goals.body}");
-        //     if (goals.body == "[]") {
-        //       Navigator.pushAndRemoveUntil(
-        //           context,
-        //           MaterialPageRoute(builder: (context) => Select()),
-        //           (route) => false);
-        //     } else {
-        //       Navigator.pushAndRemoveUntil(
-        //           context,
-        //           MaterialPageRoute(builder: (context) => Home('')),
-        //           (route) => false);
-        //     }
-        //   }
-        // });
       }
     });
     super.initState();
@@ -235,64 +210,40 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
             ),
 
             SizedBox(height: 46.0),
-
-            /*Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                getPinField(key: "1", focusNode: focusNode1),
-                SizedBox(width: 5.0),
-                getPinField(key: "2", focusNode: focusNode2),
-                SizedBox(width: 5.0),
-                getPinField(key: "3", focusNode: focusNode3),
-                SizedBox(width: 5.0),
-                SizedBox(width: 5.0),
-                getPinField(key: "4", focusNode: focusNode4),
-                SizedBox(width: 5.0),
-                getPinField(key: "5", focusNode: focusNode5),
-                SizedBox(width: 5.0),
-                getPinField(key: "6", focusNode: focusNode6),
-                SizedBox(width: 5.0),
-              ],
-            ),*/
-
-            /*Padding(
-              padding: const EdgeInsets.only(left:20.0,right: 20),
-              child: TextField(
-                maxLengthEnforced: false,
-                textAlign: TextAlign.center,
-                cursorColor: Colors.black,
-                keyboardType: TextInputType.number,
-                style: TextStyle(
-                    fontSize: 20.0, fontWeight: FontWeight.w600, color: Colors.black),
-              ),
-            ),*/
-
             Container(
               width: MediaQuery.of(context).size.width / 1.8,
-              child: TextField(
-                // key: Key(key),
-                //  expands: false,
-                // autofocus: key.contains("1") ? true : false,
-                // focusNode: focusNode,
-                controller: _controller,
-                onChanged: (String newVal) {
-                  if(newVal.length <= maxLength){
-                    code = newVal;
-                  }else{
-                    _controller.text = code;
-                  }
+              
+              child: Column(
+                children: <Widget>[
+                  TextField(
+                    controller: _controller,
+                    onChanged: (String newVal) {
+                      if(newVal.length <= maxLength){
+                        code = newVal;
+                      }else{
+                        _controller.text = code;
+                      }
 
-                },
-                inputFormatters: [
-                  WhitelistingTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(6),
+                    },
+                    inputFormatters: [
+                      WhitelistingTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(6),
+                    ],
+                    decoration: InputDecoration(
+                      border: InputBorder.none
+                    ),
+                    textAlign: TextAlign.center,
+                    cursorColor: Colors.black,
+                    keyboardType: TextInputType.number,
+                    style: TextStyle(
+                        letterSpacing: 23,
+                        fontSize: 25.0, fontWeight: FontWeight.w500, color: Colors.black),
+                  ),
+                  LinearProgressIndicator(
+                    backgroundColor: Colors.grey[300], 
+                    valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor), 
+                  )
                 ],
-                textAlign: TextAlign.center,
-                cursorColor: Colors.black,
-                keyboardType: TextInputType.number,
-                style: TextStyle(
-                    letterSpacing: 5,
-                    fontSize: 25.0, fontWeight: FontWeight.w500, color: Colors.black),
               ),
             ),
 
@@ -344,46 +295,4 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
     // }
     FirebasePhoneAuth.signInWithPhoneNumber(smsCode: code);
   }
-
- /* Widget getPinField({String key, FocusNode focusNode}) => SizedBox(
-        height: 40.0,
-        width: 35.0,
-        child: TextField(
-          key: Key(key),
-          expands: false,
-          autofocus: key.contains("1") ? true : false,
-          focusNode: focusNode,
-          onChanged: (String value) {
-            if (value.length == 1) {
-              code += value;
-              switch (code.length) {
-                case 1:
-                  FocusScope.of(context).requestFocus(focusNode2);
-                  break;
-                case 2:
-                  FocusScope.of(context).requestFocus(focusNode3);
-                  break;
-                case 3:
-                  FocusScope.of(context).requestFocus(focusNode4);
-                  break;
-                case 4:
-                  FocusScope.of(context).requestFocus(focusNode5);
-                  break;
-                case 5:
-                  FocusScope.of(context).requestFocus(focusNode6);
-                  break;
-                default:
-                  FocusScope.of(context).requestFocus(FocusNode());
-                  break;
-              }
-            }
-          },
-          maxLengthEnforced: false,
-          textAlign: TextAlign.center,
-          cursorColor: Colors.black,
-          keyboardType: TextInputType.number,
-          style: TextStyle(
-              fontSize: 20.0, fontWeight: FontWeight.w600, color: Colors.black),
-        ),
-      );*/
 }
