@@ -8,7 +8,7 @@ class ViewProfile extends StatefulWidget {
   final String imageUrl;
   final String name;
   final String age;
-  final List goals;
+  final String goals;
   final String id;
   final String bio;
   
@@ -22,7 +22,7 @@ class _ViewProfileState extends State<ViewProfile> {
   String imageUrl;
   String name;
   String age;
-  List goals;
+  String goals;
   String id;
   String bio;
 
@@ -155,8 +155,7 @@ class _ViewProfileState extends State<ViewProfile> {
                   children: <Widget>[
                     Text("Goals :  ",
                       style: TextStyle(fontWeight: FontWeight.bold),),
-                    Text(goals != null ? goals[0] + " , " + goals[1] + " , " +
-                        goals[2] : " ")
+                    Text(goals)
                   ],
                 ),
               ),
@@ -174,8 +173,6 @@ class _ViewProfileState extends State<ViewProfile> {
                 padding: const EdgeInsets.fromLTRB(20.0, 20, 8, 8),
                 child: AutoSizeText(bio != null ? bio : "", maxLines: 12,),
               ),
-
-
             ],
           ),
         ),

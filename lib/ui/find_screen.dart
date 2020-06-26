@@ -86,18 +86,18 @@ class _FindScreenState extends State<FindScreen> {
 
         if (clicked == 0) {
           for (var i = 0; i < l; i++) {
-            if (!myUsers.contains(result['result'][i]['id'])) {}
+            if (!myUsers.contains(result['result'][i]['user_info']['id'])) {}
             people.add(
               Person(
-                  imageUrl: result['result'][i]['profile_pic'],
-                  name: result['result'][i]['fullName'],
-                  gender: result['result'][i]['sex'],
-                  age: result['result'][i]['age'].toString() + " Years Old",
-                  location: result['result'][i]['distance'] + " Km away",
-                  goals: convert.jsonEncode(['Cricket', 'Travel', 'Dance']),
-                  id: result['result'][i]['id'],
-                  bio: result['result'][i]['bio'],
-                  profession: result['result'][i]['profession']),
+                  imageUrl: result['result'][i]['user_info']['profile_pic'],
+                  name: result['result'][i]['user_info']['fullName'],
+                  gender: result['result'][i]['user_info']['sex'],
+                  age: result['result'][i]['user_info']['age'].toString() + " Years Old",
+                  location: result['result'][i]['user_info']['distance'] + " Km away",
+                  goals: result['result'][i]['goal_info'],
+                  id: result['result'][i]['user_info']['id'],
+                  bio: result['result'][i]['user_info']['bio'],
+                  profession: result['result'][i]['user_info']['profession']),
             );
           }
 
@@ -172,7 +172,6 @@ class _FindScreenState extends State<FindScreen> {
                         itemCount: snapshot.data.length,
                         itemBuilder: (BuildContext context, int index) {
                           Person person = people[index];
-                          List<dynamic> list = convert.jsonDecode(person.goals);
                           return Padding(
                             padding: const EdgeInsets.all(5.0),
                             child: Dismissible(
@@ -187,7 +186,7 @@ class _FindScreenState extends State<FindScreen> {
                                               person.imageUrl,
                                               person.name,
                                               person.age,
-                                              list,
+                                              person.goals,
                                               person.bio)),
                                       (Route<dynamic> route) => true);
                                 },
@@ -430,23 +429,7 @@ class _FindScreenState extends State<FindScreen> {
                                                       letterSpacing: 0.6),
                                                 ),
                                                 Text(
-                                                  list[0] + " , ",
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                    color: Colors.black87,
-                                                    letterSpacing: 0.6,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  list[1] + " , ",
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                    color: Colors.black87,
-                                                    letterSpacing: 0.6
-                                                  ),
-                                                ),
-                                                Text(
-                                                  list[2],
+                                                  person.goals,
                                                   style: TextStyle(
                                                     fontSize: 18,
                                                     color: Colors.black87,
