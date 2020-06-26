@@ -259,7 +259,7 @@ class _HomeState extends State<Home> {
           //   new BottomNavigationBarItem(icon: new Icon(Icons.date_range,size: 30,),title: Text("")),
           new BottomNavigationBarItem(
               icon: new Icon(
-                Icons.chat_bubble,
+                Icons.chat,
                 size: 30,
               ),
               title: Text("Chats")),
