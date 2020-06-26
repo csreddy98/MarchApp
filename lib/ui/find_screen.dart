@@ -96,7 +96,8 @@ class _FindScreenState extends State<FindScreen> {
                   location: result['result'][i]['distance'] + " Km away",
                   goals: convert.jsonEncode(['Cricket', 'Travel', 'Dance']),
                   id: result['result'][i]['id'],
-                  bio: result['result'][i]['bio']),
+                  bio: result['result'][i]['bio'],
+                  profession: result['result'][i]['profession']),
             );
           }
 
@@ -172,325 +173,330 @@ class _FindScreenState extends State<FindScreen> {
                         itemBuilder: (BuildContext context, int index) {
                           Person person = people[index];
                           List<dynamic> list = convert.jsonDecode(person.goals);
-                          return Dismissible(
-                            key: ObjectKey(people[index]),
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ViewProfile(
-                                            person.id,
-                                            person.imageUrl,
-                                            person.name,
-                                            person.age,
-                                            list,
-                                            person.bio)),
-                                    (Route<dynamic> route) => true);
-                              },
-                              child: Stack(
-                                children: <Widget>[
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(17, 5, 20, 5),
-                                    height: 170,
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color:
-                                                Colors.black.withOpacity(0.2),
-                                            blurRadius: 6,
-                                            offset: Offset(1, 1)),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: EdgeInsets.fromLTRB(
-                                              115, 0, 20, 0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              SizedBox(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.4,
-                                                child: AutoSizeText(
-                                                  person.name,
-                                                  style: TextStyle(
-                                                    fontSize: 20,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.blue[900],
+                          return Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Dismissible(
+                              key: ObjectKey(people[index]),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ViewProfile(
+                                              person.id,
+                                              person.imageUrl,
+                                              person.name,
+                                              person.age,
+                                              list,
+                                              person.bio)),
+                                      (Route<dynamic> route) => true);
+                                },
+                                child: Stack(
+                                  children: <Widget>[
+                                    Container(
+                                      margin: EdgeInsets.fromLTRB(17, 5, 20, 5),
+                                      height: 170,
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(10),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color:
+                                                  Colors.black.withOpacity(0.2),
+                                              blurRadius: 2,
+                                              offset: Offset(1, 1)),
+                                        ],
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: EdgeInsets.fromLTRB(
+                                                115, 0, 20, 0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceBetween,
+                                              children: <Widget>[
+                                                SizedBox(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.4,
+                                                  child: AutoSizeText(
+                                                   person.name[0].toUpperCase()+ person.name.substring(1),
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      letterSpacing: 0.4,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.blue[900],
+                                                    ),
+                                                    maxLines: 1,
                                                   ),
-                                                  maxLines: 1,
                                                 ),
-                                              ),
-                                              IconButton(
-                                                  icon: Icon(Icons.person_add),
-                                                  iconSize: 28,
-                                                  color: Color.fromRGBO(
-                                                      63, 92, 200, 0.4),
-                                                  onPressed: () {
-                                                    showDialog(
-                                                        context: context,
-                                                        builder: (BuildContext
-                                                            context) {
-                                                          return Dialog(
-                                                            shape: RoundedRectangleBorder(
-                                                                borderRadius: BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            15.0))), //this right here
-                                                            child: Container(
-                                                              height: 250,
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        20.0),
-                                                                child: Column(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .start,
-                                                                  children: [
-                                                                    Text(
-                                                                      "Send A Message",
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              20,
-                                                                          color: Colors
-                                                                              .black,
-                                                                          fontWeight:
-                                                                              FontWeight.w600),
-                                                                    ),
-                                                                    Container(
-                                                                      height:
-                                                                          15,
-                                                                    ),
-                                                                    TextField(
-                                                                      keyboardType:
-                                                                          TextInputType
-                                                                              .multiline,
-                                                                      maxLines:
-                                                                          3,
-                                                                      controller:
-                                                                          messageController,
-                                                                      decoration: InputDecoration(
-                                                                          enabledBorder: OutlineInputBorder(
-                                                                            borderSide:
-                                                                                BorderSide(color: Colors.grey, width: 1.0),
-                                                                          ),
-                                                                          hintText: 'Enter a Message'),
-                                                                    ),
-                                                                    Row(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .end,
-                                                                      children: <
-                                                                          Widget>[
-                                                                        Container(
-                                                                          width:
-                                                                              MediaQuery.of(context).size.width / 2.2,
-                                                                        ),
-                                                                        Expanded(
-                                                                          child:
-                                                                              SizedBox(
+                                                IconButton(
+                                                    icon: Icon(Icons.person_add),
+                                                    iconSize: 28,
+                                                    color: Color.fromRGBO(
+                                                        63, 92, 200, 0.4),
+                                                    onPressed: () {
+                                                      showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext
+                                                              context) {
+                                                            return Dialog(
+                                                              shape: RoundedRectangleBorder(
+                                                                  borderRadius: BorderRadius
+                                                                      .all(Radius
+                                                                          .circular(
+                                                                              15.0))), //this right here
+                                                              child: Container(
+                                                                height: 250,
+                                                                child: Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .all(
+                                                                          20.0),
+                                                                  child: Column(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .center,
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      Text(
+                                                                        "Send A Message",
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                20,
+                                                                            color: Colors
+                                                                                .black,
+                                                                            fontWeight:
+                                                                                FontWeight.w600),
+                                                                      ),
+                                                                      Container(
+                                                                        height:
+                                                                            15,
+                                                                      ),
+                                                                      TextField(
+                                                                        keyboardType:
+                                                                            TextInputType
+                                                                                .multiline,
+                                                                        maxLines:
+                                                                            3,
+                                                                        controller:
+                                                                            messageController,
+                                                                        decoration: InputDecoration(
+                                                                            enabledBorder: OutlineInputBorder(
+                                                                              borderSide:
+                                                                                  BorderSide(color: Colors.grey, width: 1.0),
+                                                                            ),
+                                                                            hintText: 'Enter a Message'),
+                                                                      ),
+                                                                      Row(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment
+                                                                                .end,
+                                                                        children: <
+                                                                            Widget>[
+                                                                          Container(
                                                                             width:
-                                                                                100,
+                                                                                MediaQuery.of(context).size.width / 2.2,
+                                                                          ),
+                                                                          Expanded(
                                                                             child:
-                                                                                RaisedButton(
-                                                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
-                                                                              onPressed: () async {
-                                                                                var msg = messageController.text;
-                                                                                var db = DataBaseHelper();
-                                                                                messageController.clear();
-                                                                                SharedPreferences prefs = await SharedPreferences.getInstance();
-                                                                                String id = prefs.getString('id') ?? "";
-                                                                                print("UID IS EMPTY? $uid");
-                                                                                await http.post('https://march.lbits.co/api/worker.php',
-                                                                                    body: json.encode(<String, dynamic>{
-                                                                                      "serviveName": "",
-                                                                                      "work": "add new request",
-                                                                                      "uid": "$uid",
-                                                                                      "sender": "$id",
-                                                                                      "receiver": "${person.id}",
-                                                                                      "message": "$msg",
-                                                                                      "requestStatus": "pending"
-                                                                                    }),
-                                                                                    headers: {
-                                                                                      'Authorization': 'Bearer $token',
-                                                                                      'Content-Type': 'application/json'
-                                                                                    }).then((value) {
-                                                                                  var resp = json.decode(value.body);
-                                                                                  if (resp['response'] == 200) {
-                                                                                    socketIO.sendMessage(
-                                                                                        "New user Request",
-                                                                                        json.encode({
-                                                                                          "sender": id,
-                                                                                          "receiver": person.id,
-                                                                                          "message": msg,
-                                                                                          "time": DateTime.now().toString(),
-                                                                                        }));
-                                                                                    Map<String, dynamic> messageMap = {
-                                                                                      DataBaseHelper.seenStatus: '0',
-                                                                                      DataBaseHelper.messageOtherId: person.id,
-                                                                                      DataBaseHelper.messageSentBy: id,
-                                                                                      DataBaseHelper.messageText: msg,
-                                                                                      DataBaseHelper.messageContainsImage: '0',
-                                                                                      DataBaseHelper.messageImage: 'null',
-                                                                                      DataBaseHelper.messageTime: "${DateTime.now()}"
-                                                                                    };
-                                                                                    Map<String, dynamic> friendsMap = {
-                                                                                      DataBaseHelper.friendId: person.id,
-                                                                                      DataBaseHelper.friendName: person.name,
-                                                                                      DataBaseHelper.friendPic: person.imageUrl,
-                                                                                      DataBaseHelper.friendLastMessage: msg,
-                                                                                      DataBaseHelper.friendLastMessageTime: "${DateTime.now()}"
-                                                                                    };
-                                                                                    db.addUser(friendsMap);
-                                                                                    db.addMessage(messageMap);
-                                                                                  } else {
-                                                                                    print("$resp");
-                                                                                  }
-                                                                                });
-                                                                                Navigator.pop(context);
-                                                                              },
-                                                                              child: Text(
-                                                                                "Add",
-                                                                                style: TextStyle(color: Colors.white),
+                                                                                SizedBox(
+                                                                              width:
+                                                                                  100,
+                                                                              child:
+                                                                                  RaisedButton(
+                                                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
+                                                                                onPressed: () async {
+                                                                                  var msg = messageController.text;
+                                                                                  var db = DataBaseHelper();
+                                                                                  messageController.clear();
+                                                                                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                                                                                  String id = prefs.getString('id') ?? "";
+                                                                                  print("UID IS EMPTY? $uid");
+                                                                                  await http.post('https://march.lbits.co/api/worker.php',
+                                                                                      body: json.encode(<String, dynamic>{
+                                                                                        "serviveName": "",
+                                                                                        "work": "add new request",
+                                                                                        "uid": "$uid",
+                                                                                        "sender": "$id",
+                                                                                        "receiver": "${person.id}",
+                                                                                        "message": "$msg",
+                                                                                        "requestStatus": "pending"
+                                                                                      }),
+                                                                                      headers: {
+                                                                                        'Authorization': 'Bearer $token',
+                                                                                        'Content-Type': 'application/json'
+                                                                                      }).then((value) {
+                                                                                    var resp = json.decode(value.body);
+                                                                                    if (resp['response'] == 200) {
+                                                                                      socketIO.sendMessage(
+                                                                                          "New user Request",
+                                                                                          json.encode({
+                                                                                            "sender": id,
+                                                                                            "receiver": person.id,
+                                                                                            "message": msg,
+                                                                                            "time": DateTime.now().toString(),
+                                                                                          }));
+                                                                                      Map<String, dynamic> messageMap = {
+                                                                                        DataBaseHelper.seenStatus: '0',
+                                                                                        DataBaseHelper.messageOtherId: person.id,
+                                                                                        DataBaseHelper.messageSentBy: id,
+                                                                                        DataBaseHelper.messageText: msg,
+                                                                                        DataBaseHelper.messageContainsImage: '0',
+                                                                                        DataBaseHelper.messageImage: 'null',
+                                                                                        DataBaseHelper.messageTime: "${DateTime.now()}"
+                                                                                      };
+                                                                                      Map<String, dynamic> friendsMap = {
+                                                                                        DataBaseHelper.friendId: person.id,
+                                                                                        DataBaseHelper.friendName: person.name,
+                                                                                        DataBaseHelper.friendPic: person.imageUrl,
+                                                                                        DataBaseHelper.friendLastMessage: msg,
+                                                                                        DataBaseHelper.friendLastMessageTime: "${DateTime.now()}"
+                                                                                      };
+                                                                                      db.addUser(friendsMap);
+                                                                                      db.addMessage(messageMap);
+                                                                                    } else {
+                                                                                      print("$resp");
+                                                                                    }
+                                                                                  });
+                                                                                  Navigator.pop(context);
+                                                                                },
+                                                                                child: Text(
+                                                                                  "Add",
+                                                                                  style: TextStyle(color: Colors.white),
+                                                                                ),
+                                                                                color: Color.fromRGBO(63, 92, 200, 1),
                                                                               ),
-                                                                              color: Color.fromRGBO(63, 92, 200, 1),
                                                                             ),
                                                                           ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ],
+                                                                        ],
+                                                                      ),
+                                                                    ],
+                                                                  ),
                                                                 ),
                                                               ),
-                                                            ),
-                                                          );
-                                                        });
-                                                  }),
-                                            ],
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.fromLTRB(
-                                              115, 0, 20, 0),
-                                          child: Text(
-                                            person.age,
-                                            style: TextStyle(
-                                              fontSize: 15,
+                                                            );
+                                                          });
+                                                    }),
+                                              ],
                                             ),
                                           ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              EdgeInsets.fromLTRB(95, 0, 20, 0),
-                                          child: Row(
-                                            children: <Widget>[
-                                              IconButton(
-                                                  icon: Icon(
-                                                    Icons.location_on,
-                                                    color: Colors.grey[400],
-                                                  ),
-                                                  onPressed: null),
-                                              Text(
-                                                person.location,
-                                                style: TextStyle(fontSize: 15),
+                                          Padding(
+                                            padding: EdgeInsets.fromLTRB(
+                                                115, 0, 20, 0),
+                                            child: Text(
+                                              person.profession,
+                                              style: TextStyle(
+                                                letterSpacing: 0.4,
+                                                fontSize: 16,
                                               ),
-                                            ],
+                                            ),
                                           ),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              EdgeInsets.fromLTRB(20, 5, 20, 0),
-                                          child: Row(
-                                            children: <Widget>[
-                                              Text(
-                                                'Goals:  ',
-                                                style: TextStyle(
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.fromLTRB(95, 0, 20, 0),
+                                            child: Row(
+                                              children: <Widget>[
+                                                IconButton(
+                                                    icon: Icon(
+                                                      Icons.location_on,
+                                                      color: Colors.grey[400],
+                                                    ),
+                                                    onPressed: null),
+                                                Text(
+                                                  person.location,
+                                                  style: TextStyle(fontSize: 15,letterSpacing: 0.4,),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding:
+                                                EdgeInsets.fromLTRB(20, 5, 20, 0),
+                                            child: Row(
+                                              children: <Widget>[
+                                                Text(
+                                                  'Goals:  ',
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight: FontWeight.bold,
+                                                      letterSpacing: 0.6),
+                                                ),
+                                                Text(
+                                                  list[0] + " , ",
+                                                  style: TextStyle(
                                                     fontSize: 18,
-                                                    fontWeight: FontWeight.bold,
-                                                    letterSpacing: 0.8),
-                                              ),
-                                              Text(
-                                                list[0] + " , ",
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  color: Colors.black87,
-                                                  letterSpacing: 0.8,
+                                                    color: Colors.black87,
+                                                    letterSpacing: 0.6,
+                                                  ),
                                                 ),
-                                              ),
-                                              Text(
-                                                list[1] + " , ",
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  color: Colors.black87,
-                                                  letterSpacing: 0.8,
+                                                Text(
+                                                  list[1] + " , ",
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                    color: Colors.black87,
+                                                    letterSpacing: 0.6
+                                                  ),
                                                 ),
-                                              ),
-                                              Text(
-                                                list[2],
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  color: Colors.black87,
-                                                  letterSpacing: 0.8,
+                                                Text(
+                                                  list[2],
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                    color: Colors.black87,
+                                                    letterSpacing: 0.6,
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Positioned(
-                                    left: 30,
-                                    top: 15,
-                                    bottom: 70,
-                                    child: Container(
-                                      width: 90.0,
-                                      height: 90.0,
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          fit: BoxFit.cover,
-                                          image: NetworkImage(person.imageUrl),
-                                        ),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10.0)),
-                                        color: Colors.transparent,
+                                        ],
                                       ),
                                     ),
-                                  ),
-                                ],
+                                    Positioned(
+                                      left: 30,
+                                      top: 15,
+                                      bottom: 70,
+                                      child: Container(
+                                        width: 90.0,
+                                        height: 90.0,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(person.imageUrl),
+                                          ),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10.0)),
+                                          color: Colors.transparent,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            onDismissed: (direction) {
-                              Person item = people[index];
+                              onDismissed: (direction) {
+                                Person item = people[index];
 
-                              deleteItem(index);
+                                deleteItem(index);
 
-                              Scaffold.of(context).showSnackBar(SnackBar(
-                                content: Text("Profile deleted"),
-                                action: SnackBarAction(
-                                    label: "UNDO",
-                                    onPressed: () {
-                                      undoDeletion(index, item);
-                                    }
+                                Scaffold.of(context).showSnackBar(SnackBar(
+                                  content: Text("Profile deleted"),
+                                  action: SnackBarAction(
+                                      label: "UNDO",
+                                      onPressed: () {
+                                        undoDeletion(index, item);
+                                      }
+                                    )
                                   )
-                                )
-                              );
-                            },
+                                );
+                              },
+                            ),
                           );
                         },
                       );

@@ -7,6 +7,7 @@ class Person {
   String goals;
   String id;
   String bio;
+  String profession;
 
   Person(
       {this.imageUrl,
@@ -16,7 +17,8 @@ class Person {
       this.location,
       this.goals,
       this.id,
-      this.bio});
+      this.bio,
+      this.profession});
 }
 
 class OtherPerson {
