@@ -159,7 +159,11 @@ class _FindScreenState extends State<FindScreen> {
                     if (snapshot.data.length == 0) {
                       return Container(
                         child: Center(
-                          child: CircularProgressIndicator(),
+                          child: Image.asset(
+                            "assets/images/animat-search-color.gif",
+                            height: 125.0,
+                            width: 125.0,
+                          ),
                         ),
                       );
                     } else {
@@ -463,7 +467,7 @@ class _FindScreenState extends State<FindScreen> {
                                           image: NetworkImage(person.imageUrl),
                                         ),
                                         borderRadius: BorderRadius.all(
-                                            Radius.circular(15.0)),
+                                            Radius.circular(10.0)),
                                         color: Colors.transparent,
                                       ),
                                     ),
