@@ -30,6 +30,7 @@ class _FindScreenState extends State<FindScreen> {
   final int minAge = 18;
   TextEditingController myController;
   List<Person> people = [];
+  List<Map> peoples = [];
   int radius = 100;
   SocketIO socketIO;
   String token;
@@ -92,13 +93,26 @@ class _FindScreenState extends State<FindScreen> {
                   imageUrl: result['result'][i]['user_info']['profile_pic'],
                   name: result['result'][i]['user_info']['fullName'],
                   gender: result['result'][i]['user_info']['sex'],
-                  age: result['result'][i]['user_info']['age'].toString() + " Years Old",
-                  location: result['result'][i]['user_info']['distance'] + " Km away",
+                  age: "${result['result'][i]['user_info']['age']} Years Old",
+                  location:
+                      result['result'][i]['user_info']['distance'] + " Km away",
                   goals: result['result'][i]['goal_info'],
                   id: result['result'][i]['user_info']['id'],
                   bio: result['result'][i]['user_info']['bio'],
                   profession: result['result'][i]['user_info']['profession']),
             );
+            peoples.add({
+                  'imageUrl': result['result'][i]['user_info']['profile_pic'],
+                  'name': result['result'][i]['user_info']['fullName'],
+                  'gender': result['result'][i]['user_info']['sex'],
+                  'age': "${result['result'][i]['user_info']['age']} Years Old",
+                  'location':
+                      result['result'][i]['user_info']['distance'] + " Km away",
+                  'goals': result['result'][i]['goal_info'],
+                  'id': result['result'][i]['user_info']['id'],
+                  'bio': result['result'][i]['user_info']['bio'],
+                  'profession': result['result'][i]['user_info']['profession']
+            });
           }
 
           setState(() {
@@ -107,7 +121,7 @@ class _FindScreenState extends State<FindScreen> {
         }
       }
     }
-
+    print(people);
     return people;
   }
 
@@ -216,7 +230,8 @@ class _FindScreenState extends State<FindScreen> {
                                                 115, 0, 20, 0),
                                             child: Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: <Widget>[
                                                 SizedBox(
                                                   width: MediaQuery.of(context)
@@ -224,18 +239,23 @@ class _FindScreenState extends State<FindScreen> {
                                                           .width *
                                                       0.4,
                                                   child: AutoSizeText(
-                                                   person.name[0].toUpperCase()+ person.name.substring(1),
+                                                    person.name[0]
+                                                            .toUpperCase() +
+                                                        person.name
+                                                            .substring(1),
                                                     style: TextStyle(
                                                       fontSize: 20,
                                                       letterSpacing: 0.4,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       color: Colors.blue[900],
                                                     ),
                                                     maxLines: 1,
                                                   ),
                                                 ),
                                                 IconButton(
-                                                    icon: Icon(Icons.person_add),
+                                                    icon:
+                                                        Icon(Icons.person_add),
                                                     iconSize: 28,
                                                     color: Color.fromRGBO(
                                                         63, 92, 200, 0.4),
@@ -246,9 +266,9 @@ class _FindScreenState extends State<FindScreen> {
                                                               context) {
                                                             return Dialog(
                                                               shape: RoundedRectangleBorder(
-                                                                  borderRadius: BorderRadius
-                                                                      .all(Radius
-                                                                          .circular(
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius.circular(
                                                                               15.0))), //this right here
                                                               child: Container(
                                                                 height: 250,
@@ -270,10 +290,9 @@ class _FindScreenState extends State<FindScreen> {
                                                                         style: TextStyle(
                                                                             fontSize:
                                                                                 20,
-                                                                            color: Colors
-                                                                                .black,
-                                                                            fontWeight:
-                                                                                FontWeight.w600),
+                                                                            color:
+                                                                                Colors.black,
+                                                                            fontWeight: FontWeight.w600),
                                                                       ),
                                                                       Container(
                                                                         height:
@@ -281,23 +300,20 @@ class _FindScreenState extends State<FindScreen> {
                                                                       ),
                                                                       TextField(
                                                                         keyboardType:
-                                                                            TextInputType
-                                                                                .multiline,
+                                                                            TextInputType.multiline,
                                                                         maxLines:
                                                                             3,
                                                                         controller:
                                                                             messageController,
                                                                         decoration: InputDecoration(
                                                                             enabledBorder: OutlineInputBorder(
-                                                                              borderSide:
-                                                                                  BorderSide(color: Colors.grey, width: 1.0),
+                                                                              borderSide: BorderSide(color: Colors.grey, width: 1.0),
                                                                             ),
                                                                             hintText: 'Enter a Message'),
                                                                       ),
                                                                       Row(
                                                                         mainAxisAlignment:
-                                                                            MainAxisAlignment
-                                                                                .end,
+                                                                            MainAxisAlignment.end,
                                                                         children: <
                                                                             Widget>[
                                                                           Container(
@@ -307,10 +323,8 @@ class _FindScreenState extends State<FindScreen> {
                                                                           Expanded(
                                                                             child:
                                                                                 SizedBox(
-                                                                              width:
-                                                                                  100,
-                                                                              child:
-                                                                                  RaisedButton(
+                                                                              width: 100,
+                                                                              child: RaisedButton(
                                                                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
                                                                                 onPressed: () async {
                                                                                   var msg = messageController.text;
@@ -399,8 +413,8 @@ class _FindScreenState extends State<FindScreen> {
                                             ),
                                           ),
                                           Padding(
-                                            padding:
-                                                EdgeInsets.fromLTRB(95, 0, 20, 0),
+                                            padding: EdgeInsets.fromLTRB(
+                                                95, 0, 20, 0),
                                             child: Row(
                                               children: <Widget>[
                                                 IconButton(
@@ -411,21 +425,25 @@ class _FindScreenState extends State<FindScreen> {
                                                     onPressed: null),
                                                 Text(
                                                   person.location,
-                                                  style: TextStyle(fontSize: 15,letterSpacing: 0.4,),
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                    letterSpacing: 0.4,
+                                                  ),
                                                 ),
                                               ],
                                             ),
                                           ),
                                           Padding(
-                                            padding:
-                                                EdgeInsets.fromLTRB(20, 5, 20, 0),
+                                            padding: EdgeInsets.fromLTRB(
+                                                20, 5, 20, 0),
                                             child: Row(
                                               children: <Widget>[
                                                 Text(
                                                   'Goals:  ',
                                                   style: TextStyle(
                                                       fontSize: 18,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       letterSpacing: 0.6),
                                                 ),
                                                 Text(
@@ -452,7 +470,8 @@ class _FindScreenState extends State<FindScreen> {
                                         decoration: BoxDecoration(
                                           image: DecorationImage(
                                             fit: BoxFit.cover,
-                                            image: NetworkImage(person.imageUrl),
+                                            image:
+                                                NetworkImage(person.imageUrl),
                                           ),
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(10.0)),
@@ -469,15 +488,12 @@ class _FindScreenState extends State<FindScreen> {
                                 deleteItem(index);
 
                                 Scaffold.of(context).showSnackBar(SnackBar(
-                                  content: Text("Profile deleted"),
-                                  action: SnackBarAction(
-                                      label: "UNDO",
-                                      onPressed: () {
-                                        undoDeletion(index, item);
-                                      }
-                                    )
-                                  )
-                                );
+                                    content: Text("Profile deleted"),
+                                    action: SnackBarAction(
+                                        label: "UNDO",
+                                        onPressed: () {
+                                          undoDeletion(index, item);
+                                        })));
                               },
                             ),
                           );
@@ -515,12 +531,12 @@ class _FindScreenState extends State<FindScreen> {
     // var user = await db.getUser(1);
     db.getUser(1).then((value) {
       setState(() {
-        uid = value.userId;  
+        uid = value.userId;
       });
     });
     setState(() {
       token = userToken;
-    //   uid = user.userId;
+      //   uid = user.userId;
     });
     _permissionGranted = await location.hasPermission();
 
