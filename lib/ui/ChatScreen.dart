@@ -233,10 +233,11 @@ class _TextingScreenState extends State<TextingScreen> {
               // color: Colors.grey,
               decoration: BoxDecoration(
                   // borderRadius: BorderRadius.circular(35.0),
-                  color: Color(0xFFCFCFCF)),
+                  color: Colors.transparent
+              ),
               child: Row(
                 children: [
-                  Container(
+                  /*Container(
                     padding: const EdgeInsets.all(11.0),
                     decoration: BoxDecoration(
                         color: Colors.transparent, shape: BoxShape.circle),
@@ -248,7 +249,7 @@ class _TextingScreenState extends State<TextingScreen> {
                       ),
                       onTap: () {},
                     ),
-                  ),
+                  ),*/
                   SizedBox(width: 10.0),
                   Expanded(
                     child: Container(
@@ -287,7 +288,7 @@ class _TextingScreenState extends State<TextingScreen> {
                   ),
                   SizedBox(width: 15),
                   Container(
-                    padding: const EdgeInsets.all(15.0),
+                    padding: const EdgeInsets.all(12.0),
                     decoration: BoxDecoration(
                         color: Color(0xFF3F5CC8), shape: BoxShape.circle),
                     child: InkWell(

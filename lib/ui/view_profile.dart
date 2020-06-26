@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:march/support/back_profile.dart';
 // import 'package:http/http.dart' as http;
 // import 'dart:convert' as convert;
 
@@ -11,11 +12,12 @@ class ViewProfile extends StatefulWidget {
   final String goals;
   final String id;
   final String bio;
+  final String profession;
   
-  ViewProfile(this.id,this.imageUrl, this.name, this.age, this.goals,this.bio);
+  ViewProfile(this.id,this.imageUrl, this.name, this.age, this.goals,this.bio,this.profession);
 
   @override
-  _ViewProfileState createState() => _ViewProfileState(id,imageUrl,name,age,goals,bio);
+  _ViewProfileState createState() => _ViewProfileState(id,imageUrl,name,age,goals,bio,profession);
 }
 
 class _ViewProfileState extends State<ViewProfile> {
@@ -25,9 +27,10 @@ class _ViewProfileState extends State<ViewProfile> {
   String goals;
   String id;
   String bio;
+  String profession;
 
   _ViewProfileState(this.id, this.imageUrl, this.name, this.age, this.goals,
-      this.bio);
+      this.bio,this.profession);
 
 
   @override
@@ -37,15 +40,21 @@ class _ViewProfileState extends State<ViewProfile> {
         iconTheme: IconThemeData(
           color: Colors.black, //change your color here
         ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, size: 20.0,color: Colors.white60,),
+          onPressed: (){
+            Navigator.of(context).pop();
+          },
+        ),
         elevation: 0,
-        backgroundColor: Color(0xFFFFFFFF),
+        backgroundColor: Color.fromRGBO(63, 92, 200, 1),
         title: Center(child: Text("User Profile", style: TextStyle(
-            color: Colors.black, fontSize: 18, fontFamily: 'montserrat'),)),
+            color: Colors.white, fontSize: 18, fontFamily: 'montserrat'),)),
         actions: <Widget>[
           IconButton(
               icon: Icon(Icons.person_add),
               iconSize: 30,
-              color: Color.fromRGBO(63, 92, 200, 0.4),
+              color: Colors.white60,
               onPressed: () {
                 showDialog(
                     context: context,
@@ -122,40 +131,82 @@ class _ViewProfileState extends State<ViewProfile> {
           child: Column(
             children: <Widget>[
 
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 10, top: 15),
-                  child: InkWell(
-                    onTap: ()=>Navigator.push(context, MaterialPageRoute(builder: (_)=>FullScreenImage(imageUrl))),
-                    child: Container(
-                      width: 80.0,
-                      height: 80.0,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(imageUrl != null
-                                ? imageUrl
-                                : "https://thumbs.dreamstime.com/t/man-woman-silhouette-icons-pare-business-business-people-abstract-avatar-person-face-couple-58191914.jpg")
-                        ),
-                        borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                        color: Colors.transparent,
-                      ),
+
+              Stack(
+                children: <Widget>[
+
+                  Container(
+                    height: MediaQuery.of(context).size.height*0.35,
+                    width: MediaQuery.of(context).size.width,
+                    child: CustomPaint(
+                      painter: BackProfile(),
                     ),
                   ),
 
-                ),
+                  Container(
+                    height: MediaQuery.of(context).size.height*0.28,
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      children: <Widget>[
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 6,top: 6),
+                            child:InkWell(
+                              onTap: ()=>Navigator.push(context, MaterialPageRoute(builder: (_)=>FullScreenImage(imageUrl))),
+                              child: Container(
+                                width: 80.0,
+                                height: 80.0,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: NetworkImage(imageUrl != null
+                                          ? imageUrl
+                                          : "https://thumbs.dreamstime.com/t/man-woman-silhouette-icons-pare-business-business-people-abstract-avatar-person-face-couple-58191914.jpg")
+                                  ),
+                                  borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                                  color: Colors.transparent,
+                                ),
+                              ),
+                            ),
+
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top:5.0),
+                          child: Center(
+                              child: Text(name!=null?name[0].toUpperCase()+name.substring(1,):"",
+                            style: TextStyle(
+                                fontSize: 16,color: Colors.white,letterSpacing: 0.4
+                              ),)),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top:5.0),
+                          child: Center(
+                              child: Text(profession!=null?profession[0].toUpperCase()+profession.substring(1,):"",
+                                style: TextStyle(fontSize: 16,color: Colors.white,letterSpacing: 0.4),)),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5,bottom:12.0),
+                          child: Center(child: Text(age!=null?age.toString():"",
+                            style: TextStyle(fontSize: 14,color: Colors.white,letterSpacing: 0.4),)),
+                        ),
+
+                      ],
+                    ),
+                  )
+
+                ],
               ),
-              Center(child: Text(
-                name != null ? name : "", style: TextStyle(fontSize: 18,),)),
-              Center(child: Text(age != null ? age.toString() : "",
-                style: TextStyle(fontSize: 14, color: Colors.grey),)),
+
+
+
               Padding(
                 padding: const EdgeInsets.fromLTRB(20.0, 20, 8, 8),
                 child: Row(
                   children: <Widget>[
                     Text("Goals :  ",
-                      style: TextStyle(fontWeight: FontWeight.bold),),
-                    Text(goals)
+                      style: TextStyle(fontWeight: FontWeight.bold,letterSpacing: 0.4,fontSize: 16),),
+                    Text(goals,style: TextStyle(letterSpacing: 0.3,fontSize: 16),)
                   ],
                 ),
               ),
@@ -164,15 +215,13 @@ class _ViewProfileState extends State<ViewProfile> {
                 child: Row(
                   children: <Widget>[
                     Text("Bio :  ",
-                      style: TextStyle(fontWeight: FontWeight.bold),),
+                      style: TextStyle(fontWeight: FontWeight.bold,letterSpacing: 0.4,fontSize: 16),),
+                    AutoSizeText(bio != null ? bio : "", maxLines: 12,style: TextStyle(letterSpacing: 0.4,fontSize: 16),),
                   ],
                 ),
               ),
 
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20.0, 20, 8, 8),
-                child: AutoSizeText(bio != null ? bio : "", maxLines: 12,),
-              ),
+
             ],
           ),
         ),

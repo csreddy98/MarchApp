@@ -417,28 +417,22 @@ class _EditGoalState extends State<EditGoal> {
       token=userToken;
     });
   }
-    void _onLoading() {
+  void _onLoading() {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return Dialog(
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: new Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                new CircularProgressIndicator(),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: new Text("Loading"),
-                ),
-              ],
+        return Container(
+          color: Colors.white,
+          child: Center(
+            child: Image.asset(
+              "assets/images/animat-rocket-color.gif",
+              height: 125.0,
+              width: 125.0,
             ),
           ),
         );
       },
     );
   }
-
 }

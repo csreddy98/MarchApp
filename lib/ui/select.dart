@@ -740,21 +740,20 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return Dialog(
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: new Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                new CircularProgressIndicator(),
-                new Text("Loading"),
-              ],
+        return Container(
+          color: Colors.white,
+          child: Center(
+            child: Image.asset(
+              "assets/images/animat-rocket-color.gif",
+              height: 125.0,
+              width: 125.0,
             ),
           ),
         );
       },
     );
   }
+
   void _load() async{
     SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
