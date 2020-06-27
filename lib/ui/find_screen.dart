@@ -159,6 +159,9 @@ class _FindScreenState extends State<FindScreen> {
                 color: Colors.white,
                 child: FutureBuilder(
                   future: _getPeople(),
+
+
+                  
                   initialData: [],
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     print("SNAPSHOT: ${snapshot.data}");
