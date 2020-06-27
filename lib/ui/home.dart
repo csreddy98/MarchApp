@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_socket_io/socket_io_manager.dart';
 import 'package:march/ui/MessagesScreen.dart';
 import 'package:march/ui/find_screen.dart';
@@ -252,20 +253,20 @@ class _HomeState extends State<Home> {
         items: [
           new BottomNavigationBarItem(
               icon: new Icon(
-                Icons.group,
+                Ionicons.ios_people,
                 size: 30,
               ),
               title: Text("Find People")),
           //   new BottomNavigationBarItem(icon: new Icon(Icons.date_range,size: 30,),title: Text("")),
           new BottomNavigationBarItem(
               icon: new Icon(
-                Icons.chat,
-                size: 30,
+                AntDesign.message1,
+                size: 28,
               ),
               title: Text("Chats")),
           new BottomNavigationBarItem(
               icon: new Icon(
-                Icons.person,
+                Ionicons.ios_person,
                 size: 30,
               ),
               title: Text("Profile")),

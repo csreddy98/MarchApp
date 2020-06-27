@@ -160,6 +160,13 @@ class DataBaseHelper {
     return result.toList();
   }
 
+  Future<List> getGoalsName() async {
+    var dbClient = await db;
+    var result = await dbClient.rawQuery("SELECT goalName FROM $goalTable");
+
+    return result.toList();
+  }
+
   Future<int> getGoalCount() async {
     var dbClient = await db;
     return Sqflite.firstIntValue(

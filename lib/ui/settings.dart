@@ -154,8 +154,8 @@ class _SettingsState extends State<Settings> {
                         );
                       }
                     ),
-                    Divider(thickness: 1,),
-                    Container(
+                //    Divider(thickness: 1,),
+                    /*Container(
                       child: Row(
                         children: <Widget>[
                           Padding(
@@ -223,7 +223,7 @@ class _SettingsState extends State<Settings> {
                       ),
                       height: 50,
                       width: double.infinity,
-                    ),
+                    ),*/
                     Divider(thickness: 1,),
                     InkWell(
                       child: Container(

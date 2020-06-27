@@ -37,7 +37,7 @@ dependencies:
   firebase_messaging:
   flutter_local_notifications:
   dotted_border:
-
+  flutter_icons:
 
 dev_dependencies:
   flutter_test:

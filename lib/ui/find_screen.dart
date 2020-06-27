@@ -1,5 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:march/models/people_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:march/ui/slider_container.dart';
@@ -24,6 +26,7 @@ class _FindScreenState extends State<FindScreen> {
   String id;
   String lat;
   String lng;
+  String goals="";
   String uid;
   Location location = new Location();
   final int maxAge = 100;
@@ -70,7 +73,7 @@ class _FindScreenState extends State<FindScreen> {
           'work': "search with distance",
           'lat': lat,
           'lng': lng,
-          'goals': 'Cricket',
+          'goals': goals,
           'radius': radius,
           'maxAge': maxAge,
           'minAge': minAge,
@@ -189,8 +192,44 @@ class _FindScreenState extends State<FindScreen> {
                           Person person = people[index];
                           return Padding(
                             padding: const EdgeInsets.all(5.0),
-                            child: Dismissible(
+                            child: Slidable(
+                              actionPane: SlidableDrawerActionPane(),
                               key: ObjectKey(people[index]),
+                              actions:<Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(top:8.0,bottom:8),
+                                  child: IconSlideAction(
+                                    color: Theme.of(context).primaryColor,
+                                    icon: Icons.person_add,
+                                    onTap: () {
+                                      add(person);
+                                    },
+                                  ),
+                                ),
+                              ],
+                              secondaryActions: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(top:8.0,bottom:8),
+                                  child: IconSlideAction(
+                                      color: Colors.redAccent,
+                                      icon: Icons.delete,
+                                     // foregroundColor: Colors.black,
+                                      onTap: () async {
+                                        Person item = people[index];
+
+                                        deleteItem(index);
+
+                                        Scaffold.of(context).showSnackBar(SnackBar(
+                                            content: Text("Profile deleted"),
+                                            action: SnackBarAction(
+                                                label: "UNDO",
+                                                onPressed: () {
+                                                  undoDeletion(index, item);
+                                                })));
+                                      }),
+                                ),
+                              ],
+
                               child: GestureDetector(
                                 onTap: () {
                                   Navigator.pushAndRemoveUntil(
@@ -202,7 +241,8 @@ class _FindScreenState extends State<FindScreen> {
                                               person.name,
                                               person.age,
                                               person.goals,
-                                              person.bio)),
+                                              person.bio,
+                                              person.profession)),
                                       (Route<dynamic> route) => true);
                                 },
                                 child: Stack(
@@ -256,148 +296,12 @@ class _FindScreenState extends State<FindScreen> {
                                                 ),
                                                 IconButton(
                                                     icon:
-                                                        Icon(Icons.person_add),
-                                                    iconSize: 28,
+                                                        Icon(Ionicons.ios_person_add),
+                                                    iconSize: 30,
                                                     color: Color.fromRGBO(
                                                         63, 92, 200, 0.4),
                                                     onPressed: () {
-                                                      showDialog(
-                                                          context: context,
-                                                          builder: (BuildContext
-                                                              context) {
-                                                            return Dialog(
-                                                              shape: RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius.all(
-                                                                          Radius.circular(
-                                                                              15.0))), //this right here
-                                                              child: Container(
-                                                                height: 250,
-                                                                child: Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .all(
-                                                                          20.0),
-                                                                  child: Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      Text(
-                                                                        "Send A Message",
-                                                                        style: TextStyle(
-                                                                            fontSize:
-                                                                                20,
-                                                                            color:
-                                                                                Colors.black,
-                                                                            fontWeight: FontWeight.w600),
-                                                                      ),
-                                                                      Container(
-                                                                        height:
-                                                                            15,
-                                                                      ),
-                                                                      TextField(
-                                                                        keyboardType:
-                                                                            TextInputType.multiline,
-                                                                        maxLines:
-                                                                            3,
-                                                                        controller:
-                                                                            messageController,
-                                                                        decoration: InputDecoration(
-                                                                            enabledBorder: OutlineInputBorder(
-                                                                              borderSide: BorderSide(color: Colors.grey, width: 1.0),
-                                                                            ),
-                                                                            hintText: 'Enter a Message'),
-                                                                      ),
-                                                                      Row(
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.end,
-                                                                        children: <
-                                                                            Widget>[
-                                                                          Container(
-                                                                            width:
-                                                                                MediaQuery.of(context).size.width / 2.2,
-                                                                          ),
-                                                                          Expanded(
-                                                                            child:
-                                                                                SizedBox(
-                                                                              width: 100,
-                                                                              child: RaisedButton(
-                                                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
-                                                                                onPressed: () async {
-                                                                                  var msg = messageController.text;
-                                                                                  var db = DataBaseHelper();
-                                                                                  messageController.clear();
-                                                                                  SharedPreferences prefs = await SharedPreferences.getInstance();
-                                                                                  String id = prefs.getString('id') ?? "";
-                                                                                  print("UID IS EMPTY? $uid");
-                                                                                  await http.post('https://march.lbits.co/api/worker.php',
-                                                                                      body: json.encode(<String, dynamic>{
-                                                                                        "serviveName": "",
-                                                                                        "work": "add new request",
-                                                                                        "uid": "$uid",
-                                                                                        "sender": "$id",
-                                                                                        "receiver": "${person.id}",
-                                                                                        "message": "$msg",
-                                                                                        "requestStatus": "pending"
-                                                                                      }),
-                                                                                      headers: {
-                                                                                        'Authorization': 'Bearer $token',
-                                                                                        'Content-Type': 'application/json'
-                                                                                      }).then((value) {
-                                                                                    var resp = json.decode(value.body);
-                                                                                    if (resp['response'] == 200) {
-                                                                                      socketIO.sendMessage(
-                                                                                          "New user Request",
-                                                                                          json.encode({
-                                                                                            "sender": id,
-                                                                                            "receiver": person.id,
-                                                                                            "message": msg,
-                                                                                            "time": DateTime.now().toString(),
-                                                                                          }));
-                                                                                      Map<String, dynamic> messageMap = {
-                                                                                        DataBaseHelper.seenStatus: '0',
-                                                                                        DataBaseHelper.messageOtherId: person.id,
-                                                                                        DataBaseHelper.messageSentBy: id,
-                                                                                        DataBaseHelper.messageText: msg,
-                                                                                        DataBaseHelper.messageContainsImage: '0',
-                                                                                        DataBaseHelper.messageImage: 'null',
-                                                                                        DataBaseHelper.messageTime: "${DateTime.now()}"
-                                                                                      };
-                                                                                      Map<String, dynamic> friendsMap = {
-                                                                                        DataBaseHelper.friendId: person.id,
-                                                                                        DataBaseHelper.friendName: person.name,
-                                                                                        DataBaseHelper.friendPic: person.imageUrl,
-                                                                                        DataBaseHelper.friendLastMessage: msg,
-                                                                                        DataBaseHelper.friendLastMessageTime: "${DateTime.now()}"
-                                                                                      };
-                                                                                      db.addUser(friendsMap);
-                                                                                      db.addMessage(messageMap);
-                                                                                    } else {
-                                                                                      print("$resp");
-                                                                                    }
-                                                                                  });
-                                                                                  Navigator.pop(context);
-                                                                                },
-                                                                                child: Text(
-                                                                                  "Add",
-                                                                                  style: TextStyle(color: Colors.white),
-                                                                                ),
-                                                                                color: Color.fromRGBO(63, 92, 200, 1),
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            );
-                                                          });
+                                                     add(person);
                                                     }),
                                               ],
                                             ),
@@ -483,19 +387,6 @@ class _FindScreenState extends State<FindScreen> {
                                   ],
                                 ),
                               ),
-                              onDismissed: (direction) {
-                                Person item = people[index];
-
-                                deleteItem(index);
-
-                                Scaffold.of(context).showSnackBar(SnackBar(
-                                    content: Text("Profile deleted"),
-                                    action: SnackBarAction(
-                                        label: "UNDO",
-                                        onPressed: () {
-                                          undoDeletion(index, item);
-                                        })));
-                              },
                             ),
                           );
                         },
@@ -529,12 +420,31 @@ class _FindScreenState extends State<FindScreen> {
 
     // SQLITE
 
+    int n;
+    db.getGoalCount().then((value) {
+      setState(() {
+        n=value;
+      });
+    });
     // var user = await db.getUser(1);
     db.getUser(1).then((value) {
       setState(() {
         uid = value.userId;
       });
     });
+
+    db.getGoalsName().then((value) {
+      setState(() {
+        var m=value[0];
+        goals=m["goalName"];
+        for(var i=1;i<n;i++){
+          var m=value[i];
+          goals=goals+","+m["goalName"];
+        }
+        print(goals);
+      });
+    });
+
     setState(() {
       token = userToken;
       //   uid = user.userId;
@@ -714,5 +624,145 @@ class _FindScreenState extends State<FindScreen> {
         }
       }
     }
+  }
+
+  Widget add(person){
+    showDialog(
+        context: context,
+        builder: (BuildContext
+        context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius:
+                BorderRadius.all(
+                    Radius.circular(
+                        15.0))), //this right here
+            child: Container(
+              height: 250,
+              child: Padding(
+                padding:
+                const EdgeInsets
+                    .all(
+                    20.0),
+                child: Column(
+                  mainAxisAlignment:
+                  MainAxisAlignment
+                      .center,
+                  crossAxisAlignment:
+                  CrossAxisAlignment
+                      .start,
+                  children: [
+                    Text(
+                      "Send A Message",
+                      style: TextStyle(
+                          fontSize:
+                          20,
+                          color:
+                          Colors.black,
+                          fontWeight: FontWeight.w600),
+                    ),
+                    Container(
+                      height:
+                      15,
+                    ),
+                    TextField(
+                      keyboardType:
+                      TextInputType.multiline,
+                      maxLines:
+                      3,
+                      controller:
+                      messageController,
+                      decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                          ),
+                          hintText: 'Enter a Message'),
+                    ),
+                    Row(
+                      mainAxisAlignment:
+                      MainAxisAlignment.end,
+                      children: <
+                          Widget>[
+                        Container(
+                          width:
+                          MediaQuery.of(context).size.width / 2.2,
+                        ),
+                        Expanded(
+                          child:
+                          SizedBox(
+                            width: 100,
+                            child: RaisedButton(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
+                              onPressed: () async {
+                                var msg = messageController.text;
+                                var db = DataBaseHelper();
+                                messageController.clear();
+                                SharedPreferences prefs = await SharedPreferences.getInstance();
+                                String id = prefs.getString('id') ?? "";
+                                print("UID IS EMPTY? $uid");
+                                await http.post('https://march.lbits.co/api/worker.php',
+                                    body: json.encode(<String, dynamic>{
+                                      "serviveName": "",
+                                      "work": "add new request",
+                                      "uid": "$uid",
+                                      "sender": "$id",
+                                      "receiver": "${person.id}",
+                                      "message": "$msg",
+                                      "requestStatus": "pending"
+                                    }),
+                                    headers: {
+                                      'Authorization': 'Bearer $token',
+                                      'Content-Type': 'application/json'
+                                    }).then((value) {
+                                  var resp = json.decode(value.body);
+                                  if (resp['response'] == 200) {
+                                    socketIO.sendMessage(
+                                        "New user Request",
+                                        json.encode({
+                                          "sender": id,
+                                          "receiver": person.id,
+                                          "message": msg,
+                                          "time": DateTime.now().toString(),
+                                        }));
+                                    Map<String, dynamic> messageMap = {
+                                      DataBaseHelper.seenStatus: '0',
+                                      DataBaseHelper.messageOtherId: person.id,
+                                      DataBaseHelper.messageSentBy: id,
+                                      DataBaseHelper.messageText: msg,
+                                      DataBaseHelper.messageContainsImage: '0',
+                                      DataBaseHelper.messageImage: 'null',
+                                      DataBaseHelper.messageTime: "${DateTime.now()}"
+                                    };
+                                    Map<String, dynamic> friendsMap = {
+                                      DataBaseHelper.friendId: person.id,
+                                      DataBaseHelper.friendName: person.name,
+                                      DataBaseHelper.friendPic: person.imageUrl,
+                                      DataBaseHelper.friendLastMessage: msg,
+                                      DataBaseHelper.friendLastMessageTime: "${DateTime.now()}"
+                                    };
+                                    db.addUser(friendsMap);
+                                    db.addMessage(messageMap);
+                                  } else {
+                                    print("$resp");
+                                  }
+                                });
+                                Navigator.pop(context);
+                              },
+                              child: Text(
+                                "Add",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              color: Color.fromRGBO(63, 92, 200, 1),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
   }
 }
