@@ -50,8 +50,7 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
 
       if (state == PhoneAuthState.Verified) {
         FirebaseAuth.instance.currentUser().then((val) async {
-          print(val.uid + " " + val.phoneNumber);
-
+          _onLoading();
           var url = 'https://march.lbits.co/api/worker.php';
           var resp = await http.post(
             url,
@@ -180,6 +179,25 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
           ),
         ),
       ),
+    );
+  }
+
+  void _onLoading() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Container(
+          color: Colors.white,
+          child: Center(
+            child: Image.asset(
+              "assets/images/animat-rocket-color.gif",
+              height: 125.0,
+              width: 125.0,
+            ),
+          ),
+        );
+      },
     );
   }
 
