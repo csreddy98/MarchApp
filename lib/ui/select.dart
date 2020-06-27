@@ -40,15 +40,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
   GlobalKey<AutoCompleteTextFieldState<String>> key = new GlobalKey();
   int count=0;
   final GlobalKey<ScaffoldState> _sk=GlobalKey<ScaffoldState>();
-  List<String> suggestions = [
-    "Sports",
-    "Exam",
-    "Health",
-    "Music",
-    "Dance",
-    "Treking",
-    "KickBoxing",
-  ];
+  List<String> suggestions = [];
 // drop down
   List<Time> _time=Time.getTime();
   var db = new DataBaseHelper();
@@ -759,5 +751,32 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
     setState(() {
       token = pref.getString('token');
     });
+
+    var url= 'https://march.lbits.co/api/worker.php';
+    var resp=await http.post(url,
+      headers: {
+        'Content-Type':
+        'application/json',
+        'Authorization':
+        'Bearer $token'
+      },
+      body: json.encode(<String, dynamic>
+      {
+        'serviceName': "",
+        'work': "get goals list",
+      }),
+    );
+
+    print(resp.body.toString());
+    var res = json.decode(resp.body);
+    if (res['response'] == 200) {
+      List n=res['result'];
+      setState(() {
+        for(var i=0;i<n.length;i++){
+          suggestions.add(res['result'][i].toString());
+        }
+      });
+    }
+
   }
 }

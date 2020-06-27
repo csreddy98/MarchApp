@@ -60,17 +60,14 @@ class _ProfileState extends State<Profile> {
               child: Text(goals[0]!=""?goals[0]:"",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontFamily: 'montserrat',fontWeight: FontWeight.bold),),
             ),*/
             Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 Expanded(
                     flex: 1,
-                    child: Center(child: Padding(
-                      padding: const EdgeInsets.only(left: 0),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15),
                       child: Text(goals[0],style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontWeight: FontWeight.bold,fontFamily: 'montserrat'),),
-                    ))),
-                Expanded(
-                  flex: 2,
-                  child: Container(),
-                ),
+                    )),
                 IconButton(icon: Icon(Icons.edit,size: 16,color: Color.fromRGBO(63, 92, 200, 1),),
                     onPressed:(){
 
@@ -118,17 +115,14 @@ class _ProfileState extends State<Profile> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 Expanded(
                     flex: 1,
-                    child: Center(child: Padding(
-                      padding: const EdgeInsets.only(left: 0),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15),
                       child: Text(goals[1],style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontWeight: FontWeight.bold,fontFamily: 'montserrat'),),
-                    ))),
-                Expanded(
-                  flex: 2,
-                  child: Container(),
-                ),
+                    )),
                 IconButton(icon: Icon(Icons.edit,size: 16,color: Color.fromRGBO(63, 92, 200, 1),),
                     onPressed:(){
                       Navigator.push(
@@ -174,17 +168,14 @@ class _ProfileState extends State<Profile> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 Expanded(
-                    flex: 1,
-                    child: Center(child: Padding(
-                      padding: const EdgeInsets.only(left: 0),
+                  flex: 1,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15),
                       child: Text(goals[2],style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontWeight: FontWeight.bold,fontFamily: 'montserrat'),),
-                    ))),
-                Expanded(
-                  flex: 2,
-                  child: Container(),
-                ),
+                    )),
                 IconButton(icon: Icon(Icons.edit,size: 16,color: Color.fromRGBO(63, 92, 200, 1),),
                     onPressed:(){
                       Navigator.push(

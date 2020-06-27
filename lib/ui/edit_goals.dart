@@ -34,6 +34,22 @@ class Time{
   }
 }
 
+class Level{
+  int id;
+  String level;
+
+  Level(this.id,this.level);
+
+  static List<Level> getLevel(){
+    return <Level> [
+      Level(1,'Beginner'),
+      Level(2,'Amateur'),
+      Level(1,'Intermediate'),
+      Level(1,'Professional'),
+    ];
+  }
+}
+
 class _EditGoalState extends State<EditGoal> {
 
   List<Time> _time=Time.getTime();
@@ -46,15 +62,7 @@ class _EditGoalState extends State<EditGoal> {
   final GlobalKey<ScaffoldState> _sk=GlobalKey<ScaffoldState>();
   int _disable=0;
   String currentText="";
-  List<String> suggestions = [
-    "Sports",
-    "Exam",
-    "Health",
-    "Music",
-    "Dance",
-    "Treking",
-    "KickBoxing",
-  ];
+  List<String> suggestions = [];
 
 
   final myController = TextEditingController();
@@ -308,6 +316,7 @@ class _EditGoalState extends State<EditGoal> {
                                       var db = new DataBaseHelper();
                                       int cnt=await db.getGoalCount();
 
+                                      print(cnt);
                                       if(cnt>=int.parse(widget.gno)){
 
                                       //  print(widget.gno+" "+selectedGoal);
@@ -329,7 +338,7 @@ class _EditGoalState extends State<EditGoal> {
                                         print("goal saved :$savedGoal");
 
                                         Navigator.pushAndRemoveUntil(context,
-                                            MaterialPageRoute(builder: (context) => Home('')),
+                                            MaterialPageRoute(builder: (context) => Home('edit')),
                                                 (Route<dynamic> route) => false);
 
                                       }
@@ -416,6 +425,32 @@ class _EditGoalState extends State<EditGoal> {
     setState(() {
       token=userToken;
     });
+    var url= 'https://march.lbits.co/api/worker.php';
+    var resp=await http.post(url,
+      headers: {
+        'Content-Type':
+        'application/json',
+        'Authorization':
+        'Bearer $token'
+      },
+      body: json.encode(<String, dynamic>
+      {
+        'serviceName': "",
+        'work': "get goals list",
+      }),
+    );
+
+    print(resp.body.toString());
+    var res = json.decode(resp.body);
+    if (res['response'] == 200) {
+      List n=res['result'];
+      setState(() {
+        for(var i=0;i<n.length;i++){
+          suggestions.add(res['result'][i].toString());
+        }
+      });
+    }
+
   }
   void _onLoading() {
     showDialog(

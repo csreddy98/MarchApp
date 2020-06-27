@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:march/models/people_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,6 +26,7 @@ class _FindScreenState extends State<FindScreen> {
   String id;
   String lat;
   String lng;
+  String goals="";
   String uid;
   Location location = new Location();
   final int maxAge = 100;
@@ -71,7 +73,7 @@ class _FindScreenState extends State<FindScreen> {
           'work': "search with distance",
           'lat': lat,
           'lng': lng,
-          'goals': 'Cricket',
+          'goals': goals,
           'radius': radius,
           'maxAge': maxAge,
           'minAge': minAge,
@@ -293,8 +295,8 @@ class _FindScreenState extends State<FindScreen> {
                                                 ),
                                                 IconButton(
                                                     icon:
-                                                        Icon(Icons.person_add),
-                                                    iconSize: 28,
+                                                        Icon(Ionicons.ios_person_add),
+                                                    iconSize: 30,
                                                     color: Color.fromRGBO(
                                                         63, 92, 200, 0.4),
                                                     onPressed: () {
@@ -417,12 +419,31 @@ class _FindScreenState extends State<FindScreen> {
 
     // SQLITE
 
+    int n;
+    db.getGoalCount().then((value) {
+      setState(() {
+        n=value;
+      });
+    });
     // var user = await db.getUser(1);
     db.getUser(1).then((value) {
       setState(() {
         uid = value.userId;
       });
     });
+
+    db.getGoalsName().then((value) {
+      setState(() {
+        var m=value[0];
+        goals=m["goalName"];
+        for(var i=1;i<n;i++){
+          var m=value[i];
+          goals=goals+","+m["goalName"];
+        }
+        print(goals);
+      });
+    });
+
     setState(() {
       token = userToken;
       //   uid = user.userId;
