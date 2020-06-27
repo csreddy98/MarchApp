@@ -33,7 +33,6 @@ class _FindScreenState extends State<FindScreen> {
   final int minAge = 18;
   TextEditingController myController;
   List<Person> people = [];
-  List<Map> peoples = [];
   int radius = 100;
   SocketIO socketIO;
   String token;
@@ -105,18 +104,6 @@ class _FindScreenState extends State<FindScreen> {
                   bio: result['result'][i]['user_info']['bio'],
                   profession: result['result'][i]['user_info']['profession']),
             );
-            peoples.add({
-              'imageUrl': result['result'][i]['user_info']['profile_pic'],
-              'name': result['result'][i]['user_info']['fullName'],
-              'gender': result['result'][i]['user_info']['sex'],
-              'age': "${result['result'][i]['user_info']['age']} Years Old",
-              'location':
-                  result['result'][i]['user_info']['distance'] + " Km away",
-              'goals': result['result'][i]['goal_info'],
-              'id': result['result'][i]['user_info']['id'],
-              'bio': result['result'][i]['user_info']['bio'],
-              'profession': result['result'][i]['user_info']['profession']
-            });
           }
 
           setState(() {
@@ -351,12 +338,14 @@ class _FindScreenState extends State<FindScreen> {
                                                           FontWeight.bold,
                                                       letterSpacing: 0.6),
                                                 ),
-                                                Text(
-                                                  person.goals,
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                    color: Colors.black87,
-                                                    letterSpacing: 0.6,
+                                                Expanded(
+                                                  child: Text(
+                                                    person.goals,
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                      color: Colors.black87,
+                                                      letterSpacing: 0.6,
+                                                    ),
                                                   ),
                                                 ),
                                               ],
@@ -437,7 +426,7 @@ class _FindScreenState extends State<FindScreen> {
       setState(() {
         var m=value[0];
         goals=m["goalName"];
-        for(var i=1;i<n;i++){
+        for(var i=0;i<n;i++){
           var m=value[i];
           goals=goals+","+m["goalName"];
         }
@@ -626,7 +615,7 @@ class _FindScreenState extends State<FindScreen> {
     }
   }
 
-  Widget add(person){
+  void add(person){
     showDialog(
         context: context,
         builder: (BuildContext
