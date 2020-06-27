@@ -88,6 +88,7 @@ class _FindScreenState extends State<FindScreen> {
         if (clicked == 0) {
           for (var i = 0; i < l; i++) {
             if (!myUsers.contains(result['result'][i]['user_info']['id'])) {}
+            print(result['result'][i]);
             people.add(
               Person(
                   imageUrl: result['result'][i]['user_info']['profile_pic'],
@@ -102,16 +103,16 @@ class _FindScreenState extends State<FindScreen> {
                   profession: result['result'][i]['user_info']['profession']),
             );
             peoples.add({
-                  'imageUrl': result['result'][i]['user_info']['profile_pic'],
-                  'name': result['result'][i]['user_info']['fullName'],
-                  'gender': result['result'][i]['user_info']['sex'],
-                  'age': "${result['result'][i]['user_info']['age']} Years Old",
-                  'location':
-                      result['result'][i]['user_info']['distance'] + " Km away",
-                  'goals': result['result'][i]['goal_info'],
-                  'id': result['result'][i]['user_info']['id'],
-                  'bio': result['result'][i]['user_info']['bio'],
-                  'profession': result['result'][i]['user_info']['profession']
+              'imageUrl': result['result'][i]['user_info']['profile_pic'],
+              'name': result['result'][i]['user_info']['fullName'],
+              'gender': result['result'][i]['user_info']['sex'],
+              'age': "${result['result'][i]['user_info']['age']} Years Old",
+              'location':
+                  result['result'][i]['user_info']['distance'] + " Km away",
+              'goals': result['result'][i]['goal_info'],
+              'id': result['result'][i]['user_info']['id'],
+              'bio': result['result'][i]['user_info']['bio'],
+              'profession': result['result'][i]['user_info']['profession']
             });
           }
 
