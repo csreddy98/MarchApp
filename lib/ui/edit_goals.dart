@@ -53,11 +53,15 @@ class Level{
 class _EditGoalState extends State<EditGoal> {
 
   List<Time> _time=Time.getTime();
+  List<Level> _level=Level.getLevel();
   List<DropdownMenuItem<Time>> _dropdownMenuItems;
+  List<DropdownMenuItem<Level>> _dropdownMenuLevels;
   GlobalKey<AutoCompleteTextFieldState<String>> key = new GlobalKey();
   Time _selectedTime;
+  Level _selectedLevel;
   String token;
   String time="1 Month";
+  String level="Beginner";
   String selectedGoal="";
   final GlobalKey<ScaffoldState> _sk=GlobalKey<ScaffoldState>();
   int _disable=0;
@@ -74,10 +78,19 @@ class _EditGoalState extends State<EditGoal> {
     });
   }
 
+  onChangeDropDownLevel(Level selectedLevel){
+    setState(() {
+      _selectedLevel=selectedLevel;
+      level=selectedLevel.level;
+    });
+  }
+
   @override
   void initState() {
     _dropdownMenuItems =buildDropDownMenuItems(_time);
     _selectedTime=_dropdownMenuItems[0].value;
+    _dropdownMenuLevels =buildDropDownMenuLevels(_level);
+    _selectedLevel=_dropdownMenuLevels[0].value;
     _load();
     super.initState();
   }
@@ -89,6 +102,18 @@ class _EditGoalState extends State<EditGoal> {
       items.add(DropdownMenuItem(
         value:time,
         child: Text(time.time),
+      )
+      );
+    }
+    return items;
+  }
+
+  List<DropdownMenuItem<Level>> buildDropDownMenuLevels(List lev){
+    List<DropdownMenuItem<Level>> items=List();
+    for(Level level in lev){
+      items.add(DropdownMenuItem(
+        value:level,
+        child: Text(level.level),
       )
       );
     }
@@ -209,6 +234,21 @@ class _EditGoalState extends State<EditGoal> {
                   ),
 
                   Padding(
+                    padding: const EdgeInsets.fromLTRB(25.0,15,20.0,0),
+                    child: Row(
+                      children: <Widget>[
+                        Text('Your Level : '),
+                        SizedBox(width: 20,),
+                        DropdownButton(
+                          value: _selectedLevel,
+                          items: _dropdownMenuLevels,
+                          onChanged: onChangeDropDownLevel,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  Padding(
                     padding: const EdgeInsets.only(top:60.0,left: 15),
                     child: Text("Mention the target for your goal"),
                   ),
@@ -284,6 +324,7 @@ class _EditGoalState extends State<EditGoal> {
                                 color: Color.fromRGBO(63, 92, 200, 1) ,
                                 onPressed: () async{
 
+                                  print(level);
                                   if(selectedGoal!=""&&myController.text!=""){
 
                                     _onLoading();
@@ -306,6 +347,7 @@ class _EditGoalState extends State<EditGoal> {
                                         'target':target,
                                         'timeFrame':time,
                                         'goalNumber':widget.gno,
+                                        'goalLevel':level,
                                       }),
                                     );
 

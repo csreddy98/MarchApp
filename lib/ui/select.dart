@@ -32,6 +32,22 @@ class Time{
   }
 }
 
+class Level{
+  int id;
+  String level;
+
+  Level(this.id,this.level);
+
+  static List<Level> getLevel(){
+    return <Level> [
+      Level(1,'Beginner'),
+      Level(2,'Amateur'),
+      Level(1,'Intermediate'),
+      Level(1,'Professional'),
+    ];
+  }
+}
+
 
 class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
 
@@ -43,10 +59,14 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
   List<String> suggestions = [];
 // drop down
   List<Time> _time=Time.getTime();
+  List<Level> _level=Level.getLevel();
   var db = new DataBaseHelper();
   List<DropdownMenuItem<Time>> _dropdownMenuItems;
+  List<DropdownMenuItem<Level>> _dropdownMenuLevels;
   Time _selectedTime;
+  Level _selectedLevel;
   String time="1 Month";
+  String level="Beginner";
 // till here
 
   String target="";
@@ -74,6 +94,9 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
     _dropdownMenuItems =buildDropDownMenuItems(_time);
     _selectedTime=_dropdownMenuItems[0].value;
   //
+    _dropdownMenuLevels =buildDropDownMenuLevels(_level);
+    _selectedLevel=_dropdownMenuLevels[0].value;
+
     _load();
     super.initState();
     nameController = TextEditingController();
@@ -107,6 +130,19 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
 
   //drop down
 
+  List<DropdownMenuItem<Level>> buildDropDownMenuLevels(List lev){
+    List<DropdownMenuItem<Level>> items=List();
+    for(Level level in lev){
+      items.add(DropdownMenuItem(
+        value:level,
+        child: Text(level.level),
+      )
+      );
+    }
+    return items;
+  }
+
+
   List<DropdownMenuItem<Time>> buildDropDownMenuItems(List tim){
     List<DropdownMenuItem<Time>> items=List();
     for(Time time in tim){
@@ -117,6 +153,13 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
       );
     }
     return items;
+  }
+
+  onChangeDropDownLevel(Level selectedLevel){
+    setState(() {
+      _selectedLevel=selectedLevel;
+      level=selectedLevel.level;
+    });
   }
 
   onChangeDropDownItem(Time selectedTime){
@@ -355,6 +398,22 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                   ],
                 ),
               ),
+
+              Padding(
+                padding: const EdgeInsets.fromLTRB(25.0,15,20.0,0),
+                child: Row(
+                  children: <Widget>[
+                    Text('Your Level : '),
+                    SizedBox(width: 20,),
+                    DropdownButton(
+                      value: _selectedLevel,
+                      items: _dropdownMenuLevels,
+                      onChanged: onChangeDropDownLevel,
+                    ),
+                  ],
+                ),
+              ),
+
               //
               Padding(
                 padding: const EdgeInsets.only(top:25.0,left: 15),
@@ -488,6 +547,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                     'target':target,
                                     'timeFrame':time,
                                     'goalNumber':count.toString(),
+                                    'goalLevel':level,
                                   }),
                                 );
 
@@ -523,6 +583,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                     target="";
                                     myController.clear();
                                     time="1 Month";
+                                    level="Beginner";
                                     _selectedTime=_dropdownMenuItems[0].value;
                                     cnt=cnt+1;
                                   });
@@ -534,6 +595,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                     target="";
                                     myController.clear();
                                     time="1 Month";
+                                    level="Beginner";
                                     _selectedTime=_dropdownMenuItems[0].value;
                                     cnt=cnt-1;
                                     added[count-1]="";
@@ -638,6 +700,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                               'target':target,
                               'timeFrame':time,
                               'goalNumber':count.toString(),
+                              'goalLevel':level,
                             }),
                           );
 
@@ -656,6 +719,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                               target="";
                               myController.clear();
                               time="1 Month";
+                              level="Beginner";
                               _selectedTime=_dropdownMenuItems[0].value;
                               cnt=cnt+1;
                             });
@@ -668,6 +732,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                               target="";
                               myController.clear();
                               time="1 Month";
+                              level="Beginner";
                               _selectedTime=_dropdownMenuItems[0].value;
                               cnt=cnt+1;
                               added[count-1]="";
