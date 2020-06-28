@@ -429,7 +429,7 @@ class _FindScreenState extends State<FindScreen> {
       setState(() {
         var m=value[0];
         goals=m["goalName"];
-        for(var i=0;i<n;i++){
+        for(var i=1;i<n;i++){
           var m=value[i];
           goals=goals+","+m["goalName"];
         }
