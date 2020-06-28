@@ -266,7 +266,6 @@ class _SlidercontainerState extends State<Slider_container> {
                           flex: 1,
                         ),
 
-
                         widget.goalList.length>2?Expanded(
                           flex: 1,
                           child: Padding(
