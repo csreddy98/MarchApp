@@ -351,20 +351,24 @@ class _SettingsState extends State<Settings> {
                   prefs.remove('id');
                   prefs.remove('age');
                   var db = new DataBaseHelper();
-                  await db.deleteUser(1);
-                  int cnt=await db.getGoalCount();
-                  if(cnt>2){
-                    await db.deleteGoal(3);
-                    await db.deleteGoal(2);
-                    await db.deleteGoal(1);
-                  }
-                  else if(cnt>1){
-                    await db.deleteGoal(2);
-                    await db.deleteGoal(1);
-                  }
-                  else{
-                    await db.deleteGoal(1);
-                  }
+                  await db.deleteUserInfo();
+                  await db.deleteGoalsInfo();
+                  await db.deleteFriendsInfo();
+                  await db.deleteMessages();
+                  // await db.deleteUser(1);
+                  // int cnt=await db.getGoalCount();
+                  // if(cnt>2){
+                  //   await db.deleteGoal(3);
+                  //   await db.deleteGoal(2);
+                  //   await db.deleteGoal(1);
+                  // }
+                  // else if(cnt>1){
+                  //   await db.deleteGoal(2);
+                  //   await db.deleteGoal(1);
+                  // }
+                  // else{
+                  //   await db.deleteGoal(1);
+                  // }
                   Navigator.pop(context,true);
                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Login()),);
 

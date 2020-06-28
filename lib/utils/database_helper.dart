@@ -209,7 +209,8 @@ class DataBaseHelper {
 
   Future<List> getSingleUser(String userId) async {
     var dbClient = await db;
-    return await dbClient.rawQuery("SELECT COUNT(1) AS user_count FROM $friendsTable WHERE $friendId = $userId");
+    return await dbClient.rawQuery(
+        "SELECT COUNT(1) AS user_count FROM $friendsTable WHERE $friendId = $userId");
   }
 
   Future<List> getUsersList() async {
@@ -227,6 +228,26 @@ class DataBaseHelper {
     var dbClient = await db;
     return await dbClient.rawQuery(
         "SELECT * FROM $messagesTable WHERE $messageOtherId = $userId");
+  }
+
+  Future deleteUserInfo() async {
+    var dbClient = await db;
+    return await dbClient.rawDelete("DELETE FROM $userTable");
+  }
+  
+  Future deleteGoalsInfo() async {
+    var dbClient = await db;
+    return await dbClient.rawDelete("DELETE FROM $goalTable");
+  }
+  
+  Future deleteFriendsInfo() async {
+    var dbClient = await db;
+    return await dbClient.rawDelete("DELETE FROM $friendsTable");
+  }
+  
+  Future deleteMessages() async {
+    var dbClient = await db;
+    return await dbClient.rawDelete("DELETE FROM $messagesTable");
   }
 
   Future<List<Map>> getLastMessage() async {

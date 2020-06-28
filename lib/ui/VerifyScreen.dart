@@ -50,7 +50,7 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
 
       if (state == PhoneAuthState.Verified) {
         FirebaseAuth.instance.currentUser().then((val) async {
-          _onLoading();
+          _onLoading(context);
           var url = 'https://march.lbits.co/api/worker.php';
           var resp = await http.post(
             url,
@@ -182,7 +182,7 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
     );
   }
 
-  void _onLoading() {
+  void _onLoading(context) {
     showDialog(
       context: context,
       barrierDismissible: false,

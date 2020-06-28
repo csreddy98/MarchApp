@@ -262,9 +262,7 @@ class _SlidercontainerState extends State<Slider_container> {
                                 ),
                             ),
                           ),
-                        ):Expanded(
-                          flex: 1,
-                        ),
+                        ): SizedBox(),
 
                         widget.goalList.length>2?Expanded(
                           flex: 1,
@@ -304,9 +302,7 @@ class _SlidercontainerState extends State<Slider_container> {
                               ),
                             ),
                           ),
-                        ):Expanded(
-                          flex: 1,
-                        ),
+                        ): SizedBox(),
 
 
 

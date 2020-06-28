@@ -295,14 +295,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                           body: json.encode({
                                                             'work':
                                                                 "accept request",
-                                                            'sender': pending[i]
-                                                                    [
-                                                                    'user_info']
-                                                                ['sender_id'],
-                                                            'receiver': pending[
-                                                                        i][
-                                                                    'user_info']
-                                                                ['receiver_id']
+                                                            'sender': pending[i]['user_info']['sender_id'],
+                                                            'receiver': pending[i]['user_info']['receiver_id']
                                                           }),
                                                           headers: {
                                                             'Content-Type':
