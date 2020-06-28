@@ -24,13 +24,14 @@ class _FindScreenState extends State<FindScreen> {
   int check = 0;
   int clicked = 0;
   String id;
+  List goalList=[];
   String lat;
   String lng;
   String goals="";
   String uid;
   Location location = new Location();
-  final int maxAge = 100;
-  final int minAge = 18;
+  int maxAge = 100;
+  int minAge = 18;
   TextEditingController myController;
   List<Person> people = [];
   int radius = 100;
@@ -83,11 +84,7 @@ class _FindScreenState extends State<FindScreen> {
       print("This is the result: $result");
       if (result['response'] == 200) {
         int l = result['result'].length;
-        if (l > 10) {
-          l = 10;
-        }
 
-        if (clicked == 0) {
           for (var i = 0; i < l; i++) {
             if (!myUsers.contains(result['result'][i]['user_info']['id'])) {}
             print(result['result'][i]);
@@ -106,10 +103,6 @@ class _FindScreenState extends State<FindScreen> {
             );
           }
 
-          setState(() {
-            clicked = 1;
-          });
-        }
       }
     }
     print(people);
@@ -147,9 +140,7 @@ class _FindScreenState extends State<FindScreen> {
                     ),
                     iconSize: 26.0,
                     onPressed: () {
-                      if (people.length > 0) {
                         _navigateAndDisplaySelection(context);
-                      }
                     }),
               ],
             ),
@@ -159,9 +150,6 @@ class _FindScreenState extends State<FindScreen> {
                 color: Colors.white,
                 child: FutureBuilder(
                   future: _getPeople(),
-
-
-                  
                   initialData: [],
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     print("SNAPSHOT: ${snapshot.data}");
@@ -429,9 +417,11 @@ class _FindScreenState extends State<FindScreen> {
       setState(() {
         var m=value[0];
         goals=m["goalName"];
+        goalList.add(m["goalName"]);
         for(var i=1;i<n;i++){
           var m=value[i];
           goals=goals+","+m["goalName"];
+          goalList.add(m["goalName"]);
         }
         print(goals);
       });
@@ -568,16 +558,22 @@ class _FindScreenState extends State<FindScreen> {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => Slider_container("Cricket", "Dance", "Hockey")),
+          builder: (context) => Slider_container(goalList)),
     );
     if (result != null) {
       print(result);
-      int minAge = result[0];
-      int maxAge = result[1];
-      int distance = result[2];
-      List<dynamic> record = result[3];
+      setState(() {
+         minAge = result[0];
+         maxAge = result[1];
+         radius = result[2];
+         if(result[3]!=""){
+           goals = result[3];
+         }
+         print(minAge.toString()+","+maxAge.toString()+","+radius.toString()+","+goals);
+         people.clear();
+      });
 
-      for (var i = people.length - 1; i >= 0; i--) {
+    /*  for (var i = people.length - 1; i >= 0; i--) {
         List<dynamic> l = convert.jsonDecode(people[i].goals);
 
         if (int.parse(people[i].age.substring(0, 2)) < minAge) {
@@ -614,7 +610,7 @@ class _FindScreenState extends State<FindScreen> {
             });
           }
         }
-      }
+      }*/
     }
   }
 

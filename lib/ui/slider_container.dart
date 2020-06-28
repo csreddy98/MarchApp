@@ -2,11 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Slider_container extends StatefulWidget {
-  final String goal1;
-  final String goal2;
-  final String goal3;
+  final List goalList;
 
-  Slider_container(this.goal1, this.goal2, this.goal3);
+  Slider_container(this.goalList);
 
   @override
   _SlidercontainerState createState() => _SlidercontainerState();
@@ -196,7 +194,7 @@ class _SlidercontainerState extends State<Slider_container> {
                                 child: InkWell(
                                   //padding: const EdgeInsets.fromLTRB(0,0,0,0),
                                   child: Center(
-                                    child: Text(widget.goal1,
+                                    child: Text(widget.goalList[0],
                                       style: TextStyle(
                                         color: goal_1
                                             ? Colors.white
@@ -224,7 +222,7 @@ class _SlidercontainerState extends State<Slider_container> {
 
 
 
-                        Expanded(
+                        widget.goalList.length>1?Expanded(
                           flex: 1,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -239,7 +237,7 @@ class _SlidercontainerState extends State<Slider_container> {
                                   //padding: const EdgeInsets.fromLTRB(0,0,0,0),
                                     child: Center(
                                       child: Text(
-                                        widget.goal2,
+                                        widget.goalList[1],
                                         style: TextStyle(
                                           color: goal_2
                                               ? Colors
@@ -264,10 +262,12 @@ class _SlidercontainerState extends State<Slider_container> {
                                 ),
                             ),
                           ),
+                        ):Expanded(
+                          flex: 1,
                         ),
 
 
-                        Expanded(
+                        widget.goalList.length>2?Expanded(
                           flex: 1,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -281,7 +281,7 @@ class _SlidercontainerState extends State<Slider_container> {
                                 child: InkWell(
                                   child: Center(
                                     child: Text(
-                                      widget.goal3,
+                                      widget.goalList[2],
                                       style: TextStyle(
                                         color: goal_3
                                             ? Colors.white
@@ -305,6 +305,8 @@ class _SlidercontainerState extends State<Slider_container> {
                               ),
                             ),
                           ),
+                        ):Expanded(
+                          flex: 1,
                         ),
 
 
@@ -316,16 +318,28 @@ class _SlidercontainerState extends State<Slider_container> {
                   padding: const EdgeInsets.fromLTRB(25, 100, 25, 50),
                   child: GestureDetector(
                     onTap: (){
-                      List n=[];
+                      String n="";
+                      print(goal_1.toString()+goal_2.toString()+goal_3.toString());
                       if(goal_1==true){
-                        n.add(widget.goal1);
+                        n=widget.goalList[0];
                       }
                       if(goal_2==true){
-                        n.add(widget.goal2);
+                        if(n!=""){
+                          n=n+","+widget.goalList[1];
+                        }
+                        else{
+                          n=widget.goalList[1];
+                        }
                       }
                       if(goal_3==true){
-                        n.add(widget.goal3);
+                        if(n!=""){
+                          n=n+","+widget.goalList[2];
+                        }
+                        else{
+                          n=widget.goalList[2];
+                        }
                       }
+                      print(n);
 
                       Navigator.pop(context,[ageRangeMin,ageRangeMax,maxDistance,n]);
                     },
