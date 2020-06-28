@@ -44,8 +44,8 @@ class Level{
     return <Level> [
       Level(1,'Beginner'),
       Level(2,'Amateur'),
-      Level(1,'Intermediate'),
-      Level(1,'Professional'),
+      Level(3,'Intermediate'),
+      Level(4,'Professional'),
     ];
   }
 }

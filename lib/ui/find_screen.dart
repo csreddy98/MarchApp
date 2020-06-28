@@ -37,6 +37,7 @@ class _FindScreenState extends State<FindScreen> {
   int radius = 100;
   SocketIO socketIO;
   String token;
+  String level="none";
   DataBaseHelper db = DataBaseHelper();
   LocationData _locationData;
   PermissionStatus _permissionGranted;
@@ -78,6 +79,7 @@ class _FindScreenState extends State<FindScreen> {
           'maxAge': maxAge,
           'minAge': minAge,
           'uid': id,
+          'goalLevel':level,
         }),
       );
       var result = json.decode(resp.body);
@@ -569,6 +571,10 @@ class _FindScreenState extends State<FindScreen> {
          if(result[3]!=""){
            goals = result[3];
          }
+         if(result[4]!=""){
+           level = result[4];
+         }
+
          print(minAge.toString()+","+maxAge.toString()+","+radius.toString()+","+goals);
          people.clear();
       });
