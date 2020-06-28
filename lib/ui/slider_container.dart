@@ -10,6 +10,23 @@ class Slider_container extends StatefulWidget {
   _SlidercontainerState createState() => _SlidercontainerState();
 }
 
+class Level{
+  int id;
+  String level;
+
+  Level(this.id,this.level);
+
+  static List<Level> getLevel(){
+    return <Level> [
+      Level(1,'None'),
+      Level(2,'Beginner'),
+      Level(3,'Amateur'),
+      Level(4,'Intermediate'),
+      Level(5,'Professional'),
+    ];
+  }
+}
+
 class _SlidercontainerState extends State<Slider_container> {
   static int ageRangeMin = 18;
   int ageRangeMax = 100;
@@ -18,6 +35,38 @@ class _SlidercontainerState extends State<Slider_container> {
   bool goal_1 = false;
   bool goal_2 = false;
   bool goal_3 = false;
+  List<Level> _level=Level.getLevel();
+  List<DropdownMenuItem<Level>> _dropdownMenuLevels;
+  Level _selectedLevel;
+  String level="None";
+  String levelChange="";
+
+  onChangeDropDownLevel(Level selectedLevel){
+    setState(() {
+      _selectedLevel=selectedLevel;
+      level=selectedLevel.level;
+      levelChange=level;
+    });
+  }
+
+  @override
+  void initState() {
+    _dropdownMenuLevels =buildDropDownMenuLevels(_level);
+    _selectedLevel=_dropdownMenuLevels[0].value;
+    super.initState();
+  }
+
+  List<DropdownMenuItem<Level>> buildDropDownMenuLevels(List lev){
+    List<DropdownMenuItem<Level>> items=List();
+    for(Level level in lev){
+      items.add(DropdownMenuItem(
+        value:level,
+        child: Text(level.level),
+      )
+      );
+    }
+    return items;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -155,6 +204,21 @@ class _SlidercontainerState extends State<Slider_container> {
                         maxDistance=val.toInt();
                       });
                     },
+                  ),
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(25.0,15,20.0,0),
+                  child: Row(
+                    children: <Widget>[
+                      Text('Level : '),
+                      SizedBox(width: 20,),
+                      DropdownButton(
+                        value: _selectedLevel,
+                        items: _dropdownMenuLevels,
+                        onChanged: onChangeDropDownLevel,
+                      ),
+                    ],
                   ),
                 ),
 
@@ -339,8 +403,8 @@ class _SlidercontainerState extends State<Slider_container> {
                         }
                       }
                       print(n);
-
-                      Navigator.pop(context,[ageRangeMin,ageRangeMax,maxDistance,n]);
+                      print(levelChange);
+                      Navigator.pop(context,[ageRangeMin,ageRangeMax,maxDistance,n,levelChange]);
                     },
                     child:  Container(
                       width: size.width/3,
