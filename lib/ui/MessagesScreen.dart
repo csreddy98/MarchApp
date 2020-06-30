@@ -98,11 +98,15 @@ class _MessagesScreenState extends State<MessagesScreen> {
                   },
                   child: Container(
                     padding: EdgeInsets.all(15.0),
-                    child: Center(child: Text("Chats")),
+                    child: Center(
+                        child: Text("Chats",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w600))),
                     width: 120.0,
                   ),
                   color:
-                      (chats == true) ? Color(0xFFFCFCFC) : Color(0xFFE2E3ED),
+                      (chats == true) ? Color(0xFFabb7b7) : Color(0xFFdadfe1),
                   // shape: RoundedRectangleBorder(side: BorderSide(width: 1.0)),
                 ),
                 FlatButton(
@@ -113,11 +117,15 @@ class _MessagesScreenState extends State<MessagesScreen> {
                   },
                   child: Container(
                     padding: EdgeInsets.all(15.0),
-                    child: Center(child: Text("Requests")),
+                    child: Center(
+                        child: Text("Requests",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w600))),
                     width: 120.0,
                   ),
                   color:
-                      (chats == false) ? Color(0xFFFCFCFC) : Color(0xFFE2E3ED),
+                      (chats == false) ? Color(0xFFabb7b7) : Color(0xFFdadfe1),
                   // shape: RoundedRectangleBorder(side: BorderSide(width: 1.0)),
                 )
               ],
@@ -295,8 +303,14 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                           body: json.encode({
                                                             'work':
                                                                 "accept request",
-                                                            'sender': pending[i]['user_info']['sender_id'],
-                                                            'receiver': pending[i]['user_info']['receiver_id']
+                                                            'sender': pending[i]
+                                                                    [
+                                                                    'user_info']
+                                                                ['sender_id'],
+                                                            'receiver': pending[
+                                                                        i][
+                                                                    'user_info']
+                                                                ['receiver_id']
                                                           }),
                                                           headers: {
                                                             'Content-Type':

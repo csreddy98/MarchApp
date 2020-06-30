@@ -19,20 +19,23 @@ class _ProfileState extends State<Profile> {
   String name, bio, pic, dob, uid, age, profession;
   var db = new DataBaseHelper();
   User user;
-  Goal goal1,goal2,goal3;
+  Goal goal1, goal2, goal3;
 
-  List goals=["Add goal","Add goal","Add goal"];
-  List time=["Add time","Add time","Add time"];
-  List target=["Add target","Add target","Add target"];
-  List names=["Rajamouli","Samantha Akinneni"];
-  List profile=["https://w0.pngwave.com/png/914/653/silhouette-avatar-business-people-silhouettes-png-clip-art.png","https://w0.pngwave.com/png/914/653/silhouette-avatar-business-people-silhouettes-png-clip-art.png"];
-  List data=[" SS Rajamouli, who never shies ,","Samantha is outstanding Samantha is outstanding Samantha is outstanding"];
+  List goals = ["Add goal", "Add goal", "Add goal"];
+  List time = ["Add time", "Add time", "Add time"];
+  List target = ["Add target", "Add target", "Add target"];
+  List names = ["Rajamouli", "Samantha Akinneni"];
+  List profile = [
+    "https://w0.pngwave.com/png/914/653/silhouette-avatar-business-people-silhouettes-png-clip-art.png",
+    "https://w0.pngwave.com/png/914/653/silhouette-avatar-business-people-silhouettes-png-clip-art.png"
+  ];
+  List data = [
+    " SS Rajamouli, who never shies ,",
+    "Samantha is outstanding Samantha is outstanding Samantha is outstanding"
+  ];
 
-
-  PageController _controller = PageController(
-      initialPage: 0,
-      viewportFraction: 0.85
-  );
+  PageController _controller =
+      PageController(initialPage: 0, viewportFraction: 0.85);
 
   @override
   void dispose() {
@@ -46,10 +49,8 @@ class _ProfileState extends State<Profile> {
     super.initState();
   }
 
-
-  Widget slide1(){
+  Widget slide1() {
     return Card(
-
       child: Padding(
         padding: const EdgeInsets.all(5.0),
         child: Column(
@@ -66,38 +67,53 @@ class _ProfileState extends State<Profile> {
                     flex: 1,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 15),
-                      child: Text(goals[0],style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontWeight: FontWeight.bold,fontFamily: 'montserrat'),),
+                      child: Text(
+                        goals[0],
+                        style: TextStyle(
+                            color: Color.fromRGBO(63, 92, 200, 1),
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'montserrat'),
+                      ),
                     )),
-                IconButton(icon: Icon(Icons.edit,size: 16,color: Color.fromRGBO(63, 92, 200, 1),),
-                    onPressed:(){
-
+                IconButton(
+                    icon: Icon(
+                      Icons.edit,
+                      size: 16,
+                      color: Color.fromRGBO(63, 92, 200, 1),
+                    ),
+                    onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => EditGoal("1", uid)),
+                        MaterialPageRoute(
+                            builder: (context) => EditGoal("1", uid)),
                       );
-
                     }),
               ],
             ),
             Row(
+              // mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(top:0,left: 15.0),
+                  padding: const EdgeInsets.only(top: 0, left: 15.0),
                   child: Text("Target :"),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left:15.0,top:0),
-                  child: AutoSizeText(target[0],style: TextStyle(color: Colors.grey),maxLines: 2,),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 15.0, top: 0),
+                    child: Text(
+                      target[0],
+                      style: TextStyle(color: Colors.grey),
+                      maxLines: 2,
+                    ),
+                  ),
                 ),
               ],
             ),
             Padding(
-              padding: const EdgeInsets.only(left:15.0,top:8.0),
+              padding: const EdgeInsets.only(left: 15.0, top: 8.0),
               child: Row(
-                children: <Widget>[
-                  Text("Time Frame : "),
-                  Text(time[0])
-                ],
+                children: <Widget>[Text("Time Frame : "), Text(time[0])],
               ),
             ),
           ],
@@ -106,8 +122,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-
-  Widget slide2(){
+  Widget slide2() {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(5.0),
@@ -121,13 +136,25 @@ class _ProfileState extends State<Profile> {
                     flex: 1,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 15),
-                      child: Text(goals[1],style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontWeight: FontWeight.bold,fontFamily: 'montserrat'),),
+                      child: Text(
+                        goals[1],
+                        style: TextStyle(
+                            color: Color.fromRGBO(63, 92, 200, 1),
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'montserrat'),
+                      ),
                     )),
-                IconButton(icon: Icon(Icons.edit,size: 16,color: Color.fromRGBO(63, 92, 200, 1),),
-                    onPressed:(){
+                IconButton(
+                    icon: Icon(
+                      Icons.edit,
+                      size: 16,
+                      color: Color.fromRGBO(63, 92, 200, 1),
+                    ),
+                    onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => EditGoal("2", uid)),
+                        MaterialPageRoute(
+                            builder: (context) => EditGoal("2", uid)),
                       );
                     }),
               ],
@@ -135,32 +162,32 @@ class _ProfileState extends State<Profile> {
             Row(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(top:0,left: 15.0),
+                  padding: const EdgeInsets.only(top: 0, left: 15.0),
                   child: Text("Target :"),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left:15.0,top:0),
-                  child: AutoSizeText(target[1],style: TextStyle(color: Colors.grey),maxLines: 2,),
+                  padding: const EdgeInsets.only(left: 15.0, top: 0),
+                  child: AutoSizeText(
+                    target[1],
+                    style: TextStyle(color: Colors.grey),
+                    maxLines: 2,
+                  ),
                 ),
               ],
             ),
             Padding(
-              padding: const EdgeInsets.only(left:15.0,top:8.0),
+              padding: const EdgeInsets.only(left: 15.0, top: 8.0),
               child: Row(
-                children: <Widget>[
-                  Text("Time Frame : "),
-                  Text(time[1])
-                ],
+                children: <Widget>[Text("Time Frame : "), Text(time[1])],
               ),
             ),
-
           ],
         ),
       ),
     );
   }
 
-  Widget slide3(){
+  Widget slide3() {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(5.0),
@@ -171,16 +198,28 @@ class _ProfileState extends State<Profile> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 Expanded(
-                  flex: 1,
+                    flex: 1,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 15),
-                      child: Text(goals[2],style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontWeight: FontWeight.bold,fontFamily: 'montserrat'),),
+                      child: Text(
+                        goals[2],
+                        style: TextStyle(
+                            color: Color.fromRGBO(63, 92, 200, 1),
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'montserrat'),
+                      ),
                     )),
-                IconButton(icon: Icon(Icons.edit,size: 16,color: Color.fromRGBO(63, 92, 200, 1),),
-                    onPressed:(){
+                IconButton(
+                    icon: Icon(
+                      Icons.edit,
+                      size: 16,
+                      color: Color.fromRGBO(63, 92, 200, 1),
+                    ),
+                    onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => EditGoal("3", uid)),
+                        MaterialPageRoute(
+                            builder: (context) => EditGoal("3", uid)),
                       );
                     }),
               ],
@@ -188,25 +227,25 @@ class _ProfileState extends State<Profile> {
             Row(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(top:0,left: 15.0),
+                  padding: const EdgeInsets.only(top: 0, left: 15.0),
                   child: Text("Target :"),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left:15.0,top:0),
-                  child: AutoSizeText(target[2],style: TextStyle(color: Colors.grey),maxLines: 2,),
+                  padding: const EdgeInsets.only(left: 15.0, top: 0),
+                  child: AutoSizeText(
+                    target[2],
+                    style: TextStyle(color: Colors.grey),
+                    maxLines: 2,
+                  ),
                 ),
               ],
             ),
             Padding(
-              padding: const EdgeInsets.only(left:15.0,top:8.0),
+              padding: const EdgeInsets.only(left: 15.0, top: 8.0),
               child: Row(
-                children: <Widget>[
-                  Text("Time Frame : "),
-                  Text(time[2])
-                ],
+                children: <Widget>[Text("Time Frame : "), Text(time[2])],
               ),
             ),
-
           ],
         ),
       ),
@@ -215,7 +254,6 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -223,70 +261,90 @@ class _ProfileState extends State<Profile> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-
               Stack(
                 children: <Widget>[
-
                   Container(
-                    height: MediaQuery.of(context).size.height*0.3,
+                    height: MediaQuery.of(context).size.height * 0.3,
                     width: MediaQuery.of(context).size.width,
                     child: CustomPaint(
                       painter: BackProfile(),
                     ),
                   ),
-
                   Container(
-                    height: MediaQuery.of(context).size.height*0.28,
+                    height: MediaQuery.of(context).size.height * 0.28,
                     width: MediaQuery.of(context).size.width,
                     child: Column(
                       children: <Widget>[
                         Center(
                           child: Padding(
-                            padding: const EdgeInsets.only(bottom: 6,top: 6),
-                            child:InkWell(
-                              onTap: ()=>Navigator.push(context, MaterialPageRoute(builder: (_)=>FullScreenImage(pic))),
+                            padding: const EdgeInsets.only(bottom: 6, top: 6),
+                            child: InkWell(
+                              onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => FullScreenImage(pic))),
                               child: Container(
                                 width: 80.0,
                                 height: 80.0,
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
                                       fit: BoxFit.cover,
-                                      image: NetworkImage(pic!=null?pic:"https://w7.pngwing.com/pngs/861/726/png-transparent-computer-icons-professional-avatar-avatar-heroes-public-relations-monochrome.png")
-                                  ),
-                                  borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                                      image: NetworkImage(pic != null
+                                          ? pic
+                                          : "https://w7.pngwing.com/pngs/861/726/png-transparent-computer-icons-professional-avatar-avatar-heroes-public-relations-monochrome.png")),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(15.0)),
                                   color: Colors.transparent,
                                 ),
                               ),
                             ),
-
                           ),
                         ),
-                        Center(child: Text(name!=null?name:"",style: TextStyle(fontSize: 16,color: Colors.white),)),
-                        Center(child: Text(profession!=null?profession:"",style: TextStyle(fontSize: 16,color: Colors.white),)),
+                        Center(
+                            child: Text(
+                          name != null ? name : "",
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        )),
+                        Center(
+                            child: Text(
+                          profession != null ? profession : "",
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        )),
                         Padding(
-                          padding: const EdgeInsets.only(bottom:12.0),
-                          child: Center(child: Text(age!=null?age.toString()+" Years old":"",style: TextStyle(fontSize: 14,color: Colors.white),)),
+                          padding: const EdgeInsets.only(bottom: 12.0),
+                          child: Center(
+                              child: Text(
+                            age != null ? age.toString() + " Years old" : "",
+                            style: TextStyle(fontSize: 14, color: Colors.white),
+                          )),
                         ),
-
                       ],
                     ),
                   )
-
                 ],
               ),
-
               Padding(
-                padding: const EdgeInsets.only(left:25.0,right: 15.0,top:10),
-                child: Center(child: AutoSizeText(bio!=null?bio:"",style: TextStyle(color: Colors.black,fontSize: 13),maxLines: 3,)),
+                padding:
+                    const EdgeInsets.only(left: 25.0, right: 15.0, top: 10),
+                child: Center(
+                    child: AutoSizeText(
+                  bio != null ? bio : "",
+                  style: TextStyle(color: Colors.black, fontSize: 13),
+                  maxLines: 3,
+                )),
               ),
-
               Center(
                 child: Padding(
-                  padding: const EdgeInsets.only(top:20.0),
-                  child: Text("Your Goals".toUpperCase(),style: TextStyle(fontSize: 16,color: Color.fromRGBO(63, 92, 200, 1) ,fontFamily: 'montserrat'),),
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: Text(
+                    "Your Goals".toUpperCase(),
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Color.fromRGBO(63, 92, 200, 1),
+                        fontFamily: 'montserrat'),
+                  ),
                 ),
               ),
-
               SizedBox(
                 height: 150,
                 width: MediaQuery.of(context).size.width,
@@ -294,15 +352,18 @@ class _ProfileState extends State<Profile> {
                   controller: _controller,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left:3.0,top: 8.0,bottom: 15.0),
+                      padding: const EdgeInsets.only(
+                          left: 3.0, top: 8.0, bottom: 15.0),
                       child: slide1(),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left:8.0,top: 8.0,bottom: 15.0),
+                      padding: const EdgeInsets.only(
+                          left: 8.0, top: 8.0, bottom: 15.0),
                       child: slide2(),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left:8.0,top: 8.0,bottom: 15.0),
+                      padding: const EdgeInsets.only(
+                          left: 8.0, top: 8.0, bottom: 15.0),
                       child: slide3(),
                     ),
                   ],
@@ -316,54 +377,64 @@ class _ProfileState extends State<Profile> {
                 shape: Shape(
                     size: 6,
                     spacing: 3,
-                    shape: DotShape.Circle  // Similar for Square
-                ),
+                    shape: DotShape.Circle // Similar for Square
+                    ),
               ),
-
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Center(child: Text("Testimonials",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontFamily: 'montserrat'),)),
+                child: Center(
+                    child: Text(
+                  "Testimonials",
+                  style: TextStyle(
+                      color: Color.fromRGBO(63, 92, 200, 1),
+                      fontFamily: 'montserrat'),
+                )),
               ),
-
               SizedBox(
-                height: MediaQuery.of(context).size.height*0.6,
-                width: MediaQuery.of(context).size.width*0.75,
+                height: MediaQuery.of(context).size.height * 0.6,
+                width: MediaQuery.of(context).size.width * 0.75,
                 child: ListView.builder(
                   itemCount: 2,
                   itemBuilder: (context, i) {
-                    return  Padding(
-                      padding: const EdgeInsets.fromLTRB(15.0,5,15,5),
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(15.0, 5, 15, 5),
                       child: Card(
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
                             child: Row(
                               children: <Widget>[
-
                                 CircleAvatar(
                                   radius: 30.0,
-                                  backgroundImage:
-                                  NetworkImage(profile[i]),
+                                  backgroundImage: NetworkImage(profile[i]),
                                   backgroundColor: Colors.transparent,
                                 ),
-
                                 Padding(
-                                  padding: const EdgeInsets.only(left:30.0),
+                                  padding: const EdgeInsets.only(left: 30.0),
                                   child: SizedBox(
-                                    width: MediaQuery.of(context).size.width*0.6,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.6,
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
                                       children: <Widget>[
                                         Padding(
-                                          padding: const EdgeInsets.only(bottom:3.0),
-                                          child: AutoSizeText(names[i],maxLines: 1,),
+                                          padding: const EdgeInsets.only(
+                                              bottom: 3.0),
+                                          child: AutoSizeText(
+                                            names[i],
+                                            maxLines: 1,
+                                          ),
                                         ),
-                                        AutoSizeText(data[i],style: TextStyle(fontSize: 12),maxLines: 2,)
+                                        AutoSizeText(
+                                          data[i],
+                                          style: TextStyle(fontSize: 12),
+                                          maxLines: 2,
+                                        )
                                       ],
                                     ),
                                   ),
                                 )
-
                               ],
                             ),
                           ),
@@ -373,9 +444,6 @@ class _ProfileState extends State<Profile> {
                   },
                 ),
               )
-
-
-
             ],
           ),
         ),
@@ -383,46 +451,45 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  void _load() async{
-   user= await db.getUser(1);
-   goal1= await db.getGoal(1);
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-   
-    int gCount= await db.getGoalCount();
-   if(gCount>1){
-     goal2= await db.getGoal(2);
-   }
-   if(gCount>2){
-     goal3= await db.getGoal(3);
-   }
-   setState(() {
-     pic=user.userPic;
-     bio=user.userBio;
-     name=user.username;
-     profession=user.userProfession;
-   //  dob = user.userDob.substring(6,);
-    // age = int.parse(now.toString().substring(0, 4)) - int.parse(dob);
-     age=prefs.getString('age');
-     goals[0]=goal1.goalName;
-     time[0]=goal1.timeFrame;
-     target[0]=goal1.target;
-     if(gCount>2){
-       goals[2]=goal3.goalName;
-       time[2]=goal3.timeFrame;
-       target[2]=goal3.target;
-       goals[1]=goal2.goalName;
-       time[1]=goal2.timeFrame;
-       target[1]=goal2.target;
-     }
-     else if(gCount>1){
-       goals[1]=goal2.goalName;
-       time[1]=goal2.timeFrame;
-       target[1]=goal2.target;
-     }
-     uid=user.userId;
-   });
+  void _load() async {
+    user = await db.getUser(1);
+    goal1 = await db.getGoal(1);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-   /*  SharedPreferences prefs = await SharedPreferences.getInstance();
+    int gCount = await db.getGoalCount();
+    if (gCount > 1) {
+      goal2 = await db.getGoal(2);
+    }
+    if (gCount > 2) {
+      goal3 = await db.getGoal(3);
+    }
+    setState(() {
+      pic = user.userPic;
+      bio = user.userBio;
+      name = user.username;
+      profession = user.userProfession;
+      //  dob = user.userDob.substring(6,);
+      // age = int.parse(now.toString().substring(0, 4)) - int.parse(dob);
+      age = prefs.getString('age');
+      goals[0] = goal1.goalName;
+      time[0] = goal1.timeFrame;
+      target[0] = goal1.target;
+      if (gCount > 2) {
+        goals[2] = goal3.goalName;
+        time[2] = goal3.timeFrame;
+        target[2] = goal3.target;
+        goals[1] = goal2.goalName;
+        time[1] = goal2.timeFrame;
+        target[1] = goal2.target;
+      } else if (gCount > 1) {
+        goals[1] = goal2.goalName;
+        time[1] = goal2.timeFrame;
+        target[1] = goal2.target;
+      }
+      uid = user.userId;
+    });
+
+    /*  SharedPreferences prefs = await SharedPreferences.getInstance();
     String profile_pic = prefs.getString('pic')??"";
     String profile_name = prefs.getString('name')??"";
     String profile_bio = prefs.getString('bio')??"";
@@ -430,7 +497,7 @@ class _ProfileState extends State<Profile> {
     String uid = prefs.getString('uid')??"";
 */
 
-  /*  var url = 'https://march.lbits.co/app/api/goals.php?uid=' + uid;
+    /*  var url = 'https://march.lbits.co/app/api/goals.php?uid=' + uid;
     var response = await http.get(url);
     if (response.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(response.body);
@@ -473,10 +540,10 @@ class _ProfileState extends State<Profile> {
           prefs.setString('name', name);
           prefs.setString('bio', bio);
           prefs.setInt('age', age);
-*//*
+*/ /*
           prefs.setString('dob', dob);
           prefs.setString('gender', jsonResponse["sex"]);
-*//*
+*/ /*
         } else {
           print('Request failed with status: ${response.statusCode}.');
         }
@@ -486,15 +553,15 @@ class _ProfileState extends State<Profile> {
   }
 
   calculateAge(String birthDate) {
-    DateTime currentDate = DateTime.now();//27-06-1997
+    DateTime currentDate = DateTime.now(); //27-06-1997
     int age = currentDate.year - int.parse(birthDate.substring(6));
     int month1 = currentDate.month;
-    int month2 = int.parse(birthDate.substring(3,5));
+    int month2 = int.parse(birthDate.substring(3, 5));
     if (month2 > month1) {
       age--;
     } else if (month1 == month2) {
       int day1 = currentDate.day;
-      int day2 = int.parse(birthDate.substring(0,2));
+      int day2 = int.parse(birthDate.substring(0, 2));
       if (day2 > day1) {
         age--;
       }

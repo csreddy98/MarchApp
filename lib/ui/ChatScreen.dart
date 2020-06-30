@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui' show ImageFilter;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_socket_io/flutter_socket_io.dart';
@@ -22,12 +23,19 @@ class _TextingScreenState extends State<TextingScreen> {
   SocketIO socketIO;
   List messages = [];
   String myId, token, uid;
+  List<GlobalKey> _keys = [];
   final db = DataBaseHelper();
-
+  int i = 0;
   @override
   void initState() {
     _load();
     super.initState();
+
+    socketIO = SocketIOManager().createSocketIO(
+      'https://glacial-waters-33471.herokuapp.com',
+      '/',
+    );
+    socketIO.init();
   }
 
   @override
@@ -39,25 +47,25 @@ class _TextingScreenState extends State<TextingScreen> {
   }
 
   void loadMessages() {
-    // print("${widget.user['receiver_id']}");
     db.getMessage(widget.user['user_id']).then((value) {
-      // messages.clear();
-      // print("$value");
+      for (var item in value) {
+        _keys.add(GlobalKey());
+      }
       setState(() {
         messages = value;
       });
-      _scroller.animateTo(_scroller.position.maxScrollExtent, duration: Duration(microseconds: 200), curve: Curves.easeOutSine);
+      _scroller.jumpTo(_scroller.position.maxScrollExtent);
     });
+    // if (i == 0) {
+    // _scroller.animateTo(_scroller.position.maxScrollExtent,
+    //     duration: Duration(microseconds: 200), curve: Curves.easeOutSine);
+    // i++;
+    // }
   }
 
   @override
   Widget build(BuildContext context) {
     loadMessages();
-    socketIO = SocketIOManager().createSocketIO(
-      'https://glacial-waters-33471.herokuapp.com',
-      '/',
-    );
-    socketIO.init();
     return Scaffold(
       backgroundColor: Color(0xFFFBFCFE),
       appBar: AppBar(
@@ -125,106 +133,11 @@ class _TextingScreenState extends State<TextingScreen> {
                       shrinkWrap: true,
                       scrollDirection: Axis.vertical,
                       itemBuilder: (BuildContext context, int index) {
-                        // print("This is $index: ${messages[index]}");
                         return (messages[index]['sentBy'] != this.myId)
-                            ? Column(
-                                children: <Widget>[
-                                  Row(
-                                    children: [
-                                      SizedBox(width: 5.0),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            constraints: BoxConstraints(
-                                                maxWidth: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .6),
-                                            padding: const EdgeInsets.all(15.0),
-                                            decoration: BoxDecoration(
-                                              color: Color(0x22161F3D),
-                                              borderRadius: BorderRadius.only(
-                                                topRight: Radius.circular(10),
-                                                bottomLeft: Radius.circular(10),
-                                                bottomRight:
-                                                    Radius.circular(10),
-                                              ),
-                                            ),
-                                            child: Text(
-                                              "${messages[index]['message']}",
-                                              style: TextStyle(
-                                                color: Colors.black87,
-                                              ),
-                                            ),
-                                          ),
-                                          Row(
-                                            children: <Widget>[
-                                              SizedBox(width: 10.0),
-                                              Text("${DateFormat('kk:mm').format((DateTime.parse(messages[index]['time'])))}",
-                                                  style: TextStyle(
-                                                      color: Colors.grey)),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                      SizedBox(width: 15),
-                                    ],
-                                  ),
-                                  SizedBox(height: 15.0)
-                                ],
-                              )
-                            : Column(
-                                children: <Widget>[
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Container(
-                                            constraints: BoxConstraints(
-                                                maxWidth: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .6),
-                                            padding: const EdgeInsets.all(15.0),
-                                            decoration: BoxDecoration(
-                                              color: Theme.of(context)
-                                                  .primaryColor,
-                                              borderRadius: BorderRadius.only(
-                                                bottomLeft: Radius.circular(10),
-                                                topLeft: Radius.circular(10),
-                                                topRight: Radius.circular(10),
-                                              ),
-                                            ),
-                                            child: Text(
-                                              "${messages[index]['message']}",
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ),
-                                          ),
-                                          Row(
-                                            children: <Widget>[
-                                              Text("${DateFormat('kk:mm').format((DateTime.parse(messages[index]['time'])))}",
-                                                  style: TextStyle(
-                                                      color: Colors.grey)),
-                                              // SizedBox(width: 10.0),
-                                              // Icon(
-                                              //   Icons.done_all,
-                                              //   size: 20.0,
-                                              // ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                      SizedBox(width: 5),
-                                    ],
-                                  ),
-                                ],
-                              );
+                            ? message('left', messages[index]['message'],
+                                messages[index]['time'], index)
+                            : message('right', messages[index]['message'],
+                                messages[index]['time'], index);
                       }),
             ),
             Container(
@@ -233,23 +146,9 @@ class _TextingScreenState extends State<TextingScreen> {
               // color: Colors.grey,
               decoration: BoxDecoration(
                   // borderRadius: BorderRadius.circular(35.0),
-                  color: Colors.transparent
-              ),
+                  color: Colors.transparent),
               child: Row(
                 children: [
-                  /*Container(
-                    padding: const EdgeInsets.all(11.0),
-                    decoration: BoxDecoration(
-                        color: Colors.transparent, shape: BoxShape.circle),
-                    child: InkWell(
-                      child: Icon(
-                        Icons.add,
-                        size: 35.0,
-                        color: Colors.white,
-                      ),
-                      onTap: () {},
-                    ),
-                  ),*/
                   SizedBox(width: 10.0),
                   Expanded(
                     child: Container(
@@ -299,33 +198,43 @@ class _TextingScreenState extends State<TextingScreen> {
                       onTap: () async {
                         final text = messageController.text;
                         messageController.clear();
-                        if(text != ""){
+                        if (text != "") {
                           socketIO.sendMessage(
-                            'chat message',
-                            json.encode({
-                              "message": text,
-                              "sender": this.myId,
-                              "receiver": widget.user['user_id'],
-                              "time": '${DateTime.now()}'
-                            }));
-                          _scroller.animateTo(_scroller.position.maxScrollExtent,
-                            duration: Duration(microseconds: 300), curve: Curves.easeOutSine);
+                              'chat message',
+                              json.encode({
+                                "message": text,
+                                "sender": this.myId,
+                                "receiver": widget.user['user_id'],
+                                "time": '${DateTime.now()}'
+                              }));
+                          FocusScope.of(context).requestFocus(new FocusNode());
+                          _scroller.animateTo(
+                              _scroller.position.maxScrollExtent,
+                              duration: Duration(microseconds: 300),
+                              curve: Curves.easeOutSine);
                         }
                       },
                       onDoubleTap: () async {
                         final text = messageController.text;
                         messageController.clear();
-                        if(text != ""){
+                        if (text != "") {
                           socketIO.sendMessage(
-                            'chat message',
-                            json.encode({
-                              "message": text,
-                              "sender": this.myId,
-                              "receiver": widget.user['user_id'],
-                              "time": '${DateTime.now()}'
-                            }));
-                          _scroller.animateTo(_scroller.position.maxScrollExtent,
-                            duration: Duration(milliseconds: 300), curve: Curves.bounceInOut);
+                              'chat message',
+                              json.encode({
+                                "message": text,
+                                "sender": this.myId,
+                                "receiver": widget.user['user_id'],
+                                "time": '${DateTime.now()}'
+                              }));
+                          Timer(Duration(seconds: 1), () {
+                            FocusScope.of(context)
+                                .requestFocus(new FocusNode());
+                          });
+                          FocusScope.of(context).requestFocus(new FocusNode());
+                          _scroller.animateTo(
+                              _scroller.position.maxScrollExtent,
+                              duration: Duration(milliseconds: 300),
+                              curve: Curves.bounceInOut);
                         }
                       },
                     ),
@@ -337,6 +246,192 @@ class _TextingScreenState extends State<TextingScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget message(String direction, String message, String time, int index) {
+    return Column(
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            GestureDetector(
+              onDoubleTap: () {
+                final RenderBox renderBox =
+                    _keys[index].currentContext.findRenderObject();
+                final boxSize = renderBox.localToGlobal(Offset.zero);
+                showDialog(
+                  barrierDismissible: true,
+                  context: context,
+                  builder: (context) {
+                    return Scaffold(
+                        backgroundColor: Colors.transparent,
+                        floatingActionButton: FloatingActionButton(
+                          onPressed: () => Navigator.pop(context),
+                          backgroundColor: Theme.of(context).primaryColor,
+                          child: Icon(Icons.close),
+                        ),
+                        body: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height,
+                              child: Stack(
+                                children: <Widget>[
+                                  Positioned(
+                                      top: ((MediaQuery.of(context)
+                                                      .size
+                                                      .height -
+                                                  (MediaQuery.of(context)
+                                                          .size
+                                                          .height /
+                                                      3)) >
+                                              boxSize.dy)
+                                          ? boxSize.dy
+                                          : MediaQuery.of(context).size.height -
+                                              (MediaQuery.of(context)
+                                                      .size
+                                                      .height /
+                                                  2.5),
+                                      left: boxSize.dx - 20,
+                                      child: Container(
+                                          child: Column(
+                                        children: <Widget>[
+                                          Container(
+                                            constraints: BoxConstraints(
+                                                maxHeight:
+                                                    MediaQuery.of(context)
+                                                            .size
+                                                            .height /
+                                                        3,
+                                                maxWidth: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.6),
+                                            padding: const EdgeInsets.all(15.0),
+                                            decoration: BoxDecoration(
+                                              color: direction == 'right'
+                                                  ? Theme.of(context)
+                                                      .primaryColor
+                                                  : Color(0x22161F3D),
+                                              borderRadius: (direction ==
+                                                      'right')
+                                                  ? BorderRadius.only(
+                                                      bottomLeft:
+                                                          Radius.circular(10),
+                                                      topLeft:
+                                                          Radius.circular(10),
+                                                      topRight:
+                                                          Radius.circular(10),
+                                                    )
+                                                  : BorderRadius.only(
+                                                      topRight:
+                                                          Radius.circular(10),
+                                                      bottomLeft:
+                                                          Radius.circular(10),
+                                                      bottomRight:
+                                                          Radius.circular(10),
+                                                    ),
+                                            ),
+                                            child: Text(
+                                              "${messages[index]['message']}",
+                                              style: TextStyle(
+                                                  color: direction == 'right'
+                                                      ? Colors.white
+                                                      : Colors.black),
+                                            ),
+                                          ),
+                                          Container(
+                                              decoration: BoxDecoration(
+                                                  color: Colors.black,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              8.0))),
+                                              child: Column(
+                                                children: <Widget>[
+                                                  FlatButton(
+                                                    onPressed: null,
+                                                    child: Text(
+                                                      "Copy",
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
+                                                  ),
+                                                  FlatButton(
+                                                    onPressed: null,
+                                                    child: Text(
+                                                      "Delete",
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
+                                                  ),
+                                                  FlatButton(
+                                                    onPressed: null,
+                                                    child: Text(
+                                                      "Share",
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
+                                                  )
+                                                ],
+                                              ))
+                                        ],
+                                      )))
+                                ],
+                              ),
+                            )));
+                  },
+                );
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Hero(
+                    tag: 'messageHero',
+                    child: Container(
+                      key: _keys[index],
+                      constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * .6),
+                      padding: const EdgeInsets.all(15.0),
+                      decoration: BoxDecoration(
+                        color: direction == 'right'
+                            ? Theme.of(context).primaryColor
+                            : Color(0x22161F3D),
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(10),
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                        ),
+                      ),
+                      child: Text(
+                        "$message",
+                        style: TextStyle(
+                            color: direction == 'right'
+                                ? Colors.white
+                                : Colors.black),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Text(
+                          "${DateFormat('kk:mm').format((DateTime.parse(time)))}",
+                          style: TextStyle(color: Colors.grey)),
+                      // SizedBox(width: 10.0),
+                      // Icon(
+                      //   Icons.done_all,
+                      //   size: 20.0,
+                      // ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+            SizedBox(width: 5),
+          ],
+        ),
+      ],
     );
   }
 

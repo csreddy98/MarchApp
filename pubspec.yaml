@@ -38,6 +38,7 @@ dependencies:
   flutter_local_notifications:
   dotted_border:
   flutter_icons:
+  bubble: ^1.1.9+1
 
 dev_dependencies:
   flutter_test:

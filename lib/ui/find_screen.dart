@@ -24,10 +24,10 @@ class _FindScreenState extends State<FindScreen> {
   int check = 0;
   int clicked = 0;
   String id;
-  List goalList=[];
+  List goalList = [];
   String lat;
   String lng;
-  String goals="";
+  String goals = "";
   String uid;
   Location location = new Location();
   int maxAge = 100;
@@ -37,7 +37,7 @@ class _FindScreenState extends State<FindScreen> {
   int radius = 100;
   SocketIO socketIO;
   String token;
-  String level="none";
+  String level = "none";
   DataBaseHelper db = DataBaseHelper();
   LocationData _locationData;
   PermissionStatus _permissionGranted;
@@ -79,7 +79,7 @@ class _FindScreenState extends State<FindScreen> {
           'maxAge': maxAge,
           'minAge': minAge,
           'uid': id,
-          'goalLevel':level,
+          'goalLevel': level,
         }),
       );
       var result = json.decode(resp.body);
@@ -87,24 +87,23 @@ class _FindScreenState extends State<FindScreen> {
       if (result['response'] == 200) {
         int l = result['result'].length;
 
-          for (var i = 0; i < l; i++) {
-            if (!myUsers.contains(result['result'][i]['user_info']['id'])) {}
-            print(result['result'][i]);
-            people.add(
-              Person(
-                  imageUrl: result['result'][i]['user_info']['profile_pic'],
-                  name: result['result'][i]['user_info']['fullName'],
-                  gender: result['result'][i]['user_info']['sex'],
-                  age: "${result['result'][i]['user_info']['age']} Years Old",
-                  location:
-                      result['result'][i]['user_info']['distance'] + " Km away",
-                  goals: result['result'][i]['goal_info'],
-                  id: result['result'][i]['user_info']['id'],
-                  bio: result['result'][i]['user_info']['bio'],
-                  profession: result['result'][i]['user_info']['profession']),
-            );
-          }
-
+        for (var i = 0; i < l; i++) {
+          if (!myUsers.contains(result['result'][i]['user_info']['id'])) {}
+          print(result['result'][i]);
+          people.add(
+            Person(
+                imageUrl: result['result'][i]['user_info']['profile_pic'],
+                name: result['result'][i]['user_info']['fullName'],
+                gender: result['result'][i]['user_info']['sex'],
+                age: "${result['result'][i]['user_info']['age']} Years Old",
+                location:
+                    result['result'][i]['user_info']['distance'] + " Km away",
+                goals: result['result'][i]['goal_info'],
+                id: result['result'][i]['user_info']['id'],
+                bio: result['result'][i]['user_info']['bio'],
+                profession: result['result'][i]['user_info']['profession']),
+          );
+        }
       }
     }
     print(people);
@@ -142,7 +141,7 @@ class _FindScreenState extends State<FindScreen> {
                     ),
                     iconSize: 26.0,
                     onPressed: () {
-                        _navigateAndDisplaySelection(context);
+                      _navigateAndDisplaySelection(context);
                     }),
               ],
             ),
@@ -175,9 +174,10 @@ class _FindScreenState extends State<FindScreen> {
                             child: Slidable(
                               actionPane: SlidableDrawerActionPane(),
                               key: ObjectKey(people[index]),
-                              actions:<Widget>[
+                              actions: <Widget>[
                                 Padding(
-                                  padding: const EdgeInsets.only(top:8.0,bottom:8),
+                                  padding: const EdgeInsets.only(
+                                      top: 8.0, bottom: 8),
                                   child: IconSlideAction(
                                     color: Theme.of(context).primaryColor,
                                     icon: Icons.person_add,
@@ -189,27 +189,29 @@ class _FindScreenState extends State<FindScreen> {
                               ],
                               secondaryActions: <Widget>[
                                 Padding(
-                                  padding: const EdgeInsets.only(top:8.0,bottom:8),
+                                  padding: const EdgeInsets.only(
+                                      top: 8.0, bottom: 8),
                                   child: IconSlideAction(
                                       color: Colors.redAccent,
                                       icon: Icons.delete,
-                                     // foregroundColor: Colors.black,
+                                      // foregroundColor: Colors.black,
                                       onTap: () async {
                                         Person item = people[index];
 
                                         deleteItem(index);
 
-                                        Scaffold.of(context).showSnackBar(SnackBar(
-                                            content: Text("Profile deleted"),
-                                            action: SnackBarAction(
-                                                label: "UNDO",
-                                                onPressed: () {
-                                                  undoDeletion(index, item);
-                                                })));
+                                        Scaffold.of(context).showSnackBar(
+                                            SnackBar(
+                                                content:
+                                                    Text("Profile deleted"),
+                                                action: SnackBarAction(
+                                                    label: "UNDO",
+                                                    onPressed: () {
+                                                      undoDeletion(index, item);
+                                                    })));
                                       }),
                                 ),
                               ],
-
                               child: GestureDetector(
                                 onTap: () {
                                   Navigator.pushAndRemoveUntil(
@@ -275,13 +277,13 @@ class _FindScreenState extends State<FindScreen> {
                                                   ),
                                                 ),
                                                 IconButton(
-                                                    icon:
-                                                        Icon(Ionicons.ios_person_add),
+                                                    icon: Icon(Ionicons
+                                                        .ios_person_add),
                                                     iconSize: 30,
                                                     color: Color.fromRGBO(
                                                         63, 92, 200, 0.4),
                                                     onPressed: () {
-                                                     add(person);
+                                                      add(person);
                                                     }),
                                               ],
                                             ),
@@ -405,7 +407,7 @@ class _FindScreenState extends State<FindScreen> {
     int n;
     db.getGoalCount().then((value) {
       setState(() {
-        n=value;
+        n = value;
       });
     });
     // var user = await db.getUser(1);
@@ -417,12 +419,12 @@ class _FindScreenState extends State<FindScreen> {
 
     db.getGoalsName().then((value) {
       setState(() {
-        var m=value[0];
-        goals=m["goalName"];
+        var m = value[0];
+        goals = m["goalName"];
         goalList.add(m["goalName"]);
-        for(var i=1;i<n;i++){
-          var m=value[i];
-          goals=goals+","+m["goalName"];
+        for (var i = 1; i < n; i++) {
+          var m = value[i];
+          goals = goals + "," + m["goalName"];
           goalList.add(m["goalName"]);
         }
         print(goals);
@@ -559,142 +561,92 @@ class _FindScreenState extends State<FindScreen> {
   _navigateAndDisplaySelection(BuildContext context) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(
-          builder: (context) => Slider_container(goalList)),
+      MaterialPageRoute(builder: (context) => Slider_container(goalList)),
     );
     if (result != null) {
       print(result);
       setState(() {
-         minAge = result[0];
-         maxAge = result[1];
-         radius = result[2];
-         if(result[3]!=""){
-           goals = result[3];
-         }
-         if(result[4]!=""){
-           level = result[4];
-         }
-
-         print(minAge.toString()+","+maxAge.toString()+","+radius.toString()+","+goals);
-         people.clear();
-      });
-
-    /*  for (var i = people.length - 1; i >= 0; i--) {
-        List<dynamic> l = convert.jsonDecode(people[i].goals);
-
-        if (int.parse(people[i].age.substring(0, 2)) < minAge) {
-          setState(() {
-            people.removeAt(i);
-          });
-        } else if (int.parse(people[i].age.substring(0, 2)) > maxAge) {
-          setState(() {
-            people.removeAt(i);
-          });
-        } else if (double.parse(people[i].location.substring(0, 3)) >
-            double.parse(distance.toString())) {
-          setState(() {
-            people.removeAt(i);
-          });
-        } else if (record.length > 2) {
-          if (!l.contains(record[0]) ||
-              !l.contains(record[1]) ||
-              !l.contains(record[2])) {
-            setState(() {
-              people.removeAt(i);
-            });
-          }
-        } else if (record.length > 1) {
-          if (!l.contains(record[0]) || !l.contains(record[1])) {
-            setState(() {
-              people.removeAt(i);
-            });
-          }
-        } else if (record.length > 0) {
-          if (!l.contains(record[0])) {
-            setState(() {
-              people.removeAt(i);
-            });
-          }
+        minAge = result[0];
+        maxAge = result[1];
+        radius = result[2];
+        if (result[3] != "") {
+          goals = result[3];
         }
-      }*/
+        if (result[4] != "") {
+          level = result[4];
+        }
+
+        print(minAge.toString() +
+            "," +
+            maxAge.toString() +
+            "," +
+            radius.toString() +
+            "," +
+            goals);
+        people.clear();
+      });
     }
   }
 
-  void add(person){
+  void add(person) {
     showDialog(
         context: context,
-        builder: (BuildContext
-        context) {
+        builder: (BuildContext context) {
           return Dialog(
             shape: RoundedRectangleBorder(
                 borderRadius:
-                BorderRadius.all(
-                    Radius.circular(
-                        15.0))), //this right here
+                    BorderRadius.all(Radius.circular(15.0))), //this right here
             child: Container(
               height: 250,
               child: Padding(
-                padding:
-                const EdgeInsets
-                    .all(
-                    20.0),
+                padding: const EdgeInsets.all(20.0),
                 child: Column(
-                  mainAxisAlignment:
-                  MainAxisAlignment
-                      .center,
-                  crossAxisAlignment:
-                  CrossAxisAlignment
-                      .start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       "Send A Message",
                       style: TextStyle(
-                          fontSize:
-                          20,
-                          color:
-                          Colors.black,
+                          fontSize: 20,
+                          color: Colors.black,
                           fontWeight: FontWeight.w600),
                     ),
                     Container(
-                      height:
-                      15,
+                      height: 15,
                     ),
                     TextField(
-                      keyboardType:
-                      TextInputType.multiline,
-                      maxLines:
-                      3,
-                      controller:
-                      messageController,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 3,
+                      controller: messageController,
                       decoration: InputDecoration(
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                            borderSide:
+                                BorderSide(color: Colors.grey, width: 1.0),
                           ),
                           hintText: 'Enter a Message'),
                     ),
                     Row(
-                      mainAxisAlignment:
-                      MainAxisAlignment.end,
-                      children: <
-                          Widget>[
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
                         Container(
-                          width:
-                          MediaQuery.of(context).size.width / 2.2,
+                          width: MediaQuery.of(context).size.width / 2.2,
                         ),
                         Expanded(
-                          child:
-                          SizedBox(
+                          child: SizedBox(
                             width: 100,
                             child: RaisedButton(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(35)),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(35)),
                               onPressed: () async {
                                 var msg = messageController.text;
                                 var db = DataBaseHelper();
                                 messageController.clear();
-                                SharedPreferences prefs = await SharedPreferences.getInstance();
+                                SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
                                 String id = prefs.getString('id') ?? "";
                                 print("UID IS EMPTY? $uid");
-                                await http.post('https://march.lbits.co/api/worker.php',
+                                await http.post(
+                                    'https://march.lbits.co/api/worker.php',
                                     body: json.encode(<String, dynamic>{
                                       "serviveName": "",
                                       "work": "add new request",
@@ -725,14 +677,16 @@ class _FindScreenState extends State<FindScreen> {
                                       DataBaseHelper.messageText: msg,
                                       DataBaseHelper.messageContainsImage: '0',
                                       DataBaseHelper.messageImage: 'null',
-                                      DataBaseHelper.messageTime: "${DateTime.now()}"
+                                      DataBaseHelper.messageTime:
+                                          "${DateTime.now()}"
                                     };
                                     Map<String, dynamic> friendsMap = {
                                       DataBaseHelper.friendId: person.id,
                                       DataBaseHelper.friendName: person.name,
                                       DataBaseHelper.friendPic: person.imageUrl,
                                       DataBaseHelper.friendLastMessage: msg,
-                                      DataBaseHelper.friendLastMessageTime: "${DateTime.now()}"
+                                      DataBaseHelper.friendLastMessageTime:
+                                          "${DateTime.now()}"
                                     };
                                     db.addUser(friendsMap);
                                     db.addMessage(messageMap);

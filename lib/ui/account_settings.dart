@@ -10,7 +10,6 @@ class Account_Settings extends StatefulWidget {
 }
 
 class _AccountSettingsState extends State<Account_Settings> {
-
   TextEditingController _controllerNumber;
   String number;
 
@@ -24,12 +23,17 @@ class _AccountSettingsState extends State<Account_Settings> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Color(0xFFFFFFFF),
-          iconTheme: IconThemeData(
-             color: Colors.black, //change your color here
-           ),
-          title:  Center(child: Text("Account Settings",style: TextStyle(color: Colors.black,fontSize: 18,fontFamily: 'montserrat'),)),
+        elevation: 0,
+        backgroundColor: Color(0xFFFFFFFF),
+        iconTheme: IconThemeData(
+          color: Colors.black, //change your color here
+        ),
+        title: Center(
+            child: Text(
+          "Account Settings",
+          style: TextStyle(
+              color: Colors.black, fontSize: 18, fontFamily: 'montserrat'),
+        )),
       ),
       body: Container(
         color: Colors.grey.withAlpha(30),
@@ -43,10 +47,7 @@ class _AccountSettingsState extends State<Account_Settings> {
                   child: TextField(
                     maxLines: 1,
                     controller: _controllerNumber,
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18
-                    ),
+                    style: TextStyle(color: Colors.black, fontSize: 18),
                     decoration: InputDecoration(
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.black12),
@@ -56,7 +57,7 @@ class _AccountSettingsState extends State<Account_Settings> {
                       try {
                         number = value;
                       } catch (exception) {
-                        number="";
+                        number = "";
                       }
                     },
                   ),
@@ -64,35 +65,28 @@ class _AccountSettingsState extends State<Account_Settings> {
               ),
             ),
 
+            // Padding(
+            //   padding: const EdgeInsets.only(top:50.0),
+            //   child: GestureDetector(
+            //       onTap: (){
 
-            Padding(
-              padding: const EdgeInsets.only(top:50.0),
-              child: GestureDetector(
-                  onTap: (){
-
-                  },
-                  child: Text("Delete Account",style: TextStyle(fontSize: 18,color: Colors.red),)),
-            ),
-
-
+            //       },
+            //       child: Text("Delete Account",style: TextStyle(fontSize: 18,color: Colors.red),)),
+            // ),
           ],
         ),
-
       ),
     );
   }
 
-  void _load() async{
-
+  void _load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String uid = prefs.getString('uid')??"";
-      print(uid);
+    String uid = prefs.getString('uid') ?? "";
+    print(uid);
     var db = new DataBaseHelper();
-    User x= await db.getUser(1);
+    User x = await db.getUser(1);
     setState(() {
       _controllerNumber = new TextEditingController(text: x.userPhone);
     });
-
-
   }
 }
