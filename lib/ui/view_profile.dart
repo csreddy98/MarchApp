@@ -1,8 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:march/support/back_profile.dart';
-// import 'package:http/http.dart' as http;
-// import 'dart:convert' as convert;
+import 'package:flutter_icons/flutter_icons.dart';
 
 class ViewProfile extends StatefulWidget {
 
@@ -13,11 +12,12 @@ class ViewProfile extends StatefulWidget {
   final String id;
   final String bio;
   final String profession;
+  final String location;
   
-  ViewProfile(this.id,this.imageUrl, this.name, this.age, this.goals,this.bio,this.profession);
+  ViewProfile(this.id,this.imageUrl, this.name, this.age, this.goals,this.bio,this.profession,this.location);
 
   @override
-  _ViewProfileState createState() => _ViewProfileState(id,imageUrl,name,age,goals,bio,profession);
+  _ViewProfileState createState() => _ViewProfileState(id,imageUrl,name,age,goals,bio,profession,location);
 }
 
 class _ViewProfileState extends State<ViewProfile> {
@@ -28,9 +28,10 @@ class _ViewProfileState extends State<ViewProfile> {
   String id;
   String bio;
   String profession;
+  String location;
 
   _ViewProfileState(this.id, this.imageUrl, this.name, this.age, this.goals,
-      this.bio,this.profession);
+      this.bio,this.profession,this.location);
 
 
   @override
@@ -154,8 +155,8 @@ class _ViewProfileState extends State<ViewProfile> {
                             child:InkWell(
                               onTap: ()=>Navigator.push(context, MaterialPageRoute(builder: (_)=>FullScreenImage(imageUrl))),
                               child: Container(
-                                width: 80.0,
-                                height: 80.0,
+                                width: 90.0,
+                                height: 90.0,
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
                                       fit: BoxFit.cover,
@@ -172,25 +173,38 @@ class _ViewProfileState extends State<ViewProfile> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top:5.0),
+                          padding: const EdgeInsets.only(top:3.0),
                           child: Center(
                               child: Text(name!=null?name[0].toUpperCase()+name.substring(1,):"",
                             style: TextStyle(
-                                fontSize: 16,color: Colors.white,letterSpacing: 0.4
+                                fontSize: 18,color: Colors.white,letterSpacing: 0.4,
+                                fontWeight: FontWeight.w600,
                               ),)),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top:5.0),
+                          padding: const EdgeInsets.only(top:3.0),
                           child: Center(
                               child: Text(profession!=null?profession[0].toUpperCase()+profession.substring(1,):"",
                                 style: TextStyle(fontSize: 16,color: Colors.white,letterSpacing: 0.4),)),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 5,bottom:12.0),
-                          child: Center(child: Text(age!=null?age.toString():"",
-                            style: TextStyle(fontSize: 14,color: Colors.white,letterSpacing: 0.4),)),
-                        ),
+                          padding: const EdgeInsets.only(top: 3,bottom:0,right: 15),
+                          child: Center(
+                          child:Row(
+                            crossAxisAlignment:  CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(
+                                    EvilIcons.location,
+                                    size: 25,
+                                    color: Colors.white,
+                                  ),
+                              Text(location!=null?location.toString():"",
+                                style: TextStyle(fontSize: 14,color: Colors.white,letterSpacing: 0.4),)
 
+                            ],
+                          ) ),
+                        )
                       ],
                     ),
                   )
@@ -199,24 +213,45 @@ class _ViewProfileState extends State<ViewProfile> {
               ),
 
 
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20.0, 20, 8, 8),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text("Age :  ",
+                      style: TextStyle(fontWeight: FontWeight.w600,letterSpacing: 0.4,fontSize: 16),),
+                    Expanded(
+                      child: Text(age,style: TextStyle(letterSpacing: 0.3,fontSize: 16),maxLines: 2,),
+                    )
+                  ],
+                ),
+              ),
 
               Padding(
                 padding: const EdgeInsets.fromLTRB(20.0, 20, 8, 8),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text("Goals :  ",
-                      style: TextStyle(fontWeight: FontWeight.bold,letterSpacing: 0.4,fontSize: 16),),
-                    Text(goals,style: TextStyle(letterSpacing: 0.3,fontSize: 16),)
+                      style: TextStyle(fontWeight: FontWeight.w600,letterSpacing: 0.4,fontSize: 16),),
+                    Expanded(
+                      child: Text(goals,style: TextStyle(letterSpacing: 0.3,fontSize: 16),maxLines: 2,),
+                    )
                   ],
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(20.0, 20, 8, 8),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text("Bio :  ",
-                      style: TextStyle(fontWeight: FontWeight.bold,letterSpacing: 0.4,fontSize: 16),),
-                    AutoSizeText(bio != null ? bio : "", maxLines: 12,style: TextStyle(letterSpacing: 0.4,fontSize: 16),),
+                      style: TextStyle(fontWeight: FontWeight.w600,letterSpacing: 0.4,fontSize: 16),),
+                    Expanded(
+                        child: AutoSizeText(bio != null ? bio[0].toUpperCase()+bio.substring(1) : "", maxLines: 5,style: TextStyle(letterSpacing: 0.4,fontSize: 16),)),
                   ],
                 ),
               ),

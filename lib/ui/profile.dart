@@ -67,8 +67,9 @@ class _ProfileState extends State<Profile> {
                     flex: 1,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 15),
-                      child: Text(
+                      child: AutoSizeText(
                         goals[0],
+                        maxLines: 1,
                         style: TextStyle(
                             color: Color.fromRGBO(63, 92, 200, 1),
                             fontWeight: FontWeight.bold,
@@ -91,8 +92,8 @@ class _ProfileState extends State<Profile> {
               ],
             ),
             Row(
-              // mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(top: 0, left: 15.0),
@@ -101,7 +102,7 @@ class _ProfileState extends State<Profile> {
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(left: 15.0, top: 0),
-                    child: Text(
+                    child: AutoSizeText(
                       target[0],
                       style: TextStyle(color: Colors.grey),
                       maxLines: 2,
@@ -136,12 +137,13 @@ class _ProfileState extends State<Profile> {
                     flex: 1,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 15),
-                      child: Text(
+                      child: AutoSizeText(
                         goals[1],
                         style: TextStyle(
                             color: Color.fromRGBO(63, 92, 200, 1),
                             fontWeight: FontWeight.bold,
                             fontFamily: 'montserrat'),
+                       maxLines: 1,
                       ),
                     )),
                 IconButton(
@@ -160,17 +162,21 @@ class _ProfileState extends State<Profile> {
               ],
             ),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(top: 0, left: 15.0),
                   child: Text("Target :"),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15.0, top: 0),
-                  child: AutoSizeText(
-                    target[1],
-                    style: TextStyle(color: Colors.grey),
-                    maxLines: 2,
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 15.0, top: 0),
+                    child: AutoSizeText(
+                      target[1],
+                      style: TextStyle(color: Colors.grey),
+                      maxLines: 2,
+                    ),
                   ),
                 ),
               ],
@@ -201,13 +207,14 @@ class _ProfileState extends State<Profile> {
                     flex: 1,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 15),
-                      child: Text(
+                      child: AutoSizeText(
                         goals[2],
                         style: TextStyle(
                             color: Color.fromRGBO(63, 92, 200, 1),
                             fontWeight: FontWeight.bold,
                             fontFamily: 'montserrat'),
-                      ),
+                        maxLines: 1,
+                       ),
                     )),
                 IconButton(
                     icon: Icon(
@@ -225,17 +232,21 @@ class _ProfileState extends State<Profile> {
               ],
             ),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(top: 0, left: 15.0),
                   child: Text("Target :"),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15.0, top: 0),
-                  child: AutoSizeText(
-                    target[2],
-                    style: TextStyle(color: Colors.grey),
-                    maxLines: 2,
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 15.0, top: 0),
+                    child: AutoSizeText(
+                      target[2],
+                      style: TextStyle(color: Colors.grey),
+                      maxLines: 2,
+                    ),
                   ),
                 ),
               ],
@@ -284,8 +295,8 @@ class _ProfileState extends State<Profile> {
                                   MaterialPageRoute(
                                       builder: (_) => FullScreenImage(pic))),
                               child: Container(
-                                width: 80.0,
-                                height: 80.0,
+                                width: 90.0,
+                                height: 90.0,
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
                                       fit: BoxFit.cover,
@@ -302,12 +313,12 @@ class _ProfileState extends State<Profile> {
                         ),
                         Center(
                             child: Text(
-                          name != null ? name : "",
-                          style: TextStyle(fontSize: 16, color: Colors.white),
+                          name != null ? name[0].toUpperCase()+name.substring(1) : "",
+                          style: TextStyle(fontSize: 18, color: Colors.white,fontWeight: FontWeight.w600),
                         )),
                         Center(
                             child: Text(
-                          profession != null ? profession : "",
+                          profession != null ? profession[0].toUpperCase()+profession.substring(1) : "",
                           style: TextStyle(fontSize: 16, color: Colors.white),
                         )),
                         Padding(
@@ -324,22 +335,32 @@ class _ProfileState extends State<Profile> {
                 ],
               ),
               Padding(
-                padding:
-                    const EdgeInsets.only(left: 25.0, right: 15.0, top: 10),
+                padding: const EdgeInsets.fromLTRB(25,15,10,0),
                 child: Center(
-                    child: AutoSizeText(
-                  bio != null ? bio : "",
-                  style: TextStyle(color: Colors.black, fontSize: 13),
-                  maxLines: 3,
-                )),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text("Bio :   ",style: TextStyle(fontWeight: FontWeight.w600,fontSize: 14),),
+                      Expanded(
+                        child: AutoSizeText(
+                          bio != null ? bio[0].toUpperCase()+bio.substring(1) : "",
+                          style: TextStyle(color: Colors.black, fontSize: 14),
+                          maxLines: 3,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
+
               Center(
                 child: Padding(
                   padding: const EdgeInsets.only(top: 20.0),
                   child: Text(
-                    "Your Goals".toUpperCase(),
+                    "Your Goals",
                     style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 15,
                         color: Color.fromRGBO(63, 92, 200, 1),
                         fontFamily: 'montserrat'),
                   ),
@@ -386,6 +407,7 @@ class _ProfileState extends State<Profile> {
                     child: Text(
                   "Testimonials",
                   style: TextStyle(
+                      fontSize: 15,
                       color: Color.fromRGBO(63, 92, 200, 1),
                       fontFamily: 'montserrat'),
                 )),
@@ -394,6 +416,7 @@ class _ProfileState extends State<Profile> {
                 height: MediaQuery.of(context).size.height * 0.6,
                 width: MediaQuery.of(context).size.width * 0.75,
                 child: ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: 2,
                   itemBuilder: (context, i) {
                     return Padding(
