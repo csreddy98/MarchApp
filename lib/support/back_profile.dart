@@ -2,10 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class BackProfile extends CustomPainter {
+  final cont;
+  BackProfile(this.cont);
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint();
-    paint.color = Color.fromRGBO(63, 92, 200, 1);
+    paint.color = Theme.of(cont).disabledColor;
     // color: Color.fromRGBO(63, 92, 200, 1),
     var path = Path();
     path.moveTo(0, size.height);

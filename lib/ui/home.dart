@@ -206,7 +206,7 @@ class _HomeState extends State<Home> {
     return AppBar(
       elevation: 0,
       backgroundColor: _currentindex == 2
-          ? Color.fromRGBO(63, 92, 200, 1)
+          ? Theme.of(context).primaryColor
           : Color(0xFFFFFFFF),
       title: _currentindex == 2
           ? Padding(
@@ -263,19 +263,19 @@ class _HomeState extends State<Home> {
           //   new BottomNavigationBarItem(icon: new Icon(Icons.date_range,size: 30,),title: Text("")),
           new BottomNavigationBarItem(
               icon: new Icon(
-                AntDesign.message1,
-                size: 28,
+                FontAwesome.send,
+                size: 22,
               ),
               title: Text("Chats")),
           new BottomNavigationBarItem(
               icon: new Icon(
-                Ionicons.ios_person,
+                Icons.person,
                 size: 30,
               ),
               title: Text("Profile")),
         ],
-        unselectedItemColor: Color.fromRGBO(63, 92, 200, 0.4),
-        selectedItemColor: Color.fromRGBO(63, 92, 200, 1),
+        unselectedItemColor: Theme.of(context).disabledColor,
+        selectedItemColor: Theme.of(context).primaryColor,
         onTap: (index) {
           setState(() {
             _currentindex = index;

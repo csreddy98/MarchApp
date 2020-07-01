@@ -17,6 +17,7 @@ dependencies:
   firebase_auth: ^0.16.1
   country_pickers: ^1.2.0
   google_sign_in: ^4.5.1
+  flutter_facebook_login:
   image_picker: ^0.6.4
   firebase_storage: ^3.1.5
   http:

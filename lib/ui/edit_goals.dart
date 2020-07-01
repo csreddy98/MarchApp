@@ -162,9 +162,9 @@ class _EditGoalState extends State<EditGoal> {
               child: Column(
                 children: <Widget>[
 
-                  Padding(
+                  _disable==1?Container() :Padding(
                     padding: const EdgeInsets.all(20.0),
-                    child: SimpleAutoCompleteTextField(
+                    child:SimpleAutoCompleteTextField(
                       key: key,
                       decoration: new InputDecoration(
                           hintText: "Enter Your Goals",
@@ -208,12 +208,37 @@ class _EditGoalState extends State<EditGoal> {
                   ),
 
                   _disable==1?Padding(
-                    padding: const EdgeInsets.fromLTRB(18.0,8,8,8),
-                    child: Row(
-                      children: <Widget>[
-                        Text("Selected Goal:  ",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1)),),
-                        Text(selectedGoal)
-                      ],
+                    padding: const EdgeInsets.all(20),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                       child: Padding(
+                         padding: const EdgeInsets.only(left:8.0),
+                         child: Row(
+                           mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Expanded(
+                                  child: Text(selectedGoal)),
+                              IconButton(
+                                  icon: Icon(
+                                    Icons.clear,
+                                    size: 16,
+                                    color: Color.fromRGBO(63, 92, 200, 1),
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _disable=0;
+                                      selectedGoal="";
+                                    });
+                                  }),
+                            ],
+                          ),
+                       )
                     ),
                   ):Container(),
 

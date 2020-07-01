@@ -16,8 +16,57 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           scaffoldBackgroundColor: Colors.white,
-          primaryColor: Color(0xFF4267B2),
+          buttonColor: Color.fromRGBO(0, 172, 163, 1),
+          disabledColor: Color.fromRGBO(0, 172, 163, 0.3),
+          primaryColor: Color.fromRGBO(0, 172, 163, 1),
+          textTheme: TextTheme(
+            headline1:TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+            ),
+            headline2: TextStyle(
+              color: Color(0xFF3a7b8b),
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+            ),
+            headline3: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+            ),
+            caption: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.w400,
+              fontSize: 12
+            ),
+            button: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              fontSize: 14
+            ),
+            subtitle1: TextStyle(
+              fontSize: 17,
+              color: Color.fromRGBO(0, 172, 163, 1),
+              fontWeight: FontWeight.w600
+            ),
+            subtitle2: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+              color: Colors.black
+            ),
+            bodyText1: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w600
+            ),
+            bodyText2: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500
+            )
+          ),
+
           fontFamily: 'montserrat'),
+
       home: MyHomePage(title: 'March'),
     );
   }

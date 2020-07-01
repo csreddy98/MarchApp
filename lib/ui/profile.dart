@@ -278,7 +278,7 @@ class _ProfileState extends State<Profile> {
                     height: MediaQuery.of(context).size.height * 0.3,
                     width: MediaQuery.of(context).size.width,
                     child: CustomPaint(
-                      painter: BackProfile(),
+                      painter: BackProfile(context),
                     ),
                   ),
                   Container(

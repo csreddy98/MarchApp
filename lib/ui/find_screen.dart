@@ -137,7 +137,7 @@ class _FindScreenState extends State<FindScreen> {
                 IconButton(
                     icon: Icon(
                       Icons.tune,
-                      color: Colors.grey,
+                     color: Theme.of(context).primaryColor,
                     ),
                     iconSize: 26.0,
                     onPressed: () {
@@ -180,7 +180,7 @@ class _FindScreenState extends State<FindScreen> {
                                       top: 8.0, bottom: 8),
                                   child: IconSlideAction(
                                     color: Theme.of(context).primaryColor,
-                                    icon: Icons.person_add,
+                                    icon: AntDesign.adduser,
                                     onTap: () {
                                       add(person);
                                     },
@@ -267,22 +267,14 @@ class _FindScreenState extends State<FindScreen> {
                                                             .toUpperCase() +
                                                         person.name
                                                             .substring(1),
-                                                    style: TextStyle(
-                                                      fontSize: 20,
-                                                      letterSpacing: 0.4,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.blue[900],
-                                                    ),
+                                                    style: Theme.of(context).textTheme.subtitle1,
                                                     maxLines: 1,
                                                   ),
                                                 ),
                                                 IconButton(
-                                                    icon: Icon(Ionicons
-                                                        .ios_person_add),
-                                                    iconSize: 30,
-                                                    color: Color.fromRGBO(
-                                                        63, 92, 200, 0.4),
+                                                    icon: Icon(AntDesign.adduser),
+                                                    iconSize: 25,
+                                                    color: Theme.of(context).primaryColor,
                                                     onPressed: () {
                                                       add(person);
                                                     }),
@@ -305,15 +297,17 @@ class _FindScreenState extends State<FindScreen> {
                                           ),
                                           Padding(
                                             padding: EdgeInsets.fromLTRB(
-                                                95, 0, 20, 0),
+                                                95, 0, 20, 20),
                                             child: Row(
                                               children: <Widget>[
-                                                IconButton(
-                                                    icon: Icon(
-                                                      EvilIcons.location,
-                                                      size: 30,
-                                                    ),
-                                                    onPressed: null),
+                                                Padding(
+                                                  padding: const EdgeInsets.only(left:15.0),
+                                                  child: Icon(
+                                                        EvilIcons.location,
+                                                        size: 30,
+                                                      ),
+                                                ),
+
                                                 Text(
                                                   person.location,
                                                   style: TextStyle(

@@ -13,8 +13,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 
 import 'home.dart';
 
@@ -27,6 +26,17 @@ class _LoginState extends State<Login> {
 
   GoogleSignIn google = new GoogleSignIn();
   FirebaseAuth _auth = FirebaseAuth.instance;
+  FacebookLogin fbLogin =new FacebookLogin();
+
+  String _message = 'Log in/out by pressing the buttons below.';
+
+  void _showMessage(String message) {
+    setState(() {
+      _message = message;
+      print(_message);
+    });
+  }
+
 
   Future _signIn() async{
     GoogleSignInAccount googleSignInAccount = await google.signIn();
@@ -238,9 +248,31 @@ class _LoginState extends State<Login> {
                       shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(50.0)),
                       onPressed: () {
-                        Navigator.pushAndRemoveUntil(context,
-                          MaterialPageRoute(builder: (context) => Home('')),
-                              (Route<dynamic> route) => false,);
+
+                        fbLogin.logIn(['email']).then((result){
+                          switch(result.status){
+                            case FacebookLoginStatus.loggedIn:
+                              final FacebookAccessToken accessToken = result.accessToken;
+                              _showMessage('''
+                                     Logged in!
+                                   Token: ${accessToken.token}
+                                   User id: ${accessToken.userId}
+                                   Expires: ${accessToken.expires}
+                                   Permissions: ${accessToken.permissions}
+                                    Declined permissions: ${accessToken.declinedPermissions}
+                                    ''');
+                              break;
+                            case FacebookLoginStatus.cancelledByUser:
+                              _showMessage('Login cancelled by the user.');
+                              break;
+                            case FacebookLoginStatus.error:
+                              _showMessage('Something went wrong with the login process.\n'
+                                  'Here\'s the error Facebook gave us: ${result.errorMessage}');
+                              break;
+                          }
+                        }).catchError((e){
+                          print(e);
+                        });
 
                       },
                       color: Color(0xFF4267B2),
