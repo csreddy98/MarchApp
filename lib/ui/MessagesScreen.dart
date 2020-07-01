@@ -1,5 +1,5 @@
 import 'dart:convert';
-// import 'dart:io';
+import 'dart:ui' show ImageFilter;
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -535,8 +535,33 @@ class _MessagesScreenState extends State<MessagesScreen> {
                     closeOnTap: true,
                     foregroundColor: Colors.white,
                     onTap: () {
-                      Toast.show('cleared', context,
-                          duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+                      showDialog(
+                          context: context,
+                          barrierDismissible: true,
+                          child: new BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                              child: AlertDialog(
+                                title: Text("Are you sure?"),
+                                content: Text(
+                                    "By Clicking on yes you will clear all the messages with this ${lastMessages[index]['name']}."),
+                                actions: <Widget>[
+                                  FlatButton(
+                                    child: Text("yes"),
+                                    onPressed: () {
+                                      db.deletePersonMessages(
+                                          lastMessages[index]['user_id']);
+                                      Toast.show('cleared', context,
+                                          duration: Toast.LENGTH_SHORT,
+                                          gravity: Toast.BOTTOM);
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                  FlatButton(
+                                    child: Text("No"),
+                                    onPressed: () => Navigator.pop(context),
+                                  )
+                                ],
+                              )));
                     },
                   ),
                   IconSlideAction(

@@ -6,7 +6,7 @@ import 'package:march/models/people_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:march/ui/slider_container.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert' as convert;
+import 'dart:ui' show ImageFilter;
 import 'package:march/ui/view_profile.dart';
 import 'package:location/location.dart';
 import 'package:march/utils/database_helper.dart';
@@ -294,7 +294,7 @@ class _FindScreenState extends State<FindScreen> {
                                                 115, 0, 20, 0),
                                             child: Text(
                                               person.profession[0]
-                                                  .toUpperCase() +
+                                                      .toUpperCase() +
                                                   person.profession
                                                       .substring(1),
                                               style: TextStyle(
@@ -596,121 +596,127 @@ class _FindScreenState extends State<FindScreen> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.all(Radius.circular(15.0))), //this right here
-            child: Container(
-              height: 250,
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Send A Message",
-                      style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    Container(
-                      height: 15,
-                    ),
-                    TextField(
-                      keyboardType: TextInputType.multiline,
-                      maxLines: 3,
-                      controller: messageController,
-                      decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.grey, width: 1.0),
+          return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+            child: Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                      Radius.circular(15.0))), //this right here
+              child: Container(
+                height: 250,
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Send A Message",
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600),
+                      ),
+                      Container(
+                        height: 15,
+                      ),
+                      TextField(
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 3,
+                        controller: messageController,
+                        decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Colors.grey, width: 1.0),
+                            ),
+                            hintText: 'Enter a Message'),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Container(
+                            width: MediaQuery.of(context).size.width / 2.2,
                           ),
-                          hintText: 'Enter a Message'),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        Container(
-                          width: MediaQuery.of(context).size.width / 2.2,
-                        ),
-                        Expanded(
-                          child: SizedBox(
-                            width: 100,
-                            child: RaisedButton(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(35)),
-                              onPressed: () async {
-                                var msg = messageController.text;
-                                var db = DataBaseHelper();
-                                messageController.clear();
-                                SharedPreferences prefs =
-                                    await SharedPreferences.getInstance();
-                                String id = prefs.getString('id') ?? "";
-                                print("UID IS EMPTY? $uid");
-                                await http.post(
-                                    'https://march.lbits.co/api/worker.php',
-                                    body: json.encode(<String, dynamic>{
-                                      "serviveName": "",
-                                      "work": "add new request",
-                                      "uid": "$uid",
-                                      "sender": "$id",
-                                      "receiver": "${person.id}",
-                                      "message": "$msg",
-                                      "requestStatus": "pending"
-                                    }),
-                                    headers: {
-                                      'Authorization': 'Bearer $token',
-                                      'Content-Type': 'application/json'
-                                    }).then((value) {
-                                  var resp = json.decode(value.body);
-                                  if (resp['response'] == 200) {
-                                    socketIO.sendMessage(
-                                        "New user Request",
-                                        json.encode({
-                                          "sender": id,
-                                          "receiver": person.id,
-                                          "message": msg,
-                                          "time": DateTime.now().toString(),
-                                        }));
-                                    Map<String, dynamic> messageMap = {
-                                      DataBaseHelper.seenStatus: '0',
-                                      DataBaseHelper.messageOtherId: person.id,
-                                      DataBaseHelper.messageSentBy: id,
-                                      DataBaseHelper.messageText: msg,
-                                      DataBaseHelper.messageContainsImage: '0',
-                                      DataBaseHelper.messageImage: 'null',
-                                      DataBaseHelper.messageTime:
-                                          "${DateTime.now()}"
-                                    };
-                                    Map<String, dynamic> friendsMap = {
-                                      DataBaseHelper.friendId: person.id,
-                                      DataBaseHelper.friendName: person.name,
-                                      DataBaseHelper.friendPic: person.imageUrl,
-                                      DataBaseHelper.friendLastMessage: msg,
-                                      DataBaseHelper.friendLastMessageTime:
-                                          "${DateTime.now()}"
-                                    };
-                                    db.addUser(friendsMap);
-                                    db.addMessage(messageMap);
-                                  } else {
-                                    print("$resp");
-                                  }
-                                });
-                                Navigator.pop(context);
-                              },
-                              child: Text(
-                                "Add",
-                                style: TextStyle(color: Colors.white),
+                          Expanded(
+                            child: SizedBox(
+                              width: 100,
+                              child: RaisedButton(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(35)),
+                                onPressed: () async {
+                                  var msg = messageController.text;
+                                  var db = DataBaseHelper();
+                                  messageController.clear();
+                                  SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+                                  String id = prefs.getString('id') ?? "";
+                                  print("UID IS EMPTY? $uid");
+                                  await http.post(
+                                      'https://march.lbits.co/api/worker.php',
+                                      body: json.encode(<String, dynamic>{
+                                        "serviveName": "",
+                                        "work": "add new request",
+                                        "uid": "$uid",
+                                        "sender": "$id",
+                                        "receiver": "${person.id}",
+                                        "message": "$msg",
+                                        "requestStatus": "pending"
+                                      }),
+                                      headers: {
+                                        'Authorization': 'Bearer $token',
+                                        'Content-Type': 'application/json'
+                                      }).then((value) {
+                                    var resp = json.decode(value.body);
+                                    if (resp['response'] == 200) {
+                                      socketIO.sendMessage(
+                                          "New user Request",
+                                          json.encode({
+                                            "sender": id,
+                                            "receiver": person.id,
+                                            "message": msg,
+                                            "time": DateTime.now().toString(),
+                                          }));
+                                      Map<String, dynamic> messageMap = {
+                                        DataBaseHelper.seenStatus: '0',
+                                        DataBaseHelper.messageOtherId:
+                                            person.id,
+                                        DataBaseHelper.messageSentBy: id,
+                                        DataBaseHelper.messageText: msg,
+                                        DataBaseHelper.messageContainsImage:
+                                            '0',
+                                        DataBaseHelper.messageImage: 'null',
+                                        DataBaseHelper.messageTime:
+                                            "${DateTime.now()}"
+                                      };
+                                      Map<String, dynamic> friendsMap = {
+                                        DataBaseHelper.friendId: person.id,
+                                        DataBaseHelper.friendName: person.name,
+                                        DataBaseHelper.friendPic:
+                                            person.imageUrl,
+                                        DataBaseHelper.friendLastMessage: msg,
+                                        DataBaseHelper.friendLastMessageTime:
+                                            "${DateTime.now()}"
+                                      };
+                                      db.addUser(friendsMap);
+                                      db.addMessage(messageMap);
+                                    } else {
+                                      print("$resp");
+                                    }
+                                  });
+                                  Navigator.pop(context);
+                                },
+                                child: Text(
+                                  "Add",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                color: Color.fromRGBO(63, 92, 200, 1),
                               ),
-                              color: Color.fromRGBO(63, 92, 200, 1),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

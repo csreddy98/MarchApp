@@ -15,9 +15,11 @@ class MyApp extends StatelessWidget {
       title: 'March',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          scaffoldBackgroundColor: Colors.white,
-          primaryColor: Color(0xFF4267B2),
-          fontFamily: 'montserrat'),
+        scaffoldBackgroundColor: Colors.white,
+        primaryColor: Color(0xFF4267B2),
+        fontFamily: 'montserrat',
+      ),
+      themeMode: ThemeMode.light,
       home: MyHomePage(title: 'March'),
     );
   }

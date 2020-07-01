@@ -234,17 +234,17 @@ class DataBaseHelper {
     var dbClient = await db;
     return await dbClient.rawDelete("DELETE FROM $userTable");
   }
-  
+
   Future deleteGoalsInfo() async {
     var dbClient = await db;
     return await dbClient.rawDelete("DELETE FROM $goalTable");
   }
-  
+
   Future deleteFriendsInfo() async {
     var dbClient = await db;
     return await dbClient.rawDelete("DELETE FROM $friendsTable");
   }
-  
+
   Future deleteMessages() async {
     var dbClient = await db;
     return await dbClient.rawDelete("DELETE FROM $messagesTable");
@@ -254,6 +254,18 @@ class DataBaseHelper {
     var dbClient = await db;
     return await dbClient.rawQuery(
         "SELECT DISTINCT *, datetime(time) AS time FROM $messagesTable ORDER BY $messageId DESC");
+  }
+
+  Future<int> deleteMessage(delMessageId) async {
+    var dbClient = await db;
+    return await dbClient.rawDelete(
+        "DELETE FROM $messagesTable WHERE $messageId = $delMessageId");
+  }
+
+  Future<int> deletePersonMessages(delUserId) async {
+    var dbClient = await db;
+    return await dbClient.rawDelete(
+        "DELETE FROM $messagesTable WHERE $messageOtherId = $delUserId");
   }
 
   Future close() async {

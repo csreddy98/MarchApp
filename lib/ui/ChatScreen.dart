@@ -388,8 +388,11 @@ class _TextingScreenState extends State<TextingScreen> {
                                                       actionButtons('Delete',
                                                           () {
                                                         setState(() {
-                                                          messages
-                                                              .removeAt(index);
+                                                          db.deleteMessage(
+                                                              messages[index][
+                                                                  '${db.messageId}']);
+                                                          Navigator.pop(
+                                                              context);
                                                         });
                                                       }),
                                                       actionButtons(
