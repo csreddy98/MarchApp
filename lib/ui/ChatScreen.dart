@@ -9,6 +9,7 @@ import 'package:flutter_socket_io/socket_io_manager.dart';
 import 'package:intl/intl.dart';
 import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:toast/toast.dart';
 
 class TextingScreen extends StatefulWidget {
   final Map user;
@@ -387,13 +388,28 @@ class _TextingScreenState extends State<TextingScreen> {
                                                       }),
                                                       actionButtons('Delete',
                                                           () {
-                                                        setState(() {
-                                                          db.deleteMessage(
-                                                              messages[index][
-                                                                  '${db.messageId}']);
-                                                          Navigator.pop(
-                                                              context);
-                                                        });
+                                                        if (messages.length -
+                                                                1 ==
+                                                            index) {
+                                                          db.updateLastMessage({
+                                                            'message':
+                                                                "${messages[index - 1]['message']}",
+                                                            'messageTime':
+                                                                '${DateTime.now()}',
+                                                            'otherId': widget
+                                                                .user['user_id']
+                                                          });
+                                                          Toast.show('cleared',
+                                                              context,
+                                                              duration: Toast
+                                                                  .LENGTH_SHORT,
+                                                              gravity:
+                                                                  Toast.BOTTOM);
+                                                        }
+                                                        db.deleteMessage(messages[
+                                                                index][
+                                                            '${db.messageId}']);
+                                                        Navigator.pop(context);
                                                       }),
                                                       actionButtons(
                                                           'Share', null),

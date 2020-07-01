@@ -487,7 +487,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                                     .white),
                                                           ),
                                                         )),
-                                                    // color: Theme.of(context).primaryColor,
                                                   )
                                                 ],
                                               ),
@@ -506,7 +505,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
 
   Widget recentChats(List usersList) {
     if (usersList.isNotEmpty) {
-      // String lastMessage;
       return Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -548,11 +546,21 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                   FlatButton(
                                     child: Text("yes"),
                                     onPressed: () {
-                                      db.deletePersonMessages(
-                                          lastMessages[index]['user_id']);
-                                      Toast.show('cleared', context,
-                                          duration: Toast.LENGTH_SHORT,
-                                          gravity: Toast.BOTTOM);
+                                      db
+                                          .deletePersonMessages(
+                                              lastMessages[index]['user_id'])
+                                          .then((value) {
+                                        db.updateLastMessage({
+                                          'message': "  ",
+                                          'messageTime': '${DateTime.now()}',
+                                          'otherId': lastMessages[index]
+                                              ['user_id']
+                                        }).then((value) {
+                                          Toast.show('cleared', context,
+                                              duration: Toast.LENGTH_SHORT,
+                                              gravity: Toast.BOTTOM);
+                                        });
+                                      });
                                       Navigator.pop(context);
                                     },
                                   ),
