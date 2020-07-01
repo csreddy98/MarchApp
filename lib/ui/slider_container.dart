@@ -203,7 +203,10 @@ class _SlidercontainerState extends State<Slider_container> {
               padding: const EdgeInsets.fromLTRB(25.0, 15, 20.0, 0),
               child: Row(
                 children: <Widget>[
-                  Text('Level : '),
+                  Text('Level : ',style: TextStyle(
+                    color: Colors.black,
+                    letterSpacing: 0.4,
+                    fontSize: 18,),),
                   SizedBox(
                     width: 20,
                   ),

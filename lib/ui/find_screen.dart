@@ -224,7 +224,8 @@ class _FindScreenState extends State<FindScreen> {
                                               person.age,
                                               person.goals,
                                               person.bio,
-                                              person.profession)),
+                                              person.profession,
+                                              person.location)),
                                       (Route<dynamic> route) => true);
                                 },
                                 child: Stack(
@@ -292,7 +293,10 @@ class _FindScreenState extends State<FindScreen> {
                                             padding: EdgeInsets.fromLTRB(
                                                 115, 0, 20, 0),
                                             child: Text(
-                                              person.profession,
+                                              person.profession[0]
+                                                  .toUpperCase() +
+                                                  person.profession
+                                                      .substring(1),
                                               style: TextStyle(
                                                 letterSpacing: 0.4,
                                                 fontSize: 16,
@@ -306,8 +310,8 @@ class _FindScreenState extends State<FindScreen> {
                                               children: <Widget>[
                                                 IconButton(
                                                     icon: Icon(
-                                                      Icons.location_on,
-                                                      color: Colors.grey[400],
+                                                      EvilIcons.location,
+                                                      size: 30,
                                                     ),
                                                     onPressed: null),
                                                 Text(
@@ -328,16 +332,16 @@ class _FindScreenState extends State<FindScreen> {
                                                 Text(
                                                   'Goals:  ',
                                                   style: TextStyle(
-                                                      fontSize: 18,
+                                                      fontSize: 16,
                                                       fontWeight:
-                                                          FontWeight.bold,
+                                                          FontWeight.w600,
                                                       letterSpacing: 0.6),
                                                 ),
                                                 Expanded(
                                                   child: Text(
                                                     person.goals,
                                                     style: TextStyle(
-                                                      fontSize: 18,
+                                                      fontSize: 16,
                                                       color: Colors.black87,
                                                       letterSpacing: 0.6,
                                                     ),

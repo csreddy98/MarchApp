@@ -146,8 +146,8 @@ class _EditProfileState extends State<Edit_Profile> {
                            child: Padding(
                             padding: const EdgeInsets.only(bottom: 10,top: 15),
                             child:Container(
-                              width: 100.0,
-                              height: 100.0,
+                              width: 90.0,
+                              height: 90.0,
                               decoration: BoxDecoration(
                                 image: DecorationImage(
                                     fit: BoxFit.cover,
@@ -199,7 +199,7 @@ class _EditProfileState extends State<Edit_Profile> {
                         controller: _controller_name,
                         style: TextStyle(
                             color: Colors.black,
-                            fontSize: 18
+                            fontSize: 16
                         ),
                         decoration: InputDecoration(
                           hintText: 'name',
@@ -224,7 +224,7 @@ class _EditProfileState extends State<Edit_Profile> {
                         controller: _controller_profession,
                         style: TextStyle(
                             color: Colors.black,
-                            fontSize: 18
+                            fontSize: 16
                         ),
                         decoration: InputDecoration(
                           hintText: 'profession',
@@ -284,7 +284,7 @@ class _EditProfileState extends State<Edit_Profile> {
                         maxLines: 2,
                         style: TextStyle(
                             color: Colors.black,
-                            fontSize: 18
+                            fontSize: 16
                         ),
                         decoration: InputDecoration(
                           hintText: 'bio',
