@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:ui' show ImageFilter;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_socket_io/flutter_socket_io.dart';
 import 'package:flutter_socket_io/socket_io_manager.dart';
 import 'package:intl/intl.dart';
@@ -32,10 +33,10 @@ class _TextingScreenState extends State<TextingScreen> {
     super.initState();
 
     socketIO = SocketIOManager().createSocketIO(
-      'https://glacial-waters-33471.herokuapp.com',
-      '/',
-    );
+        'https://glacial-waters-33471.herokuapp.com', '/',
+        socketStatusCallback: _socketStatus);
     socketIO.init();
+    // print("This is the socket ID: ${}");
   }
 
   @override
@@ -46,6 +47,10 @@ class _TextingScreenState extends State<TextingScreen> {
     super.dispose();
   }
 
+  _socketStatus(data) {
+    print("Socket Status: $data");
+  }
+
   void loadMessages() {
     db.getMessage(widget.user['user_id']).then((value) {
       for (var item in value) {
@@ -54,11 +59,15 @@ class _TextingScreenState extends State<TextingScreen> {
       setState(() {
         messages = value;
       });
-      _scroller.jumpTo(_scroller.position.maxScrollExtent);
+      Timer(Duration(milliseconds: 500), () {
+        if (i == 0) {
+          _scroller.animateTo(_scroller.position.maxScrollExtent,
+              duration: Duration(microseconds: 200), curve: Curves.bounceInOut);
+          i++;
+        }
+      });
     });
     // if (i == 0) {
-    // _scroller.animateTo(_scroller.position.maxScrollExtent,
-    //     duration: Duration(microseconds: 200), curve: Curves.easeOutSine);
     // i++;
     // }
   }
@@ -125,7 +134,7 @@ class _TextingScreenState extends State<TextingScreen> {
           children: <Widget>[
             Expanded(
               child: (messages == null)
-                  ? Center(child: Text(""))
+                  ? Center(child: Text("No Messages"))
                   : ListView.builder(
                       addRepaintBoundaries: false,
                       itemCount: messages.length,
@@ -170,7 +179,7 @@ class _TextingScreenState extends State<TextingScreen> {
                           Expanded(
                             child: TextField(
                               onTap: () {
-                                Timer(Duration(milliseconds: 300), () {
+                                Timer(Duration(milliseconds: 500), () {
                                   _scroller.jumpTo(
                                       _scroller.position.maxScrollExtent);
                                 });
@@ -224,7 +233,7 @@ class _TextingScreenState extends State<TextingScreen> {
                                 "message": text,
                                 "sender": this.myId,
                                 "receiver": widget.user['user_id'],
-                                "time": '${DateTime.now()}'
+                                "time": '${DateTime.now()}',
                               }));
                           Timer(Duration(seconds: 1), () {
                             FocusScope.of(context)
@@ -253,7 +262,9 @@ class _TextingScreenState extends State<TextingScreen> {
     return Column(
       children: <Widget>[
         Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: (direction == 'right')
+              ? MainAxisAlignment.end
+              : MainAxisAlignment.start,
           children: [
             GestureDetector(
               onDoubleTap: () {
@@ -273,126 +284,139 @@ class _TextingScreenState extends State<TextingScreen> {
                         ),
                         body: BackdropFilter(
                             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height,
-                              child: Stack(
-                                children: <Widget>[
-                                  Positioned(
-                                      top: ((MediaQuery.of(context)
-                                                      .size
-                                                      .height -
-                                                  (MediaQuery.of(context)
-                                                          .size
-                                                          .height /
-                                                      3)) >
-                                              boxSize.dy)
-                                          ? boxSize.dy
-                                          : MediaQuery.of(context).size.height -
-                                              (MediaQuery.of(context)
-                                                      .size
-                                                      .height /
-                                                  2.5),
-                                      left: boxSize.dx - 20,
-                                      child: Container(
-                                          child: Column(
-                                        children: <Widget>[
-                                          Container(
-                                            constraints: BoxConstraints(
-                                                maxHeight:
-                                                    MediaQuery.of(context)
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
+                                child: Stack(
+                                  children: <Widget>[
+                                    Positioned(
+                                        top: ((MediaQuery.of(context)
+                                                        .size
+                                                        .height -
+                                                    (MediaQuery.of(context)
                                                             .size
                                                             .height /
-                                                        3,
-                                                maxWidth: MediaQuery.of(context)
+                                                        3)) >
+                                                boxSize.dy)
+                                            ? boxSize.dy
+                                            : MediaQuery.of(context)
+                                                    .size
+                                                    .height -
+                                                (MediaQuery.of(context)
                                                         .size
-                                                        .width *
-                                                    0.6),
-                                            padding: const EdgeInsets.all(15.0),
-                                            decoration: BoxDecoration(
-                                              color: direction == 'right'
-                                                  ? Theme.of(context)
-                                                      .primaryColor
-                                                  : Color(0x22161F3D),
-                                              borderRadius: (direction ==
-                                                      'right')
-                                                  ? BorderRadius.only(
-                                                      bottomLeft:
-                                                          Radius.circular(10),
-                                                      topLeft:
-                                                          Radius.circular(10),
-                                                      topRight:
-                                                          Radius.circular(10),
-                                                    )
-                                                  : BorderRadius.only(
-                                                      topRight:
-                                                          Radius.circular(10),
-                                                      bottomLeft:
-                                                          Radius.circular(10),
-                                                      bottomRight:
-                                                          Radius.circular(10),
-                                                    ),
-                                            ),
-                                            child: Text(
-                                              "${messages[index]['message']}",
-                                              style: TextStyle(
-                                                  color: direction == 'right'
-                                                      ? Colors.white
-                                                      : Colors.black),
-                                            ),
-                                          ),
-                                          Container(
-                                              decoration: BoxDecoration(
-                                                  color: Colors.black,
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(
-                                                              8.0))),
+                                                        .height /
+                                                    2.5),
+                                        left: (boxSize.dx < 20)
+                                            ? boxSize.dx
+                                            : boxSize.dx - 20,
+                                        child: Hero(
+                                          tag: '$index',
+                                          child: Container(
                                               child: Column(
-                                                children: <Widget>[
-                                                  FlatButton(
-                                                    onPressed: null,
-                                                    child: Text(
-                                                      "Copy",
-                                                      style: TextStyle(
-                                                          color: Colors.white),
-                                                    ),
-                                                  ),
-                                                  FlatButton(
-                                                    onPressed: null,
-                                                    child: Text(
-                                                      "Delete",
-                                                      style: TextStyle(
-                                                          color: Colors.white),
-                                                    ),
-                                                  ),
-                                                  FlatButton(
-                                                    onPressed: null,
-                                                    child: Text(
-                                                      "Share",
-                                                      style: TextStyle(
-                                                          color: Colors.white),
-                                                    ),
-                                                  )
-                                                ],
-                                              ))
-                                        ],
-                                      )))
-                                ],
+                                            children: <Widget>[
+                                              Container(
+                                                constraints: BoxConstraints(
+                                                    maxHeight:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height /
+                                                            3,
+                                                    maxWidth:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.75),
+                                                padding:
+                                                    const EdgeInsets.all(15.0),
+                                                decoration: BoxDecoration(
+                                                  color: direction == 'right'
+                                                      ? Theme.of(context)
+                                                          .primaryColor
+                                                      : Color(0xFFeeeeee),
+                                                  borderRadius: (direction ==
+                                                          'right')
+                                                      ? BorderRadius.only(
+                                                          bottomLeft:
+                                                              Radius.circular(
+                                                                  10),
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  10),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  10),
+                                                        )
+                                                      : BorderRadius.only(
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  10),
+                                                          bottomLeft:
+                                                              Radius.circular(
+                                                                  10),
+                                                          bottomRight:
+                                                              Radius.circular(
+                                                                  10),
+                                                        ),
+                                                ),
+                                                child: SelectableText(
+                                                  "${messages[index]['message']}",
+                                                  style: TextStyle(
+                                                      color:
+                                                          direction == 'right'
+                                                              ? Colors.white
+                                                              : Colors.black),
+                                                ),
+                                              ),
+                                              Container(
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.black,
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  8.0))),
+                                                  child: Column(
+                                                    children: <Widget>[
+                                                      actionButtons('Copy', () {
+                                                        Clipboard.setData(
+                                                            new ClipboardData(
+                                                                text:
+                                                                    '${messages[index]['message']}'));
+                                                        Navigator.pop(context);
+                                                      }),
+                                                      actionButtons('Delete',
+                                                          () {
+                                                        setState(() {
+                                                          messages
+                                                              .removeAt(index);
+                                                        });
+                                                      }),
+                                                      actionButtons(
+                                                          'Share', null),
+                                                    ],
+                                                  ))
+                                            ],
+                                          )),
+                                        ))
+                                  ],
+                                ),
                               ),
                             )));
                   },
                 );
               },
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: (direction == 'right')
+                    ? CrossAxisAlignment.end
+                    : CrossAxisAlignment.start,
                 children: [
                   Hero(
-                    tag: 'messageHero',
+                    tag: '$index',
                     child: Container(
                       key: _keys[index],
                       constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * .6),
+                          maxWidth: MediaQuery.of(context).size.width * .75),
                       padding: const EdgeInsets.all(15.0),
                       decoration: BoxDecoration(
                         color: direction == 'right'
@@ -414,6 +438,9 @@ class _TextingScreenState extends State<TextingScreen> {
                     ),
                   ),
                   Row(
+                    mainAxisAlignment: (direction == 'right')
+                        ? MainAxisAlignment.end
+                        : MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
                           "${DateFormat('kk:mm').format((DateTime.parse(time)))}",
@@ -435,6 +462,22 @@ class _TextingScreenState extends State<TextingScreen> {
     );
   }
 
+  Widget actionButtons(String name, Function onPress) {
+    return InkWell(
+      onTap: onPress,
+      child: Container(
+        padding: EdgeInsets.all(15),
+        decoration: BoxDecoration(
+          color: Colors.black,
+        ),
+        child: Text(
+          name,
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+    );
+  }
+
   void _load() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
@@ -447,5 +490,7 @@ class _TextingScreenState extends State<TextingScreen> {
         prefs.setString('uid', uid);
       });
     }
+    socketIO.sendMessage('update my status',
+        json.encode({"uid": "$myId", "time": "${DateTime.now()}"}));
   }
 }

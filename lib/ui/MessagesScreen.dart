@@ -11,6 +11,8 @@ import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_socket_io/flutter_socket_io.dart';
+import 'package:flutter_socket_io/socket_io_manager.dart';
 
 class MessagesScreen extends StatefulWidget {
   final String screenState;
@@ -32,6 +34,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
   List pending = [];
   DataBaseHelper db = DataBaseHelper();
   List lastMessages = [];
+  SocketIO socketIO;
   // List pending = [];
   @override
   void initState() {
@@ -39,15 +42,20 @@ class _MessagesScreenState extends State<MessagesScreen> {
     dataReceiver();
     super.initState();
 
-    // setState(() {
-    //   (widget.screenState == 'requests') ? chats = false : chats = true;
-    // });
+    socketIO = SocketIOManager().createSocketIO(
+        'https://glacial-waters-33471.herokuapp.com', '/',
+        socketStatusCallback: _socketStatus);
+    socketIO.init();
     chats = true;
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  _socketStatus(data) {
+    print("THIS IS THE SOCKET STATUS: $data");
   }
 
   updateLastMessages() async {
@@ -687,5 +695,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
       String uid = val.uid;
       prefs.setString('uid', uid);
     });
+
+    socketIO.sendMessage('update my status',
+        json.encode({"uid": "$myId", "time": "${DateTime.now()}"}));
   }
 }

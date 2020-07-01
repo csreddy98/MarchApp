@@ -50,127 +50,135 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
         FirebaseAuth.instance.currentUser().then((val) async {
           _onLoading(context);
           var url = 'https://march.lbits.co/api/worker.php';
-          var resp = await http.post(
+          http
+              .post(
             url,
             body: json.encode(<String, dynamic>{
               'serviceName': "generatetoken",
               'work': "get user",
               'uid': val.uid,
             }),
-          );
-          var result = json.decode(resp.body);
-          if (result['response'] == 300) {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (BuildContext context) => Login()));
-          }
-          if (result['response'] == 200) {
-            var db = new DataBaseHelper();
-            db.deleteUserInfo().then((x) async {
-              int savedUser = await db.saveUser(new User(
-                  val.uid,
-                  result['result']['user_info']['fullName'],
-                  result['result']['user_info']['bio'],
-                  result['result']['user_info']['email'],
-                  result['result']['user_info']['DOB'][8] +
-                      result['result']['user_info']['DOB'][9] +
-                      "-" +
-                      result['result']['user_info']['DOB'][6] +
-                      result['result']['user_info']['DOB'][7] +
-                      "-" +
-                      result['result']['user_info']['DOB']
-                          .toString()
-                          .substring(0, 4),
-                  result['result']['user_info']['sex'],
-                  result['result']['user_info']['profession'],
-                  result['result']['user_info']['profile_pic'],
-                  result['result']['user_info']['mobile']));
-              print("user saved :$savedUser");
-            });
-            db.deleteFriendsInfo().then((x) {
-              var chatList = result['result']['chats_info'];
-              print("$chatList");
-              chatList.forEach((val) {
-                db
-                    .getSingleUser(
-                        val['sender_id'] != result['result']['user_info']['id']
-                            ? val['sender_id']
-                            : val['receiver_id'])
-                    .then((value) {
-                  if (value[0]['user_count'].toString() != '1') {
-                    db.addUser(<String, String>{
-                      DataBaseHelper.friendId: val['userId'],
-                      DataBaseHelper.friendName: val['fullName'],
-                      DataBaseHelper.friendPic: val['profile_pic'],
-                      DataBaseHelper.friendLastMessage: "",
-                      DataBaseHelper.friendLastMessageTime:
-                          DateTime.parse(val['time']).toString()
-                    });
-                  }
+          )
+              .then((resp) {
+            print('${resp.body}');
+            var result = json.decode(resp.body);
+            if (result['response'] == 300) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => Login()));
+            }
+            if (result['response'] == 200) {
+              var db = new DataBaseHelper();
+              db.deleteUserInfo().then((x) async {
+                int savedUser = await db.saveUser(new User(
+                    val.uid,
+                    result['result']['user_info']['fullName'],
+                    result['result']['user_info']['bio'],
+                    result['result']['user_info']['email'],
+                    result['result']['user_info']['DOB'][8] +
+                        result['result']['user_info']['DOB'][9] +
+                        "-" +
+                        result['result']['user_info']['DOB'][6] +
+                        result['result']['user_info']['DOB'][7] +
+                        "-" +
+                        result['result']['user_info']['DOB']
+                            .toString()
+                            .substring(0, 4),
+                    result['result']['user_info']['sex'],
+                    result['result']['user_info']['profession'],
+                    result['result']['user_info']['profile_pic'],
+                    result['result']['user_info']['mobile']));
+                print("user saved :$savedUser");
+              });
+              db.deleteFriendsInfo().then((x) {
+                var chatList = result['result']['chats_info'];
+                print("$chatList");
+                chatList.forEach((val) {
+                  db
+                      .getSingleUser(val['sender_id'] !=
+                              result['result']['user_info']['id']
+                          ? val['sender_id']
+                          : val['receiver_id'])
+                      .then((value) {
+                    if (value[0]['user_count'].toString() != '1') {
+                      db.addUser(<String, String>{
+                        DataBaseHelper.friendId: val['userId'],
+                        DataBaseHelper.friendName: val['fullName'],
+                        DataBaseHelper.friendPic: val['profile_pic'],
+                        DataBaseHelper.friendLastMessage: "",
+                        DataBaseHelper.friendLastMessageTime:
+                            DateTime.parse(val['time']).toString()
+                      });
+                    }
+                  });
                 });
               });
-            });
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            prefs.setString('token', result['result']['token']);
-            prefs.setString('id', result['result']['user_info']['id']);
-            prefs.setString('age', result['result']['user_info']['age']);
+              SharedPreferences.getInstance().then((prefs) {
+                prefs.setString('token', result['result']['token']);
+                prefs.setString('id', result['result']['user_info']['id']);
+                prefs.setString('age', result['result']['user_info']['age']);
+              });
 
-            http
-                .post(
-              url,
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + result['result']['token']
-              },
-              body: json.encode(<String, dynamic>{
-                'serviceName': "",
-                'work': "get goals",
-                'uid': val.uid,
-              }),
-            )
-                .then((res) async {
-              print(res.body.toString());
-              var resultx = json.decode(res.body);
-              if (resultx['response'] == 200) {
-                db.deleteGoalsInfo().then((value) async {
-                  int cnt = resultx['result'].length;
-                  if (cnt == 0) {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => Select()),
-                        (route) => false);
-                  }
-                  for (var i = 0; i < cnt; i++) {
-                    int savedGoal = await db.saveGoal(new Goal(
-                        val.uid,
-                        resultx['result'][i]['goal'],
-                        resultx['result'][i]['target'],
-                        resultx['result'][i]['time_frame'],
-                        resultx['result'][i]['goal_number']));
-                    print("goal saved :$savedGoal");
-                  }
-                });
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                prefs.setInt('log', 1);
+              http
+                  .post(
+                url,
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ' + result['result']['token']
+                },
+                body: json.encode(<String, dynamic>{
+                  'serviceName': "",
+                  'work': "get goals",
+                  'uid': val.uid,
+                }),
+              )
+                  .then((res) async {
+                print(res.body.toString());
+                var resultx = json.decode(res.body);
+                if (resultx['response'] == 200) {
+                  db.deleteGoalsInfo().then((value) async {
+                    int cnt = resultx['result'].length;
+                    if (cnt == 0) {
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => Select()),
+                          (route) => false);
+                    }
+                    for (var i = 0; i < cnt; i++) {
+                      int savedGoal = await db.saveGoal(new Goal(
+                          val.uid,
+                          resultx['result'][i]['goal'],
+                          resultx['result'][i]['target'],
+                          resultx['result'][i]['time_frame'],
+                          resultx['result'][i]['goal_number']));
+                      print("goal saved :$savedGoal");
+                    }
+                  });
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  prefs.setInt('log', 1);
 
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => Home('')),
-                    (Route<dynamic> route) => false);
-              } else {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => Select()),
-                    (Route<dynamic> route) => false);
-              }
-            });
-          } else {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => Register(val.phoneNumber)),
-              (Route<dynamic> route) => false,
-            );
-          }
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => Home('')),
+                      (Route<dynamic> route) => false);
+                } else {
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => Select()),
+                      (Route<dynamic> route) => false);
+                }
+              });
+            } else {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Register(val.phoneNumber)),
+                (Route<dynamic> route) => false,
+              );
+            }
+          });
         });
       }
     });

@@ -62,12 +62,11 @@ class _HomeState extends State<Home> {
     _load();
     super.initState();
     socketIO = SocketIOManager().createSocketIO(
-      'https://glacial-waters-33471.herokuapp.com',
-      '/',
-    );
+        'https://glacial-waters-33471.herokuapp.com', '/',
+        socketStatusCallback: _socketStatus);
     socketIO.init();
     socketIO.sendMessage('update my status',
-        json.encode({"uid": "$myId", "time": "${DateTime.now()}"}));      
+        json.encode({"uid": "$myId", "time": "${DateTime.now()}"}));
     socketIO.subscribe('new message', (jsonData) {
       var data = json.decode(jsonData);
       if (data['receiver'].toString() == myId ||
@@ -162,6 +161,10 @@ class _HomeState extends State<Home> {
     _fcm.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
       print("Settings registered: $settings");
     });
+  }
+
+  _socketStatus(data) {
+    print("Socket Status: $data");
   }
 
   Future<String> getUserToken() async {
@@ -304,5 +307,7 @@ class _HomeState extends State<Home> {
         prefs.setString('uid', uid);
       });
     }
+    socketIO.sendMessage('update my status',
+        json.encode({"uid": "$myId", "time": "${DateTime.now()}"}));
   }
 }
