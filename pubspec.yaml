@@ -17,6 +17,7 @@ dependencies:
   firebase_auth: ^0.16.1
   country_pickers: ^1.2.0
   google_sign_in: ^4.5.1
+  flutter_facebook_login:
   image_picker: ^0.6.4
   firebase_storage: ^3.1.5
   http:
@@ -39,6 +40,9 @@ dependencies:
   dotted_border:
   flutter_icons:
   bubble: ^1.1.9+1
+  cached_network_image: 
+  image_picker_saver: ^0.3.0
+  flutter_native_image: ^0.0.5+2
 
 dev_dependencies:
   flutter_test:

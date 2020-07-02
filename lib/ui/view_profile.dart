@@ -48,12 +48,12 @@ class _ViewProfileState extends State<ViewProfile> {
           },
         ),
         elevation: 0,
-        backgroundColor: Color.fromRGBO(63, 92, 200, 1),
+        backgroundColor: Theme.of(context).primaryColor,
         title: Center(child: Text("User Profile", style: TextStyle(
             color: Colors.white, fontSize: 18, fontFamily: 'montserrat'),)),
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.person_add),
+              icon: Icon(AntDesign.adduser),
               iconSize: 30,
               color: Colors.white60,
               onPressed: () {
@@ -135,12 +135,11 @@ class _ViewProfileState extends State<ViewProfile> {
 
               Stack(
                 children: <Widget>[
-
                   Container(
                     height: MediaQuery.of(context).size.height*0.35,
                     width: MediaQuery.of(context).size.width,
                     child: CustomPaint(
-                      painter: BackProfile(),
+                      painter: BackProfile(context),
                     ),
                   ),
 

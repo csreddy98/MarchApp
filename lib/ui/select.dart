@@ -310,7 +310,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
 
               //      Center(child: Text("Goal "+cnt.toString()+" of 3")),
 
-              Padding(
+              _disable==1?Container() :Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: SimpleAutoCompleteTextField(
                   key: key,
@@ -370,21 +370,41 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                 ),
               ),
 
-              _disable == 1
-                  ? Padding(
-                      padding: const EdgeInsets.fromLTRB(18.0, 8, 8, 8),
+              _disable==1?Padding(
+                padding: const EdgeInsets.all(20),
+                child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left:8.0),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
-                          Text(
-                            "Selected Goal: ",
-                            style: TextStyle(
-                                color: Color.fromRGBO(63, 92, 200, 1)),
-                          ),
-                          Text(added[count - 1])
+                          Expanded(
+                              child: Text(added[count-1])),
+                          IconButton(
+                              icon: Icon(
+                                Icons.clear,
+                                size: 16,
+                                color: Color.fromRGBO(63, 92, 200, 1),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _disable=0;
+                                  added[count-1]="";
+                                  count=count-1;
+                                });
+                              }),
                         ],
                       ),
                     )
-                  : Container(),
+                ),
+              ):Container(),
 
               //drop down
               Padding(

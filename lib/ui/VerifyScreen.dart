@@ -12,8 +12,7 @@ import 'package:march/ui/registration.dart';
 import 'package:march/ui/select.dart';
 import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:dotted_border/dotted_border.dart';
-// import 'dart:convert' as convert;
+import 'package:march/support/functions.dart';
 
 import 'home.dart';
 
@@ -29,13 +28,6 @@ class PhoneAuthVerify extends StatefulWidget {
 }
 
 class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
-  /*FocusNode focusNode1 = FocusNode();
-  FocusNode focusNode2 = FocusNode();
-  FocusNode focusNode3 = FocusNode();
-  FocusNode focusNode4 = FocusNode();
-  FocusNode focusNode5 = FocusNode();
-  FocusNode focusNode6 = FocusNode();
-  */
   TextEditingController _controller = new TextEditingController();
   String code = "";
   int maxLength = 6;
@@ -45,7 +37,6 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
     FirebasePhoneAuth.phoneAuthState.stream
         .listen((PhoneAuthState state) async {
       print("Hello There $state");
-
       if (state == PhoneAuthState.Verified) {
         FirebaseAuth.instance.currentUser().then((val) async {
           _onLoading(context);
@@ -93,24 +84,18 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
               });
               db.deleteFriendsInfo().then((x) {
                 var chatList = result['result']['chats_info'];
-                print("$chatList");
                 chatList.forEach((val) {
-                  db
-                      .getSingleUser(val['sender_id'] !=
-                              result['result']['user_info']['id']
-                          ? val['sender_id']
-                          : val['receiver_id'])
-                      .then((value) {
-                    if (value[0]['user_count'].toString() != '1') {
-                      db.addUser(<String, String>{
-                        DataBaseHelper.friendId: val['userId'],
-                        DataBaseHelper.friendName: val['fullName'],
-                        DataBaseHelper.friendPic: val['profile_pic'],
-                        DataBaseHelper.friendLastMessage: "",
-                        DataBaseHelper.friendLastMessageTime:
-                            DateTime.parse(val['time']).toString()
-                      });
-                    }
+                  imageSaver(val['profile_pic']).then((value) {
+                    db.addUser(<String, String>{
+                      DataBaseHelper.friendId: val['userId'],
+                      DataBaseHelper.friendName: val['fullName'],
+                      DataBaseHelper.friendSmallPic: "${value['small_image']}",
+                      DataBaseHelper.friendPic: "${value['image']}",
+                      DataBaseHelper.friendNetworkPic: "${val['profile_pic']}",
+                      DataBaseHelper.friendLastMessage: "",
+                      DataBaseHelper.friendLastMessageTime:
+                          DateTime.parse(val['time']).toString()
+                    }).then((value) => print(value));
                   });
                 });
               });

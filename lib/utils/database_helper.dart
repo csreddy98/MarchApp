@@ -35,6 +35,8 @@ class DataBaseHelper {
   final String friendRowId = "id";
   static String friendId = "user_id";
   static String friendName = "name";
+  static String friendSmallPic = "smallPic";
+  static String friendNetworkPic = "networkPic";
   static String friendPic = "profile_pic";
   static String friendLastMessage = "lastMessage";
   static String friendLastMessageTime = "LastMessageTime";
@@ -86,8 +88,8 @@ class DataBaseHelper {
 
     await db.execute("CREATE TABLE $friendsTable("
         " $friendRowId INTEGER PRIMARY KEY,"
-        " $friendId TEXT, $friendName TEXT,"
-        " $friendPic TEXT, $friendLastMessage TEXT,"
+        " $friendId TEXT, $friendName TEXT, $friendSmallPic TEXT, "
+        " $friendPic TEXT, $friendNetworkPic TEXT, $friendLastMessage TEXT,"
         " $friendLastMessageTime TEXT"
         ")");
 
@@ -207,10 +209,16 @@ class DataBaseHelper {
         "UPDATE $friendsTable SET $friendLastMessage='${messageInfo['message']}', $friendLastMessageTime='${messageInfo['messageTime']}' WHERE $friendId = '${messageInfo['otherId']}'");
   }
 
+  Future<int> updateNamePic(Map currentUserInfo) async {
+    var dbClient = await db;
+    return await dbClient.rawUpdate(
+        "UPDATE $friendsTable SET $friendName = '${currentUserInfo['userName']}', $friendPic = '${currentUserInfo['profile_pic']}', $friendSmallPic = '${currentUserInfo['small_pic']}', $friendNetworkPic = '${currentUserInfo['networkImage']}' WHERE $friendId = '${currentUserInfo['userId']}'");
+  }
+
   Future<List> getSingleUser(String userId) async {
     var dbClient = await db;
     return await dbClient.rawQuery(
-        "SELECT COUNT(1) AS user_count FROM $friendsTable WHERE $friendId = $userId");
+        "SELECT COUNT(1) AS user_count, * FROM $friendsTable WHERE $friendId = $userId");
   }
 
   Future<List> getUsersList() async {

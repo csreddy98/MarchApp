@@ -14,6 +14,8 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_socket_io/flutter_socket_io.dart';
 import 'package:flutter_socket_io/socket_io_manager.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:march/support/functions.dart';
 
 class FindScreen extends StatefulWidget {
   @override
@@ -59,6 +61,14 @@ class _FindScreenState extends State<FindScreen> {
     // });
     super.initState();
   }
+
+  // @override
+  // void didChangeDependencies() {
+  //   people.forEach((element) {
+  //     precacheImage(element.imageUrl, context);
+  //   });
+  //   super.didChangeDependencies();
+  // }
 
   Future<List<Person>> _getPeople() async {
     if (token != null && id != null && check == 1) {
@@ -137,7 +147,7 @@ class _FindScreenState extends State<FindScreen> {
                 IconButton(
                     icon: Icon(
                       Icons.tune,
-                      color: Colors.grey,
+                      color: Theme.of(context).primaryColor,
                     ),
                     iconSize: 26.0,
                     onPressed: () {
@@ -180,7 +190,7 @@ class _FindScreenState extends State<FindScreen> {
                                       top: 8.0, bottom: 8),
                                   child: IconSlideAction(
                                     color: Theme.of(context).primaryColor,
-                                    icon: Icons.person_add,
+                                    icon: AntDesign.adduser,
                                     onTap: () {
                                       add(person);
                                     },
@@ -267,22 +277,18 @@ class _FindScreenState extends State<FindScreen> {
                                                             .toUpperCase() +
                                                         person.name
                                                             .substring(1),
-                                                    style: TextStyle(
-                                                      fontSize: 20,
-                                                      letterSpacing: 0.4,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.blue[900],
-                                                    ),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .subtitle1,
                                                     maxLines: 1,
                                                   ),
                                                 ),
                                                 IconButton(
-                                                    icon: Icon(Ionicons
-                                                        .ios_person_add),
-                                                    iconSize: 30,
-                                                    color: Color.fromRGBO(
-                                                        63, 92, 200, 0.4),
+                                                    icon:
+                                                        Icon(AntDesign.adduser),
+                                                    iconSize: 25,
+                                                    color: Theme.of(context)
+                                                        .primaryColor,
                                                     onPressed: () {
                                                       add(person);
                                                     }),
@@ -305,15 +311,18 @@ class _FindScreenState extends State<FindScreen> {
                                           ),
                                           Padding(
                                             padding: EdgeInsets.fromLTRB(
-                                                95, 0, 20, 0),
+                                                95, 0, 20, 20),
                                             child: Row(
                                               children: <Widget>[
-                                                IconButton(
-                                                    icon: Icon(
-                                                      EvilIcons.location,
-                                                      size: 30,
-                                                    ),
-                                                    onPressed: null),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 15.0),
+                                                  child: Icon(
+                                                    EvilIcons.location,
+                                                    size: 30,
+                                                  ),
+                                                ),
                                                 Text(
                                                   person.location,
                                                   style: TextStyle(
@@ -360,16 +369,7 @@ class _FindScreenState extends State<FindScreen> {
                                       child: Container(
                                         width: 90.0,
                                         height: 90.0,
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            fit: BoxFit.cover,
-                                            image:
-                                                NetworkImage(person.imageUrl),
-                                          ),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10.0)),
-                                          color: Colors.transparent,
-                                        ),
+                                        child: _blurHashImage(person.imageUrl),
                                       ),
                                     ),
                                   ],
@@ -531,35 +531,14 @@ class _FindScreenState extends State<FindScreen> {
         });
       }
     }
+  }
 
-    /* if (_permissionGranted == PermissionStatus.denied) {
-      */ /*_permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
-        print("yes");
-        _locationData = await location.getLocation();
-        print("lat : "+_locationData.latitude.toString()+"long : "+_locationData.longitude.toString());
-        setState(() {
-          lat=_locationData.latitude.toString();
-          lng=_locationData.longitude.toString();
-        });
-      }
-      else{
-        print("permission not granted");
-      }
-      setState(() {
-        check=1;
-      });*/ /*
-    }
-    else{
-      */ /*_locationData = await location.getLocation();
-      print("lat : "+_locationData.latitude.toString()+"long : "+_locationData.longitude.toString());
-      setState(() {
-        lat=_locationData.latitude.toString();
-        lng=_locationData.longitude.toString();
-        check=1;
-        print("location on");
-      });*/ /*
-    }*/
+  Widget _blurHashImage(url) {
+    return CachedNetworkImage(
+      placeholder: (context, x) => Center(child: CircularProgressIndicator()),
+      imageUrl: '$url',
+      fit: BoxFit.cover,
+    );
   }
 
   _navigateAndDisplaySelection(BuildContext context) async {
@@ -688,17 +667,23 @@ class _FindScreenState extends State<FindScreen> {
                                         DataBaseHelper.messageTime:
                                             "${DateTime.now()}"
                                       };
-                                      Map<String, dynamic> friendsMap = {
-                                        DataBaseHelper.friendId: person.id,
-                                        DataBaseHelper.friendName: person.name,
-                                        DataBaseHelper.friendPic:
-                                            person.imageUrl,
-                                        DataBaseHelper.friendLastMessage: msg,
-                                        DataBaseHelper.friendLastMessageTime:
-                                            "${DateTime.now()}"
-                                      };
-                                      db.addUser(friendsMap);
-                                      db.addMessage(messageMap);
+
+                                      imageSaver(person.imageUrl).then((value) {
+                                        Map<String, dynamic> friendsMap = {
+                                          DataBaseHelper.friendId: person.id,
+                                          DataBaseHelper.friendName:
+                                              person.name,
+                                          DataBaseHelper.friendPic:
+                                              value['image'],
+                                          DataBaseHelper.friendSmallPic:
+                                              value['small_image'],
+                                          DataBaseHelper.friendLastMessage: msg,
+                                          DataBaseHelper.friendLastMessageTime:
+                                              "${DateTime.now()}"
+                                        };
+                                        db.addUser(friendsMap);
+                                        db.addMessage(messageMap);
+                                      });
                                     } else {
                                       print("$resp");
                                     }

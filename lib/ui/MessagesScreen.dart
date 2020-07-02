@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:ui' show ImageFilter;
+import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,8 @@ import 'package:toast/toast.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_socket_io/flutter_socket_io.dart';
 import 'package:flutter_socket_io/socket_io_manager.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:march/support/functions.dart';
 
 class MessagesScreen extends StatefulWidget {
   final String screenState;
@@ -25,9 +29,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
   int selectedIndex;
   List<String> categories = ['Chats', 'Requests'];
   bool chats;
-  String token, myId, uid;
+  String token, myId, uid, tptext = "";
   final String screenState;
-  _MessagesScreenState(this.screenState);
   List newReqs = [];
   List accepted = [];
   // List accepted = [];
@@ -36,6 +39,16 @@ class _MessagesScreenState extends State<MessagesScreen> {
   List lastMessages = [];
   SocketIO socketIO;
   // List pending = [];
+  _MessagesScreenState(this.screenState) {
+    updateLastMessages();
+    Timer(Duration(seconds: 1), () {
+      setState(() {
+        tptext =
+            "Oops... Seems like you don't have anyone to talk to.\n Try Connecting.";
+      });
+    });
+  }
+
   @override
   void initState() {
     _load();
@@ -58,8 +71,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
     print("THIS IS THE SOCKET STATUS: $data");
   }
 
-  updateLastMessages() async {
-    await db.getUsersList().then((value) {
+  updateLastMessages() {
+    db.getUsersList().then((value) {
       setState(() {
         lastMessages = value;
       });
@@ -77,11 +90,27 @@ class _MessagesScreenState extends State<MessagesScreen> {
           'Authorization': 'Bearer ${prefs.getString('token')}'
         }).then((value) {
       var resp = json.decode(value.body);
-      print("This is Response $resp");
-
+      // print("This is Response $resp");
       setState(() {
         accepted = resp['result']['accepted'];
         pending = resp['result']['pending'];
+      });
+      accepted.forEach((element) async {
+        // print(element);
+        db.getSingleUser(element['userId']).then((v) {
+          // if (v['networkPic'] != element['profile_pic']) {
+          print("Individual User: $v");
+          imageSaver(element['profile_pic']).then((value) {
+            db.updateNamePic({
+              'userName': '${element['fullName']}',
+              'profile_pic': "${value['image']}",
+              'small_pic': "${value['small_image']}",
+              'networkImage': "${element['profile_pic']}",
+              'userId': '${element['userId']}'
+            });
+          });
+          // }
+        });
       });
     });
   }
@@ -145,8 +174,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                     ? lastMessages.length > 0
                         ? recentChats(accepted)
                         : Center(
-                            child: Text(
-                                "Oops... Seems like you haven't texted anyone yet"),
+                            child: Text("$tptext"),
                           )
                     : pending.length == 0
                         ? Center(
@@ -173,8 +201,9 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                         Padding(
                                           padding: const EdgeInsets.all(12.0),
                                           child: ClipRRect(
-                                            child: Image.network(
-                                                pending[i]['user_info']
+                                            child: CachedNetworkImage(
+                                                imageUrl: pending[i]
+                                                        ['user_info']
                                                     ['profile_pic'],
                                                 width: MediaQuery.of(context)
                                                         .size
@@ -330,68 +359,76 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                             .decode(value.body);
                                                         if (resp['response'] ==
                                                             200) {
-                                                          var addNewUser = {
-                                                            DataBaseHelper
-                                                                .friendId: pending[
-                                                                        i][
-                                                                    'user_info']
-                                                                ['sender_id'],
-                                                            DataBaseHelper
-                                                                    .friendName:
-                                                                pending[i][
-                                                                        'user_info']
-                                                                    [
-                                                                    'fullName'],
-                                                            DataBaseHelper
-                                                                .friendPic: pending[
-                                                                        i][
-                                                                    'user_info']
-                                                                ['profile_pic'],
-                                                            DataBaseHelper
-                                                                    .friendLastMessage:
-                                                                pending[i][
-                                                                        'user_info']
-                                                                    ['message'],
-                                                            DataBaseHelper
-                                                                    .friendLastMessageTime:
-                                                                '${DateTime.now()}'
-                                                          };
-                                                          var newMessage = {
-                                                            DataBaseHelper
-                                                                    .messageText:
-                                                                pending[i][
-                                                                        'user_info']
-                                                                    ['message'],
-                                                            DataBaseHelper
-                                                                .messageOtherId: pending[
-                                                                        i][
-                                                                    'user_info']
-                                                                ['sender_id'],
-                                                            DataBaseHelper
-                                                                    .messageImage:
-                                                                "null",
-                                                            DataBaseHelper
-                                                                    .messageContainsImage:
-                                                                '0',
-                                                            DataBaseHelper
-                                                                .messageSentBy: pending[
-                                                                        i][
-                                                                    'user_info']
-                                                                ['sender_id'],
-                                                            DataBaseHelper
-                                                                    .seenStatus:
-                                                                '0',
-                                                            DataBaseHelper
-                                                                    .messageTime:
-                                                                '${DateTime.now()}'
-                                                          };
-                                                          db.addUser(
-                                                              addNewUser);
-                                                          db.addMessage(
-                                                              newMessage);
-                                                          setState(() {
-                                                            pending.removeAt(i);
-                                                            chats = true;
+                                                          imageSaver(pending[i][
+                                                                      'user_info']
+                                                                  [
+                                                                  'profile_pic'])
+                                                              .then((value) {
+                                                            var addNewUser = {
+                                                              DataBaseHelper
+                                                                  .friendId: pending[
+                                                                          i][
+                                                                      'user_info']
+                                                                  ['sender_id'],
+                                                              DataBaseHelper
+                                                                  .friendName: pending[
+                                                                          i][
+                                                                      'user_info']
+                                                                  ['fullName'],
+                                                              DataBaseHelper
+                                                                  .friendPic: pending[
+                                                                          i][
+                                                                      'user_info']
+                                                                  [
+                                                                  'profile_pic'],
+                                                              DataBaseHelper
+                                                                  .friendLastMessage: pending[
+                                                                          i][
+                                                                      'user_info']
+                                                                  ['message'],
+                                                              DataBaseHelper
+                                                                      .friendLastMessageTime:
+                                                                  '${DateTime.now()}'
+                                                            };
+                                                            var newMessage = {
+                                                              DataBaseHelper
+                                                                  .messageText: pending[
+                                                                          i][
+                                                                      'user_info']
+                                                                  ['message'],
+                                                              DataBaseHelper
+                                                                  .messageOtherId: pending[
+                                                                          i][
+                                                                      'user_info']
+                                                                  ['sender_id'],
+                                                              DataBaseHelper
+                                                                      .messageImage:
+                                                                  "null",
+                                                              DataBaseHelper
+                                                                      .messageContainsImage:
+                                                                  '0',
+                                                              DataBaseHelper
+                                                                  .messageSentBy: pending[
+                                                                          i][
+                                                                      'user_info']
+                                                                  ['sender_id'],
+                                                              DataBaseHelper
+                                                                      .seenStatus:
+                                                                  '0',
+                                                              DataBaseHelper
+                                                                      .messageTime:
+                                                                  '${DateTime.now()}'
+                                                            };
+                                                            db.addUser(
+                                                                addNewUser);
+                                                            db.addMessage(
+                                                                newMessage);
+                                                          }).then((value) {
+                                                            setState(() {
+                                                              pending
+                                                                  .removeAt(i);
+                                                              chats = true;
+                                                            });
                                                           });
                                                           Navigator.pop(
                                                               context);
@@ -424,7 +461,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                           context: context,
                                                           child: AlertDialog(
                                                               title: Text(
-                                                                  "Adding User"),
+                                                                  "Rejecting Request"),
                                                               content: Row(
                                                                 children: <
                                                                     Widget>[
@@ -465,9 +502,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                           setState(() {
                                                             pending.removeAt(i);
                                                           });
-                                                          Navigator.pop(
-                                                              context);
                                                         }
+                                                        Navigator.pop(context);
                                                       });
                                                     },
                                                     child: Container(
@@ -504,171 +540,166 @@ class _MessagesScreenState extends State<MessagesScreen> {
   }
 
   Widget recentChats(List usersList) {
-    if (usersList.isNotEmpty) {
-      return Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
-          ),
-          child: ListView.builder(
-            itemCount: lastMessages.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Slidable(
-                key: ValueKey(index),
-                closeOnScroll: true,
-                actionPane: SlidableDrawerActionPane(),
-                secondaryActions: <Widget>[
-                  IconSlideAction(
-                    caption: 'Clear',
-                    color: Color(0xFFA8B2C8),
-                    icon: Icons.edit,
-                    closeOnTap: true,
-                    foregroundColor: Colors.white,
-                    onTap: () {
-                      showDialog(
-                          context: context,
-                          barrierDismissible: true,
-                          child: new BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                              child: AlertDialog(
-                                title: Text("Are you sure?"),
-                                content: Text(
-                                    "By Clicking on yes you will clear all the messages with this ${lastMessages[index]['name']}."),
-                                actions: <Widget>[
-                                  FlatButton(
-                                    child: Text("yes"),
-                                    onPressed: () {
-                                      db
-                                          .deletePersonMessages(
-                                              lastMessages[index]['user_id'])
-                                          .then((value) {
-                                        db.updateLastMessage({
-                                          'message': "  ",
-                                          'messageTime': '${DateTime.now()}',
-                                          'otherId': lastMessages[index]
-                                              ['user_id']
-                                        }).then((value) {
-                                          Toast.show('cleared', context,
-                                              duration: Toast.LENGTH_SHORT,
-                                              gravity: Toast.BOTTOM);
-                                        });
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+        child: ListView.builder(
+          itemCount: lastMessages.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Slidable(
+              key: ValueKey(index),
+              closeOnScroll: true,
+              actionPane: SlidableDrawerActionPane(),
+              secondaryActions: <Widget>[
+                IconSlideAction(
+                  caption: 'Clear',
+                  color: Color(0xFFA8B2C8),
+                  icon: Icons.edit,
+                  closeOnTap: true,
+                  foregroundColor: Colors.white,
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        child: new BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                            child: AlertDialog(
+                              title: Text("Are you sure?"),
+                              content: Text(
+                                  "By Clicking on yes you will clear all the messages with this ${lastMessages[index]['name']}."),
+                              actions: <Widget>[
+                                FlatButton(
+                                  child: Text("yes"),
+                                  onPressed: () {
+                                    db
+                                        .deletePersonMessages(
+                                            lastMessages[index]['user_id'])
+                                        .then((value) {
+                                      db.updateLastMessage({
+                                        'message': "  ",
+                                        'messageTime': '${DateTime.now()}',
+                                        'otherId': lastMessages[index]
+                                            ['user_id']
+                                      }).then((value) {
+                                        Toast.show('cleared', context,
+                                            duration: Toast.LENGTH_SHORT,
+                                            gravity: Toast.BOTTOM);
                                       });
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                  FlatButton(
-                                    child: Text("No"),
-                                    onPressed: () => Navigator.pop(context),
-                                  )
-                                ],
-                              )));
-                    },
-                  ),
-                  IconSlideAction(
-                    caption: 'Delete',
-                    color: Color(0xFFFF3B30),
-                    icon: Icons.delete,
-                    closeOnTap: true,
-                    onTap: () {
-                      Toast.show('Deleted', context,
-                          duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
-                    },
-                  ),
-                ],
-                child: GestureDetector(
-                  onTap: () => Navigator.push(
-                      context, _createRoute(lastMessages[index])),
-                  child: Container(
-                    margin: EdgeInsets.only(top: 5.0, bottom: 5.0, right: 5.0),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFFFFFF),
-                      borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(20.0),
-                        bottomRight: Radius.circular(20.0),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            ClipRRect(
-                              child: Image.network(
-                                  lastMessages[index]['profile_pic'],
-                                  height: 55,
-                                  width: 55,
-                                  fit: BoxFit.cover),
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            SizedBox(
-                              width: 10.0,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  lastMessages[index]['name'],
-                                  style: TextStyle(
-                                    color: Theme.of(context).primaryColor,
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.normal,
-                                  ),
+                                    });
+                                    Navigator.pop(context);
+                                  },
                                 ),
-                                SizedBox(height: 5.0),
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.45,
-                                  child: Text(
-                                    '${(lastMessages.isNotEmpty) ? lastMessages[index]['lastMessage'] : 'None'}',
-                                    style: TextStyle(
-                                      color: Colors.blueGrey,
-                                      fontSize: 13.0,
-                                      fontWeight: FontWeight.w200,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
+                                FlatButton(
+                                  child: Text("No"),
+                                  onPressed: () => Navigator.pop(context),
+                                )
                               ],
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: <Widget>[
-                            Text(
-                              // "${lastMessages[index]['LastMessageTime']}",
-                              "${lastMessages.isNotEmpty ? durationCalculator(lastMessages[index]['LastMessageTime']) : ""}",
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 12.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            )
-                          ],
-                        )
-                      ],
+                            )));
+                  },
+                ),
+                IconSlideAction(
+                  caption: 'Delete',
+                  color: Color(0xFFFF3B30),
+                  icon: Icons.delete,
+                  closeOnTap: true,
+                  onTap: () {
+                    Toast.show('Deleted', context,
+                        duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+                  },
+                ),
+              ],
+              child: GestureDetector(
+                onTap: () =>
+                    Navigator.push(context, _createRoute(lastMessages[index])),
+                child: Container(
+                  margin: EdgeInsets.only(top: 5.0, bottom: 5.0, right: 5.0),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                  decoration: BoxDecoration(
+                    color: Color(0xFFFFFFFF),
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(20.0),
+                      bottomRight: Radius.circular(20.0),
                     ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          ClipRRect(
+                            child: Image.file(
+                                File.fromUri(Uri.file(lastMessages[index]
+                                        ['small_pic'] ??
+                                    lastMessages[index]['profile_pic'])),
+                                height: 55,
+                                width: 55,
+                                fit: BoxFit.cover),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          SizedBox(
+                            width: 10.0,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                lastMessages[index]['name'],
+                                style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                              SizedBox(height: 5.0),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.45,
+                                child: Text(
+                                  '${(lastMessages.isNotEmpty) ? lastMessages[index]['lastMessage'] : 'None'}',
+                                  style: TextStyle(
+                                    color: Colors.blueGrey,
+                                    fontSize: 13.0,
+                                    fontWeight: FontWeight.w200,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: <Widget>[
+                          Text(
+                            // "${lastMessages[index]['LastMessageTime']}",
+                            "${lastMessages.isNotEmpty ? durationCalculator(lastMessages[index]['LastMessageTime']) : ""}",
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 12.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                        ],
+                      )
+                    ],
                   ),
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
-      );
-    } else {
-      return Center(
-        child: Text("loading"),
-      );
-    }
+      ),
+    );
   }
 
   String durationCalculator(String pastDate) {
