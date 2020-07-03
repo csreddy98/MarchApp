@@ -318,7 +318,7 @@ class _HomeState extends State<Home> {
     });
 
     return Scaffold(
-      appBar: appBar(),
+     // appBar: appBar(),
       body: Center(
         child: tabs[_currentindex],
       ),
