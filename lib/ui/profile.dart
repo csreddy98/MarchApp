@@ -4,6 +4,7 @@ import 'package:march/models/goal.dart';
 import 'package:march/models/user.dart';
 import 'package:march/support/back_profile.dart';
 import 'package:march/ui/edit_goals.dart';
+import 'package:march/ui/settings.dart';
 import 'package:march/ui/view_profile.dart';
 import 'package:march/utils/database_helper.dart';
 import 'package:worm_indicator/shape.dart';
@@ -35,7 +36,7 @@ class _ProfileState extends State<Profile> {
   ];
 
   PageController _controller =
-      PageController(initialPage: 0, viewportFraction: 0.85);
+  PageController(initialPage: 0, viewportFraction: 0.85);
 
   @override
   void dispose() {
@@ -71,7 +72,7 @@ class _ProfileState extends State<Profile> {
                         goals[0],
                         maxLines: 1,
                         style: TextStyle(
-                            color: Color.fromRGBO(63, 92, 200, 1),
+                            color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'montserrat'),
                       ),
@@ -80,7 +81,7 @@ class _ProfileState extends State<Profile> {
                     icon: Icon(
                       Icons.edit,
                       size: 16,
-                      color: Color.fromRGBO(63, 92, 200, 1),
+                      color: Theme.of(context).primaryColor,
                     ),
                     onPressed: () {
                       Navigator.push(
@@ -140,17 +141,17 @@ class _ProfileState extends State<Profile> {
                       child: AutoSizeText(
                         goals[1],
                         style: TextStyle(
-                            color: Color.fromRGBO(63, 92, 200, 1),
+                            color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'montserrat'),
-                       maxLines: 1,
+                        maxLines: 1,
                       ),
                     )),
                 IconButton(
                     icon: Icon(
                       Icons.edit,
                       size: 16,
-                      color: Color.fromRGBO(63, 92, 200, 1),
+                      color: Theme.of(context).primaryColor,
                     ),
                     onPressed: () {
                       Navigator.push(
@@ -210,17 +211,17 @@ class _ProfileState extends State<Profile> {
                       child: AutoSizeText(
                         goals[2],
                         style: TextStyle(
-                            color: Color.fromRGBO(63, 92, 200, 1),
+                            color:Theme.of(context).primaryColor,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'montserrat'),
                         maxLines: 1,
-                       ),
+                      ),
                     )),
                 IconButton(
                     icon: Icon(
                       Icons.edit,
                       size: 16,
-                      color: Color.fromRGBO(63, 92, 200, 1),
+                      color: Theme.of(context).primaryColor,
                     ),
                     onPressed: () {
                       Navigator.push(
@@ -268,24 +269,43 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          color: Colors.white30,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Stack(
                 children: <Widget>[
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.3,
-                    width: MediaQuery.of(context).size.width,
-                    child: CustomPaint(
-                      painter: BackProfile(context),
+                  ClipRRect(
+                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(40),bottomRight: Radius.circular(40)),
+                    child: Image.network(
+                      "https://s17736.pcdn.co/wp-content/uploads/2019/03/jason-leung-479251-unsplash.jpg",
+                      height: MediaQuery.of(context).size.height * 0.38,
+                      width: MediaQuery.of(context).size.width,
                     ),
                   ),
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.28,
+                    height: MediaQuery.of(context).size.height * 0.35,
                     width: MediaQuery.of(context).size.width,
                     child: Column(
                       children: <Widget>[
+                        SafeArea(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              IconButton(
+                                icon: Icon(
+                                  Icons.tune,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => Settings()),
+                                  );
+                                },
+                              )
+                            ],
+                          ),
+                        ),
                         Center(
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 6, top: 6),
@@ -294,40 +314,63 @@ class _ProfileState extends State<Profile> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (_) => FullScreenImage(pic))),
-                              child: Container(
-                                width: 90.0,
-                                height: 90.0,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      fit: BoxFit.cover,
-                                      image: NetworkImage(pic != null
-                                          ? pic
-                                          : "https://w7.pngwing.com/pngs/861/726/png-transparent-computer-icons-professional-avatar-avatar-heroes-public-relations-monochrome.png")),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(15.0)),
-                                  color: Colors.transparent,
-                                ),
+                              child: Stack(
+                                children: <Widget>[
+                                  Center(
+                                    child: Container(
+                                      width: 100.0,
+                                      height: 100.0,
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                        BorderRadius.all(Radius.circular(15.0)),
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+
+                                  Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Container(
+                                        width: 90.0,
+                                        height: 90.0,
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              image: NetworkImage(pic != null
+                                                  ? pic
+                                                  : "https://w7.pngwing.com/pngs/861/726/png-transparent-computer-icons-professional-avatar-avatar-heroes-public-relations-monochrome.png")),
+                                          borderRadius:
+                                          BorderRadius.all(Radius.circular(15.0)),
+                                          color: Colors.transparent,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+
+                                ],
                               ),
                             ),
                           ),
                         ),
                         Center(
                             child: Text(
-                          name != null ? name[0].toUpperCase()+name.substring(1) : "",
-                          style: TextStyle(fontSize: 18, color: Colors.white,fontWeight: FontWeight.w600),
-                        )),
+                              name != null ? name[0].toUpperCase()+name.substring(1) : "",
+                              style: TextStyle(fontSize: 18, color: Colors.white,fontWeight: FontWeight.w600),
+                            )),
                         Center(
                             child: Text(
-                          profession != null ? profession[0].toUpperCase()+profession.substring(1) : "",
-                          style: TextStyle(fontSize: 16, color: Colors.white),
-                        )),
+                              profession != null ? profession[0].toUpperCase()+profession.substring(1) : "",
+                              style: TextStyle(fontSize: 16, color: Colors.white),
+                            )),
                         Padding(
                           padding: const EdgeInsets.only(bottom: 12.0),
                           child: Center(
                               child: Text(
-                            age != null ? age.toString() + " Years old" : "",
-                            style: TextStyle(fontSize: 14, color: Colors.white),
-                          )),
+                                age != null ? age.toString() + " Years old" : "",
+                                style: TextStyle(fontSize: 14, color: Colors.white),
+                              )),
                         ),
                       ],
                     ),
@@ -361,7 +404,7 @@ class _ProfileState extends State<Profile> {
                     "Your Goals",
                     style: TextStyle(
                         fontSize: 15,
-                        color: Color.fromRGBO(63, 92, 200, 1),
+                        color: Theme.of(context).primaryColor,
                         fontFamily: 'montserrat'),
                   ),
                 ),
@@ -391,26 +434,26 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
               WormIndicator(
-                indicatorColor: Color.fromRGBO(63, 92, 200, 1),
-                color: Color.fromRGBO(63, 92, 200, 0.4),
+                indicatorColor: Theme.of(context).primaryColor,
+                color: Theme.of(context).disabledColor,
                 length: 3,
                 controller: _controller,
                 shape: Shape(
                     size: 6,
                     spacing: 3,
                     shape: DotShape.Circle // Similar for Square
-                    ),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Center(
                     child: Text(
-                  "Testimonials",
-                  style: TextStyle(
-                      fontSize: 15,
-                      color: Color.fromRGBO(63, 92, 200, 1),
-                      fontFamily: 'montserrat'),
-                )),
+                      "Testimonials",
+                      style: TextStyle(
+                          fontSize: 15,
+                          color: Theme.of(context).primaryColor,
+                          fontFamily: 'montserrat'),
+                    )),
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.6,
@@ -436,10 +479,10 @@ class _ProfileState extends State<Profile> {
                                   padding: const EdgeInsets.only(left: 30.0),
                                   child: SizedBox(
                                     width:
-                                        MediaQuery.of(context).size.width * 0.6,
+                                    MediaQuery.of(context).size.width * 0.6,
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.stretch,
+                                      CrossAxisAlignment.stretch,
                                       children: <Widget>[
                                         Padding(
                                           padding: const EdgeInsets.only(
