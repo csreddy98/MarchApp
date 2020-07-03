@@ -65,7 +65,6 @@ class _HomeState extends State<Home> {
           'Authorization': 'Bearer $token'
         }).then((value) {
       var resp = json.decode(value.body);
-      print("GOT THE MESSAGES: $resp");
       if (resp['response'] == 200) {
         var myNewMessages = resp['result'];
         if (myNewMessages.length > 0) {

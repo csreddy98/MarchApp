@@ -240,7 +240,7 @@ class _TextingScreenState extends State<TextingScreen> {
                           sendMessage({
                             'text': text,
                             'msgCode': msgCode,
-                          });
+                          }, context);
                           _scroller.animateTo(
                               _scroller.position.maxScrollExtent,
                               duration: Duration(milliseconds: 300),
@@ -271,7 +271,7 @@ class _TextingScreenState extends State<TextingScreen> {
                           sendMessage({
                             'text': text,
                             'msgCode': msgCode,
-                          });
+                          }, context);
                           _scroller.animateTo(
                               _scroller.position.maxScrollExtent,
                               duration: Duration(milliseconds: 300),
@@ -290,7 +290,7 @@ class _TextingScreenState extends State<TextingScreen> {
     );
   }
 
-  sendMessage(Map msgInfo) async {
+  sendMessage(Map msgInfo, context) async {
     print("SENDING MESSAGE");
     http.post("https://march.lbits.co/api/worker.php",
         body: json.encode({
@@ -327,6 +327,8 @@ class _TextingScreenState extends State<TextingScreen> {
       } else {
         db.updateTransportStatus(
             {'msgCode': msgInfo['msgCode'], 'status': "failed"});
+        Toast.show('Network Error', context,
+            duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
       }
     }).catchError((e) {
       db.updateTransportStatus(
@@ -364,7 +366,7 @@ class _TextingScreenState extends State<TextingScreen> {
                         body: BackdropFilter(
                             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                             child: Padding(
-                              padding: const EdgeInsets.all(10.0),
+                              padding: const EdgeInsets.all(0.0),
                               child: Container(
                                 width: MediaQuery.of(context).size.width,
                                 height: MediaQuery.of(context).size.height,
@@ -377,7 +379,7 @@ class _TextingScreenState extends State<TextingScreen> {
                                                     (MediaQuery.of(context)
                                                             .size
                                                             .height /
-                                                        3)) >
+                                                        3.5)) >
                                                 boxSize.dy)
                                             ? boxSize.dy
                                             : MediaQuery.of(context)
@@ -386,10 +388,16 @@ class _TextingScreenState extends State<TextingScreen> {
                                                 (MediaQuery.of(context)
                                                         .size
                                                         .height /
-                                                    2.5),
+                                                    2.3),
                                         left: (boxSize.dx < 20)
-                                            ? boxSize.dx
-                                            : boxSize.dx - 20,
+                                            ? boxSize.dx + 20
+                                            : (boxSize.dx >
+                                                    MediaQuery.of(context)
+                                                            .size
+                                                            .width -
+                                                        40)
+                                                ? boxSize.dx - 40
+                                                : boxSize.dx - 50,
                                         child: Hero(
                                           tag: '$index',
                                           child: Container(
@@ -463,6 +471,21 @@ class _TextingScreenState extends State<TextingScreen> {
                                                           ? actionButtons(
                                                               'Retry', () {
                                                               print("Retrying");
+                                                              sendMessage({
+                                                                'msgCode':
+                                                                    "${messages[index]['msgCode']}",
+                                                                'text':
+                                                                    "$message",
+                                                              }, context);
+                                                              Navigator.pop(
+                                                                  context);
+                                                              Toast.show(
+                                                                  'Attempting to Send Again',
+                                                                  context,
+                                                                  duration: Toast
+                                                                      .LENGTH_SHORT,
+                                                                  gravity: Toast
+                                                                      .BOTTOM);
                                                             })
                                                           : Container(),
                                                       actionButtons('Copy', () {
@@ -471,6 +494,12 @@ class _TextingScreenState extends State<TextingScreen> {
                                                                 text:
                                                                     '${messages[index]['message']}'));
                                                         Navigator.pop(context);
+                                                        Toast.show(
+                                                            'Coppied', context,
+                                                            duration: Toast
+                                                                .LENGTH_SHORT,
+                                                            gravity:
+                                                                Toast.BOTTOM);
                                                       }),
                                                       actionButtons(
                                                           'Share', null),
