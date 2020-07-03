@@ -36,7 +36,7 @@ class _ProfileState extends State<Profile> {
   ];
 
   PageController _controller =
-  PageController(initialPage: 0, viewportFraction: 0.85);
+      PageController(initialPage: 0, viewportFraction: 0.85);
 
   @override
   void dispose() {
@@ -211,7 +211,7 @@ class _ProfileState extends State<Profile> {
                       child: AutoSizeText(
                         goals[2],
                         style: TextStyle(
-                            color:Theme.of(context).primaryColor,
+                            color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'montserrat'),
                         maxLines: 1,
@@ -274,11 +274,12 @@ class _ProfileState extends State<Profile> {
             children: <Widget>[
               Stack(
                 children: <Widget>[
-                  ClipRRect(
-                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(40),bottomRight: Radius.circular(40)),
-                    child: Image.network(
-                      "https://s17736.pcdn.co/wp-content/uploads/2019/03/jason-leung-479251-unsplash.jpg",
-                      height: MediaQuery.of(context).size.height * 0.38,
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    child: Image.asset(
+                      "assets/images/backDrop.png",
+                      fit: BoxFit.fitHeight,
                       width: MediaQuery.of(context).size.width,
                     ),
                   ),
@@ -299,78 +300,83 @@ class _ProfileState extends State<Profile> {
                                 onPressed: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => Settings()),
+                                    MaterialPageRoute(
+                                        builder: (context) => Settings()),
                                   );
                                 },
                               )
                             ],
                           ),
                         ),
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 6, top: 6),
-                            child: InkWell(
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => FullScreenImage(pic))),
-                              child: Stack(
-                                children: <Widget>[
-                                  Center(
-                                    child: Container(
-                                      width: 100.0,
-                                      height: 100.0,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius.all(Radius.circular(15.0)),
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-
-                                  Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(5.0),
+                        Expanded(
+                          child: Center(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(bottom: 6, top: 20),
+                              child: InkWell(
+                                onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => FullScreenImage(pic))),
+                                child: Stack(
+                                  children: <Widget>[
+                                    Center(
                                       child: Container(
-                                        width: 90.0,
-                                        height: 90.0,
+                                        width: 110.0,
+                                        height: 110.0,
                                         decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 5, color: Colors.white),
                                           image: DecorationImage(
                                               fit: BoxFit.cover,
-                                              image: NetworkImage(pic != null
-                                                  ? pic
-                                                  : "https://w7.pngwing.com/pngs/861/726/png-transparent-computer-icons-professional-avatar-avatar-heroes-public-relations-monochrome.png")),
-                                          borderRadius:
-                                          BorderRadius.all(Radius.circular(15.0)),
+                                              image: NetworkImage(pic ??
+                                                  "https://assets.biola.edu/4396738754672012438/article/594aa2118eca317ac8dd0588/large_jobs__1_.jpg")),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15.0)),
                                           color: Colors.transparent,
                                         ),
                                       ),
                                     ),
-                                  ),
-
-
-                                ],
+                                    Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: Container(
+                                            width: 100.0,
+                                            height: 115.0,
+                                            decoration: null),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                         ),
                         Center(
                             child: Text(
-                              name != null ? name[0].toUpperCase()+name.substring(1) : "",
-                              style: TextStyle(fontSize: 18, color: Colors.white,fontWeight: FontWeight.w600),
-                            )),
+                          name != null
+                              ? name[0].toUpperCase() + name.substring(1)
+                              : "",
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600),
+                        )),
                         Center(
                             child: Text(
-                              profession != null ? profession[0].toUpperCase()+profession.substring(1) : "",
-                              style: TextStyle(fontSize: 16, color: Colors.white),
-                            )),
+                          profession != null
+                              ? profession[0].toUpperCase() +
+                                  profession.substring(1)
+                              : "",
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        )),
                         Padding(
                           padding: const EdgeInsets.only(bottom: 12.0),
                           child: Center(
                               child: Text(
-                                age != null ? age.toString() + " Years old" : "",
-                                style: TextStyle(fontSize: 14, color: Colors.white),
-                              )),
+                            age != null ? age.toString() + " Years old" : "",
+                            style: TextStyle(fontSize: 14, color: Colors.white),
+                          )),
                         ),
                       ],
                     ),
@@ -378,25 +384,31 @@ class _ProfileState extends State<Profile> {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(25,15,10,0),
+                padding: const EdgeInsets.fromLTRB(25, 15, 10, 0),
                 child: Center(
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text("Bio :   ",style: TextStyle(fontWeight: FontWeight.w600,fontSize: 14),),
+                      // Text(
+                      //   "Bio :   ",
+                      //   style: TextStyle(
+                      //       fontWeight: FontWeight.w600, fontSize: 14),
+                      // ),
                       Expanded(
-                        child: AutoSizeText(
-                          bio != null ? bio[0].toUpperCase()+bio.substring(1) : "",
+                        child: Text(
+                          bio != null
+                              ? bio[0].toUpperCase() + bio.substring(1)
+                              : "",
+                          textAlign: TextAlign.center,
                           style: TextStyle(color: Colors.black, fontSize: 14),
-                          maxLines: 3,
+                          maxLines: 10,
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-
               Center(
                 child: Padding(
                   padding: const EdgeInsets.only(top: 20.0),
@@ -442,18 +454,18 @@ class _ProfileState extends State<Profile> {
                     size: 6,
                     spacing: 3,
                     shape: DotShape.Circle // Similar for Square
-                ),
+                    ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Center(
                     child: Text(
-                      "Testimonials",
-                      style: TextStyle(
-                          fontSize: 15,
-                          color: Theme.of(context).primaryColor,
-                          fontFamily: 'montserrat'),
-                    )),
+                  "Testimonials",
+                  style: TextStyle(
+                      fontSize: 15,
+                      color: Theme.of(context).primaryColor,
+                      fontFamily: 'montserrat'),
+                )),
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.6,
@@ -479,10 +491,10 @@ class _ProfileState extends State<Profile> {
                                   padding: const EdgeInsets.only(left: 30.0),
                                   child: SizedBox(
                                     width:
-                                    MediaQuery.of(context).size.width * 0.6,
+                                        MediaQuery.of(context).size.width * 0.6,
                                     child: Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
+                                          CrossAxisAlignment.stretch,
                                       children: <Widget>[
                                         Padding(
                                           padding: const EdgeInsets.only(

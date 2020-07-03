@@ -69,6 +69,8 @@ class _TextingScreenState extends State<TextingScreen> {
           i++;
         }
       });
+    }).then((value) {
+      db.markAsSeen(widget.user['user_id']);
     });
     // if (i == 0) {
     // i++;
@@ -261,6 +263,7 @@ class _TextingScreenState extends State<TextingScreen> {
                             DataBaseHelper.messageContainsImage: '0',
                             DataBaseHelper.messageImage: "none",
                             DataBaseHelper.messageTransportStatus: "pending",
+                            DataBaseHelper.seenStatus: "seen",
                             DataBaseHelper.messageTime: '${DateTime.now()}',
                           });
                           db.updateLastMessage({

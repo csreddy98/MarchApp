@@ -239,8 +239,18 @@ class DataBaseHelper {
 
   Future<List> getUsersList() async {
     var dbClient = await db;
-    return await dbClient.rawQuery(
+    var x = await dbClient.rawQuery(
+        "SELECT COUNT(1) as msgCount, $messageOtherId FROM $messagesTable WHERE $seenStatus = 'unseen' GROUP BY $messageOtherId");
+
+    var y = await dbClient.rawQuery(
         "SELECT * FROM $friendsTable ORDER BY $friendLastMessageTime DESC");
+    return [x, y];
+  }
+
+  Future<int> markAsSeen(userId) async {
+    var dbClient = await db;
+    return await dbClient.rawUpdate(
+        "UPDATE $messagesTable SET $seenStatus = 'seen' WHERE $messageOtherId = $userId");
   }
 
   Future<int> addMessage(Map<String, dynamic> messageInfo) async {
@@ -274,11 +284,11 @@ class DataBaseHelper {
     return await dbClient.rawDelete("DELETE FROM $messagesTable");
   }
 
-  Future<List<Map>> getLastMessage() async {
-    var dbClient = await db;
-    return await dbClient.rawQuery(
-        "SELECT DISTINCT *, datetime(time) AS time FROM $messagesTable ORDER BY $messageId DESC");
-  }
+  // Future<List<Map>> getLastMessage() async {
+  //   var dbClient = await db;
+  //   return await dbClient.rawQuery(
+  //       "SELECT DISTINCT *, datetime(time) AS time,  FROM $messagesTable ORDER BY $messageId DESC");
+  // }
 
   Future<int> deleteMessage(delMessageId) async {
     var dbClient = await db;
@@ -290,6 +300,12 @@ class DataBaseHelper {
     var dbClient = await db;
     return await dbClient.rawDelete(
         "DELETE FROM $messagesTable WHERE $messageOtherId = $delUserId");
+  }
+
+  Future<List> getUnseenMessages(String userId) async {
+    var dbClient = await db;
+    return await dbClient.rawQuery(
+        "SELECT COUNT(1) as newMessages FROM $messagesTable WHERE $messageOtherId = $userId AND $seenStatus = 'unseen'");
   }
 
   Future close() async {

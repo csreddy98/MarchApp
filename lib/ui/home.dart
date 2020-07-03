@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:isolate';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -56,7 +55,6 @@ class _HomeState extends State<Home> {
   List tabs;
 
   messageChecker() async {
-    print("getting messages");
     http.post('https://march.lbits.co/api/worker.php',
         body: json.encode(
             {'serviceName': '', 'work': 'get messages', 'receiver': '$myId'}),
@@ -79,7 +77,8 @@ class _HomeState extends State<Home> {
                   DataBaseHelper.messageContainsImage: val['containsImage'],
                   DataBaseHelper.messageImage: val['imageUrl'],
                   DataBaseHelper.messageTransportStatus: 'success',
-                  DataBaseHelper.messageTime: val['messageTime']
+                  DataBaseHelper.messageTime: val['messageTime'],
+                  DataBaseHelper.seenStatus: 'unseen',
                 };
                 Map updateLastMessage = <String, String>{
                   'message': val['msgText'],
@@ -123,7 +122,8 @@ class _HomeState extends State<Home> {
           DataBaseHelper.messageContainsImage: data['containsImage'],
           DataBaseHelper.messageImage: '${data['imageUrl']}',
           DataBaseHelper.messageTransportStatus: "success",
-          DataBaseHelper.messageTime: '${data['time']}'
+          DataBaseHelper.messageTime: '${data['time']}',
+          DataBaseHelper.seenStatus: 'unseen',
         };
         Map updateLastMessage = <String, String>{
           'message': data['message'],
@@ -317,7 +317,7 @@ class _HomeState extends State<Home> {
     });
 
     return Scaffold(
-     // appBar: appBar(),
+      appBar: (_currentindex == 2) ? null : appBar(),
       body: Center(
         child: tabs[_currentindex],
       ),

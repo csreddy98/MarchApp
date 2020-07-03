@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:ui' show ImageFilter;
 import 'dart:async';
 
+import 'package:bubble/bubble.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -37,6 +38,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
   List pending = [];
   DataBaseHelper db = DataBaseHelper();
   List lastMessages = [];
+  List msgCount = [];
   SocketIO socketIO;
   // List pending = [];
   _MessagesScreenState(this.screenState) {
@@ -74,7 +76,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
   updateLastMessages() {
     db.getUsersList().then((value) {
       setState(() {
-        lastMessages = value;
+        lastMessages = value[1];
+        msgCount = value[0];
       });
     });
   }
@@ -98,6 +101,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
       accepted.forEach((element) async {
         db.getSingleUser(element['userId']).then((v) {
           if (v[0]['networkPic'] != element['profile_pic']) {
+            print("Updating");
             imageSaver(element['profile_pic']).then((value) {
               db.updateNamePic({
                 'userName': '${element['fullName']}',
@@ -170,7 +174,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
             child: Container(
                 child: chats == true
                     ? lastMessages.length > 0
-                        ? recentChats(accepted)
+                        ? recentChats(lastMessages)
                         : Center(
                             child: Text("$tptext"),
                           )
@@ -538,6 +542,10 @@ class _MessagesScreenState extends State<MessagesScreen> {
   }
 
   Widget recentChats(List usersList) {
+    Map unSeenMessages = {};
+    msgCount.forEach((element) {
+      unSeenMessages['${element['otherId']}'] = element['msgCount'];
+    });
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -554,6 +562,16 @@ class _MessagesScreenState extends State<MessagesScreen> {
         child: ListView.builder(
           itemCount: lastMessages.length,
           itemBuilder: (BuildContext context, int index) {
+            // List unSeenMessages;
+            // db.getUnseenMessages(lastMessages[index]['user_id']).then((value) {
+            //   // print("$value");
+            //   // unSeenMessages = value;
+            //   setState(() {
+            //     unSeenMessages[lastMessages[index]['user_id']] =
+            //         value[0]['newMessages'];
+            //   });
+            // });
+            // print("$unSeenMessages");
             return Slidable(
               key: ValueKey(index),
               closeOnScroll: true,
@@ -666,7 +684,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                   width:
                                       MediaQuery.of(context).size.width * 0.45,
                                   child: Text(
-                                    '${(lastMessages.isNotEmpty) ? lastMessages[index]['lastMessage'] : 'None'}',
+                                    '${(lastMessages.isNotEmpty) ? lastMessages[index]['lastMessage'] : ''}',
                                     style: TextStyle(
                                       color: Colors.blueGrey,
                                       fontSize: 13.0,
@@ -680,16 +698,31 @@ class _MessagesScreenState extends State<MessagesScreen> {
                           ],
                         ),
                         Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             Text(
                               // "${lastMessages[index]['LastMessageTime']}",
-                              "${lastMessages.isNotEmpty ? durationCalculator(lastMessages[index]['LastMessageTime']) ?? "0" : ""}",
+                              "${durationCalculator(lastMessages[index]['LastMessageTime'])}",
                               style: TextStyle(
                                 color: Colors.grey,
                                 fontSize: 12.0,
                                 fontWeight: FontWeight.bold,
                               ),
-                            )
+                            ),
+                            (unSeenMessages[
+                                        '${lastMessages[index]['user_id']}'] !=
+                                    null)
+                                ? Bubble(
+                                    child: Text(
+                                        " ${(unSeenMessages.isNotEmpty) ? unSeenMessages[lastMessages[index]['user_id']] : "1"} ",
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 12)),
+                                    radius: Radius.circular(50.0),
+                                    color: Theme.of(context).primaryColor,
+                                    elevation: 0,
+                                  )
+                                : Container()
                           ],
                         )
                       ],
@@ -709,7 +742,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
     var diff = DateTime.now().difference(newDate);
     String output = "";
     if (diff.inDays > 0) {
-      if (diff.inDays > 7) {
+      if (diff.inDays > 4) {
         output = "${DateFormat('dd/MM/yy').format(newDate)}";
       } else if (diff.inDays == 1) {
         output = "yesterday";
