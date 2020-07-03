@@ -288,9 +288,28 @@ class _HomeState extends State<Home> {
               title: Text("Find People")),
           //   new BottomNavigationBarItem(icon: new Icon(Icons.date_range,size: 30,),title: Text("")),
           new BottomNavigationBarItem(
-              icon: new Icon(
-                FontAwesome.send,
-                size: 22,
+              icon: Stack(
+                children: <Widget>[
+
+                 _currentindex!=1? Padding(
+                    padding: const EdgeInsets.fromLTRB(15.0,0,8,8),
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                        color: Colors.red,
+                      ),
+                    ),
+                  ):Container(
+                     width: 0,
+                     height: 0,
+                    ),
+                  new Icon(
+                    FontAwesome.send,
+                    size: 22,
+                  )
+                ],
               ),
               title: Text("Chats")),
           new BottomNavigationBarItem(
@@ -300,6 +319,7 @@ class _HomeState extends State<Home> {
               ),
               title: Text("Profile")),
         ],
+        showUnselectedLabels:false,
         unselectedItemColor: Theme.of(context).disabledColor,
         selectedItemColor: Theme.of(context).primaryColor,
         onTap: (index) {
@@ -321,7 +341,36 @@ class _HomeState extends State<Home> {
       body: Center(
         child: tabs[_currentindex],
       ),
-      bottomNavigationBar: bottomNavBar(),
+      bottomNavigationBar:
+      Container(
+          height: 70,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              _currentindex==0?
+              Align(
+                alignment: FractionalOffset(0.1, 0.6),
+                child: Container(
+                  color: Theme.of(context).primaryColor,
+                  width: 68,
+                  height:3 ,
+                ),
+              ):_currentindex==2?Align(
+                alignment: FractionalOffset(0.9, 0.6),
+                child: Container(
+                  color: Theme.of(context).primaryColor,
+                  width: 65,
+                  height:3 ,
+                ),
+              ):Container(
+                color: Theme.of(context).primaryColor,
+                width: 68,
+                height:3 ,
+              ),
+              bottomNavBar()
+            ],
+          )
+      ),
     );
   }
 

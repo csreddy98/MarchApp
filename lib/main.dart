@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:march/ui/gregistration.dart';
 import 'package:march/ui/home.dart';
 import 'package:march/ui/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,9 +18,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'montserrat',
         scaffoldBackgroundColor: Colors.white,
-        buttonColor: Color.fromRGBO(0, 172, 163, 1),
-        disabledColor: Color.fromRGBO(0, 172, 163, 0.3),
-        primaryColor: Color.fromRGBO(0, 172, 163, 1),
+        buttonColor: Color.fromRGBO(254, 209, 125, 1),
+        disabledColor: Color.fromRGBO(254, 209, 125, 0.3),
+        primaryColor: Color.fromRGBO(254, 209, 125, 1),
         textTheme: TextTheme(
             headline1: TextStyle(
               color: Colors.white,
@@ -39,10 +40,10 @@ class MyApp extends StatelessWidget {
             caption: TextStyle(
                 color: Colors.black, fontWeight: FontWeight.w400, fontSize: 12),
             button: TextStyle(
-                color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
+                color: Colors.black, fontWeight: FontWeight.w600, fontSize: 14),
             subtitle1: TextStyle(
                 fontSize: 17,
-                color: Color.fromRGBO(0, 172, 163, 1),
+                color: Color.fromRGBO(254, 209, 125, 1),
                 fontWeight: FontWeight.w600),
             subtitle2: TextStyle(
                 fontSize: 16, fontWeight: FontWeight.w400, color: Colors.black),
@@ -76,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Center(
       child: SplashScreen(
-        seconds: 2,
+        seconds: 4,
         navigateAfterSeconds: n == 1 ? Home('') : Login(),
         image: new Image.asset("assets/images/logo1x.jpeg"),
         photoSize: 200,

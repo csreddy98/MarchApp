@@ -76,6 +76,10 @@ class _GRegisterState extends State<GRegister> {
   List<DropdownMenuItem<Gender>> _dropdownMenuItems;
   Gender _selectedGender;
 
+  var _controllername = TextEditingController();
+  var _controllerph = TextEditingController();
+  var _controlleremail = TextEditingController();
+
 
   String _value = '';
 
@@ -95,6 +99,16 @@ class _GRegisterState extends State<GRegister> {
     FirebaseAuth.instance.currentUser().then((val){
       setState(() {
         uid=val.uid;
+        if(val.email!=null &&val.displayName!=null){
+          email=val.email;
+          name=val.displayName;
+        }
+        if(val.phoneNumber!=null){
+          phone=val.phoneNumber;
+        }
+        _controlleremail.text=email;
+        _controllername.text=name;
+        _controllerph.text=phone;
       });
     });
 
@@ -197,7 +211,8 @@ class _GRegisterState extends State<GRegister> {
 
               Padding(
                 padding: const EdgeInsets.fromLTRB(20.0,20,20,0),
-                child: TextField(
+                child: TextFormField(
+                  controller: _controllername,
                   maxLines: 1,
                   style: TextStyle(
                       fontSize: 15,
@@ -218,8 +233,9 @@ class _GRegisterState extends State<GRegister> {
 
               Padding(
                 padding: const EdgeInsets.fromLTRB(20.0,20,20,0),
-                child: TextField(
+                child: TextFormField(
                   maxLines: 1,
+                  controller: _controlleremail,
                   style: TextStyle(
                       fontSize: 15,
                       color: Colors.black
@@ -240,7 +256,7 @@ class _GRegisterState extends State<GRegister> {
                 padding: const EdgeInsets.fromLTRB(20.0,20,20,0),
                 child: TextFormField(
                   maxLines: 1,
-                  initialValue: "+91",
+                  controller: _controllerph,
                   style: TextStyle(
                       fontSize: 15,
                       color: Colors.black
@@ -382,6 +398,9 @@ class _GRegisterState extends State<GRegister> {
                         color: Theme.of(context).primaryColor,
                         textColor: Colors.white,
                         onPressed: () async{
+                          name=_controllername.text;
+                          email=_controlleremail.text;
+                          phone=_controllerph.text;
                           dob=_value.substring(8,10)+"-"+_value.substring(5,7)+"-"+_value.substring(0,4);
                           print(dob);
                           if(_image==null||name==""||bio==""||dob==""||gender==""||email==""||phone==""||profession==""){

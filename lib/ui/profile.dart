@@ -322,8 +322,8 @@ class _ProfileState extends State<Profile> {
                                   children: <Widget>[
                                     Center(
                                       child: Container(
-                                        width: 110.0,
-                                        height: 110.0,
+                                        width: 90.0,
+                                        height: 90.0,
                                         decoration: BoxDecoration(
                                           border: Border.all(
                                               width: 5, color: Colors.white),

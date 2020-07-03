@@ -7,6 +7,7 @@ import 'package:march/models/goal.dart';
 import 'package:march/models/user.dart';
 import 'package:march/support/PhoneAuthCode.dart';
 import 'package:http/http.dart' as http;
+import 'package:march/ui/gregistration.dart';
 import 'package:march/ui/login.dart';
 import 'package:march/ui/registration.dart';
 import 'package:march/ui/select.dart';
@@ -159,7 +160,7 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => Register(val.phoneNumber)),
+                    builder: (context) => GRegister()),
                 (Route<dynamic> route) => false,
               );
             }
