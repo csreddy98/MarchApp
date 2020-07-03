@@ -41,8 +41,8 @@ dependencies:
   flutter_icons:
   bubble: ^1.1.9+1
   cached_network_image: 
-  image_picker_saver: ^0.3.0
-  flutter_native_image: ^0.0.5+2
+  flutter_startup:
+  flutter_isolate:
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:ui' show ImageFilter;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
+import 'package:http/http.dart' as http;
 
 class TextingScreen extends StatefulWidget {
   final Map user;
@@ -27,6 +29,7 @@ class _TextingScreenState extends State<TextingScreen> {
   String myId, token, uid;
   List<GlobalKey> _keys = [];
   final db = DataBaseHelper();
+  WebSocketStatus socketStatus;
   int i = 0;
   @override
   void initState() {
@@ -37,7 +40,6 @@ class _TextingScreenState extends State<TextingScreen> {
         'https://glacial-waters-33471.herokuapp.com', '/',
         socketStatusCallback: _socketStatus);
     socketIO.init();
-    // print("This is the socket ID: ${}");
   }
 
   @override
@@ -49,7 +51,7 @@ class _TextingScreenState extends State<TextingScreen> {
   }
 
   _socketStatus(data) {
-    print("Socket Status: $data");
+    print("SOCKET STATUS: $data");
   }
 
   void loadMessages() {
@@ -101,31 +103,40 @@ class _TextingScreenState extends State<TextingScreen> {
             ),
           )
         ],
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            ClipRRect(
-              child: Image.network("${widget.user['profile_pic']}",
-                  height: 50, width: 50, fit: BoxFit.cover),
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            SizedBox(width: 10),
-            Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    widget.user['name'],
-                    style: TextStyle(
-                        color: Theme.of(context).primaryColor, fontSize: 20.0),
-                    textAlign: TextAlign.start,
-                  ),
-                  Text(
-                    "online",
-                    style: TextStyle(color: Colors.grey, fontSize: 15.0),
-                    textAlign: TextAlign.start,
-                  )
-                ])
-          ],
+        title: Hero(
+          tag: "${widget.user['name']}",
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              ClipRRect(
+                child: Image.file(
+                    File.fromUri(Uri.file(widget.user['profile_pic'])),
+                    height: 50,
+                    width: 50,
+                    fit: BoxFit.cover),
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        widget.user['name'],
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 20.0),
+                        textAlign: TextAlign.start,
+                      ),
+                      // Text(
+                      //   "${widget.user['profession']}",
+                      //   style: TextStyle(color: Colors.grey, fontSize: 15.0),
+                      //   textAlign: TextAlign.start,
+                      // )
+                    ]),
+              )
+            ],
+          ),
         ),
       ),
       body: Padding(
@@ -144,9 +155,9 @@ class _TextingScreenState extends State<TextingScreen> {
                       scrollDirection: Axis.vertical,
                       itemBuilder: (BuildContext context, int index) {
                         return (messages[index]['sentBy'] != this.myId)
-                            ? message('left', messages[index]['message'],
+                            ? message('left', '${messages[index]['message']}',
                                 messages[index]['time'], index)
-                            : message('right', messages[index]['message'],
+                            : message('right', "${messages[index]['message']}",
                                 messages[index]['time'], index);
                       }),
             ),
@@ -208,39 +219,59 @@ class _TextingScreenState extends State<TextingScreen> {
                       onTap: () async {
                         final text = messageController.text;
                         messageController.clear();
+                        var msgCode = UniqueKey();
                         if (text != "") {
-                          socketIO.sendMessage(
-                              'chat message',
-                              json.encode({
-                                "message": text,
-                                "sender": this.myId,
-                                "receiver": widget.user['user_id'],
-                                "time": '${DateTime.now()}'
-                              }));
-                          FocusScope.of(context).requestFocus(new FocusNode());
+                          db.addMessage({
+                            DataBaseHelper.messageCode: "$msgCode",
+                            DataBaseHelper.messageSentBy: this.myId,
+                            DataBaseHelper.messageOtherId:
+                                widget.user['user_id'],
+                            DataBaseHelper.messageText: text,
+                            DataBaseHelper.messageContainsImage: '0',
+                            DataBaseHelper.messageImage: "none",
+                            DataBaseHelper.messageTransportStatus: "pending",
+                            DataBaseHelper.messageTime: '${DateTime.now()}',
+                          });
+                          db.updateLastMessage({
+                            'message': "you: $text",
+                            'messageTime': "${DateTime.now()}",
+                            'otherId': widget.user['user_id']
+                          });
+                          sendMessage({
+                            'text': text,
+                            'msgCode': msgCode,
+                          });
                           _scroller.animateTo(
                               _scroller.position.maxScrollExtent,
-                              duration: Duration(microseconds: 300),
-                              curve: Curves.easeOutSine);
+                              duration: Duration(milliseconds: 300),
+                              curve: Curves.bounceInOut);
                         }
                       },
                       onDoubleTap: () async {
                         final text = messageController.text;
                         messageController.clear();
+                        var msgCode = UniqueKey();
                         if (text != "") {
-                          socketIO.sendMessage(
-                              'chat message',
-                              json.encode({
-                                "message": text,
-                                "sender": this.myId,
-                                "receiver": widget.user['user_id'],
-                                "time": '${DateTime.now()}',
-                              }));
-                          Timer(Duration(seconds: 1), () {
-                            FocusScope.of(context)
-                                .requestFocus(new FocusNode());
+                          db.addMessage({
+                            DataBaseHelper.messageCode: "$msgCode",
+                            DataBaseHelper.messageSentBy: this.myId,
+                            DataBaseHelper.messageOtherId:
+                                widget.user['user_id'],
+                            DataBaseHelper.messageText: text,
+                            DataBaseHelper.messageContainsImage: '0',
+                            DataBaseHelper.messageImage: "none",
+                            DataBaseHelper.messageTransportStatus: "pending",
+                            DataBaseHelper.messageTime: '${DateTime.now()}',
                           });
-                          FocusScope.of(context).requestFocus(new FocusNode());
+                          db.updateLastMessage({
+                            'message': "you: $text",
+                            'messageTime': "${DateTime.now()}",
+                            'otherId': widget.user['user_id']
+                          });
+                          sendMessage({
+                            'text': text,
+                            'msgCode': msgCode,
+                          });
                           _scroller.animateTo(
                               _scroller.position.maxScrollExtent,
                               duration: Duration(milliseconds: 300),
@@ -259,7 +290,54 @@ class _TextingScreenState extends State<TextingScreen> {
     );
   }
 
+  sendMessage(Map msgInfo) async {
+    print("SENDING MESSAGE");
+    http.post("https://march.lbits.co/api/worker.php",
+        body: json.encode({
+          'serviceName': 'generatetoken',
+          'work': 'add message',
+          'msgCode': '${msgInfo['msgCode']}',
+          'receiver': widget.user['user_id'],
+          'sender': this.myId,
+          'message': msgInfo['text'],
+          'containsImage': 'false',
+          'imageUrl': 'none',
+          'messageTime': '${DateTime.now()}'
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        }).then((value) {
+      var resp = json.decode(value.body);
+      print("Response: $resp");
+      if (resp['response'] == 200) {
+        socketIO.sendMessage(
+            'send message',
+            json.encode({
+              "msgCode": "${msgInfo['msgCode']}",
+              "message": msgInfo['text'],
+              "sender": this.myId,
+              "receiver": widget.user['user_id'],
+              "containsImage": "0",
+              "imageUrl": "none",
+              "time": '${DateTime.now()}',
+            }));
+        db.updateTransportStatus(
+            {'msgCode': msgInfo['msgCode'], 'status': "success"});
+      } else {
+        db.updateTransportStatus(
+            {'msgCode': msgInfo['msgCode'], 'status': "failed"});
+      }
+    }).catchError((e) {
+      db.updateTransportStatus(
+          {'msgCode': msgInfo['msgCode'], 'status': "failed"});
+    });
+  }
+
   Widget message(String direction, String message, String time, int index) {
+    if (messages[index]['msgCode'] == null) {
+      print("NULL $message");
+    }
     return Column(
       children: <Widget>[
         Row(
@@ -361,7 +439,7 @@ class _TextingScreenState extends State<TextingScreen> {
                                                                   10),
                                                         ),
                                                 ),
-                                                child: SelectableText(
+                                                child: Text(
                                                   "${messages[index]['message']}",
                                                   style: TextStyle(
                                                       color:
@@ -379,6 +457,14 @@ class _TextingScreenState extends State<TextingScreen> {
                                                                   8.0))),
                                                   child: Column(
                                                     children: <Widget>[
+                                                      messages[index][
+                                                                  'msgTransportStatus'] ==
+                                                              "failed"
+                                                          ? actionButtons(
+                                                              'Retry', () {
+                                                              print("Retrying");
+                                                            })
+                                                          : Container(),
                                                       actionButtons('Copy', () {
                                                         Clipboard.setData(
                                                             new ClipboardData(
@@ -386,6 +472,8 @@ class _TextingScreenState extends State<TextingScreen> {
                                                                     '${messages[index]['message']}'));
                                                         Navigator.pop(context);
                                                       }),
+                                                      actionButtons(
+                                                          'Share', null),
                                                       actionButtons('Delete',
                                                           () {
                                                         if (messages.length -
@@ -410,9 +498,7 @@ class _TextingScreenState extends State<TextingScreen> {
                                                                 index][
                                                             '${db.messageId}']);
                                                         Navigator.pop(context);
-                                                      }),
-                                                      actionButtons(
-                                                          'Share', null),
+                                                      })
                                                     ],
                                                   ))
                                             ],
@@ -439,7 +525,10 @@ class _TextingScreenState extends State<TextingScreen> {
                       padding: const EdgeInsets.all(15.0),
                       decoration: BoxDecoration(
                         color: direction == 'right'
-                            ? Theme.of(context).primaryColor
+                            ? (messages[index]['msgTransportStatus'] ==
+                                    'failed')
+                                ? Colors.red
+                                : Theme.of(context).primaryColor
                             : Color(0x22161F3D),
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(10),

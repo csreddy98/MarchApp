@@ -19,7 +19,7 @@ Future<Map> imageSaver(url) async {
   image.writeAsBytesSync(resp.bodyBytes);
 
   Image imageEncoded = decodeImage(image.readAsBytesSync());
-  Image thumbNail = copyResize(imageEncoded, width: 100, height: 100);
+  Image thumbNail = copyResize(imageEncoded, width: 55, height: 55);
   File('$smallImagepath')..writeAsBytesSync(encodeJpg(thumbNail));
   return {'image': '$imagepath', 'small_image': '$smallImagepath'};
 }

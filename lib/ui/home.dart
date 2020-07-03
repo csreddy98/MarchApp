@@ -1,9 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:isolate';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:flutter_socket_io/socket_io_manager.dart';
 import 'package:march/ui/MessagesScreen.dart';
 import 'package:march/ui/find_screen.dart';
 import 'package:march/ui/profile.dart';
@@ -11,6 +12,7 @@ import 'package:march/ui/settings.dart';
 import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_socket_io/flutter_socket_io.dart';
+import 'package:flutter_socket_io/socket_io_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -45,13 +47,56 @@ class _HomeState extends State<Home> {
   String title = "Find People";
   List<String> t = ["Find People", "Inbox", "Profile"];
   SocketIO socketIO;
-  String token, uid;
-  String myId;
+  static String token, uid;
+  static String myId;
   String chatsPage;
   final db = DataBaseHelper();
   final FirebaseMessaging _fcm = FirebaseMessaging();
   var iosSubscription;
   List tabs;
+
+  messageChecker() async {
+    print("getting messages");
+    http.post('https://march.lbits.co/api/worker.php',
+        body: json.encode(
+            {'serviceName': '', 'work': 'get messages', 'receiver': '$myId'}),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        }).then((value) {
+      var resp = json.decode(value.body);
+      print("GOT THE MESSAGES: $resp");
+      if (resp['response'] == 200) {
+        var myNewMessages = resp['result'];
+        if (myNewMessages.length > 0) {
+          myNewMessages.forEach((val) {
+            db.checkMessage(val['msgCode']).then((value) {
+              if (value[0]['msgCount'] == 0) {
+                Map newMessage = <String, String>{
+                  DataBaseHelper.messageCode: val['msgCode'],
+                  DataBaseHelper.messageOtherId: val['sender_id'],
+                  DataBaseHelper.messageSentBy: val['sender_id'],
+                  DataBaseHelper.messageText: val['msgText'],
+                  DataBaseHelper.messageContainsImage: val['containsImage'],
+                  DataBaseHelper.messageImage: val['imageUrl'],
+                  DataBaseHelper.messageTransportStatus: 'success',
+                  DataBaseHelper.messageTime: val['messageTime']
+                };
+                Map updateLastMessage = <String, String>{
+                  'message': val['msgText'],
+                  'messageTime': val['messageTime'],
+                  'otherId': val['sender_id']
+                };
+                db.addMessage(newMessage);
+                db.updateLastMessage(updateLastMessage);
+              }
+            });
+          });
+        }
+      }
+    });
+  }
+
   @override
   void initState() {
     tabs = [
@@ -60,33 +105,31 @@ class _HomeState extends State<Home> {
       Profile(),
     ];
     _load();
+
     super.initState();
     socketIO = SocketIOManager().createSocketIO(
         'https://glacial-waters-33471.herokuapp.com', '/',
         socketStatusCallback: _socketStatus);
     socketIO.init();
-    socketIO.sendMessage('update my status',
-        json.encode({"uid": "$myId", "time": "${DateTime.now()}"}));
-    socketIO.subscribe('new message', (jsonData) {
+    socketIO.subscribe('receive message', (jsonData) {
       var data = json.decode(jsonData);
-      if (data['receiver'].toString() == myId ||
-          data['sender'].toString() == myId) {
+      if (data['receiver'].toString() == myId) {
         // loadMessages();
         // print('$data');
         Map newMessage = <String, String>{
-          DataBaseHelper.messageOtherId:
-              (data['receiver'] != myId) ? data['receiver'] : data['sender'],
+          DataBaseHelper.messageCode: data['msgCode'],
+          DataBaseHelper.messageOtherId: data['sender'],
           DataBaseHelper.messageSentBy: data['sender'],
           DataBaseHelper.messageText: data['message'],
-          DataBaseHelper.messageContainsImage: '0',
-          DataBaseHelper.messageImage: "null",
-          DataBaseHelper.messageTime: data['time']
+          DataBaseHelper.messageContainsImage: data['containsImage'],
+          DataBaseHelper.messageImage: '${data['imageUrl']}',
+          DataBaseHelper.messageTransportStatus: "success",
+          DataBaseHelper.messageTime: '${data['time']}'
         };
         Map updateLastMessage = <String, String>{
           'message': data['message'],
           'messageTime': data['time'],
-          'otherId':
-              (data['receiver'] != myId) ? data['receiver'] : data['sender']
+          'otherId': data['sender']
         };
         db.addMessage(newMessage);
         db.updateLastMessage(updateLastMessage);
@@ -115,21 +158,6 @@ class _HomeState extends State<Home> {
               ],
             ),
           );
-          // if (message['data']['type'] == 'message') {
-          //   db.addMessage(<String, String>{
-          //     DataBaseHelper.messageOtherId: message['data']['sender'],
-          //     DataBaseHelper.messageSentBy: message['data']['sender'],
-          //     DataBaseHelper.messageText: message['data']['message'],
-          //     DataBaseHelper.messageContainsImage: '0',
-          //     DataBaseHelper.messageImage: 'null',
-          //     DataBaseHelper.messageTime: message['data']['time'],
-          //   });
-          //   db.updateLastMessage(<String, String>{
-          //     DataBaseHelper.friendLastMessage: message['data']['message'],
-          //     DataBaseHelper.friendLastMessageTime: message['data']['time'],
-          //     DataBaseHelper.friendId: message['data']['sender']
-          //   });
-          // }
         },
         onLaunch: (Map<String, dynamic> message) async {
           print("onLaunch: $message");
@@ -173,7 +201,6 @@ class _HomeState extends State<Home> {
     await _fcm.getToken().then((value) {
       tkn = value;
       if (token != null && uid != null) {
-        print("token: $token && UID: $uid");
         http.post('https://march.lbits.co/api/worker.php',
             body: json.encode({
               'serviceName': '',
@@ -286,6 +313,10 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    Timer.periodic(Duration(minutes: 1), (timer) {
+      messageChecker();
+    });
+
     return Scaffold(
       appBar: appBar(),
       body: Center(
@@ -307,6 +338,7 @@ class _HomeState extends State<Home> {
         prefs.setString('uid', uid);
       });
     }
+    messageChecker();
     socketIO.sendMessage('update my status',
         json.encode({"uid": "$myId", "time": "${DateTime.now()}"}));
   }

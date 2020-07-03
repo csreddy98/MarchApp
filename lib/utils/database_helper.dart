@@ -50,6 +50,8 @@ class DataBaseHelper {
   static String messageImage = "ImageUrl";
   static String seenStatus = "seenStatus";
   static String messageTime = "time";
+  static String messageTransportStatus = "msgTransportStatus";
+  static String messageCode = "msgCode";
 
   Future<Database> get db async {
     if (_db != null) {
@@ -95,12 +97,14 @@ class DataBaseHelper {
 
     await db.execute("CREATE TABLE $messagesTable("
         "$messageId INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "$messageCode TEXT UNIQUE NOT NULL,"
         "$messageOtherId TEXT,"
         "$messageSentBy TEXT,"
         "$messageText DATE,"
         "$messageContainsImage BOOLEAN,"
         "$messageImage TEXT,"
         "$seenStatus TEXT,"
+        "$messageTransportStatus TEXT, "
         "$messageTime TEXT"
         ")");
   }
@@ -207,6 +211,18 @@ class DataBaseHelper {
     var dbClient = await db;
     return await dbClient.rawUpdate(
         "UPDATE $friendsTable SET $friendLastMessage='${messageInfo['message']}', $friendLastMessageTime='${messageInfo['messageTime']}' WHERE $friendId = '${messageInfo['otherId']}'");
+  }
+
+  Future<List> checkMessage(String msgCode) async {
+    var dbClient = await db;
+    return await dbClient.rawQuery(
+        "SELECT COUNT(1) AS msgCount FROM $messagesTable WHERE $messageCode = '$msgCode'");
+  }
+
+  Future<int> updateTransportStatus(Map msgInfo) async {
+    var dbClient = await db;
+    return await dbClient.rawUpdate(
+        "UPDATE $messagesTable SET $messageTransportStatus = '${msgInfo['status']}' WHERE $messageCode = '${msgInfo['msgCode']}'");
   }
 
   Future<int> updateNamePic(Map currentUserInfo) async {

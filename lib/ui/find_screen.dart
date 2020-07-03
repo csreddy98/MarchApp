@@ -62,14 +62,6 @@ class _FindScreenState extends State<FindScreen> {
     super.initState();
   }
 
-  // @override
-  // void didChangeDependencies() {
-  //   people.forEach((element) {
-  //     precacheImage(element.imageUrl, context);
-  //   });
-  //   super.didChangeDependencies();
-  // }
-
   Future<List<Person>> _getPeople() async {
     if (token != null && id != null && check == 1) {
       var ur = 'https://march.lbits.co/api/worker.php';
