@@ -106,11 +106,7 @@ class _PhoneAuthGetPhoneState extends State<PhoneAuthScreen> {
                         child: FlatButton(
                           child: Text(
                             'VERIFY',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'montserrat'
-                            ),
+                            style: Theme.of(context).textTheme.button,
                           ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(25),

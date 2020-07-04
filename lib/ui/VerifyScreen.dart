@@ -299,10 +299,7 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
                   child: FlatButton(
                     child: Text(
                       'SUBMIT',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'montserrat'),
+                      style: Theme.of(context).textTheme.button,
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),

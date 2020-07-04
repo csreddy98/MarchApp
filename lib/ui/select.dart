@@ -71,7 +71,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
   String uid;
   String token;
 
-  Color activeColor = Color(0xFF4267B2);
+  Color activeColor = Color.fromRGBO(254, 209, 125, 1);
   AnimationController animationController;
   Animation d1, p1, d2, p2, d3, p3, d4, p4, d5;
   TextEditingController nameController;
@@ -194,9 +194,11 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                 child: Center(
                     child: Text(
                   "Select Your Goals",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
                 )),
               ),
+
+              Center(child: Text("Goal "+cnt.toString()+" of 3",style: Theme.of(context).textTheme.caption,)),
 
               AnimatedBuilder(
                 animation: animationController,
@@ -205,7 +207,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                   child: Column(
                     children: <Widget>[
                       Container(
-                          margin: EdgeInsets.only(top: 30),
+                          margin: EdgeInsets.only(top: 10),
                           padding: EdgeInsets.all(12),
                           width: MediaQuery.of(context).size.width,
                           child: Row(children: <Widget>[
@@ -234,9 +236,9 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                       MediaQuery.of(context).size.width * 0.35,
                                   child: LinearProgressIndicator(
                                     backgroundColor:
-                                        cnt >= 2 ? activeColor : Colors.grey,
+                                        cnt >= 2 ? activeColor : Colors.grey[200],
                                     valueColor: AlwaysStoppedAnimation<Color>(
-                                        cnt >= 2 ? activeColor : Colors.grey),
+                                        cnt >= 2 ? activeColor : Colors.transparent),
                                   ),
                                 ),
                               ),
@@ -259,7 +261,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                       borderRadius:
                                           BorderRadius.circular(dotSize / 2),
                                       color:
-                                          cnt >= 2 ? activeColor : Colors.grey),
+                                          cnt >= 2 ? activeColor : Colors.grey[200]),
                                 ),
                               ),
                             ),
@@ -271,10 +273,10 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                       MediaQuery.of(context).size.width * 0.3,
                                   child: LinearProgressIndicator(
                                     backgroundColor:
-                                        cnt >= 3 ? activeColor : Colors.grey,
+                                        cnt >= 3 ? activeColor : Colors.grey[200],
                                     //  value: p1.value,
                                     valueColor: AlwaysStoppedAnimation<Color>(
-                                        cnt >= 3 ? activeColor : Colors.grey),
+                                        cnt >= 3 ? activeColor : Colors.transparent),
                                   ),
                                 ),
                               ),
@@ -298,7 +300,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                           BorderRadius.circular(dotSize / 2),
                                       //    color: d3.value
                                       color:
-                                          cnt >= 3 ? activeColor : Colors.grey),
+                                          cnt >= 3 ? activeColor : Colors.grey[300]),
                                 ),
                               ),
                             ),
@@ -308,7 +310,25 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                 ),
               ),
 
-              //      Center(child: Text("Goal "+cnt.toString()+" of 3")),
+              Container(
+                margin: EdgeInsets.only(bottom: 8),
+                padding: EdgeInsets.only(left: 14, right: 20),
+                width: MediaQuery.of(context).size.width,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(count>0?added[0]:"Goal 1",
+                        style: Theme.of(context).textTheme.caption),
+                    //SizedBox(width: 1),
+                    Text(count>1?added[1]:"Goal 2",
+                        style: Theme.of(context).textTheme.caption),
+                    // SizedBox(width: MediaQuery.of(context).size.width * 0.25,),
+                    Text(count>2?added[2]:"Goal 3",
+                        style: Theme.of(context).textTheme.caption),
+                  ],
+                ),
+              ),
+
 
               _disable==1?Container() :Padding(
                 padding: const EdgeInsets.all(20.0),
@@ -482,10 +502,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                 child: FlatButton(
                                     child: Text(
                                       'SKIP',
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: 'montserrat'),
+                                      style: Theme.of(context).textTheme.button,
                                     ),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(25),
@@ -526,10 +543,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                 child: FlatButton(
                                   child: Text(
                                     'NEXT',
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'montserrat'),
+                                    style: Theme.of(context).textTheme.button,
                                   ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(25),
@@ -693,10 +707,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                           child: FlatButton(
                             child: Text(
                               'NEXT',
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'montserrat'),
+                              style: Theme.of(context).textTheme.button,
                             ),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(25),

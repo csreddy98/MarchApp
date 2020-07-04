@@ -219,6 +219,7 @@ class _GRegisterState extends State<GRegister> {
                       color: Colors.black
                   ),
                   decoration: InputDecoration(
+                      border: OutlineInputBorder(),
                       labelText:"Name",
                       hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
                   onChanged: (String value) {
@@ -241,6 +242,7 @@ class _GRegisterState extends State<GRegister> {
                       color: Colors.black
                   ),
                   decoration: InputDecoration(
+                      border: OutlineInputBorder(),
                       labelText:" Email",
                       hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
                   onChanged: (String value) {
@@ -262,6 +264,7 @@ class _GRegisterState extends State<GRegister> {
                       color: Colors.black
                   ),
                   decoration: InputDecoration(
+                      border: OutlineInputBorder(),
                       labelText:" Phone Number",
                       hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
                   onChanged: (String value) {
@@ -275,7 +278,7 @@ class _GRegisterState extends State<GRegister> {
               ),
 
               Padding(
-                padding: const EdgeInsets.fromLTRB(20.0,20,20,0),
+                padding: const EdgeInsets.fromLTRB(20.0,20,20,20),
                 child: TextField(
                   maxLines: 1,
                   style: TextStyle(
@@ -284,6 +287,7 @@ class _GRegisterState extends State<GRegister> {
                   ),
                   decoration: InputDecoration(
                       labelText:"Profession",
+                      border: OutlineInputBorder(),
                       hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
                   onChanged: (String value) {
                     try {
@@ -305,7 +309,8 @@ class _GRegisterState extends State<GRegister> {
                       color: Colors.black
                   ),
                   decoration: InputDecoration(
-                      labelText:"Bio",
+                      hintText: "Bio",
+                      border: OutlineInputBorder(),
                       hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
                   onChanged: (String value) {
                     try {
@@ -385,11 +390,7 @@ class _GRegisterState extends State<GRegister> {
                     child: FlatButton(
                         child: Text(
                           'NEXT',
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'montserrat'
-                          ),
+                          style: Theme.of(context).textTheme.button,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(25),

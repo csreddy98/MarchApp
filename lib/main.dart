@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:march/ui/gregistration.dart';
 import 'package:march/ui/home.dart';
 import 'package:march/ui/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,7 +18,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'montserrat',
         scaffoldBackgroundColor: Colors.white,
         buttonColor: Color.fromRGBO(254, 209, 125, 1),
-        disabledColor: Color.fromRGBO(254, 209, 125, 0.3),
+        disabledColor: Color.fromRGBO(254, 209, 125, 0.5),
         primaryColor: Color.fromRGBO(254, 209, 125, 1),
         textTheme: TextTheme(
             headline1: TextStyle(
