@@ -541,6 +541,19 @@ class _MessagesScreenState extends State<MessagesScreen> {
     );
   }
 
+  Widget _flightShuttleBuilder(
+    BuildContext flightContext,
+    Animation<double> animation,
+    HeroFlightDirection flightDirection,
+    BuildContext fromHeroContext,
+    BuildContext toHeroContext,
+  ) {
+    return DefaultTextStyle(
+      style: DefaultTextStyle.of(toHeroContext).style,
+      child: toHeroContext.widget,
+    );
+  }
+
   Widget recentChats(List usersList) {
     Map unSeenMessages = {};
     msgCount.forEach((element) {
@@ -634,68 +647,75 @@ class _MessagesScreenState extends State<MessagesScreen> {
                   },
                 ),
               ],
-              child: GestureDetector(
-                onTap: () =>
-                    Navigator.push(context, _createRoute(lastMessages[index])),
-                child: Container(
-                  margin: EdgeInsets.only(top: 5.0, bottom: 5.0, right: 5.0),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                  decoration: BoxDecoration(
-                    color: Color(0xFFFFFFFF),
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(20.0),
-                      bottomRight: Radius.circular(20.0),
+              child: Hero(
+                flightShuttleBuilder: _flightShuttleBuilder,
+                tag: "${lastMessages[index]['name']}",
+                child: GestureDetector(
+                  onTap: () => Navigator.push(
+                      context, _createRoute(lastMessages[index])),
+                  child: Container(
+                    margin: EdgeInsets.only(top: 5.0, bottom: 5.0, right: 5.0),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFFFFFFF),
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(20.0),
+                        bottomRight: Radius.circular(20.0),
+                      ),
                     ),
-                  ),
-                  child: Hero(
-                    tag: "${lastMessages[index]['name']}",
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            ClipRRect(
-                              child: Image.file(
-                                  File.fromUri(Uri.file(lastMessages[index]
-                                          ['small_pic'] ??
-                                      lastMessages[index]['profile_pic'])),
-                                  height: 55,
-                                  width: 55,
-                                  fit: BoxFit.cover),
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            SizedBox(
-                              width: 10.0,
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  lastMessages[index]['name'],
-                                  style: TextStyle(
-                                    color: Theme.of(context).primaryColor,
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.normal,
-                                  ),
-                                ),
-                                SizedBox(height: 5.0),
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.45,
-                                  child: Text(
-                                    '${(lastMessages.isNotEmpty) ? lastMessages[index]['lastMessage'] : ''}',
+                        Expanded(
+                          child: Row(
+                            children: <Widget>[
+                              ClipRRect(
+                                child: Image.file(
+                                    File.fromUri(Uri.file(lastMessages[index]
+                                            ['small_pic'] ??
+                                        lastMessages[index]['profile_pic'])),
+                                    height: 55,
+                                    width: 55,
+                                    fit: BoxFit.cover),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              SizedBox(
+                                width: 10.0,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    lastMessages[index]['name'],
                                     style: TextStyle(
-                                      color: Colors.blueGrey,
-                                      fontSize: 13.0,
-                                      fontWeight: FontWeight.w200,
+                                      color: Theme.of(context).primaryColor,
+                                      fontSize: 15.0,
+                                      fontWeight: FontWeight.normal,
                                     ),
-                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                  SizedBox(height: 5.0),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.45,
+                                    child: Text(
+                                      '${(lastMessages.isNotEmpty) ? lastMessages[index]['lastMessage'] : ''}',
+                                      style: TextStyle(
+                                        color: Colors.blueGrey,
+                                        fontSize: 13.0,
+                                        fontWeight: (unSeenMessages[
+                                                    '${lastMessages[index]['user_id']}'] !=
+                                                null)
+                                            ? FontWeight.bold
+                                            : FontWeight.w300,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.end,

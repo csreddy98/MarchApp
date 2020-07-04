@@ -253,6 +253,12 @@ class DataBaseHelper {
         "UPDATE $messagesTable SET $seenStatus = 'seen' WHERE $messageOtherId = $userId");
   }
 
+  Future<List> totalUnseenMsgs() async {
+    var dbClient = await db;
+    return await dbClient.rawQuery(
+        "SELECT COUNT(1) AS msgCount FROM $messagesTable WHERE $seenStatus = 'unseen'");
+  }
+
   Future<int> addMessage(Map<String, dynamic> messageInfo) async {
     var dbClient = await db;
     return await dbClient.insert(messagesTable, messageInfo);
