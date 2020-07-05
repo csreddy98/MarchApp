@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:march/ui/select.dart';
 import 'package:path/path.dart' as Path;
 import 'dart:io';
@@ -93,18 +94,35 @@ class _GRegisterState extends State<GRegister> {
     if(picked != null) setState(() => _value = picked.toString());
   }
 
+  Color nameColor,emailColor,phoneColor,proColor,bioColor;
+  Color c=Colors.grey[100];
+  Color x=Colors.grey;
+  Color nc,ec,phc,prc,bc;
 
   @override
   void initState() {
     FirebaseAuth.instance.currentUser().then((val){
       setState(() {
         uid=val.uid;
-        if(val.email!=null &&val.displayName!=null){
+        bioColor=c;
+        proColor=c;
+        nameColor=c;
+        emailColor=c;
+        phoneColor=c;
+        nc=c;ec=c;phc=c;
+        prc=c;bc=c;
+        if(val.email!="" &&val.displayName!=""){
           email=val.email;
           name=val.displayName;
+          emailColor=Colors.white;
+          nameColor=Colors.white;
+          ec=x;
+          nc=x;
         }
-        if(val.phoneNumber!=null){
+        if(val.phoneNumber!=""){
           phone=val.phoneNumber;
+          phoneColor=Colors.white;
+          phc=x;
         }
         _controlleremail.text=email;
         _controllername.text=name;
@@ -168,17 +186,14 @@ class _GRegisterState extends State<GRegister> {
           width: 80,
           margin: const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(60.0),
+            borderRadius: BorderRadius.circular(10.0),
             color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey,
-                offset: Offset(0.0, 1.0), //(x,y)
-                blurRadius: 6.0,
-              ),
-            ],
+            border: Border.all(
+              color: Colors.grey[300],
+              width: 2
+            )
           ),
-          child: Icon(Icons.camera_alt,size: 50,),
+          child: Icon(Feather.camera,size: 30,color:Colors.grey[300]),
         );
 
       }
@@ -206,119 +221,197 @@ class _GRegisterState extends State<GRegister> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top:5.0),
-                child: Center(child: Text("Upload Profile Picture",style: TextStyle(fontSize: 14),)),
+                child: Center(child: Text("Upload Profile Picture",style: TextStyle(fontSize: 12),)),
               ),
 
               Padding(
                 padding: const EdgeInsets.fromLTRB(20.0,20,20,0),
-                child: TextFormField(
-                  controller: _controllername,
-                  maxLines: 1,
-                  style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.black
+                child: FocusScope(
+                  child: Focus(
+                    onFocusChange: (focus) {
+                      setState(() {
+                        nameColor=Colors.white;
+                        nc=x;
+                      });
+                    },
+                    child: TextFormField(
+                      controller: _controllername,
+                      maxLines: 1,
+                      style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.black
+                      ),
+                      decoration: InputDecoration(
+                          filled: true,
+                          fillColor: nameColor,
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: nc!=null?nc:c, width: 1.0),
+                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          ),
+                          border: OutlineInputBorder(),
+                          hintText:"Full Name",
+                          hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
+                      onChanged: (String value) {
+                        try {
+                          name = value;
+                        } catch (exception) {
+                          name ="";
+                        }
+                      },
+                    ),
                   ),
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText:"Name",
-                      hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
-                  onChanged: (String value) {
-                    try {
-                      name = value;
-                    } catch (exception) {
-                      name ="";
-                    }
-                  },
                 ),
               ),
 
               Padding(
                 padding: const EdgeInsets.fromLTRB(20.0,20,20,0),
-                child: TextFormField(
-                  maxLines: 1,
-                  controller: _controlleremail,
-                  style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.black
-                  ),
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText:" Email",
-                      hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
-                  onChanged: (String value) {
-                    try {
-                      email = value;
-                    } catch (exception) {
-                      email ="";
-                    }
+                child:FocusScope(
+                  onFocusChange: (focus) {
+                    setState(() {
+                      emailColor=Colors.white;
+                      ec=x;
+                    });
                   },
+                  child: TextFormField(
+                    maxLines: 1,
+                    controller: _controlleremail,
+                    style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.black
+                    ),
+                    decoration: InputDecoration(
+                        filled: true,
+                        fillColor:emailColor,
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: ec!=null?ec:c, width: 1.0),
+                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        ),
+                        border: OutlineInputBorder(),
+                        hintText:" Email",
+                        hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
+                    onChanged: (String value) {
+                      try {
+                        email = value;
+                      } catch (exception) {
+                        email ="";
+                      }
+                    },
+                  ),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(20.0,20,20,0),
-                child: TextFormField(
-                  maxLines: 1,
-                  controller: _controllerph,
-                  style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.black
+                child: FocusScope(
+                  child: Focus(
+                    onFocusChange: (focus) {
+                      setState(() {
+                        phoneColor=Colors.white;
+                        phc=x;
+                      });
+                    },
+                    child: TextFormField(
+                      maxLines: 1,
+                      controller: _controllerph,
+                      style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.black
+                      ),
+                      decoration: InputDecoration(
+                         filled: true,
+                          fillColor: phoneColor,
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: phc!=null?phc:c, width: 1.0),
+                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          ),
+                          border: OutlineInputBorder(),
+                          hintText:" Phone Number",
+                          hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
+                      onChanged: (String value) {
+                        try {
+                          phone = value;
+                        } catch (exception) {
+                          phone ="";
+                        }
+                      },
+                    ),
                   ),
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText:" Phone Number",
-                      hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
-                  onChanged: (String value) {
-                    try {
-                      phone = value;
-                    } catch (exception) {
-                      phone ="";
-                    }
-                  },
                 ),
               ),
 
               Padding(
                 padding: const EdgeInsets.fromLTRB(20.0,20,20,20),
-                child: TextField(
-                  maxLines: 1,
-                  style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.black
+                child: FocusScope(
+                  child: Focus(
+                    onFocusChange: (focus) {
+                      setState(() {
+                        proColor=Colors.white;
+                        prc=x;
+                      });
+                    },
+                    child: TextField(
+                      maxLines: 1,
+                      style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.black
+                      ),
+                      decoration: InputDecoration(
+                          filled: true,
+                          fillColor: proColor,
+                          hintText:"What do you do",
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: prc!=null?prc:c, width: 1.0),
+                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          ),
+                          border: OutlineInputBorder(),
+                          hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
+                      onChanged: (String value) {
+                        try {
+                          profession = value;
+                        } catch (exception) {
+                          profession ="";
+                        }
+                      },
+                    ),
                   ),
-                  decoration: InputDecoration(
-                      labelText:"Profession",
-                      border: OutlineInputBorder(),
-                      hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
-                  onChanged: (String value) {
-                    try {
-                      profession = value;
-                    } catch (exception) {
-                      profession ="";
-                    }
-                  },
                 ),
               ),
 
 
               Padding(
                 padding: const EdgeInsets.fromLTRB(20.0,0.0,20.0,0),
-                child: TextField(
-                  maxLines: 2,
-                  style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.black
+                child: FocusScope(
+                  child: Focus(
+                    onFocusChange: (focus) {
+                      setState(() {
+                        bioColor=Colors.white;
+                        bc=x;
+                      });
+                    },
+                    child: TextField(
+                      maxLines: 2,
+                      style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.black
+                      ),
+                      decoration: InputDecoration(
+                          fillColor: bioColor,
+                          filled: true,
+                          hintText: "Tell us something about you",
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: bc!=null?bc:c, width: 1.0),
+                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          ),
+                          border: OutlineInputBorder(),
+                          hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
+                      onChanged: (String value) {
+                        try {
+                          bio = value;
+                        } catch (exception) {
+                          bio ="";
+                        }
+                      },
+                    ),
                   ),
-                  decoration: InputDecoration(
-                      hintText: "Bio",
-                      border: OutlineInputBorder(),
-                      hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
-                  onChanged: (String value) {
-                    try {
-                      bio = value;
-                    } catch (exception) {
-                      bio ="";
-                    }
-                  },
                 ),
               ),
 

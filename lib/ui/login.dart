@@ -160,36 +160,43 @@ class _LoginState extends State<Login> {
     Size size = MediaQuery.of(context).size;
     ScreenUtil.init(context,width: 750, height: 1300, allowFontScaling: true);
     return Scaffold(
-      backgroundColor: Color(0xff241332),
+//      backgroundColor: Color(0xff241332),
       body: SingleChildScrollView(
         child: Stack(
           children: <Widget>[
-            Center(
+            /*Center(
               child: new Image.asset(
                 'assets/images/image.png',
                 width: size.width,
                 height: size.height,
                 fit: BoxFit.cover,
               ),
-            ),
+            ),*/
             Column(
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(top:100.0),
-                  child: Center(child: Text("Welcome \nto March",style: TextStyle(fontFamily: 'montserrat' ,fontSize: 30,fontWeight: FontWeight.bold,color: Colors.white),)),
+                  child: Center(child: Text("Welcome ",style: TextStyle(fontFamily: 'montserrat' ,fontSize: 30,fontWeight: FontWeight.bold,color: Colors.black),)),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text("to ",style: TextStyle(fontFamily: 'montserrat' ,fontSize: 30,fontWeight: FontWeight.bold,color: Colors.black),),
+                    Text("March",style: TextStyle(fontFamily: 'montserrat' ,fontSize: 30,fontWeight: FontWeight.bold,color: Theme.of(context).primaryColor),),
+                  ],
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top:180.0),
                   child: Center(child: Column(
                     children: <Widget>[
-                      Text("The best way to meet people who have",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color: Colors.white),),
-                      Text("goals as you. Let's get Started!",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color: Colors.white),),
+                      Text("The best way to meet people who have",style: TextStyle(fontSize: 14,fontWeight: FontWeight.w200,color: Colors.black),),
+                      Text("goals as you. Let's get Started!",style: TextStyle(fontSize: 14,fontWeight: FontWeight.w200,color: Colors.black),),
                     ],
                   )),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top:20.0),
-                  child: Center(child: Text("CONTINUE WITH",style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: Colors.white54),)),
+                  padding: const EdgeInsets.only(top:20.0,bottom: 10),
+                  child: Center(child: Text("CONTINUE WITH",style: TextStyle(fontSize: 14,fontWeight: FontWeight.w600,color: Colors.black),)),
                 ),
 
                 Padding(
@@ -200,7 +207,7 @@ class _LoginState extends State<Login> {
                     child: RaisedButton(
                       shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(50.0),
-                          side: BorderSide(color: Color(0xffD47FA6))),
+                          side: BorderSide(color: Colors.grey[100])),
                       onPressed: () {
 
                        /* FirebaseAuth.instance.currentUser().then((val) async {
@@ -211,10 +218,25 @@ class _LoginState extends State<Login> {
                         );
 
                         },
-                      color: Color(0xffD47FA6),
-                      textColor: Colors.white,
-                      child: Text("PHONE",
-                          style: TextStyle(fontSize: 14)),
+                      color: Colors.grey[100],
+                      textColor: Colors.black,
+                      child: Row(
+                        children: <Widget>[
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Image.asset(
+                            'assets/images/phone.png',
+                          ),
+                          SizedBox(
+                            width: 30,
+                          ),
+                          Center(
+                            child: Text("Continue With Phone",
+                                style: TextStyle(fontSize: 14)),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -227,14 +249,29 @@ class _LoginState extends State<Login> {
                     child: RaisedButton(
                       shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(50.0),
-                          side: BorderSide(color: Colors.red)),
+                          side: BorderSide(color: Colors.grey[100])),
                       onPressed: () {
                         _signIn();
                       },
-                      color: Color(0xFFDB4A39),
-                      textColor: Colors.white,
-                      child: Text("GOOGLE",
-                          style: TextStyle(fontSize: 14)),
+                      color: Colors.grey[100],
+                      textColor: Colors.black,
+                      child: Row(
+                        children: <Widget>[
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Image.asset(
+                            'assets/images/google.png',
+                          ),
+                          SizedBox(
+                            width: 30,
+                          ),
+                          Center(
+                            child: Text("Continue With Google",
+                                style: TextStyle(fontSize: 14)),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -275,10 +312,25 @@ class _LoginState extends State<Login> {
                         });
 
                       },
-                      color: Color(0xFF4267B2),
-                      textColor: Colors.white,
-                      child: Text("FACEBOOK",
-                          style: TextStyle(fontSize: 14)),
+                      color: Colors.grey[100],
+                      textColor: Colors.black,
+                      child: Row(
+                        children: <Widget>[
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Image.asset(
+                            'assets/images/fb.png',
+                          ),
+                          SizedBox(
+                            width: 30,
+                          ),
+                          Center(
+                            child: Text("Continue With Facebook",
+                                style: TextStyle(fontSize: 14)),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -286,7 +338,7 @@ class _LoginState extends State<Login> {
                   padding: const EdgeInsets.only(top:20.0),
                   child: Center(child: Column(
                     children: <Widget>[
-                      Text("By Signing up you agree to the",style: TextStyle(fontSize: 12,fontWeight: FontWeight.normal,color: Colors.white),),
+                      Text("By Signing up you agree to the",style: TextStyle(fontSize: 12,fontWeight: FontWeight.normal,color: Colors.black),),
                       GestureDetector(
                           onTap: (){
                             Navigator.pushAndRemoveUntil(context,
@@ -295,7 +347,7 @@ class _LoginState extends State<Login> {
 
                           },
                           child: Text("terms of use",
-                            style: TextStyle(fontSize: 12,fontWeight: FontWeight.normal,decoration: TextDecoration.underline,color: Colors.white),)),
+                            style: TextStyle(fontSize: 12,fontWeight: FontWeight.normal,decoration: TextDecoration.underline,color: Colors.black),)),
                     ],
                   )),
                 ),

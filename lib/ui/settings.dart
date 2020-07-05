@@ -34,7 +34,7 @@ class _SettingsState extends State<Settings> {
 
     BoxDecoration myBoxDecoration() {
       return BoxDecoration(
-        border: Border.all(width: 1.0, color: Colors.deepPurple),
+        border: Border.all(width: 1.0, color: Theme.of(context).primaryColor),
         borderRadius: BorderRadius.all(
             Radius.circular(45.0) //         <--- border radius here
             ),
@@ -97,7 +97,7 @@ class _SettingsState extends State<Settings> {
                               ),
                             ),
                             IconButton(
-                              icon: Icon(Icons.arrow_forward_ios),
+                              icon: Icon(Icons.arrow_forward_ios,color: Colors.black,),
                               iconSize: 20,
                               onPressed: null,
                             )

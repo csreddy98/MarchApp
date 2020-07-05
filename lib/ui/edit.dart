@@ -184,29 +184,27 @@ class _EditProfileState extends State<Edit_Profile> {
                 ),
               ),
               Container(
-                width: size.width/1.2,
+                /*width: size.width/1.2,
                 height: size.height/2.8,
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20)
-                ),
+                ),*/
                 child: Column(
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.all(12.0),
+                      padding: const EdgeInsets.fromLTRB(20,12,20,12),
                       child: TextField(
                         maxLines: 1,
                         controller: _controller_name,
                         style: TextStyle(
                             color: Colors.black,
-                            fontSize: 16
+                            fontSize: 15
                         ),
-                        decoration: InputDecoration(
-                          hintText: 'name',
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black12),
-                          ),
-                        ),
+                          decoration: InputDecoration(
+                              hintText: "Name",
+                              border: OutlineInputBorder(),
+                              hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
                         onChanged: (String value) {
                           try {
                             name = value;
@@ -218,20 +216,18 @@ class _EditProfileState extends State<Edit_Profile> {
                     ),
 
                     Padding(
-                      padding: const EdgeInsets.all(12.0),
+                      padding: const EdgeInsets.fromLTRB(20,12,20,12),
                       child: TextField(
                         maxLines: 1,
                         controller: _controller_profession,
                         style: TextStyle(
                             color: Colors.black,
-                            fontSize: 16
+                            fontSize: 15
                         ),
-                        decoration: InputDecoration(
-                          hintText: 'profession',
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black12),
-                          ),
-                        ),
+                          decoration: InputDecoration(
+                              hintText: "Profession",
+                              border: OutlineInputBorder(),
+                              hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
                         onChanged: (String value) {
                           try {
                             profession = value;
@@ -278,20 +274,18 @@ class _EditProfileState extends State<Edit_Profile> {
                     ),
 */
                     Padding(
-                      padding: const EdgeInsets.all(12.0),
+                      padding: const EdgeInsets.fromLTRB(20,12,20,12),
                       child: TextField(
                         controller: _controller_bio,
                         maxLines: 2,
                         style: TextStyle(
                             color: Colors.black,
-                            fontSize: 16
+                            fontSize: 15
                         ),
-                        decoration: InputDecoration(
-                          hintText: 'bio',
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black12),
-                          ),
-                        ),
+                          decoration: InputDecoration(
+                              hintText: "Bio",
+                              border: OutlineInputBorder(),
+                              hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
                         onChanged: (String value) {
                           try {
                             description = value;
@@ -306,183 +300,185 @@ class _EditProfileState extends State<Edit_Profile> {
               ),
               SizedBox(height: 50,),
 
-              GestureDetector(
-                onTap: () async {
-
-                  if(_image==null){
-                    _onLoading();
-                    print(image);
-                    print(uid+" \n"+description+"\n"+name);
-
-
-                    var url= 'https://march.lbits.co/api/worker.php';
-                    var resp=await http.post(url,
-                      headers: {
-                        'Content-Type':
-                        'application/json',
-                        'Authorization':
-                        'Bearer $token'
-                      },
-                      body: json.encode(<String, dynamic>
-                      {
-                        'serviceName': "",
-                        'work': "update user",
-                        'uid':uid,
-                        'userName': name,
-                        'userBio': description,
-                        'profession':profession,
-                        'userPic': image,
-                      }),
-                    );
-
-                    print(profession);
-                    print(resp.body.toString());
-
-                    var result = json.decode(resp.body);
-                    if (result['response'] == 200) {
-                     /* var userAge = result['result']['user_info']['age'];
-                      SharedPreferences prefs = await SharedPreferences.getInstance();
-                      prefs.setString('age', userAge);*/
-                      var db = new DataBaseHelper();
-                      await db.updateUser(User(
-                          uid,
-                          name,
-                          description,
-                          email,
-                          dob,
-                          gender,
-                          profession,
-                          image,
-                          phone));
-
-                      Navigator.pushAndRemoveUntil(context,
-                          MaterialPageRoute(builder: (context) => Home('')),
-                              (Route<dynamic> route) => false);
-
-                    }
-                    else {
-
-                    _sk.currentState.showSnackBar(SnackBar(
-                      content: Text("There is Some Technical Problem Update again",
-                        style: TextStyle(
-                          fontStyle: FontStyle.italic,
-                          fontSize: 15,
-                        ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(30.0, 20, 30, 0),
+                    child: FlatButton(
+                      child: Text(
+                        'Save Changes',
+                        style: Theme.of(context).textTheme.button,
                       ),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(12.0),
-                              topRight: Radius.circular(12.0))),
-                      duration: Duration(seconds: 3),
-                      backgroundColor: Colors.lightBlueAccent,
-                    ));
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      padding: const EdgeInsets.all(15),
+                      color: Theme.of(context).primaryColor,
+                      textColor: Colors.white,
+                      onPressed: () async {
+
+                        if(_image==null){
+                          _onLoading();
+                          print(image);
+                          print(uid+" \n"+description+"\n"+name);
 
 
-                  }
+                          var url= 'https://march.lbits.co/api/worker.php';
+                          var resp=await http.post(url,
+                            headers: {
+                              'Content-Type':
+                              'application/json',
+                              'Authorization':
+                              'Bearer $token'
+                            },
+                            body: json.encode(<String, dynamic>
+                            {
+                              'serviceName': "",
+                              'work': "update user",
+                              'uid':uid,
+                              'userName': name,
+                              'userBio': description,
+                              'profession':profession,
+                              'userPic': image,
+                            }),
+                          );
+
+                          print(profession);
+                          print(resp.body.toString());
+
+                          var result = json.decode(resp.body);
+                          if (result['response'] == 200) {
+                            /* var userAge = result['result']['user_info']['age'];
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      prefs.setString('age', userAge);*/
+                            var db = new DataBaseHelper();
+                            await db.updateUser(User(
+                                uid,
+                                name,
+                                description,
+                                email,
+                                dob,
+                                gender,
+                                profession,
+                                image,
+                                phone));
+
+                            Navigator.pushAndRemoveUntil(context,
+                                MaterialPageRoute(builder: (context) => Home('')),
+                                    (Route<dynamic> route) => false);
+
+                          }
+                          else {
+
+                            _sk.currentState.showSnackBar(SnackBar(
+                              content: Text("There is Some Technical Problem Update again",
+                                style: TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  fontSize: 15,
+                                ),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(12.0),
+                                      topRight: Radius.circular(12.0))),
+                              duration: Duration(seconds: 3),
+                              backgroundColor: Colors.lightBlueAccent,
+                            ));
 
 
-                  }
-                  else{
-                    //here updated img url should be sent
-                    print(uid+" \n"+description+"\n"+name);
-                    _onLoading();
-                    StorageReference storageReference = FirebaseStorage
-                        .instance
-                        .ref()
-                        .child(
-                        'profile/${Path.basename(_image.path)}}');
-                    StorageUploadTask uploadTask = storageReference
-                        .putFile(_image);
-                    await uploadTask.onComplete;
-                    print('File Uploaded');
-                    storageReference.getDownloadURL().then((fileURL) async {
-                      _uploadedFileURL = fileURL;
-
-                      var url= 'https://march.lbits.co/api/worker.php';
-                      var resp=await http.post(url,
-                        headers: {
-                          'Content-Type':
-                          'application/json',
-                          'Authorization':
-                          'Bearer $token'
-                        },
-                        body: json.encode(<String, dynamic>
-                        {
-                          'serviceName': "",
-                          'work': "update user",
-                          'uid':uid,
-                          'userName': name,
-                          'userBio': description,
-                          'profession':profession,
-                          'userPic': _uploadedFileURL,
-                        }),
-                      );
-
-                      print(profession);
-                      print(resp.body.toString());
-
-                      var result = json.decode(resp.body);
-                      if (result['response'] == 200) {
-                        var db = new DataBaseHelper();
-                        await db.updateUser(User(
-                            uid,
-                            name,
-                            description,
-                            email,
-                            dob,
-                            gender,
-                            profession,
-                            _uploadedFileURL,
-                            phone));
-
-                        Navigator.pushAndRemoveUntil(context,
-                            MaterialPageRoute(builder: (context) => Home('')),
-                                (Route<dynamic> route) => false);
-
-                      }
-                      else {
-
-                        _sk.currentState.showSnackBar(SnackBar(
-                          content: Text("There is Some Technical Problem Update again",
-                            style: TextStyle(
-                              fontStyle: FontStyle.italic,
-                              fontSize: 15,
-                            ),
-                          ),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(12.0),
-                                  topRight: Radius.circular(12.0))),
-                          duration: Duration(seconds: 3),
-                          backgroundColor: Colors.lightBlueAccent,
-                        ));
+                          }
 
 
-                      }
+                        }
+                        else{
+                          //here updated img url should be sent
+                          print(uid+" \n"+description+"\n"+name);
+                          _onLoading();
+                          StorageReference storageReference = FirebaseStorage
+                              .instance
+                              .ref()
+                              .child(
+                              'profile/${Path.basename(_image.path)}}');
+                          StorageUploadTask uploadTask = storageReference
+                              .putFile(_image);
+                          await uploadTask.onComplete;
+                          print('File Uploaded');
+                          storageReference.getDownloadURL().then((fileURL) async {
+                            _uploadedFileURL = fileURL;
+
+                            var url= 'https://march.lbits.co/api/worker.php';
+                            var resp=await http.post(url,
+                              headers: {
+                                'Content-Type':
+                                'application/json',
+                                'Authorization':
+                                'Bearer $token'
+                              },
+                              body: json.encode(<String, dynamic>
+                              {
+                                'serviceName': "",
+                                'work': "update user",
+                                'uid':uid,
+                                'userName': name,
+                                'userBio': description,
+                                'profession':profession,
+                                'userPic': _uploadedFileURL,
+                              }),
+                            );
+
+                            print(profession);
+                            print(resp.body.toString());
+
+                            var result = json.decode(resp.body);
+                            if (result['response'] == 200) {
+                              var db = new DataBaseHelper();
+                              await db.updateUser(User(
+                                  uid,
+                                  name,
+                                  description,
+                                  email,
+                                  dob,
+                                  gender,
+                                  profession,
+                                  _uploadedFileURL,
+                                  phone));
+
+                              Navigator.pushAndRemoveUntil(context,
+                                  MaterialPageRoute(builder: (context) => Home('')),
+                                      (Route<dynamic> route) => false);
+
+                            }
+                            else {
+
+                              _sk.currentState.showSnackBar(SnackBar(
+                                content: Text("There is Some Technical Problem Update again",
+                                  style: TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(12.0),
+                                        topRight: Radius.circular(12.0))),
+                                duration: Duration(seconds: 3),
+                                backgroundColor: Colors.lightBlueAccent,
+                              ));
 
 
-                    });
+                            }
 
 
-                  }
-                },
-                child: Container(
-                  width: size.width/3,
-                  height: size.height/15,
-                  decoration:BoxDecoration(
-                      color: Color.fromRGBO(63, 92, 200, 1),
-                      borderRadius: BorderRadius.circular(15)
-                  ) ,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Text("Save Changes",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600
-                      ),),
-                  ),),
+                          });
+
+
+                        }
+
+                      },
+                    ),
+                  ),
+                ],
               )
             ],
           ),
