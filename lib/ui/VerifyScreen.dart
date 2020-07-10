@@ -135,20 +135,23 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
                       int savedGoal = await db.saveGoal(new Goal(
                           val.uid,
                           resultx['result'][i]['goal'],
-                          resultx['result'][i]['target'],
-                          resultx['result'][i]['time_frame'],
-                          resultx['result'][i]['goal_number']));
+                          resultx['result'][i]['level'],
+                          resultx['result'][i]['remindEveryDay'],
+                          resultx['result'][i]['everyDayRemindTime'],
+                          resultx['result'][i]['goal_number'],
+                      ));
                       print("goal saved :$savedGoal");
                     }
-                  });
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  prefs.setInt('log', 1);
+                    SharedPreferences prefs =
+                    await SharedPreferences.getInstance();
+                    prefs.setInt('log', 1);
 
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => Home('')),
-                      (Route<dynamic> route) => false);
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => Home('')),
+                            (Route<dynamic> route) => false);
+                  });
+
                 } else {
                   Navigator.pushAndRemoveUntil(
                       context,

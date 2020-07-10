@@ -4,24 +4,27 @@ class Goal{
 
   String _userId;
   String _goalName;
-  String _target;
-  String _timeFrame;
+  String _level;
+  String _shouldRemind;
+  String _remindTime;
   String _goalNumber;
   int _id;
 
 
   Goal(this._userId,
       this._goalName,
-      this._target,
-      this._timeFrame,
+      this._level,
+      this._shouldRemind,
+      this._remindTime,
       this._goalNumber);
 
   Goal.map(dynamic obj){
 
     this._userId = obj['userId'];
     this._goalName = obj['goalName'];
-    this._target= obj['target'];
-    this._timeFrame= obj['timeFrame'];
+    this._level= obj['level'];
+    this._shouldRemind= obj['shouldRemind'];
+    this._remindTime= obj['remindTime'];
     this._goalNumber= obj['goalNumber'];
     this._id = obj['id'];
 
@@ -30,8 +33,9 @@ class Goal{
 
   String get userId=>_userId;
   String get goalName=>_goalName;
-  String get target=>_target;
-  String get timeFrame=>_timeFrame;
+  String get level=>_level;
+  String get shouldRemind=>_shouldRemind;
+  String get remindTime=>_remindTime;
   String get goalNumber=>_goalNumber;
   int get id=>_id;
 
@@ -41,8 +45,9 @@ class Goal{
 
     map["userId"]=_userId;
     map["goalName"]=_goalName;
-    map["target"]=_target;
-    map["timeFrame"]=_timeFrame;
+    map["level"]=_level;
+    map["shouldRemind"]=_shouldRemind;
+    map["remindTime"]=_remindTime;
     map["goalNumber"]=_goalNumber;
 
     if(id!=null) {
@@ -55,8 +60,9 @@ class Goal{
 
     this._userId = map['userId'];
     this._goalName = map['goalName'];
-    this._target= map['target'];
-    this._timeFrame= map['timeFrame'];
+    this._level= map['level'];
+    this._shouldRemind= map['shouldRemind'];
+    this._remindTime= map['remindTime'];
     this._goalNumber= map['goalNumber'];
     this._id = map["id"];
 

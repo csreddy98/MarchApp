@@ -208,9 +208,9 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                 padding: const EdgeInsets.only(top: 50.0, bottom: 10.0),
                 child: Center(
                     child: Text(
-                  "Select Your Goals",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-                )),
+                      "Select Your Goals",
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                    )),
               ),
 
               Center(child: Text("Goal "+cnt.toString()+" of 3",style: Theme.of(context).textTheme.caption,)),
@@ -239,7 +239,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                     height: dotSize,
                                     decoration: BoxDecoration(
                                         borderRadius:
-                                            BorderRadius.circular(dotSize / 2),
+                                        BorderRadius.circular(dotSize / 2),
                                         color: activeColor)),
                               ),
                             ),
@@ -248,10 +248,10 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                 child: Container(
                                   height: 3,
                                   width:
-                                      MediaQuery.of(context).size.width * 0.35,
+                                  MediaQuery.of(context).size.width * 0.35,
                                   child: LinearProgressIndicator(
                                     backgroundColor:
-                                        cnt >= 2 ? activeColor : Colors.grey[200],
+                                    cnt >= 2 ? activeColor : Colors.grey[200],
                                     valueColor: AlwaysStoppedAnimation<Color>(
                                         cnt >= 2 ? activeColor : Colors.transparent),
                                   ),
@@ -274,9 +274,9 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                   height: dotSize,
                                   decoration: BoxDecoration(
                                       borderRadius:
-                                          BorderRadius.circular(dotSize / 2),
+                                      BorderRadius.circular(dotSize / 2),
                                       color:
-                                          cnt >= 2 ? activeColor : Colors.grey[200]),
+                                      cnt >= 2 ? activeColor : Colors.grey[200]),
                                 ),
                               ),
                             ),
@@ -285,10 +285,10 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                 child: Container(
                                   height: 3,
                                   width:
-                                      MediaQuery.of(context).size.width * 0.3,
+                                  MediaQuery.of(context).size.width * 0.3,
                                   child: LinearProgressIndicator(
                                     backgroundColor:
-                                        cnt >= 3 ? activeColor : Colors.grey[200],
+                                    cnt >= 3 ? activeColor : Colors.grey[200],
                                     //  value: p1.value,
                                     valueColor: AlwaysStoppedAnimation<Color>(
                                         cnt >= 3 ? activeColor : Colors.transparent),
@@ -312,10 +312,10 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                   height: dotSize,
                                   decoration: BoxDecoration(
                                       borderRadius:
-                                          BorderRadius.circular(dotSize / 2),
+                                      BorderRadius.circular(dotSize / 2),
                                       //    color: d3.value
                                       color:
-                                          cnt >= 3 ? activeColor : Colors.grey[300]),
+                                      cnt >= 3 ? activeColor : Colors.grey[300]),
                                 ),
                               ),
                             ),
@@ -350,12 +350,12 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                 child: SimpleAutoCompleteTextField(
                   key: key,
                   decoration: new InputDecoration(
-                    filled: true,
-                    fillColor: c,
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: c, width: 1.0),
-                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                    ),
+                      filled: true,
+                      fillColor: c,
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: c, width: 1.0),
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
                       contentPadding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
                       hintText: "Enter Your Goals",
                       border: new OutlineInputBorder(
@@ -471,10 +471,10 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                   clearOnSubmit: true,
                   textSubmitted: (text) => setState(() {
                     if (text != "" && _disable1 == 0) {
-                       setState(() {
-                         expertise=text;
-                         _disable1=1;
-                       });
+                      setState(() {
+                        expertise=text;
+                        _disable1=1;
+                      });
                     } else {
                       _sk.currentState.showSnackBar(SnackBar(
                         content: Text(
@@ -523,9 +523,6 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                 setState(() {
                                   _disable1=0;
                                   expertise="";
-                                /*  _disable=0;
-                                  added[count-1]="";
-                                  count=count-1;*/
                                 });
                               }),
                         ],
@@ -584,6 +581,13 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                 children: <Widget>[
                                   GestureDetector(
                                     onTap: (){
+                                      if(ampm=='PM'){
+                                        setState(() {
+                                          selectedHour=selectedHour+12;
+                                        });
+                                      }
+                                      /*  var x=DateFormat('kk:mm').format((DateTime.parse('0000-00-00 13:27:00')));
+                                      print(x);*/
                                       setState(() {
                                         timeView=true;
                                       });
@@ -609,7 +613,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                           setState(() {
                                             selectedHour = index+1;
                                           });
-                                          print("$selectedHour");
+                                          //   print("$selectedHour");
                                         },
                                         children: <Widget>[
                                           Text("01"), Text("02"),
@@ -666,11 +670,11 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                         setState(() {
                                           selectedMin = index+1;
                                         });
-                                        print("$selectedMin");
+                                        //   print("$selectedMin");
                                       },
                                     ),
                                   ),
-  //                                SizedBox(width: size.width/50,),
+                                  //                                SizedBox(width: size.width/50,),
                                   Center(
                                     child: Container(
                                       width: 75,
@@ -699,7 +703,12 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
 
                                 ],
                               ),
-                            ):Column(
+                            ):
+                            Container(
+                              height: 0,
+                              width: 0,
+                            ),
+                            /*Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
@@ -731,7 +740,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                 Text("these will be text on your notification",style: Theme.of(context).textTheme.headline3,),
                               ],
                             ),
-
+*/
                           ],
                         )
                     )
@@ -739,284 +748,53 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
               ),
 
 
-              /*//drop down
-              Padding(
-                padding: const EdgeInsets.fromLTRB(25.0, 60, 20.0, 0),
-                child: Row(
-                  children: <Widget>[
-                    Text('Time Frame : '),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    DropdownButton(
-                      value: _selectedTime,
-                      items: _dropdownMenuItems,
-                      onChanged: onChangeDropDownItem,
-                    ),
-                  ],
-                ),
-              ),
-
-              Padding(
-                padding: const EdgeInsets.fromLTRB(25.0, 15, 20.0, 0),
-                child: Row(
-                  children: <Widget>[
-                    Text('Your Level : '),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    DropdownButton(
-                      value: _selectedLevel,
-                      items: _dropdownMenuLevels,
-                      onChanged: onChangeDropDownLevel,
-                    ),
-                  ],
-                ),
-              ),
-
-              //
-              Padding(
-                padding: const EdgeInsets.only(top: 25.0, left: 15),
-                child: Text("Mention the target for your goal"),
-              ),
-
-              Padding(
-                padding: const EdgeInsets.fromLTRB(15.0, 8, 15, 0),
-                child: Container(
-                  child: TextField(
-                    maxLines: 3,
-                    decoration: InputDecoration(
-                      hintText: "Workout for an hour a day",
-                      border: OutlineInputBorder(),
-                    ),
-                    controller: myController,
-                    onChanged: (String value) {
-                      try {
-                        target = value;
-                      } catch (exception) {
-                        target = "";
-                      }
-                    },
-                  ),
-                ),
-              ),
-*/
               cnt > 1
                   ? Row(
-                      children: <Widget>[
-                        Expanded(
-                          flex: 1,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(20.0, 0, 20, 0),
-                                child: FlatButton(
-                                    child: Text(
-                                      'SKIP',
-                                      style: Theme.of(context).textTheme.button,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(25),
-                                    ),
-                                    padding: const EdgeInsets.all(15),
-                                    color: Theme.of(context).primaryColor,
-                                    textColor: Colors.white,
-                                    onPressed: () async {
-                                      SharedPreferences prefs =
-                                          await SharedPreferences.getInstance();
-                                      prefs.setInt('log', 1);
-
-                                      Navigator.pushAndRemoveUntil(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => Home('')),
-                                          (Route<dynamic> route) => false);
-                                    }),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        /*
-
-
-
-                  */
-
-                        Expanded(
-                          flex: 1,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(20.0, 0, 20, 0),
-                                child: FlatButton(
-                                  child: Text(
-                                    'NEXT',
-                                    style: Theme.of(context).textTheme.button,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(25),
-                                  ),
-                                  padding: const EdgeInsets.all(15),
-                                  color: Theme.of(context).primaryColor,
-                                  textColor: Colors.white,
-                                  onPressed: () async {
-                                    if (target != "" &&
-                                        added[count - 1] != "") {
-                                      _onLoading();
-                                      print('cnt :' +
-                                          cnt.toString() +
-                                          'time : ' +
-                                          time +
-                                          ' target :' +
-                                          target);
-
-/*
-                                  var url= 'https://march.lbits.co/app/api/goals.php';
-                                  var resp=await http.post(url,body: jsonEncode(<String, dynamic>{
-                                    'uid':uid,
-                                    'goal':added[count-1],
-                                    'goal_number':count,
-                                    'time_frame':time,
-                                    'target':target
-                                  }));
-*/
-
-                                      var url =
-                                          'https://march.lbits.co/api/worker.php';
-                                      var resp = await http.post(
-                                        url,
-                                        headers: {
-                                          'Content-Type': 'application/json',
-                                          'Authorization': 'Bearer $token'
-                                        },
-                                        body: json.encode(<String, dynamic>{
-                                          'serviceName': "",
-                                          'work': "add goal",
-                                          'uid': uid,
-                                          'goalName': added[count - 1],
-                                          'target': target,
-                                          'timeFrame': time,
-                                          'goalNumber': count.toString(),
-                                          'goalLevel': level,
-                                        }),
-                                      );
-
-                                      print(resp.body.toString());
-                                      var result = json.decode(resp.body);
-                                      if (count == 3 &&
-                                          result['response'] == 200) {
-                                        Navigator.pushAndRemoveUntil(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => Home('')),
-                                            (Route<dynamic> route) => false);
-
-                                        int savedGoal = await db.saveGoal(
-                                            new Goal(
-                                                uid,
-                                                added[count - 1],
-                                                target,
-                                                time,
-                                                count.toString()));
-
-                                        print("goal saved :$savedGoal");
-
-                                        SharedPreferences prefs =
-                                            await SharedPreferences
-                                                .getInstance();
-                                        prefs.setInt('log', 1);
-                                      } else if (result['response'] == 200) {
-                                        int savedGoal = await db.saveGoal(
-                                            new Goal(
-                                                uid,
-                                                added[count - 1],
-                                                target,
-                                                time,
-                                                count.toString()));
-
-                                        print("goal saved :$savedGoal");
-
-                                        Navigator.pop(context);
-                                        setState(() {
-                                          _disable = 0;
-                                          target = "";
-                                          myController.clear();
-                                          time = "1 Month";
-                                          level = "Beginner";
-                                          _selectedTime =
-                                              _dropdownMenuItems[0].value;
-                                          cnt = cnt + 1;
-                                        });
-                                      } else {
-                                        Navigator.pop(context);
-                                        setState(() {
-                                          _disable = 0;
-                                          target = "";
-                                          myController.clear();
-                                          time = "1 Month";
-                                          level = "Beginner";
-                                          _selectedTime =
-                                              _dropdownMenuItems[0].value;
-                                          cnt = cnt - 1;
-                                          added[count - 1] = "";
-                                          count = count - 1;
-                                        });
-
-                                        _sk.currentState.showSnackBar(SnackBar(
-                                          content: Text(
-                                            "There is Some Technical Problem Submit again",
-                                            style: TextStyle(
-                                              fontStyle: FontStyle.italic,
-                                              fontSize: 15,
-                                            ),
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.only(
-                                                  topLeft:
-                                                      Radius.circular(12.0),
-                                                  topRight:
-                                                      Radius.circular(12.0))),
-                                          duration: Duration(seconds: 3),
-                                          backgroundColor:
-                                              Colors.lightBlueAccent,
-                                        ));
-                                      }
-                                    } else {
-                                      _sk.currentState.showSnackBar(SnackBar(
-                                        content: Text(
-                                          "Enter all details and Submit next",
-                                          style: TextStyle(
-                                            fontStyle: FontStyle.italic,
-                                            fontSize: 15,
-                                          ),
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(12.0),
-                                                topRight:
-                                                    Radius.circular(12.0))),
-                                        duration: Duration(seconds: 3),
-                                        backgroundColor: Colors.lightBlueAccent,
-                                      ));
-                                    }
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    )
-                  : Column(
+                children: <Widget>[
+                  Expanded(
+                    flex: 1,
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(20.0, 0, 20, 0),
+                          padding:
+                          const EdgeInsets.fromLTRB(20.0, 0, 20, 0),
+                          child: FlatButton(
+                              child: Text(
+                                'SKIP',
+                                style: Theme.of(context).textTheme.button,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              padding: const EdgeInsets.all(15),
+                              color: Theme.of(context).primaryColor,
+                              textColor: Colors.white,
+                              onPressed: () async {
+                                SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                                prefs.setInt('log', 1);
+
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Home('')),
+                                        (Route<dynamic> route) => false);
+                              }),
+                        ),
+                      ],
+                    ),
+                  ),
+
+
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Padding(
+                          padding:
+                          const EdgeInsets.fromLTRB(20.0, 0, 20, 0),
                           child: FlatButton(
                             child: Text(
                               'NEXT',
@@ -1029,7 +807,8 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                             color: Theme.of(context).primaryColor,
                             textColor: Colors.white,
                             onPressed: () async {
-                              if (target != "" && added[0] != "") {
+                              if (target != "" &&
+                                  added[count - 1] != "") {
                                 _onLoading();
                                 print('cnt :' +
                                     cnt.toString() +
@@ -1038,16 +817,6 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                     ' target :' +
                                     target);
 
-/*
-                            var url= 'https://march.lbits.co/app/api/goals.php';
-                            var resp=await http.post(url,body: jsonEncode(<String, dynamic>{
-                              'uid':uid,
-                              'goal':added[count-1],
-                              'goal_number':count,
-                              'time_frame':time,
-                              'target':target
-                            }));
-*/
 
                                 var url =
                                     'https://march.lbits.co/api/worker.php';
@@ -1062,45 +831,72 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                     'work': "add goal",
                                     'uid': uid,
                                     'goalName': added[count - 1],
-                                    'target': target,
-                                    'timeFrame': time,
                                     'goalNumber': count.toString(),
-                                    'goalLevel': level,
+                                    'goalLevel': expertise,
+                                    'remindEveryDay':"",
+                                    'remindTime':"",
                                   }),
                                 );
 
                                 print(resp.body.toString());
                                 var result = json.decode(resp.body);
-                                if (result['response'] == 200) {
-                                  int savedGoal = await db.saveGoal(new Goal(
-                                      uid,
-                                      added[count - 1],
-                                      target,
-                                      time,
-                                      count.toString()));
+                                if (count == 3 &&
+                                    result['response'] == 200) {
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Home('')),
+                                          (Route<dynamic> route) => false);
 
-                                  print("goal saved :$savedGoal");
+                               /*   int savedGoal = await db.saveGoal(
+                                      new Goal(
+                                          uid,
+                                          added[count - 1],
+                                          target,
+                                          time,
+                                          count.toString()));
+*/
+  //                                print("goal saved :$savedGoal");
+
+                                  SharedPreferences prefs =
+                                  await SharedPreferences
+                                      .getInstance();
+                                  prefs.setInt('log', 1);
+                                } else if (result['response'] == 200) {
+                                  // check what to save
+/*
+                                  int savedGoal = await db.saveGoal(
+                                      new Goal(
+                                          uid,
+                                          added[count - 1],
+                                          target,
+                                          time,
+                                          count.toString()));
+*/
+
+//                                  print("goal saved :$savedGoal");
 
                                   Navigator.pop(context);
                                   setState(() {
                                     _disable = 0;
-                                    target = "";
-                                    myController.clear();
-                                    time = "1 Month";
-                                    level = "Beginner";
-                                    _selectedTime = _dropdownMenuItems[0].value;
+                                    _disable1 = 0;
+                                    selectedHour=0;
+                                    selectedMin=0;
+                                    ampm='AM';
+                                    note="";
+                                    expertise="";
                                     cnt = cnt + 1;
                                   });
                                 } else {
                                   Navigator.pop(context);
                                   setState(() {
+                                    selectedHour=0;
+                                    selectedMin=0;
+                                    ampm='AM';
+                                    expertise="";
+                                    note="";
                                     _disable = 0;
-                                    target = "";
-                                    myController.clear();
-                                    time = "1 Month";
-                                    level = "Beginner";
-                                    _selectedTime = _dropdownMenuItems[0].value;
-                                    cnt = cnt + 1;
+                                    _disable1=0;
                                     added[count - 1] = "";
                                     count = count - 1;
                                   });
@@ -1115,10 +911,13 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                     ),
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(12.0),
-                                            topRight: Radius.circular(12.0))),
+                                            topLeft:
+                                            Radius.circular(12.0),
+                                            topRight:
+                                            Radius.circular(12.0))),
                                     duration: Duration(seconds: 3),
-                                    backgroundColor: Colors.lightBlueAccent,
+                                    backgroundColor:
+                                    Colors.lightBlueAccent,
                                   ));
                                 }
                               } else {
@@ -1133,7 +932,8 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.only(
                                           topLeft: Radius.circular(12.0),
-                                          topRight: Radius.circular(12.0))),
+                                          topRight:
+                                          Radius.circular(12.0))),
                                   duration: Duration(seconds: 3),
                                   backgroundColor: Colors.lightBlueAccent,
                                 ));
@@ -1143,6 +943,131 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                         ),
                       ],
                     ),
+                  ),
+                ],
+              )
+                  : Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20.0, 0, 20, 0),
+                    child: FlatButton(
+                      child: Text(
+                        'NEXT',
+                        style: Theme.of(context).textTheme.button,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      padding: const EdgeInsets.all(15),
+                      color: Theme.of(context).primaryColor,
+                      textColor: Colors.white,
+                      onPressed: () async {
+                        if (expertise != "" && added[0] != "") {
+                          _onLoading();
+                          print('cnt :' +
+                              cnt.toString() +
+                              ' expertise :' +
+                              expertise);
+
+
+                          var url =
+                              'https://march.lbits.co/api/worker.php';
+                          var resp = await http.post(
+                            url,
+                            headers: {
+                              'Content-Type': 'application/json',
+                              'Authorization': 'Bearer $token'
+                            },
+                            body: json.encode(<String, dynamic>{
+                              'serviceName': "",
+                              'work': "add goal",
+                              'uid': uid,
+                              'goalName': added[count - 1],
+                              'goalNumber': count.toString(),
+                              'goalLevel': expertise,
+                              'remindEveryDay':"",
+                              'remindTime':"",
+                              //                                'note':"",
+                            }),
+                          );
+
+                          print(resp.body.toString());
+                          var result = json.decode(resp.body);
+                          if (result['response'] == 200) {
+                       /*     int savedGoal = await db.saveGoal(new Goal(
+                                uid,
+                                added[count - 1],
+                                target,
+                                time,
+                                count.toString()));*/
+
+            //                print("goal saved :$savedGoal");
+
+                            Navigator.pop(context);
+                            setState(() {
+                              _disable = 0;
+                              _disable1 = 0;
+                              selectedHour=0;
+                              selectedMin=0;
+                              ampm='AM';
+                              note="";
+                              expertise="";
+                              cnt = cnt + 1;
+                            });
+                          } else {
+                            Navigator.pop(context);
+                            setState(() {
+
+                              selectedHour=0;
+                              selectedMin=0;
+                              ampm='AM';
+                              expertise="";
+                              note="";
+                              _disable = 0;
+                              _disable1=0;
+                              added[count - 1] = "";
+                              count = count - 1;
+                            });
+
+                            _sk.currentState.showSnackBar(SnackBar(
+                              content: Text(
+                                "There is Some Technical Problem Submit again",
+                                style: TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  fontSize: 15,
+                                ),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(12.0),
+                                      topRight: Radius.circular(12.0))),
+                              duration: Duration(seconds: 3),
+                              backgroundColor: Colors.lightBlueAccent,
+                            ));
+                          }
+                        } else {
+                          _sk.currentState.showSnackBar(SnackBar(
+                            content: Text(
+                              "Enter all details and Submit next",
+                              style: TextStyle(
+                                fontStyle: FontStyle.italic,
+                                fontSize: 15,
+                              ),
+                            ),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(12.0),
+                                    topRight: Radius.circular(12.0))),
+                            duration: Duration(seconds: 3),
+                            backgroundColor: Colors.lightBlueAccent,
+                          ));
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

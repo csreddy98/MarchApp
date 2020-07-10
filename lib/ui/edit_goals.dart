@@ -1,3 +1,4 @@
+/*
 import 'dart:convert';
 
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
@@ -389,8 +390,10 @@ class _EditGoalState extends State<EditGoal> {
                                       //  print(widget.gno+" "+selectedGoal);
                                         await db.updateGoal(Goal(widget.uid,selectedGoal,target,time,widget.gno));
 
-                                        /*Goal g=await db.getGoal(int.parse(widget.gno));
-                                        print(g.goalName+" "+g.goalNumber);*/
+                                        */
+/*Goal g=await db.getGoal(int.parse(widget.gno));
+                                        print(g.goalName+" "+g.goalNumber);*//*
+
 
                                         Navigator.pushAndRemoveUntil(context,
                                             MaterialPageRoute(builder: (context) => Home('')),
@@ -538,3 +541,4 @@ class _EditGoalState extends State<EditGoal> {
     );
   }
 }
+*/

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/screenutil.dart';
 import 'package:march/models/user.dart';
 import 'package:march/models/goal.dart';
+import 'package:march/support/functions.dart';
 import 'package:march/ui/PhoneAuthScreen.dart';
 import 'package:march/ui/gregistration.dart';
 import 'package:march/ui/select.dart';
@@ -56,98 +57,132 @@ class _LoginState extends State<Login> {
     print(user.displayName);
     print(user.uid);
 
-    var url= 'https://march.lbits.co/api/worker.php';
-    var resp=await http.post(url,
-      body: json.encode(<String, dynamic>
-      {
+    var url = 'https://march.lbits.co/api/worker.php';
+    http
+        .post(
+      url,
+      body: json.encode(<String, dynamic>{
         'serviceName': "generatetoken",
         'work': "get user",
-        'uid':user.uid,
+        'uid': user.uid,
       }),
-    );
-
-    print(resp.body.toString());
-    var result = json.decode(resp.body);
-    if (result['response'] == 200) {
-
-      var db = new DataBaseHelper();
-
-      int savedUser =
-      await db.saveUser(new User(
-          user.uid,
-          result['result']['user_info']['fullName'],
-          result['result']['user_info']['bio'],
-          result['result']['user_info']['email'],
-          result['result']['user_info']['DOB'][8]+result['result']['user_info']['DOB'][9]
-              +"-"+result['result']['user_info']['DOB'][5]+result['result']['user_info']['DOB'][6]
-              +"-"+result['result']['user_info']['DOB'].toString().substring(0,4),
-          result['result']['user_info']['sex'],
-          result['result']['user_info']['profession'],
-          result['result']['user_info']['profile_pic'],
-          result['result']['user_info']['mobile']));
-
-
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('token',result['result']['token']);
-      prefs.setString('id',result['result']['user_info']['id']);
-      prefs.setString('age', result['result']['user_info']['age']);
-      print("user saved :$savedUser");
-
-      var res=await http.post(url,
-        headers: {
-          'Content-Type':
-          'application/json',
-          'Authorization':
-          'Bearer '+result['result']['token']
-        },
-        body: json.encode(<String, dynamic>
-        {
-          'serviceName': "",
-          'work': "get goals",
-          'uid':user.uid,
-        }),
-      );
-      print(res.body.toString());
-      var resultx = json.decode(res.body);
-      if(resultx['response'] == 200){
-        int cnt=resultx['result'].length;
-        for(var i=0;i<cnt;i++){
-
-          int savedGoal =
-          await db.saveGoal(new Goal(
+    )
+        .then((resp) {
+      print('${resp.body}');
+      var result = json.decode(resp.body);
+      if (result['response'] == 300) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => Login()));
+      }
+      if (result['response'] == 200) {
+        var db = new DataBaseHelper();
+        db.deleteUserInfo().then((x) async {
+          int savedUser = await db.saveUser(new User(
               user.uid,
-              resultx['result'][i]['goal'],
-              resultx['result'][i]['target'],
-              resultx['result'][i]['time_frame'],
-              resultx['result'][i]['goal_number']));
+              result['result']['user_info']['fullName'],
+              result['result']['user_info']['bio'],
+              result['result']['user_info']['email'],
+              result['result']['user_info']['DOB'][8] +
+                  result['result']['user_info']['DOB'][9] +
+                  "-" +
+                  result['result']['user_info']['DOB'][6] +
+                  result['result']['user_info']['DOB'][7] +
+                  "-" +
+                  result['result']['user_info']['DOB']
+                      .toString()
+                      .substring(0, 4),
+              result['result']['user_info']['sex'],
+              result['result']['user_info']['profession'],
+              result['result']['user_info']['profile_pic'],
+              result['result']['user_info']['mobile']));
+          print("user saved :$savedUser");
+        });
+        db.deleteFriendsInfo().then((x) {
+          var chatList = result['result']['chats_info'];
+          chatList.forEach((val) {
+            imageSaver(val['profile_pic']).then((value) {
+              db.addUser(<String, String>{
+                DataBaseHelper.friendId: val['userId'],
+                DataBaseHelper.friendName: val['fullName'],
+                DataBaseHelper.friendSmallPic: "${value['small_image']}",
+                DataBaseHelper.friendPic: "${value['image']}",
+                DataBaseHelper.friendNetworkPic: "${val['profile_pic']}",
+                DataBaseHelper.friendLastMessage: "",
+                DataBaseHelper.friendLastMessageTime:
+                DateTime.parse(val['time']).toString()
+              }).then((value) => print(value));
+            });
+          });
+        });
+        SharedPreferences.getInstance().then((prefs) {
+          prefs.setString('token', result['result']['token']);
+          prefs.setString('id', result['result']['user_info']['id']);
+          prefs.setString('age', result['result']['user_info']['age']);
+        });
 
-          print("goal saved :$savedGoal");
-        }
+        http
+            .post(
+          url,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + result['result']['token']
+          },
+          body: json.encode(<String, dynamic>{
+            'serviceName': "",
+            'work': "get goals",
+            'uid': user.uid,
+          }),
+        )
+            .then((res) async {
+          print(res.body.toString());
+          var resultx = json.decode(res.body);
+          if (resultx['response'] == 200) {
+            db.deleteGoalsInfo().then((value) async {
+              int cnt = resultx['result'].length;
+              if (cnt == 0) {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => Select()),
+                        (route) => false);
+              }
+              for (var i = 0; i < cnt; i++) {
+                int savedGoal = await db.saveGoal(new Goal(
+                  user.uid,
+                  resultx['result'][i]['goal'],
+                  resultx['result'][i]['level'],
+                  resultx['result'][i]['remindEveryDay'],
+                  resultx['result'][i]['everyDayRemindTime'],
+                  resultx['result'][i]['goal_number'],
+                ));
+                print("goal saved :$savedGoal");
+              }
+              SharedPreferences prefs =
+              await SharedPreferences.getInstance();
+              prefs.setInt('log', 1);
 
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setInt('log', 1);
-
-        Navigator.pushAndRemoveUntil(context,
-            MaterialPageRoute(builder: (context) => Home('')),
-                (Route<dynamic> route) => false);
-
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => Home('')),
+                      (Route<dynamic> route) => false);
+            });
+          } else {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => Select()),
+                    (Route<dynamic> route) => false);
+          }
+        });
+      } else {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) => GRegister()),
+              (Route<dynamic> route) => false,
+        );
       }
-      else{
-
-        Navigator.pushAndRemoveUntil(context,
-            MaterialPageRoute(builder: (context) => Select()),
-                (Route<dynamic> route) => false);
-
-      }
-
-    }
-    else{
-
-      Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(builder: (context) => GRegister()),
-            (Route<dynamic> route) => false,);
-
-    }
+    });
 
 
 
