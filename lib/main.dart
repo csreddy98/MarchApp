@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:march/ui/gregistration.dart';
 import 'package:march/ui/home.dart';
 import 'package:march/ui/login.dart';
+import 'package:march/ui/select.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:splashscreen/splashscreen.dart';
 

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:march/ui/home.dart';
 import 'package:http/http.dart' as http;
@@ -50,10 +51,14 @@ class Level {
 class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
   List<String> added = ["", "", ""];
   String currentText = "";
+  String currentText1 = "";
   GlobalKey<AutoCompleteTextFieldState<String>> key = new GlobalKey();
+  GlobalKey<AutoCompleteTextFieldState<String>> key1 = new GlobalKey();
   int count = 0;
+  Color c=Colors.grey[100];
   final GlobalKey<ScaffoldState> _sk = GlobalKey<ScaffoldState>();
   List<String> suggestions = [];
+  List<String> suggestions1 = ["Newbie","Skilled","Proficient","Experienced","Expert"];
 // drop down
   List<Time> _time = Time.getTime();
   List<Level> _level = Level.getLevel();
@@ -64,12 +69,15 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
   Level _selectedLevel;
   String time = "1 Month";
   String level = "Beginner";
+  String note="";
 // till here
 
   String target = "";
   int cnt = 1;
   String uid;
   String token;
+  bool checkedValue=false;
+  bool timeView=false;
 
   Color activeColor = Color.fromRGBO(254, 209, 125, 1);
   AnimationController animationController;
@@ -164,6 +172,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
   //till here
 
   final myController = TextEditingController();
+  String expertise="";
 
   @override
   void dispose() {
@@ -172,19 +181,25 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  int _disable = 0;
+  int _disable = 0,_disable1=0;
   SimpleAutoCompleteTextField textField;
   bool showWhichErrorText = false;
+
+  int selectedHour=0;
+  int selectedMin=0;
+  int meridian;
+  String ampm="AM";
 
   @override
   Widget build(BuildContext context) {
     final dotSize = 20.0;
+    Size size = MediaQuery.of(context).size;
 
     return Scaffold(
       key: _sk,
       body: SingleChildScrollView(
         child: Container(
-          height: MediaQuery.of(context).size.height,
+          height: MediaQuery.of(context).size.height*1.2,
           width: MediaQuery.of(context).size.width,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -335,6 +350,12 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                 child: SimpleAutoCompleteTextField(
                   key: key,
                   decoration: new InputDecoration(
+                    filled: true,
+                    fillColor: c,
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: c, width: 1.0),
+                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                    ),
                       contentPadding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
                       hintText: "Enter Your Goals",
                       border: new OutlineInputBorder(
@@ -395,7 +416,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                 child: Container(
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: Colors.black,
+                        color: Colors.grey,
                         width: 1,
                       ),
                       borderRadius: BorderRadius.circular(5),
@@ -411,7 +432,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                               icon: Icon(
                                 Icons.clear,
                                 size: 16,
-                                color: Color.fromRGBO(63, 92, 200, 1),
+                                color: Colors.grey,
                               ),
                               onPressed: () {
                                 setState(() {
@@ -426,7 +447,299 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                 ),
               ):Container(),
 
-              //drop down
+              _disable1==1?Container() :Padding(
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+                child: SimpleAutoCompleteTextField(
+                  key: key1,
+                  decoration: new InputDecoration(
+                      filled: true,
+                      fillColor: c,
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: c, width: 1.0),
+                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                      ),
+                      contentPadding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
+                      hintText: "Choose Expertise",
+                      border: new OutlineInputBorder(
+                        borderRadius: const BorderRadius.all(
+                          const Radius.circular(10.0),
+                        ),
+                      )),
+                  controller: TextEditingController(),
+                  suggestions: suggestions1,
+                  textChanged: (text) => currentText1 = text,
+                  clearOnSubmit: true,
+                  textSubmitted: (text) => setState(() {
+                    if (text != "" && _disable1 == 0) {
+                       setState(() {
+                         expertise=text;
+                         _disable1=1;
+                       });
+                    } else {
+                      _sk.currentState.showSnackBar(SnackBar(
+                        content: Text(
+                          "Enter all details and Submit next",
+                          style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                            fontSize: 15,
+                          ),
+                        ),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(12.0),
+                                topRight: Radius.circular(12.0))),
+                        duration: Duration(seconds: 3),
+                        backgroundColor: Colors.lightBlueAccent,
+                      ));
+                    }
+                  }),
+                ),
+              ),
+
+              _disable1==1?Padding(
+                padding: const EdgeInsets.all(20),
+                child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.grey,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left:8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Expanded(
+                              child: Text(expertise)),
+                          IconButton(
+                              icon: Icon(
+                                Icons.clear,
+                                size: 16,
+                                color: Colors.grey,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _disable1=0;
+                                  expertise="";
+                                /*  _disable=0;
+                                  added[count-1]="";
+                                  count=count-1;*/
+                                });
+                              }),
+                        ],
+                      ),
+                    )
+                ),
+              ):Container(),
+
+
+              CheckboxListTile(
+                title: Text("Remind me every day",style: TextStyle(fontSize:16,color: Colors.black,fontWeight: FontWeight.w400),),
+                value: checkedValue,
+                activeColor: Theme.of(context).primaryColor,
+                onChanged: (newValue) {
+                  setState(() {
+                    checkedValue = newValue;
+                  });
+                },
+                controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
+              ),
+
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0,top: 5,right: 20),
+                child: Divider(thickness: 1,),
+              ),
+
+              Center(
+                child: Visibility(
+                    maintainSize: false,
+                    maintainAnimation: true,
+                    maintainState: true,
+                    visible: checkedValue,
+                    child: Container(
+                        height: size.height/2.9,
+                        width: size.width/1.14,
+                        margin: EdgeInsets.only(top: 5, bottom: 5),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+
+                            Text('Remind me Everyday at $selectedHour:$selectedMin $ampm',
+                                style: TextStyle(color: Colors.black,
+                                    fontSize: 16)),
+                            Padding(
+                              padding: const EdgeInsets.only(top:8.0),
+                              child: Divider(thickness: 1,),
+                            ),
+
+                            Visibility(
+                              maintainSize: false,
+                              maintainAnimation: true,
+                              maintainState: true,
+                              visible: timeView==false?true:false,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  GestureDetector(
+                                    onTap: (){
+                                      setState(() {
+                                        timeView=true;
+                                      });
+                                    },
+                                    child: Text('Done',style: TextStyle(fontSize: 14),),
+                                  )
+                                ],
+                              ),
+                            ),
+                            timeView==false?Padding(
+                              padding: const EdgeInsets.only(left:30),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Center(
+                                    child: Container(
+                                      width: size.width/4.5,
+                                      height: size.height/4,
+                                      child: CupertinoPicker(
+                                        backgroundColor: Colors.transparent,
+                                        itemExtent: 50,
+                                        onSelectedItemChanged: (int index){
+                                          setState(() {
+                                            selectedHour = index+1;
+                                          });
+                                          print("$selectedHour");
+                                        },
+                                        children: <Widget>[
+                                          Text("01"), Text("02"),
+                                          Text("03"), Text("04"),
+                                          Text("05"), Text("06"),
+                                          Text("07"),Text("08"),
+                                          Text("09"),Text("10"),
+                                          Text("11"),Text("12"),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+
+//                                  SizedBox(width: size.width/50,),
+                                  Container(
+                                    width: 75,
+                                    height: 100,
+                                    child: CupertinoPicker(
+                                      backgroundColor: Colors.transparent,
+                                      itemExtent: 50,
+                                      children: <Widget>[
+                                        Text("01"), Text("02"),
+                                        Text("03"), Text("04"),
+                                        Text("05"), Text("06"),
+                                        Text("07"),Text("08"),
+                                        Text("09"),Text("10"),
+                                        Text("11"),Text("12"),
+                                        Text("13"), Text("14"),
+                                        Text("15"), Text("16"),
+                                        Text("17"), Text("18"),
+                                        Text("19"),Text("20"),
+                                        Text("21"),Text("22"),
+                                        Text("23"),Text("24"),
+                                        Text("25"), Text("26"),
+                                        Text("27"), Text("28"),
+                                        Text("29"), Text("30"),
+                                        Text("31"),Text("32"),
+                                        Text("33"),Text("34"),
+                                        Text("35"),Text("36"),
+                                        Text("37"), Text("38"),
+                                        Text("39"), Text("40"),
+                                        Text("41"), Text("42"),
+                                        Text("43"),Text("44"),
+                                        Text("45"),Text("46"),
+                                        Text("47"),Text("48"),
+                                        Text("49"), Text("50"),
+                                        Text("51"), Text("52"),
+                                        Text("53"), Text("54"),
+                                        Text("55"),Text("56"),
+                                        Text("57"),Text("58"),
+                                        Text("59"),
+                                      ],
+                                      onSelectedItemChanged: (int index){
+                                        setState(() {
+                                          selectedMin = index+1;
+                                        });
+                                        print("$selectedMin");
+                                      },
+                                    ),
+                                  ),
+  //                                SizedBox(width: size.width/50,),
+                                  Center(
+                                    child: Container(
+                                      width: 75,
+                                      height: 115,
+                                      child: CupertinoPicker(
+                                        backgroundColor: Colors.transparent,
+                                        itemExtent: 50,
+                                        onSelectedItemChanged: (int index){
+                                          if(index==0) {
+                                            setState(() {
+                                              ampm = "AM";
+                                            });
+                                          }
+                                          else{
+                                            setState(() {
+                                              ampm = "PM";
+                                            });
+                                          }
+                                        },
+                                        children: <Widget>[
+                                          Text("AM"), Text("PM"),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+
+                                ],
+                              ),
+                            ):Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(top:12.0),
+                                  child: Text("Write a Note (Optional)",style: Theme.of(context).textTheme.subtitle2,),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(0.0,10.0,0.0,10),
+                                  child: TextField(
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: Colors.black
+                                    ),
+                                    decoration: InputDecoration(
+                                        hintText: "its time to work on your goal",
+                                        border: OutlineInputBorder(),
+                                        hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
+                                    onChanged: (String value) {
+                                      try {
+                                        note = value;
+                                      } catch (exception) {
+                                        note ="";
+                                      }
+                                    },
+                                  ),
+                                ),
+                                Text("these will be text on your notification",style: Theme.of(context).textTheme.headline3,),
+                              ],
+                            ),
+
+                          ],
+                        )
+                    )
+                ),
+              ),
+
+
+              /*//drop down
               Padding(
                 padding: const EdgeInsets.fromLTRB(25.0, 60, 20.0, 0),
                 child: Row(
@@ -487,7 +800,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                   ),
                 ),
               ),
-
+*/
               cnt > 1
                   ? Row(
                       children: <Widget>[
@@ -498,7 +811,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                             children: <Widget>[
                               Padding(
                                 padding:
-                                    const EdgeInsets.fromLTRB(20.0, 20, 20, 0),
+                                    const EdgeInsets.fromLTRB(20.0, 0, 20, 0),
                                 child: FlatButton(
                                     child: Text(
                                       'SKIP',
@@ -539,7 +852,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                             children: <Widget>[
                               Padding(
                                 padding:
-                                    const EdgeInsets.fromLTRB(20.0, 20, 20, 0),
+                                    const EdgeInsets.fromLTRB(20.0, 0, 20, 0),
                                 child: FlatButton(
                                   child: Text(
                                     'NEXT',
@@ -703,7 +1016,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(20.0, 20, 20, 0),
+                          padding: const EdgeInsets.fromLTRB(20.0, 0, 20, 0),
                           child: FlatButton(
                             child: Text(
                               'NEXT',
