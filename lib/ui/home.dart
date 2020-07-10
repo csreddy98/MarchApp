@@ -5,8 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:march/ui/MessagesScreen.dart';
-import 'package:march/ui/find_screen.dart';
-import 'package:march/ui/peopleFinder.dart';
+// import 'package:march/ui/find_screen.dart';
+import 'package:march/ui/peopleFinderHome.dart';
 import 'package:march/ui/profile.dart';
 import 'package:march/ui/settings.dart';
 import 'package:march/utils/database_helper.dart';
@@ -15,6 +15,7 @@ import 'package:flutter_socket_io/flutter_socket_io.dart';
 import 'package:flutter_socket_io/socket_io_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:march/ui/TestHomePage.dart';
 
 Future myBackgroundMessageHandler(Map<String, dynamic> message) async {
   DataBaseHelper db = DataBaseHelper();
@@ -107,7 +108,7 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     tabs = [
-      PeopleFinder(),
+      TestHomePage(),
       MessagesScreen('$chatsPage'),
       Profile(),
     ];

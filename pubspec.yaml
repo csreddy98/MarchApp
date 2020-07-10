@@ -41,8 +41,8 @@ dependencies:
   flutter_icons:
   bubble: ^1.1.9+1
   cached_network_image: 
-  flutter_startup:
-  flutter_isolate:
+  async: ^2.4.1
+  status_alert: ^0.1.2
 
 dev_dependencies:
   flutter_test:

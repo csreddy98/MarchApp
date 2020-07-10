@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class ProfileTop extends StatelessWidget {
@@ -5,7 +6,7 @@ class ProfileTop extends StatelessWidget {
       {@required this.name,
       @required this.picUrl,
       @required this.profession,
-      @required this.location})
+      this.location})
       : assert(name != null),
         assert(picUrl != null),
         assert(profession != null),
@@ -26,12 +27,11 @@ class ProfileTop extends StatelessWidget {
               border: Border.all(width: 5, color: Colors.white),
               borderRadius: BorderRadius.all(Radius.circular(10))),
           child: ClipRRect(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            child: Image.network(
-              "$picUrl",
-              fit: BoxFit.cover,
-            ),
-          ),
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              child: CachedNetworkImage(
+                imageUrl: "$picUrl",
+                fit: BoxFit.cover,
+              )),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 8.0),
@@ -50,22 +50,24 @@ class ProfileTop extends StatelessWidget {
                 fontWeight: FontWeight.normal),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(Icons.location_on),
-              Text(
-                "$location",
-                style: TextStyle(
-                    fontWeight: FontWeight.w100,
-                    fontFamily: 'montserrat',
-                    fontSize: 13),
-              ),
-            ],
-          ),
-        ),
+        (location != null)
+            ? Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(Icons.location_on),
+                    Text(
+                      "$location",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w100,
+                          fontFamily: 'montserrat',
+                          fontSize: 13),
+                    ),
+                  ],
+                ),
+              )
+            : Container(),
       ],
     );
   }

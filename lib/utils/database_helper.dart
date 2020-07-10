@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:march/models/user.dart';
 import 'package:march/models/goal.dart';
+import 'package:march/ui/peopleFinder.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
@@ -27,8 +28,9 @@ class DataBaseHelper {
 
   final String goalTable = "goalTable";
   final String columnGoalName = "goalName";
-  final String columnTarget = "target";
-  final String columnTimeFrame = "timeFrame";
+  final String columnLevel = "level";
+  final String columnShouldRemind = "shouldRemind";
+  final String remindTime = "remindTime";
   final String columnGoalNumber = "goalNumber";
 
   final String friendsTable = "myFriends";
@@ -52,6 +54,23 @@ class DataBaseHelper {
   static String messageTime = "time";
   static String messageTransportStatus = "msgTransportStatus";
   static String messageCode = "msgCode";
+
+  static String peopleFinderTable = "peopleFinderTable";
+  static String peopleFinderRowId = "rowId";
+  static String peopleFinderid = "personId";
+  static String peopleFinderName = "personName";
+  static String peopleFinderAge = "personAge";
+  static String peopleFinderGender = "personGender";
+  static String peopleFinderBio = "personBio";
+  static String peopleFinderProfession = "personProfession";
+  static String peopleFinderLocation = "personLocation";
+  static String peopleFinderPic = "personPic";
+
+  static String peopleFinderGoalsTable = "peopleFinderGoalsTable";
+  static String peopleFinderGoalId = "goalId";
+  static String peopleFinderPersonId = "personGoalId";
+  static String peopleFinderGoalName = "personGoalName";
+  static String peopleFinderGoalLevel = "personGoalLevel";
 
   Future<Database> get db async {
     if (_db != null) {
@@ -84,8 +103,8 @@ class DataBaseHelper {
 
     await db.execute("CREATE TABLE $goalTable( $columnId INTEGER PRIMARY KEY,"
         " $columnUserId TEXT,$columnGoalName TEXT,"
-        " $columnTarget TEXT,$columnTimeFrame TEXT,"
-        " $columnGoalNumber TEXT"
+        " $columnLevel TEXT,$columnShouldRemind BOOLEAN,"
+        " $remindTime TEXT, $columnGoalNumber TEXT"
         ")");
 
     await db.execute("CREATE TABLE $friendsTable("
@@ -106,6 +125,25 @@ class DataBaseHelper {
         "$seenStatus TEXT,"
         "$messageTransportStatus TEXT, "
         "$messageTime TEXT"
+        ")");
+
+    await db.execute("CREATE TABLE $peopleFinderTable("
+        "$peopleFinderRowId INTEGER PRIMARY KEY AUTOINCREMENT, "
+        "$peopleFinderid TEXT NOT NULL, "
+        "$peopleFinderName TEXT NOT NULL, "
+        "$peopleFinderAge TEXT NOT NULL, "
+        "$peopleFinderPic TEXT NOT NULL, "
+        "$peopleFinderGender TEXT NOT NULL, "
+        "$peopleFinderLocation TEXT NOT NULL, "
+        "$peopleFinderProfession TEXT NOT NULL, "
+        "$peopleFinderBio TEXT NOT NULL "
+        ")");
+
+    await db.execute("CREATE TABLE $peopleFinderGoalsTable("
+        "$peopleFinderGoalId INTEGER PRIMARY KEY AUTOINCREMENT, "
+        "$peopleFinderPersonId TEXT NOT NULL, "
+        "$peopleFinderGoalName TEXT NOT NULL, "
+        "$peopleFinderGoalLevel TEXT NOT NULL "
         ")");
   }
 
@@ -179,15 +217,10 @@ class DataBaseHelper {
         await dbClient.rawQuery("SELECT COUNT(*) FROM $goalTable"));
   }
 
-  Future<Goal> getGoal(int id) async {
+  Future<List> getGoal(int id) async {
     var dbClient = await db;
-    var result = await dbClient
-        .rawQuery("SELECT * FROM $goalTable WHERE $columnId =$id");
-
-    if (result.length == 0)
-      return null;
-    else
-      return new Goal.fromMap(result.first);
+    var result = await dbClient.rawQuery("SELECT * FROM $goalTable");
+    return result;
   }
 
   Future<int> deleteGoal(int id) async {
@@ -290,12 +323,6 @@ class DataBaseHelper {
     return await dbClient.rawDelete("DELETE FROM $messagesTable");
   }
 
-  // Future<List<Map>> getLastMessage() async {
-  //   var dbClient = await db;
-  //   return await dbClient.rawQuery(
-  //       "SELECT DISTINCT *, datetime(time) AS time,  FROM $messagesTable ORDER BY $messageId DESC");
-  // }
-
   Future<int> deleteMessage(delMessageId) async {
     var dbClient = await db;
     return await dbClient.rawDelete(
@@ -312,6 +339,45 @@ class DataBaseHelper {
     var dbClient = await db;
     return await dbClient.rawQuery(
         "SELECT COUNT(1) as newMessages FROM $messagesTable WHERE $messageOtherId = $userId AND $seenStatus = 'unseen'");
+  }
+
+  Future<int> insertPersonForPeopleFinder(peopleFinderInfo) async {
+    var dbClient = await db;
+    return await dbClient.insert(peopleFinderTable, peopleFinderInfo);
+  }
+
+  Future<List<Map>> getPeopleFinderPeople() async {
+    var dbClient = await db;
+    return await dbClient.rawQuery("SELECT * FROM $peopleFinderTable");
+  }
+
+  Future<List> getPersonWithId(personId) async {
+    var dbClient = await db;
+    return await dbClient.rawQuery(
+        "SELECT COUNT(1) as personCount FROM $peopleFinderTable WHERE $peopleFinderid = '$personId'");
+  }
+
+  Future<int> addPersonGoal(goalInfo) async {
+    var dbClient = await db;
+    return await dbClient.insert(peopleFinderGoalsTable, goalInfo);
+  }
+
+  Future<int> peopleFinderRemovePerson(personId) async {
+    var dbClient = await db;
+    return await dbClient.rawDelete(
+        "DELETE FROM $peopleFinderTable WHERE $peopleFinderid = '$personId'");
+  }
+
+  Future<List> selectGoals(personId) async {
+    var dbClient = await db;
+    return await dbClient.rawQuery(
+        "SELECT * FROM $peopleFinderGoalsTable WHERE $peopleFinderPersonId = '$personId'");
+  }
+
+  Future<int> removePersonGoals(personId) async {
+    var dbClient = await db;
+    return await dbClient.rawDelete(
+        "DELETE FROM $peopleFinderGoalsTable WHERE $peopleFinderPersonId = '$personId'");
   }
 
   Future close() async {
