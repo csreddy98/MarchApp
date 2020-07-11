@@ -111,7 +111,7 @@ class _GRegisterState extends State<GRegister> {
         phoneColor=c;
         nc=c;ec=c;phc=c;
         prc=c;bc=c;
-        if(val.email!="" &&val.displayName!=""){
+        if((val.email!="" && val.email!=null) && (val.displayName!="" && val.displayName!=null)) {
           email=val.email;
           name=val.displayName;
           emailColor=Colors.white;

@@ -4,74 +4,39 @@ import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:march/models/goal.dart';
 import 'package:march/ui/home.dart';
 import 'package:http/http.dart' as http;
 import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:march/models/goal.dart';
 
 class Select extends StatefulWidget {
   @override
   _SelectState createState() => _SelectState();
 }
 
-// this is for drop down
-class Time {
-  int id;
-  String time;
 
-  Time(this.id, this.time);
 
-  static List<Time> getTime() {
-    return <Time>[
-      Time(1, '1 Month'),
-      Time(2, '3 Month'),
-      Time(3, '6 Month'),
-      Time(4, '1 Year'),
-      Time(5, '>1 Year'),
-    ];
-  }
-}
-
-class Level {
-  int id;
-  String level;
-
-  Level(this.id, this.level);
-
-  static List<Level> getLevel() {
-    return <Level>[
-      Level(1, 'Beginner'),
-      Level(2, 'Intermediate'),
-      Level(3, 'Professional'),
-    ];
-  }
-}
-
-class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
+class _SelectState extends State<Select>  with SingleTickerProviderStateMixin{
   List<String> added = ["", "", ""];
   String currentText = "";
   String currentText1 = "";
+  int click=0;
   GlobalKey<AutoCompleteTextFieldState<String>> key = new GlobalKey();
   GlobalKey<AutoCompleteTextFieldState<String>> key1 = new GlobalKey();
   int count = 0;
+  String remind="0";
   Color c=Colors.grey[100];
   final GlobalKey<ScaffoldState> _sk = GlobalKey<ScaffoldState>();
   List<String> suggestions = [];
   List<String> suggestions1 = ["Newbie","Skilled","Proficient","Experienced","Expert"];
 // drop down
-  List<Time> _time = Time.getTime();
-  List<Level> _level = Level.getLevel();
   var db = new DataBaseHelper();
-  List<DropdownMenuItem<Time>> _dropdownMenuItems;
-  List<DropdownMenuItem<Level>> _dropdownMenuLevels;
-  Time _selectedTime;
-  Level _selectedLevel;
   String time = "1 Month";
-  String level = "Beginner";
   String note="";
+  String goalsLevel="";
 // till here
-
+   String sendTime="none";
   String target = "";
   int cnt = 1;
   String uid;
@@ -94,13 +59,6 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
         uid = val.uid;
       });
     });
-//drop down
-    _dropdownMenuItems = buildDropDownMenuItems(_time);
-    _selectedTime = _dropdownMenuItems[0].value;
-    //
-    _dropdownMenuLevels = buildDropDownMenuLevels(_level);
-    _selectedLevel = _dropdownMenuLevels[0].value;
-
     _load();
     super.initState();
     nameController = TextEditingController();
@@ -131,45 +89,6 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
     animationController.forward();
   }
 
-  //drop down
-
-  List<DropdownMenuItem<Level>> buildDropDownMenuLevels(List lev) {
-    List<DropdownMenuItem<Level>> items = List();
-    for (Level level in lev) {
-      items.add(DropdownMenuItem(
-        value: level,
-        child: Text(level.level),
-      ));
-    }
-    return items;
-  }
-
-  List<DropdownMenuItem<Time>> buildDropDownMenuItems(List tim) {
-    List<DropdownMenuItem<Time>> items = List();
-    for (Time time in tim) {
-      items.add(DropdownMenuItem(
-        value: time,
-        child: Text(time.time),
-      ));
-    }
-    return items;
-  }
-
-  onChangeDropDownLevel(Level selectedLevel) {
-    setState(() {
-      _selectedLevel = selectedLevel;
-      level = selectedLevel.level;
-    });
-  }
-
-  onChangeDropDownItem(Time selectedTime) {
-    setState(() {
-      _selectedTime = selectedTime;
-      time = selectedTime.time;
-    });
-  }
-
-  //till here
 
   final myController = TextEditingController();
   String expertise="";
@@ -334,7 +253,6 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                   children: <Widget>[
                     Text(count>0?added[0]:"Goal 1",
                         style: Theme.of(context).textTheme.caption),
-                    //SizedBox(width: 1),
                     Text(count>1?added[1]:"Goal 2",
                         style: Theme.of(context).textTheme.caption),
                     // SizedBox(width: MediaQuery.of(context).size.width * 0.25,),
@@ -474,6 +392,22 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                       setState(() {
                         expertise=text;
                         _disable1=1;
+                        if(expertise=='Newbie'){
+                          goalsLevel="0";
+                        }
+                        else if(expertise=='Skilled'){
+                          goalsLevel="1";
+                        }
+                        else if(expertise=='Proficient'){
+                          goalsLevel="2";
+                        }
+                        else if(expertise=='Experienced'){
+                          goalsLevel="3";
+                        }
+                        else if(expertise=='Expert'){
+                          goalsLevel="4";
+                        }
+
                       });
                     } else {
                       _sk.currentState.showSnackBar(SnackBar(
@@ -582,12 +516,32 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                   GestureDetector(
                                     onTap: (){
                                       if(ampm=='PM'){
+                                       int hour=selectedHour+12;
+                                       String min=selectedMin.toString();
+                                       if(selectedMin<10){
+                                         min="0$selectedMin";
+                                       }
                                         setState(() {
-                                          selectedHour=selectedHour+12;
+                                          click=1;
+                                          sendTime="$hour:$min:00";
+                                          print(sendTime);
                                         });
                                       }
-                                      /*  var x=DateFormat('kk:mm').format((DateTime.parse('0000-00-00 13:27:00')));
-                                      print(x);*/
+                                      else{
+                                          String hr=selectedHour.toString();
+                                          String min=selectedMin.toString();
+                                          if(selectedHour<10){
+                                            min="0$selectedMin";
+                                          }
+                                          if(selectedMin<10){
+                                            hr="0$selectedHour";
+                                          }
+                                          setState(() {
+                                          click=1;
+                                          sendTime="$hr:$min:00";
+                                          print(sendTime);
+                                        });
+                                      }
                                       setState(() {
                                         timeView=true;
                                       });
@@ -807,103 +761,142 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                             color: Theme.of(context).primaryColor,
                             textColor: Colors.white,
                             onPressed: () async {
-                              if (target != "" &&
-                                  added[count - 1] != "") {
-                                _onLoading();
-                                print('cnt :' +
-                                    cnt.toString() +
-                                    'time : ' +
-                                    time +
-                                    ' target :' +
-                                    target);
+                              if((checkedValue==true && click==1)|| checkedValue==false){
+
+                                if (expertise != "" &&
+                                    added[count - 1] != "") {
+                                  if(sendTime!="none"){
+                                    setState(() {
+                                      remind="1";
+                                    });
+                                  }
+                                  _onLoading();
+                                  print('cnt :' +
+                                      cnt.toString()+
+                                      ' expertise :' +
+                                      expertise);
 
 
-                                var url =
-                                    'https://march.lbits.co/api/worker.php';
-                                var resp = await http.post(
-                                  url,
-                                  headers: {
-                                    'Content-Type': 'application/json',
-                                    'Authorization': 'Bearer $token'
-                                  },
-                                  body: json.encode(<String, dynamic>{
-                                    'serviceName': "",
-                                    'work': "add goal",
-                                    'uid': uid,
-                                    'goalName': added[count - 1],
-                                    'goalNumber': count.toString(),
-                                    'goalLevel': expertise,
-                                    'remindEveryDay':"",
-                                    'remindTime':"",
-                                  }),
-                                );
+                                  print(remind+" "+sendTime);
 
-                                print(resp.body.toString());
-                                var result = json.decode(resp.body);
-                                if (count == 3 &&
-                                    result['response'] == 200) {
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => Home('')),
-                                          (Route<dynamic> route) => false);
+                                  var url =
+                                      'https://march.lbits.co/api/worker.php';
+                                  var resp = await http.post(
+                                    url,
+                                    headers: {
+                                      'Content-Type': 'application/json',
+                                      'Authorization': 'Bearer $token'
+                                    },
+                                    body: json.encode(<String, dynamic>{
+                                      'serviceName': "",
+                                      'work': "add goal",
+                                      'uid': uid,
+                                      'goalName': added[count - 1],
+                                      'goalNumber': count.toString(),
+                                      'goalLevel': goalsLevel,
+                                      'remindEveryday':remind,
+                                      'remindTime':sendTime,
+                                    }),
+                                  );
 
-                               /*   int savedGoal = await db.saveGoal(
-                                      new Goal(
-                                          uid,
-                                          added[count - 1],
-                                          target,
-                                          time,
-                                          count.toString()));
-*/
-  //                                print("goal saved :$savedGoal");
+                                  print(resp.body.toString());
+                                  var result = json.decode(resp.body);
+                                  if (count == 3 &&
+                                      result['response'] == 200) {
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => Home('')),
+                                            (Route<dynamic> route) => false);
 
-                                  SharedPreferences prefs =
-                                  await SharedPreferences
-                                      .getInstance();
-                                  prefs.setInt('log', 1);
-                                } else if (result['response'] == 200) {
-                                  // check what to save
-/*
-                                  int savedGoal = await db.saveGoal(
-                                      new Goal(
-                                          uid,
-                                          added[count - 1],
-                                          target,
-                                          time,
-                                          count.toString()));
-*/
+                                    int savedGoal = await db.saveGoal(
+                                        new Goal(
+                                            uid,
+                                            added[count - 1],
+                                            goalsLevel,
+                                            remind,
+                                            sendTime,
+                                            count.toString()));
 
-//                                  print("goal saved :$savedGoal");
+                                    print("goal saved :$savedGoal");
 
-                                  Navigator.pop(context);
-                                  setState(() {
-                                    _disable = 0;
-                                    _disable1 = 0;
-                                    selectedHour=0;
-                                    selectedMin=0;
-                                    ampm='AM';
-                                    note="";
-                                    expertise="";
-                                    cnt = cnt + 1;
-                                  });
+                                    SharedPreferences prefs =
+                                    await SharedPreferences
+                                        .getInstance();
+                                    prefs.setInt('log', 1);
+                                  } else if (result['response'] == 200) {
+                                    // check what to save
+                                    int savedGoal = await db.saveGoal(
+                                        new Goal(
+                                            uid,
+                                            added[count - 1],
+                                            goalsLevel,
+                                            remind,
+                                            sendTime,
+                                            count.toString()));
+
+                                    print("goal saved :$savedGoal");
+
+                                    Navigator.pop(context);
+                                    setState(() {
+                                      _disable = 0;
+                                      _disable1 = 0;
+                                      selectedHour=0;
+                                      selectedMin=0;
+                                      sendTime="none";
+                                      remind="0";
+                                      ampm='AM';
+                                      note="";
+                                      timeView=false;
+                                      checkedValue=false;
+                                      click=0;
+                                      expertise="";
+                                      goalsLevel="";
+                                      cnt = cnt + 1;
+                                    });
+                                  } else {
+                                    Navigator.pop(context);
+                                    setState(() {
+                                      selectedHour=0;
+                                      selectedMin=0;
+                                      checkedValue=false;
+                                      ampm='AM';
+                                      timeView=false;
+                                      expertise="";
+                                      sendTime="none";
+                                      remind="0";
+                                      note="";
+                                      click=0;
+                                      goalsLevel="";
+                                      _disable = 0;
+                                      _disable1=0;
+                                      added[count - 1] = "";
+                                      count = count - 1;
+                                    });
+
+                                    _sk.currentState.showSnackBar(SnackBar(
+                                      content: Text(
+                                        "There is Some Technical Problem Submit again",
+                                        style: TextStyle(
+                                          fontStyle: FontStyle.italic,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                              topLeft:
+                                              Radius.circular(12.0),
+                                              topRight:
+                                              Radius.circular(12.0))),
+                                      duration: Duration(seconds: 3),
+                                      backgroundColor:
+                                      Colors.lightBlueAccent,
+                                    ));
+                                  }
                                 } else {
-                                  Navigator.pop(context);
-                                  setState(() {
-                                    selectedHour=0;
-                                    selectedMin=0;
-                                    ampm='AM';
-                                    expertise="";
-                                    note="";
-                                    _disable = 0;
-                                    _disable1=0;
-                                    added[count - 1] = "";
-                                    count = count - 1;
-                                  });
-
                                   _sk.currentState.showSnackBar(SnackBar(
                                     content: Text(
-                                      "There is Some Technical Problem Submit again",
+                                      "Enter all details and Submit next",
                                       style: TextStyle(
                                         fontStyle: FontStyle.italic,
                                         fontSize: 15,
@@ -911,19 +904,18 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                     ),
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.only(
-                                            topLeft:
-                                            Radius.circular(12.0),
+                                            topLeft: Radius.circular(12.0),
                                             topRight:
                                             Radius.circular(12.0))),
                                     duration: Duration(seconds: 3),
-                                    backgroundColor:
-                                    Colors.lightBlueAccent,
+                                    backgroundColor: Colors.lightBlueAccent,
                                   ));
                                 }
-                              } else {
+                              }
+                              else{
                                 _sk.currentState.showSnackBar(SnackBar(
                                   content: Text(
-                                    "Enter all details and Submit next",
+                                    "click done",
                                     style: TextStyle(
                                       fontStyle: FontStyle.italic,
                                       fontSize: 15,
@@ -938,6 +930,8 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                   backgroundColor: Colors.lightBlueAccent,
                                 ));
                               }
+
+
                             },
                           ),
                         ),
@@ -963,106 +957,153 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                       color: Theme.of(context).primaryColor,
                       textColor: Colors.white,
                       onPressed: () async {
-                        if (expertise != "" && added[0] != "") {
-                          _onLoading();
-                          print('cnt :' +
-                              cnt.toString() +
-                              ' expertise :' +
-                              expertise);
+
+                       if((checkedValue==true && click==1)|| checkedValue==false){
+                         if (expertise != "" && added[0] != "") {
+
+                           if(sendTime!="none"){
+                             setState(() {
+                               remind="1";
+                             });
+                           }
+                           _onLoading();
+                           print('cnt :' +
+                               cnt.toString() +
+                               ' expertise :' +
+                               expertise);
 
 
-                          var url =
-                              'https://march.lbits.co/api/worker.php';
-                          var resp = await http.post(
-                            url,
-                            headers: {
-                              'Content-Type': 'application/json',
-                              'Authorization': 'Bearer $token'
-                            },
-                            body: json.encode(<String, dynamic>{
-                              'serviceName': "",
-                              'work': "add goal",
-                              'uid': uid,
-                              'goalName': added[count - 1],
-                              'goalNumber': count.toString(),
-                              'goalLevel': expertise,
-                              'remindEveryDay':"",
-                              'remindTime':"",
-                              //                                'note':"",
-                            }),
-                          );
+                           print(remind+" "+sendTime);
 
-                          print(resp.body.toString());
-                          var result = json.decode(resp.body);
-                          if (result['response'] == 200) {
-                       /*     int savedGoal = await db.saveGoal(new Goal(
-                                uid,
-                                added[count - 1],
-                                target,
-                                time,
-                                count.toString()));*/
+                           var url =
+                               'https://march.lbits.co/api/worker.php';
+                           var resp = await http.post(
+                             url,
+                             headers: {
+                               'Content-Type': 'application/json',
+                               'Authorization': 'Bearer $token'
+                             },
+                             body: json.encode(<String, dynamic>{
+                               'serviceName': "",
+                               'work': "add goal",
+                               'uid': uid,
+                               'goalName': added[count - 1],
+                               'goalNumber': count.toString(),
+                               'goalLevel': goalsLevel,
+                               'remindEveryday':remind,
+                               'remindTime':sendTime,
+                               //                                'note':"",
+                             }),
+                           );
 
-            //                print("goal saved :$savedGoal");
+                           print(resp.body.toString());
+                           var result = json.decode(resp.body);
+                           if (result['response'] == 200) {
+                             int savedGoal = await db.saveGoal(
+                                 new Goal(
+                                     uid,
+                                     added[count - 1],
+                                     goalsLevel,
+                                     remind,
+                                     sendTime,
+                                     count.toString()));
 
-                            Navigator.pop(context);
-                            setState(() {
-                              _disable = 0;
-                              _disable1 = 0;
-                              selectedHour=0;
-                              selectedMin=0;
-                              ampm='AM';
-                              note="";
-                              expertise="";
-                              cnt = cnt + 1;
-                            });
-                          } else {
-                            Navigator.pop(context);
-                            setState(() {
+                             print("goal saved :$savedGoal");
 
-                              selectedHour=0;
-                              selectedMin=0;
-                              ampm='AM';
-                              expertise="";
-                              note="";
-                              _disable = 0;
-                              _disable1=0;
-                              added[count - 1] = "";
-                              count = count - 1;
-                            });
+                             Navigator.pop(context);
+                             setState(() {
+                               _disable = 0;
+                               _disable1 = 0;
+                               selectedHour=0;
+                               selectedMin=0;
+                               ampm='AM';
+                               note="";
+                               click=0;
+                               timeView=false;
+                               checkedValue=false;
+                               sendTime="none";
+                               remind="0";
+                               expertise="";
+                               goalsLevel="";
+                               cnt = cnt + 1;
+                             });
+                           } else {
+                             Navigator.pop(context);
+                             setState(() {
 
-                            _sk.currentState.showSnackBar(SnackBar(
-                              content: Text(
-                                "There is Some Technical Problem Submit again",
-                                style: TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                  fontSize: 15,
-                                ),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(12.0),
-                                      topRight: Radius.circular(12.0))),
-                              duration: Duration(seconds: 3),
-                              backgroundColor: Colors.lightBlueAccent,
-                            ));
-                          }
-                        } else {
-                          _sk.currentState.showSnackBar(SnackBar(
-                            content: Text(
-                              "Enter all details and Submit next",
-                              style: TextStyle(
-                                fontStyle: FontStyle.italic,
-                                fontSize: 15,
-                              ),
-                            ),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(12.0),
-                                    topRight: Radius.circular(12.0))),
-                            duration: Duration(seconds: 3),
-                            backgroundColor: Colors.lightBlueAccent,
-                          ));
-                        }
+                               selectedHour=0;
+                               selectedMin=0;
+                               ampm='AM';
+                               expertise="";
+                               goalsLevel="";
+                               note="";
+                               click=0;
+                               timeView=false;
+                               checkedValue=false;
+                               sendTime="none";
+                               remind="0";
+                               _disable = 0;
+                               _disable1=0;
+                               added[count - 1] = "";
+                               count = count - 1;
+                             });
+
+                             _sk.currentState.showSnackBar(SnackBar(
+                               content: Text(
+                                 "There is Some Technical Problem Submit again",
+                                 style: TextStyle(
+                                   fontStyle: FontStyle.italic,
+                                   fontSize: 15,
+                                 ),
+                               ),
+                               shape: RoundedRectangleBorder(
+                                   borderRadius: BorderRadius.only(
+                                       topLeft: Radius.circular(12.0),
+                                       topRight: Radius.circular(12.0))),
+                               duration: Duration(seconds: 3),
+                               backgroundColor: Colors.lightBlueAccent,
+                             ));
+                           }
+                         } else {
+                           _sk.currentState.showSnackBar(SnackBar(
+                             content: Text(
+                               "Enter all details and Submit next",
+                               style: TextStyle(
+                                 fontStyle: FontStyle.italic,
+                                 fontSize: 15,
+                               ),
+                             ),
+                             shape: RoundedRectangleBorder(
+                                 borderRadius: BorderRadius.only(
+                                     topLeft: Radius.circular(12.0),
+                                     topRight: Radius.circular(12.0))),
+                             duration: Duration(seconds: 3),
+                             backgroundColor: Colors.lightBlueAccent,
+                           ));
+                         }
+
+                       }
+                       else{
+
+                         _sk.currentState.showSnackBar(SnackBar(
+                           content: Text(
+                             "Click Done",
+                             style: TextStyle(
+                               fontStyle: FontStyle.italic,
+                               fontSize: 15,
+                             ),
+                           ),
+                           shape: RoundedRectangleBorder(
+                               borderRadius: BorderRadius.only(
+                                   topLeft: Radius.circular(12.0),
+                                   topRight: Radius.circular(12.0))),
+                           duration: Duration(seconds: 3),
+                           backgroundColor: Colors.lightBlueAccent,
+                         ));
+
+                       }
+
+
                       },
                     ),
                   ),
@@ -1075,10 +1116,6 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
     );
   }
 
-  /*
-
-
-   */
   void _onLoading() {
     showDialog(
       context: context,
