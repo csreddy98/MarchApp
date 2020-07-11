@@ -209,7 +209,6 @@ class _LoginState extends State<Login> {
     Size size = MediaQuery.of(context).size;
     ScreenUtil.init(context, width: 750, height: 1300, allowFontScaling: true);
     return Scaffold(
-//      backgroundColor: Color(0xff241332),
       body: SingleChildScrollView(
         child: Stack(
           children: <Widget>[

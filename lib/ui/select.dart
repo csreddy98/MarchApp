@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,38 +8,45 @@ import 'package:march/ui/home.dart';
 import 'package:http/http.dart' as http;
 import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class Select extends StatefulWidget {
   @override
   _SelectState createState() => _SelectState();
 }
 
-
-
-class _SelectState extends State<Select>  with SingleTickerProviderStateMixin{
+class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
   List<String> added = ["", "", ""];
   String currentText = "";
   String currentText1 = "";
-  int click=0;
+  int click = 0;
   GlobalKey<AutoCompleteTextFieldState<String>> key = new GlobalKey();
   GlobalKey<AutoCompleteTextFieldState<String>> key1 = new GlobalKey();
   int count = 0;
-  String remind="0";
-  Color c=Colors.grey[100];
+  String remind = "0";
+  Color c = Colors.grey[100];
   final GlobalKey<ScaffoldState> _sk = GlobalKey<ScaffoldState>();
   List<String> suggestions = [];
-  List<String> suggestions1 = ["Newbie","Skilled","Proficient","Experienced","Expert"];
+  List<String> suggestions1 = [
+    "Newbie",
+    "Skilled",
+    "Proficient",
+    "Experienced",
+    "Expert"
+  ];
 // drop down
   var db = new DataBaseHelper();
-  String note="";
-  String goalsLevel="";
+  String note = "";
+  String goalsLevel = "";
 // till here
-   String sendTime="none";
+  String sendTime = "none";
   int cnt = 1;
   String uid;
   String token;
-  bool checkedValue=false;
-  bool timeView=false;
+  bool checkedValue = false;
+  bool timeView = false;
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   Color activeColor = Color.fromRGBO(254, 209, 125, 1);
   AnimationController animationController;
@@ -85,11 +91,22 @@ class _SelectState extends State<Select>  with SingleTickerProviderStateMixin{
             parent: animationController,
             curve: Interval(0.8, 1, curve: Curves.linear)));
     animationController.forward();
+
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings('app_icon');
+    var initializationSettingsIOS = IOSInitializationSettings();
+    var initializationSettings = InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
   }
 
+  onSelectNotification(String payload) async {
+    print("Tapped on Notification");
+  }
 
   final myController = TextEditingController();
-  String expertise="";
+  String expertise = "";
 
   @override
   void dispose() {
@@ -97,11 +114,11 @@ class _SelectState extends State<Select>  with SingleTickerProviderStateMixin{
     super.dispose();
   }
 
-  int _disable = 0,_disable1=0;
+  int _disable = 0, _disable1 = 0;
 
-  int selectedHour=0;
-  int selectedMin=0;
-  String ampm="AM";
+  int selectedHour = 0;
+  int selectedMin = 0;
+  String ampm = "AM";
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +129,7 @@ class _SelectState extends State<Select>  with SingleTickerProviderStateMixin{
       key: _sk,
       body: SingleChildScrollView(
         child: Container(
-          height: MediaQuery.of(context).size.height*1.2,
+          height: MediaQuery.of(context).size.height * 1.2,
           width: MediaQuery.of(context).size.width,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -121,13 +138,15 @@ class _SelectState extends State<Select>  with SingleTickerProviderStateMixin{
                 padding: const EdgeInsets.only(top: 50.0, bottom: 10.0),
                 child: Center(
                     child: Text(
-                      "Select Your Goals",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-                    )),
+                  "Select Your Goals",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+                )),
               ),
-
-              Center(child: Text("Goal "+cnt.toString()+" of 3",style: Theme.of(context).textTheme.caption,)),
-
+              Center(
+                  child: Text(
+                "Goal " + cnt.toString() + " of 3",
+                style: Theme.of(context).textTheme.caption,
+              )),
               AnimatedBuilder(
                 animation: animationController,
                 builder: (BuildContext context, Widget child) => Container(
@@ -152,7 +171,7 @@ class _SelectState extends State<Select>  with SingleTickerProviderStateMixin{
                                     height: dotSize,
                                     decoration: BoxDecoration(
                                         borderRadius:
-                                        BorderRadius.circular(dotSize / 2),
+                                            BorderRadius.circular(dotSize / 2),
                                         color: activeColor)),
                               ),
                             ),
@@ -161,12 +180,15 @@ class _SelectState extends State<Select>  with SingleTickerProviderStateMixin{
                                 child: Container(
                                   height: 3,
                                   width:
-                                  MediaQuery.of(context).size.width * 0.35,
+                                      MediaQuery.of(context).size.width * 0.35,
                                   child: LinearProgressIndicator(
-                                    backgroundColor:
-                                    cnt >= 2 ? activeColor : Colors.grey[200],
+                                    backgroundColor: cnt >= 2
+                                        ? activeColor
+                                        : Colors.grey[200],
                                     valueColor: AlwaysStoppedAnimation<Color>(
-                                        cnt >= 2 ? activeColor : Colors.transparent),
+                                        cnt >= 2
+                                            ? activeColor
+                                            : Colors.transparent),
                                   ),
                                 ),
                               ),
@@ -187,9 +209,10 @@ class _SelectState extends State<Select>  with SingleTickerProviderStateMixin{
                                   height: dotSize,
                                   decoration: BoxDecoration(
                                       borderRadius:
-                                      BorderRadius.circular(dotSize / 2),
-                                      color:
-                                      cnt >= 2 ? activeColor : Colors.grey[200]),
+                                          BorderRadius.circular(dotSize / 2),
+                                      color: cnt >= 2
+                                          ? activeColor
+                                          : Colors.grey[200]),
                                 ),
                               ),
                             ),
@@ -198,13 +221,16 @@ class _SelectState extends State<Select>  with SingleTickerProviderStateMixin{
                                 child: Container(
                                   height: 3,
                                   width:
-                                  MediaQuery.of(context).size.width * 0.3,
+                                      MediaQuery.of(context).size.width * 0.3,
                                   child: LinearProgressIndicator(
-                                    backgroundColor:
-                                    cnt >= 3 ? activeColor : Colors.grey[200],
+                                    backgroundColor: cnt >= 3
+                                        ? activeColor
+                                        : Colors.grey[200],
                                     //  value: p1.value,
                                     valueColor: AlwaysStoppedAnimation<Color>(
-                                        cnt >= 3 ? activeColor : Colors.transparent),
+                                        cnt >= 3
+                                            ? activeColor
+                                            : Colors.transparent),
                                   ),
                                 ),
                               ),
@@ -225,10 +251,11 @@ class _SelectState extends State<Select>  with SingleTickerProviderStateMixin{
                                   height: dotSize,
                                   decoration: BoxDecoration(
                                       borderRadius:
-                                      BorderRadius.circular(dotSize / 2),
+                                          BorderRadius.circular(dotSize / 2),
                                       //    color: d3.value
-                                      color:
-                                      cnt >= 3 ? activeColor : Colors.grey[300]),
+                                      color: cnt >= 3
+                                          ? activeColor
+                                          : Colors.grey[300]),
                                 ),
                               ),
                             ),
@@ -237,7 +264,6 @@ class _SelectState extends State<Select>  with SingleTickerProviderStateMixin{
                   ),
                 ),
               ),
-
               Container(
                 margin: EdgeInsets.only(bottom: 8),
                 padding: EdgeInsets.only(left: 14, right: 20),
@@ -245,223 +271,225 @@ class _SelectState extends State<Select>  with SingleTickerProviderStateMixin{
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text(count>0?added[0]:"Goal 1",
+                    Text(count > 0 ? added[0] : "Goal 1",
                         style: Theme.of(context).textTheme.caption),
-                    Text(count>1?added[1]:"Goal 2",
+                    Text(count > 1 ? added[1] : "Goal 2",
                         style: Theme.of(context).textTheme.caption),
                     // SizedBox(width: MediaQuery.of(context).size.width * 0.25,),
-                    Text(count>2?added[2]:"Goal 3",
+                    Text(count > 2 ? added[2] : "Goal 3",
                         style: Theme.of(context).textTheme.caption),
                   ],
                 ),
               ),
-
-
-              _disable==1?Container() :Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: SimpleAutoCompleteTextField(
-                  key: key,
-                  decoration: new InputDecoration(
-                      filled: true,
-                      fillColor: c,
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: c, width: 1.0),
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      contentPadding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
-                      hintText: "Enter Your Goals",
-                      border: new OutlineInputBorder(
-                        borderRadius: const BorderRadius.all(
-                          const Radius.circular(10.0),
-                        ),
-                      )),
-                  controller: TextEditingController(),
-                  suggestions: suggestions,
-                  textChanged: (text) => currentText = text,
-                  clearOnSubmit: true,
-                  textSubmitted: (text) => setState(() {
-                    if (text != "" && _disable == 0) {
-                      if (count < 3) {
-                        added[count] = text;
-                        count = count + 1;
-                        _disable = 1;
-                      } else {
-                        _sk.currentState.showSnackBar(SnackBar(
-                          content: Text(
-                            "You can Select only 3",
-                            style: TextStyle(
-                              fontStyle: FontStyle.italic,
-                              fontSize: 15,
+              _disable == 1
+                  ? Container()
+                  : Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: SimpleAutoCompleteTextField(
+                        key: key,
+                        decoration: new InputDecoration(
+                            filled: true,
+                            fillColor: c,
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: c, width: 1.0),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
                             ),
-                          ),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(12.0),
-                                  topRight: Radius.circular(12.0))),
-                          duration: Duration(seconds: 3),
-                          backgroundColor: Colors.lightBlueAccent,
-                        ));
-                      }
-                    } else {
-                      _sk.currentState.showSnackBar(SnackBar(
-                        content: Text(
-                          "Enter all details and Submit next",
-                          style: TextStyle(
-                            fontStyle: FontStyle.italic,
-                            fontSize: 15,
-                          ),
-                        ),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(12.0),
-                                topRight: Radius.circular(12.0))),
-                        duration: Duration(seconds: 3),
-                        backgroundColor: Colors.lightBlueAccent,
-                      ));
-                    }
-                  }),
-                ),
-              ),
-
-              _disable==1?Padding(
-                padding: const EdgeInsets.all(20),
-                child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.grey,
-                        width: 1,
-                      ),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left:8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Expanded(
-                              child: Text(added[count-1])),
-                          IconButton(
-                              icon: Icon(
-                                Icons.clear,
-                                size: 16,
-                                color: Colors.grey,
+                            contentPadding:
+                                const EdgeInsets.fromLTRB(15, 15, 15, 5),
+                            hintText: "Enter Your Goals",
+                            border: new OutlineInputBorder(
+                              borderRadius: const BorderRadius.all(
+                                const Radius.circular(10.0),
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  _disable=0;
-                                  added[count-1]="";
-                                  count=count-1;
-                                });
-                              }),
-                        ],
-                      ),
-                    )
-                ),
-              ):Container(),
-
-              _disable1==1?Container() :Padding(
-                padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
-                child: SimpleAutoCompleteTextField(
-                  key: key1,
-                  decoration: new InputDecoration(
-                      filled: true,
-                      fillColor: c,
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: c, width: 1.0),
-                        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                      ),
-                      contentPadding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
-                      hintText: "Choose Expertise",
-                      border: new OutlineInputBorder(
-                        borderRadius: const BorderRadius.all(
-                          const Radius.circular(10.0),
-                        ),
-                      )),
-                  controller: TextEditingController(),
-                  suggestions: suggestions1,
-                  textChanged: (text) => currentText1 = text,
-                  clearOnSubmit: true,
-                  textSubmitted: (text) => setState(() {
-                    if (text != "" && _disable1 == 0) {
-                      setState(() {
-                        expertise=text;
-                        _disable1=1;
-                        if(expertise=='Newbie'){
-                          goalsLevel="0";
-                        }
-                        else if(expertise=='Skilled'){
-                          goalsLevel="1";
-                        }
-                        else if(expertise=='Proficient'){
-                          goalsLevel="2";
-                        }
-                        else if(expertise=='Experienced'){
-                          goalsLevel="3";
-                        }
-                        else if(expertise=='Expert'){
-                          goalsLevel="4";
-                        }
-
-                      });
-                    } else {
-                      _sk.currentState.showSnackBar(SnackBar(
-                        content: Text(
-                          "Enter all details and Submit next",
-                          style: TextStyle(
-                            fontStyle: FontStyle.italic,
-                            fontSize: 15,
-                          ),
-                        ),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(12.0),
-                                topRight: Radius.circular(12.0))),
-                        duration: Duration(seconds: 3),
-                        backgroundColor: Colors.lightBlueAccent,
-                      ));
-                    }
-                  }),
-                ),
-              ),
-
-              _disable1==1?Padding(
-                padding: const EdgeInsets.all(20),
-                child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.grey,
-                        width: 1,
-                      ),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left:8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Expanded(
-                              child: Text(expertise)),
-                          IconButton(
-                              icon: Icon(
-                                Icons.clear,
-                                size: 16,
-                                color: Colors.grey,
+                            )),
+                        controller: TextEditingController(),
+                        suggestions: suggestions,
+                        textChanged: (text) => currentText = text,
+                        clearOnSubmit: true,
+                        textSubmitted: (text) => setState(() {
+                          if (text != "" && _disable == 0) {
+                            if (count < 3) {
+                              added[count] = text;
+                              count = count + 1;
+                              _disable = 1;
+                            } else {
+                              _sk.currentState.showSnackBar(SnackBar(
+                                content: Text(
+                                  "You can Select only 3",
+                                  style: TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(12.0),
+                                        topRight: Radius.circular(12.0))),
+                                duration: Duration(seconds: 3),
+                                backgroundColor: Colors.lightBlueAccent,
+                              ));
+                            }
+                          } else {
+                            _sk.currentState.showSnackBar(SnackBar(
+                              content: Text(
+                                "Enter all details and Submit next",
+                                style: TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  fontSize: 15,
+                                ),
                               ),
-                              onPressed: () {
-                                setState(() {
-                                  _disable1=0;
-                                  expertise="";
-                                });
-                              }),
-                        ],
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(12.0),
+                                      topRight: Radius.circular(12.0))),
+                              duration: Duration(seconds: 3),
+                              backgroundColor: Colors.lightBlueAccent,
+                            ));
+                          }
+                        }),
                       ),
+                    ),
+              _disable == 1
+                  ? Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                Expanded(child: Text(added[count - 1])),
+                                IconButton(
+                                    icon: Icon(
+                                      Icons.clear,
+                                      size: 16,
+                                      color: Colors.grey,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _disable = 0;
+                                        added[count - 1] = "";
+                                        count = count - 1;
+                                      });
+                                    }),
+                              ],
+                            ),
+                          )),
                     )
-                ),
-              ):Container(),
-
-
+                  : Container(),
+              _disable1 == 1
+                  ? Container()
+                  : Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+                      child: SimpleAutoCompleteTextField(
+                        key: key1,
+                        decoration: new InputDecoration(
+                            filled: true,
+                            fillColor: c,
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: c, width: 1.0),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                            ),
+                            contentPadding:
+                                const EdgeInsets.fromLTRB(15, 15, 15, 5),
+                            hintText: "Choose Expertise",
+                            border: new OutlineInputBorder(
+                              borderRadius: const BorderRadius.all(
+                                const Radius.circular(10.0),
+                              ),
+                            )),
+                        controller: TextEditingController(),
+                        suggestions: suggestions1,
+                        textChanged: (text) => currentText1 = text,
+                        clearOnSubmit: true,
+                        textSubmitted: (text) => setState(() {
+                          if (text != "" && _disable1 == 0) {
+                            setState(() {
+                              expertise = text;
+                              _disable1 = 1;
+                              if (expertise == 'Newbie') {
+                                goalsLevel = "0";
+                              } else if (expertise == 'Skilled') {
+                                goalsLevel = "1";
+                              } else if (expertise == 'Proficient') {
+                                goalsLevel = "2";
+                              } else if (expertise == 'Experienced') {
+                                goalsLevel = "3";
+                              } else if (expertise == 'Expert') {
+                                goalsLevel = "4";
+                              }
+                            });
+                          } else {
+                            _sk.currentState.showSnackBar(SnackBar(
+                              content: Text(
+                                "Enter all details and Submit next",
+                                style: TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  fontSize: 15,
+                                ),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(12.0),
+                                      topRight: Radius.circular(12.0))),
+                              duration: Duration(seconds: 3),
+                              backgroundColor: Colors.lightBlueAccent,
+                            ));
+                          }
+                        }),
+                      ),
+                    ),
+              _disable1 == 1
+                  ? Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                Expanded(child: Text(expertise)),
+                                IconButton(
+                                    icon: Icon(
+                                      Icons.clear,
+                                      size: 16,
+                                      color: Colors.grey,
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _disable1 = 0;
+                                        expertise = "";
+                                      });
+                                    }),
+                              ],
+                            ),
+                          )),
+                    )
+                  : Container(),
               CheckboxListTile(
-                title: Text("Remind me every day",style: TextStyle(fontSize:16,color: Colors.black,fontWeight: FontWeight.w400),),
+                title: Text(
+                  "Remind me every day",
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w400),
+                ),
                 value: checkedValue,
                 activeColor: Theme.of(context).primaryColor,
                 onChanged: (newValue) {
@@ -469,14 +497,15 @@ class _SelectState extends State<Select>  with SingleTickerProviderStateMixin{
                     checkedValue = newValue;
                   });
                 },
-                controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
+                controlAffinity:
+                    ListTileControlAffinity.leading, //  <-- leading Checkbox
               ),
-
               Padding(
-                padding: const EdgeInsets.only(left: 20.0,top: 5,right: 20),
-                child: Divider(thickness: 1,),
+                padding: const EdgeInsets.only(left: 20.0, top: 5, right: 20),
+                child: Divider(
+                  thickness: 1,
+                ),
               ),
-
               Center(
                 child: Visibility(
                     maintainSize: false,
@@ -484,178 +513,221 @@ class _SelectState extends State<Select>  with SingleTickerProviderStateMixin{
                     maintainState: true,
                     visible: checkedValue,
                     child: Container(
-                        height: size.height/2.9,
-                        width: size.width/1.14,
+                        height: size.height / 2.9,
+                        width: size.width / 1.14,
                         margin: EdgeInsets.only(top: 5, bottom: 5),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-
-                            Text('Remind me Everyday at $selectedHour:$selectedMin $ampm',
-                                style: TextStyle(color: Colors.black,
-                                    fontSize: 16)),
+                            Text(
+                                'Remind me Everyday at $selectedHour:$selectedMin $ampm',
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 16)),
                             Padding(
-                              padding: const EdgeInsets.only(top:8.0),
-                              child: Divider(thickness: 1,),
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: Divider(
+                                thickness: 1,
+                              ),
                             ),
-
                             Visibility(
                               maintainSize: false,
                               maintainAnimation: true,
                               maintainState: true,
-                              visible: timeView==false?true:false,
+                              visible: timeView == false ? true : false,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
                                   GestureDetector(
-                                    onTap: (){
-                                      if(ampm=='PM'){
-                                       int hour=selectedHour+12;
-                                       String min=selectedMin.toString();
-                                       if(selectedMin<10){
-                                         min="0$selectedMin";
-                                       }
+                                    onTap: () {
+                                      if (ampm == 'PM') {
+                                        int hour = selectedHour + 12;
+                                        String min = selectedMin.toString();
+                                        if (selectedMin < 10) {
+                                          min = "0$selectedMin";
+                                        }
                                         setState(() {
-                                          click=1;
-                                          sendTime="$hour:$min:00";
+                                          click = 1;
+                                          sendTime = "$hour:$min:00";
                                           print(sendTime);
                                         });
-                                      }
-                                      else{
-                                          String hr=selectedHour.toString();
-                                          String min=selectedMin.toString();
-                                          if(selectedHour<10){
-                                            min="0$selectedMin";
-                                          }
-                                          if(selectedMin<10){
-                                            hr="0$selectedHour";
-                                          }
-                                          setState(() {
-                                          click=1;
-                                          sendTime="$hr:$min:00";
+                                      } else {
+                                        String hr = selectedHour.toString();
+                                        String min = selectedMin.toString();
+                                        if (selectedHour < 10) {
+                                          min = "0$selectedMin";
+                                        }
+                                        if (selectedMin < 10) {
+                                          hr = "0$selectedHour";
+                                        }
+                                        setState(() {
+                                          click = 1;
+                                          sendTime = "$hr:$min:00";
                                           print(sendTime);
                                         });
                                       }
                                       setState(() {
-                                        timeView=true;
+                                        timeView = true;
                                       });
                                     },
-                                    child: Text('Done',style: TextStyle(fontSize: 14),),
+                                    child: Text(
+                                      'Done',
+                                      style: TextStyle(fontSize: 14),
+                                    ),
                                   )
                                 ],
                               ),
                             ),
-                            timeView==false?Padding(
-                              padding: const EdgeInsets.only(left:30),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Center(
-                                    child: Container(
-                                      width: size.width/4.5,
-                                      height: size.height/4,
-                                      child: CupertinoPicker(
-                                        backgroundColor: Colors.transparent,
-                                        itemExtent: 50,
-                                        onSelectedItemChanged: (int index){
-                                          setState(() {
-                                            selectedHour = index+1;
-                                          });
-                                          //   print("$selectedHour");
-                                        },
-                                        children: <Widget>[
-                                          Text("01"), Text("02"),
-                                          Text("03"), Text("04"),
-                                          Text("05"), Text("06"),
-                                          Text("07"),Text("08"),
-                                          Text("09"),Text("10"),
-                                          Text("11"),Text("12"),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
+                            timeView == false
+                                ? Padding(
+                                    padding: const EdgeInsets.only(left: 30),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: <Widget>[
+                                        Center(
+                                          child: Container(
+                                            width: size.width / 4.5,
+                                            height: size.height / 4,
+                                            child: CupertinoPicker(
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              itemExtent: 50,
+                                              onSelectedItemChanged:
+                                                  (int index) {
+                                                setState(() {
+                                                  selectedHour = index + 1;
+                                                });
+                                                //   print("$selectedHour");
+                                              },
+                                              children: <Widget>[
+                                                Text("01"),
+                                                Text("02"),
+                                                Text("03"),
+                                                Text("04"),
+                                                Text("05"),
+                                                Text("06"),
+                                                Text("07"),
+                                                Text("08"),
+                                                Text("09"),
+                                                Text("10"),
+                                                Text("11"),
+                                                Text("12"),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
 
 //                                  SizedBox(width: size.width/50,),
-                                  Container(
-                                    width: 75,
-                                    height: 100,
-                                    child: CupertinoPicker(
-                                      backgroundColor: Colors.transparent,
-                                      itemExtent: 50,
-                                      children: <Widget>[
-                                        Text("01"), Text("02"),
-                                        Text("03"), Text("04"),
-                                        Text("05"), Text("06"),
-                                        Text("07"),Text("08"),
-                                        Text("09"),Text("10"),
-                                        Text("11"),Text("12"),
-                                        Text("13"), Text("14"),
-                                        Text("15"), Text("16"),
-                                        Text("17"), Text("18"),
-                                        Text("19"),Text("20"),
-                                        Text("21"),Text("22"),
-                                        Text("23"),Text("24"),
-                                        Text("25"), Text("26"),
-                                        Text("27"), Text("28"),
-                                        Text("29"), Text("30"),
-                                        Text("31"),Text("32"),
-                                        Text("33"),Text("34"),
-                                        Text("35"),Text("36"),
-                                        Text("37"), Text("38"),
-                                        Text("39"), Text("40"),
-                                        Text("41"), Text("42"),
-                                        Text("43"),Text("44"),
-                                        Text("45"),Text("46"),
-                                        Text("47"),Text("48"),
-                                        Text("49"), Text("50"),
-                                        Text("51"), Text("52"),
-                                        Text("53"), Text("54"),
-                                        Text("55"),Text("56"),
-                                        Text("57"),Text("58"),
-                                        Text("59"),
+                                        Container(
+                                          width: 75,
+                                          height: 100,
+                                          child: CupertinoPicker(
+                                            backgroundColor: Colors.transparent,
+                                            itemExtent: 50,
+                                            children: <Widget>[
+                                              Text("01"),
+                                              Text("02"),
+                                              Text("03"),
+                                              Text("04"),
+                                              Text("05"),
+                                              Text("06"),
+                                              Text("07"),
+                                              Text("08"),
+                                              Text("09"),
+                                              Text("10"),
+                                              Text("11"),
+                                              Text("12"),
+                                              Text("13"),
+                                              Text("14"),
+                                              Text("15"),
+                                              Text("16"),
+                                              Text("17"),
+                                              Text("18"),
+                                              Text("19"),
+                                              Text("20"),
+                                              Text("21"),
+                                              Text("22"),
+                                              Text("23"),
+                                              Text("24"),
+                                              Text("25"),
+                                              Text("26"),
+                                              Text("27"),
+                                              Text("28"),
+                                              Text("29"),
+                                              Text("30"),
+                                              Text("31"),
+                                              Text("32"),
+                                              Text("33"),
+                                              Text("34"),
+                                              Text("35"),
+                                              Text("36"),
+                                              Text("37"),
+                                              Text("38"),
+                                              Text("39"),
+                                              Text("40"),
+                                              Text("41"),
+                                              Text("42"),
+                                              Text("43"),
+                                              Text("44"),
+                                              Text("45"),
+                                              Text("46"),
+                                              Text("47"),
+                                              Text("48"),
+                                              Text("49"),
+                                              Text("50"),
+                                              Text("51"),
+                                              Text("52"),
+                                              Text("53"),
+                                              Text("54"),
+                                              Text("55"),
+                                              Text("56"),
+                                              Text("57"),
+                                              Text("58"),
+                                              Text("59"),
+                                            ],
+                                            onSelectedItemChanged: (int index) {
+                                              setState(() {
+                                                selectedMin = index + 1;
+                                              });
+                                              //   print("$selectedMin");
+                                            },
+                                          ),
+                                        ),
+                                        //                                SizedBox(width: size.width/50,),
+                                        Center(
+                                          child: Container(
+                                            width: 75,
+                                            height: 115,
+                                            child: CupertinoPicker(
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              itemExtent: 50,
+                                              onSelectedItemChanged:
+                                                  (int index) {
+                                                if (index == 0) {
+                                                  setState(() {
+                                                    ampm = "AM";
+                                                  });
+                                                } else {
+                                                  setState(() {
+                                                    ampm = "PM";
+                                                  });
+                                                }
+                                              },
+                                              children: <Widget>[
+                                                Text("AM"),
+                                                Text("PM"),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
                                       ],
-                                      onSelectedItemChanged: (int index){
-                                        setState(() {
-                                          selectedMin = index+1;
-                                        });
-                                        //   print("$selectedMin");
-                                      },
                                     ),
+                                  )
+                                : Container(
+                                    height: 0,
+                                    width: 0,
                                   ),
-                                  //                                SizedBox(width: size.width/50,),
-                                  Center(
-                                    child: Container(
-                                      width: 75,
-                                      height: 115,
-                                      child: CupertinoPicker(
-                                        backgroundColor: Colors.transparent,
-                                        itemExtent: 50,
-                                        onSelectedItemChanged: (int index){
-                                          if(index==0) {
-                                            setState(() {
-                                              ampm = "AM";
-                                            });
-                                          }
-                                          else{
-                                            setState(() {
-                                              ampm = "PM";
-                                            });
-                                          }
-                                        },
-                                        children: <Widget>[
-                                          Text("AM"), Text("PM"),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-
-                                ],
-                              ),
-                            ):
-                            Container(
-                              height: 0,
-                              width: 0,
-                            ),
                             /*Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -690,59 +762,249 @@ class _SelectState extends State<Select>  with SingleTickerProviderStateMixin{
                             ),
 */
                           ],
-                        )
-                    )
-                ),
+                        ))),
               ),
-
-
               cnt > 1
                   ? Row(
-                children: <Widget>[
-                  Expanded(
-                    flex: 1,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        Padding(
-                          padding:
-                          const EdgeInsets.fromLTRB(20.0, 0, 20, 0),
-                          child: FlatButton(
-                              child: Text(
-                                'SKIP',
-                                style: Theme.of(context).textTheme.button,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25),
-                              ),
-                              padding: const EdgeInsets.all(15),
-                              color: Theme.of(context).primaryColor,
-                              textColor: Colors.white,
-                              onPressed: () async {
-                                SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
-                                prefs.setInt('log', 1);
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: <Widget>[
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(20.0, 0, 20, 0),
+                                child: FlatButton(
+                                    child: Text(
+                                      'SKIP',
+                                      style: Theme.of(context).textTheme.button,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(25),
+                                    ),
+                                    padding: const EdgeInsets.all(15),
+                                    color: Theme.of(context).primaryColor,
+                                    textColor: Colors.white,
+                                    onPressed: () async {
+                                      SharedPreferences prefs =
+                                          await SharedPreferences.getInstance();
+                                      prefs.setInt('log', 1);
 
-                                Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => Home('')),
-                                        (Route<dynamic> route) => false);
-                              }),
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => Home('')),
+                                          (Route<dynamic> route) => false);
+                                    }),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: <Widget>[
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(20.0, 0, 20, 0),
+                                child: FlatButton(
+                                  child: Text(
+                                    'NEXT',
+                                    style: Theme.of(context).textTheme.button,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                  ),
+                                  padding: const EdgeInsets.all(15),
+                                  color: Theme.of(context).primaryColor,
+                                  textColor: Colors.white,
+                                  onPressed: () async {
+                                    if ((checkedValue == true && click == 1) ||
+                                        checkedValue == false) {
+                                      if (expertise != "" &&
+                                          added[count - 1] != "") {
+                                        if (sendTime != "none") {
+                                          setState(() {
+                                            remind = "1";
+                                          });
+                                        }
+                                        _onLoading();
+                                        print('cnt :' +
+                                            cnt.toString() +
+                                            ' expertise :' +
+                                            expertise);
+
+                                        print(remind + " " + sendTime);
+
+                                        var url =
+                                            'https://march.lbits.co/api/worker.php';
+                                        var resp = await http.post(
+                                          url,
+                                          headers: {
+                                            'Content-Type': 'application/json',
+                                            'Authorization': 'Bearer $token'
+                                          },
+                                          body: json.encode(<String, dynamic>{
+                                            'serviceName': "",
+                                            'work': "add goal",
+                                            'uid': uid,
+                                            'goalName': added[count - 1],
+                                            'goalNumber': count.toString(),
+                                            'goalLevel': goalsLevel,
+                                            'remindEveryday': remind,
+                                            'remindTime': sendTime,
+                                          }),
+                                        );
+
+                                        print(resp.body.toString());
+                                        var result = json.decode(resp.body);
+                                        if (count == 3 &&
+                                            result['response'] == 200) {
+                                          Navigator.pushAndRemoveUntil(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Home('')),
+                                              (Route<dynamic> route) => false);
+
+                                          int savedGoal = await db.saveGoal(
+                                              new Goal(
+                                                  uid,
+                                                  added[count - 1],
+                                                  goalsLevel,
+                                                  remind,
+                                                  sendTime,
+                                                  count.toString()));
+
+                                          print("goal saved :$savedGoal");
+
+                                          SharedPreferences prefs =
+                                              await SharedPreferences
+                                                  .getInstance();
+                                          prefs.setInt('log', 1);
+                                        } else if (result['response'] == 200) {
+                                          // check what to save
+                                          int savedGoal = await db.saveGoal(
+                                              new Goal(
+                                                  uid,
+                                                  added[count - 1],
+                                                  goalsLevel,
+                                                  remind,
+                                                  sendTime,
+                                                  count.toString()));
+
+                                          print("goal saved :$savedGoal");
+
+                                          Navigator.pop(context);
+                                          setState(() {
+                                            _disable = 0;
+                                            _disable1 = 0;
+                                            selectedHour = 0;
+                                            selectedMin = 0;
+                                            sendTime = "none";
+                                            remind = "0";
+                                            ampm = 'AM';
+                                            note = "";
+                                            timeView = false;
+                                            checkedValue = false;
+                                            click = 0;
+                                            expertise = "";
+                                            goalsLevel = "";
+                                            cnt = cnt + 1;
+                                          });
+                                        } else {
+                                          Navigator.pop(context);
+                                          setState(() {
+                                            selectedHour = 0;
+                                            selectedMin = 0;
+                                            checkedValue = false;
+                                            ampm = 'AM';
+                                            timeView = false;
+                                            expertise = "";
+                                            sendTime = "none";
+                                            remind = "0";
+                                            note = "";
+                                            click = 0;
+                                            goalsLevel = "";
+                                            _disable = 0;
+                                            _disable1 = 0;
+                                            added[count - 1] = "";
+                                            count = count - 1;
+                                          });
+
+                                          _sk.currentState
+                                              .showSnackBar(SnackBar(
+                                            content: Text(
+                                              "There is Some Technical Problem Submit again",
+                                              style: TextStyle(
+                                                fontStyle: FontStyle.italic,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.only(
+                                                    topLeft:
+                                                        Radius.circular(12.0),
+                                                    topRight:
+                                                        Radius.circular(12.0))),
+                                            duration: Duration(seconds: 3),
+                                            backgroundColor:
+                                                Colors.lightBlueAccent,
+                                          ));
+                                        }
+                                      } else {
+                                        _sk.currentState.showSnackBar(SnackBar(
+                                          content: Text(
+                                            "Enter all details and Submit next",
+                                            style: TextStyle(
+                                              fontStyle: FontStyle.italic,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.only(
+                                                  topLeft:
+                                                      Radius.circular(12.0),
+                                                  topRight:
+                                                      Radius.circular(12.0))),
+                                          duration: Duration(seconds: 3),
+                                          backgroundColor:
+                                              Colors.lightBlueAccent,
+                                        ));
+                                      }
+                                    } else {
+                                      _sk.currentState.showSnackBar(SnackBar(
+                                        content: Text(
+                                          "click done",
+                                          style: TextStyle(
+                                            fontStyle: FontStyle.italic,
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(12.0),
+                                                topRight:
+                                                    Radius.circular(12.0))),
+                                        duration: Duration(seconds: 3),
+                                        backgroundColor: Colors.lightBlueAccent,
+                                      ));
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
-                    ),
-                  ),
-
-
-                  Expanded(
-                    flex: 1,
-                    child: Column(
+                    )
+                  : Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
                         Padding(
-                          padding:
-                          const EdgeInsets.fromLTRB(20.0, 0, 20, 0),
+                          padding: const EdgeInsets.fromLTRB(20.0, 0, 20, 0),
                           child: FlatButton(
                             child: Text(
                               'NEXT',
@@ -755,23 +1017,21 @@ class _SelectState extends State<Select>  with SingleTickerProviderStateMixin{
                             color: Theme.of(context).primaryColor,
                             textColor: Colors.white,
                             onPressed: () async {
-                              if((checkedValue==true && click==1)|| checkedValue==false){
-
-                                if (expertise != "" &&
-                                    added[count - 1] != "") {
-                                  if(sendTime!="none"){
+                              if ((checkedValue == true && click == 1) ||
+                                  checkedValue == false) {
+                                if (expertise != "" && added[0] != "") {
+                                  if (sendTime != "none") {
                                     setState(() {
-                                      remind="1";
+                                      remind = "1";
                                     });
                                   }
                                   _onLoading();
                                   print('cnt :' +
-                                      cnt.toString()+
+                                      cnt.toString() +
                                       ' expertise :' +
                                       expertise);
 
-
-                                  print(remind+" "+sendTime);
+                                  print(remind + " " + sendTime);
 
                                   var url =
                                       'https://march.lbits.co/api/worker.php';
@@ -788,46 +1048,22 @@ class _SelectState extends State<Select>  with SingleTickerProviderStateMixin{
                                       'goalName': added[count - 1],
                                       'goalNumber': count.toString(),
                                       'goalLevel': goalsLevel,
-                                      'remindEveryday':remind,
-                                      'remindTime':sendTime,
+                                      'remindEveryday': remind,
+                                      'remindTime': sendTime,
+                                      //                                'note':"",
                                     }),
                                   );
 
                                   print(resp.body.toString());
                                   var result = json.decode(resp.body);
-                                  if (count == 3 &&
-                                      result['response'] == 200) {
-                                    Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => Home('')),
-                                            (Route<dynamic> route) => false);
-
-                                    int savedGoal = await db.saveGoal(
-                                        new Goal(
-                                            uid,
-                                            added[count - 1],
-                                            goalsLevel,
-                                            remind,
-                                            sendTime,
-                                            count.toString()));
-
-                                    print("goal saved :$savedGoal");
-
-                                    SharedPreferences prefs =
-                                    await SharedPreferences
-                                        .getInstance();
-                                    prefs.setInt('log', 1);
-                                  } else if (result['response'] == 200) {
-                                    // check what to save
-                                    int savedGoal = await db.saveGoal(
-                                        new Goal(
-                                            uid,
-                                            added[count - 1],
-                                            goalsLevel,
-                                            remind,
-                                            sendTime,
-                                            count.toString()));
+                                  if (result['response'] == 200) {
+                                    int savedGoal = await db.saveGoal(new Goal(
+                                        uid,
+                                        added[count - 1],
+                                        goalsLevel,
+                                        remind,
+                                        sendTime,
+                                        count.toString()));
 
                                     print("goal saved :$savedGoal");
 
@@ -835,35 +1071,35 @@ class _SelectState extends State<Select>  with SingleTickerProviderStateMixin{
                                     setState(() {
                                       _disable = 0;
                                       _disable1 = 0;
-                                      selectedHour=0;
-                                      selectedMin=0;
-                                      sendTime="none";
-                                      remind="0";
-                                      ampm='AM';
-                                      note="";
-                                      timeView=false;
-                                      checkedValue=false;
-                                      click=0;
-                                      expertise="";
-                                      goalsLevel="";
+                                      selectedHour = 0;
+                                      selectedMin = 0;
+                                      ampm = 'AM';
+                                      note = "";
+                                      click = 0;
+                                      timeView = false;
+                                      checkedValue = false;
+                                      sendTime = "none";
+                                      remind = "0";
+                                      expertise = "";
+                                      goalsLevel = "";
                                       cnt = cnt + 1;
                                     });
                                   } else {
                                     Navigator.pop(context);
                                     setState(() {
-                                      selectedHour=0;
-                                      selectedMin=0;
-                                      checkedValue=false;
-                                      ampm='AM';
-                                      timeView=false;
-                                      expertise="";
-                                      sendTime="none";
-                                      remind="0";
-                                      note="";
-                                      click=0;
-                                      goalsLevel="";
+                                      selectedHour = 0;
+                                      selectedMin = 0;
+                                      ampm = 'AM';
+                                      expertise = "";
+                                      goalsLevel = "";
+                                      note = "";
+                                      click = 0;
+                                      timeView = false;
+                                      checkedValue = false;
+                                      sendTime = "none";
+                                      remind = "0";
                                       _disable = 0;
-                                      _disable1=0;
+                                      _disable1 = 0;
                                       added[count - 1] = "";
                                       count = count - 1;
                                     });
@@ -878,13 +1114,10 @@ class _SelectState extends State<Select>  with SingleTickerProviderStateMixin{
                                       ),
                                       shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.only(
-                                              topLeft:
-                                              Radius.circular(12.0),
-                                              topRight:
-                                              Radius.circular(12.0))),
+                                              topLeft: Radius.circular(12.0),
+                                              topRight: Radius.circular(12.0))),
                                       duration: Duration(seconds: 3),
-                                      backgroundColor:
-                                      Colors.lightBlueAccent,
+                                      backgroundColor: Colors.lightBlueAccent,
                                     ));
                                   }
                                 } else {
@@ -899,17 +1132,15 @@ class _SelectState extends State<Select>  with SingleTickerProviderStateMixin{
                                     shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.only(
                                             topLeft: Radius.circular(12.0),
-                                            topRight:
-                                            Radius.circular(12.0))),
+                                            topRight: Radius.circular(12.0))),
                                     duration: Duration(seconds: 3),
                                     backgroundColor: Colors.lightBlueAccent,
                                   ));
                                 }
-                              }
-                              else{
+                              } else {
                                 _sk.currentState.showSnackBar(SnackBar(
                                   content: Text(
-                                    "click done",
+                                    "Click Done",
                                     style: TextStyle(
                                       fontStyle: FontStyle.italic,
                                       fontSize: 15,
@@ -918,195 +1149,38 @@ class _SelectState extends State<Select>  with SingleTickerProviderStateMixin{
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.only(
                                           topLeft: Radius.circular(12.0),
-                                          topRight:
-                                          Radius.circular(12.0))),
+                                          topRight: Radius.circular(12.0))),
                                   duration: Duration(seconds: 3),
                                   backgroundColor: Colors.lightBlueAccent,
                                 ));
                               }
-
-
                             },
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ],
-              )
-                  : Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20.0, 0, 20, 0),
-                    child: FlatButton(
-                      child: Text(
-                        'NEXT',
-                        style: Theme.of(context).textTheme.button,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      padding: const EdgeInsets.all(15),
-                      color: Theme.of(context).primaryColor,
-                      textColor: Colors.white,
-                      onPressed: () async {
-
-                       if((checkedValue==true && click==1)|| checkedValue==false){
-                         if (expertise != "" && added[0] != "") {
-
-                           if(sendTime!="none"){
-                             setState(() {
-                               remind="1";
-                             });
-                           }
-                           _onLoading();
-                           print('cnt :' +
-                               cnt.toString() +
-                               ' expertise :' +
-                               expertise);
-
-
-                           print(remind+" "+sendTime);
-
-                           var url =
-                               'https://march.lbits.co/api/worker.php';
-                           var resp = await http.post(
-                             url,
-                             headers: {
-                               'Content-Type': 'application/json',
-                               'Authorization': 'Bearer $token'
-                             },
-                             body: json.encode(<String, dynamic>{
-                               'serviceName': "",
-                               'work': "add goal",
-                               'uid': uid,
-                               'goalName': added[count - 1],
-                               'goalNumber': count.toString(),
-                               'goalLevel': goalsLevel,
-                               'remindEveryday':remind,
-                               'remindTime':sendTime,
-                               //                                'note':"",
-                             }),
-                           );
-
-                           print(resp.body.toString());
-                           var result = json.decode(resp.body);
-                           if (result['response'] == 200) {
-                             int savedGoal = await db.saveGoal(
-                                 new Goal(
-                                     uid,
-                                     added[count - 1],
-                                     goalsLevel,
-                                     remind,
-                                     sendTime,
-                                     count.toString()));
-
-                             print("goal saved :$savedGoal");
-
-                             Navigator.pop(context);
-                             setState(() {
-                               _disable = 0;
-                               _disable1 = 0;
-                               selectedHour=0;
-                               selectedMin=0;
-                               ampm='AM';
-                               note="";
-                               click=0;
-                               timeView=false;
-                               checkedValue=false;
-                               sendTime="none";
-                               remind="0";
-                               expertise="";
-                               goalsLevel="";
-                               cnt = cnt + 1;
-                             });
-                           } else {
-                             Navigator.pop(context);
-                             setState(() {
-
-                               selectedHour=0;
-                               selectedMin=0;
-                               ampm='AM';
-                               expertise="";
-                               goalsLevel="";
-                               note="";
-                               click=0;
-                               timeView=false;
-                               checkedValue=false;
-                               sendTime="none";
-                               remind="0";
-                               _disable = 0;
-                               _disable1=0;
-                               added[count - 1] = "";
-                               count = count - 1;
-                             });
-
-                             _sk.currentState.showSnackBar(SnackBar(
-                               content: Text(
-                                 "There is Some Technical Problem Submit again",
-                                 style: TextStyle(
-                                   fontStyle: FontStyle.italic,
-                                   fontSize: 15,
-                                 ),
-                               ),
-                               shape: RoundedRectangleBorder(
-                                   borderRadius: BorderRadius.only(
-                                       topLeft: Radius.circular(12.0),
-                                       topRight: Radius.circular(12.0))),
-                               duration: Duration(seconds: 3),
-                               backgroundColor: Colors.lightBlueAccent,
-                             ));
-                           }
-                         } else {
-                           _sk.currentState.showSnackBar(SnackBar(
-                             content: Text(
-                               "Enter all details and Submit next",
-                               style: TextStyle(
-                                 fontStyle: FontStyle.italic,
-                                 fontSize: 15,
-                               ),
-                             ),
-                             shape: RoundedRectangleBorder(
-                                 borderRadius: BorderRadius.only(
-                                     topLeft: Radius.circular(12.0),
-                                     topRight: Radius.circular(12.0))),
-                             duration: Duration(seconds: 3),
-                             backgroundColor: Colors.lightBlueAccent,
-                           ));
-                         }
-
-                       }
-                       else{
-
-                         _sk.currentState.showSnackBar(SnackBar(
-                           content: Text(
-                             "Click Done",
-                             style: TextStyle(
-                               fontStyle: FontStyle.italic,
-                               fontSize: 15,
-                             ),
-                           ),
-                           shape: RoundedRectangleBorder(
-                               borderRadius: BorderRadius.only(
-                                   topLeft: Radius.circular(12.0),
-                                   topRight: Radius.circular(12.0))),
-                           duration: Duration(seconds: 3),
-                           backgroundColor: Colors.lightBlueAccent,
-                         ));
-
-                       }
-
-
-                      },
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Future _showNotification(int goalNumber, String title, String content,
+      Time notificationTime) async {
+    var androidPlatformChannelSpecifics = new AndroidNotificationDetails('100',
+        'Goal Reminder', 'This channel is reserved for the goal Reminders',
+        playSound: false, importance: Importance.Max, priority: Priority.High);
+    var iOSPlatformChannelSpecifics =
+        new IOSNotificationDetails(presentSound: false);
+    var platformChannelSpecifics = new NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.showDailyAtTime(
+      goalNumber,
+      '$title',
+      '$content',
+      notificationTime,
+      platformChannelSpecifics,
     );
   }
 
