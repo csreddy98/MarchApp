@@ -183,6 +183,25 @@ class _LoginState extends State<Login> {
     });
   }
 
+  void _onLoading() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Container(
+          color: Colors.white,
+          child: Center(
+            child: Image.asset(
+              "assets/images/animat-rocket-color.gif",
+              height: 125.0,
+              width: 125.0,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   loginWithFacebook() async {
     String result = await Navigator.push(
         context,
@@ -193,11 +212,140 @@ class _LoginState extends State<Login> {
                 ),
             maintainState: true));
     if (result != null) {
+      _onLoading();
       try {
         final facebookAuthCred =
             FacebookAuthProvider.getCredential(accessToken: result);
-        final user = await _auth.signInWithCredential(facebookAuthCred);
-        print("${user.additionalUserInfo.profile}");
+        final FirebaseUser user =
+            (await _auth.signInWithCredential(facebookAuthCred)).user;
+        final FirebaseUser currentUser = await _auth.currentUser();
+        assert(user.uid == currentUser.uid);
+        print(user.displayName);
+        print(user.uid);
+
+        var url = 'https://march.lbits.co/api/worker.php';
+        http
+            .post(
+          url,
+          body: json.encode(<String, dynamic>{
+            'serviceName': "generatetoken",
+            'work': "get user",
+            'uid': user.uid,
+          }),
+        )
+            .then((resp) {
+          print('${resp.body}');
+          var result = json.decode(resp.body);
+          if (result['response'] == 300) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (BuildContext context) => Login()));
+          }
+          if (result['response'] == 200) {
+            var db = new DataBaseHelper();
+            db.deleteUserInfo().then((x) async {
+              int savedUser = await db.saveUser(new User(
+                  user.uid,
+                  result['result']['user_info']['fullName'],
+                  result['result']['user_info']['bio'],
+                  result['result']['user_info']['email'],
+                  result['result']['user_info']['DOB'][8] +
+                      result['result']['user_info']['DOB'][9] +
+                      "-" +
+                      result['result']['user_info']['DOB'][6] +
+                      result['result']['user_info']['DOB'][7] +
+                      "-" +
+                      result['result']['user_info']['DOB']
+                          .toString()
+                          .substring(0, 4),
+                  result['result']['user_info']['sex'],
+                  result['result']['user_info']['profession'],
+                  result['result']['user_info']['profile_pic'],
+                  result['result']['user_info']['mobile']));
+              print("user saved :$savedUser");
+            });
+            db.deleteFriendsInfo().then((x) {
+              var chatList = result['result']['chats_info'];
+              chatList.forEach((val) {
+                imageSaver(val['profile_pic']).then((value) {
+                  db.addUser(<String, String>{
+                    DataBaseHelper.friendId: val['userId'],
+                    DataBaseHelper.friendName: val['fullName'],
+                    DataBaseHelper.friendSmallPic: "${value['small_image']}",
+                    DataBaseHelper.friendPic: "${value['image']}",
+                    DataBaseHelper.friendNetworkPic: "${val['profile_pic']}",
+                    DataBaseHelper.friendLastMessage: "",
+                    DataBaseHelper.friendLastMessageTime:
+                    DateTime.parse(val['time']).toString()
+                  }).then((value) => print(value));
+                });
+              });
+            });
+            SharedPreferences.getInstance().then((prefs) {
+              prefs.setString('token', result['result']['token']);
+              prefs.setString('id', result['result']['user_info']['id']);
+              prefs.setString('age', result['result']['user_info']['age']);
+            });
+
+            http
+                .post(
+              url,
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + result['result']['token']
+              },
+              body: json.encode(<String, dynamic>{
+                'serviceName': "",
+                'work': "get goals",
+                'uid': user.uid,
+              }),
+            )
+                .then((res) async {
+              print(res.body.toString());
+              var resultx = json.decode(res.body);
+              if (resultx['response'] == 200) {
+                db.deleteGoalsInfo().then((value) async {
+                  int cnt = resultx['result'].length;
+                  if (cnt == 0) {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => Select()),
+                            (route) => false);
+                  }
+                  for (var i = 0; i < cnt; i++) {
+                    int savedGoal = await db.saveGoal(new Goal(
+                      user.uid,
+                      resultx['result'][i]['goal'],
+                      resultx['result'][i]['level'],
+                      resultx['result'][i]['remindEveryDay'],
+                      resultx['result'][i]['everyDayRemindTime'],
+                      resultx['result'][i]['goal_number'],
+                    ));
+                    print("goal saved :$savedGoal");
+                  }
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  prefs.setInt('log', 1);
+
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => Home('')),
+                          (Route<dynamic> route) => false);
+                });
+              } else {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => Select()),
+                        (Route<dynamic> route) => false);
+              }
+            });
+          } else {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => GRegister()),
+                  (Route<dynamic> route) => false,
+            );
+          }
+        });
+
       } catch (e) {
         print(e);
       }

@@ -101,7 +101,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
         onSelectNotification: onSelectNotification);
   }
 
-  onSelectNotification(String payload) async {
+  Future onSelectNotification(String payload) async {
     print("Tapped on Notification");
   }
 
@@ -852,8 +852,8 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                             'uid': uid,
                                             'goalName': added[count - 1],
                                             'goalNumber': count.toString(),
-                                            'goalLevel': goalsLevel,
-                                            'remindEveryday': remind,
+                                            'goalLevel': int.parse(goalsLevel),
+                                            'remindEveryday': int.parse(remind),
                                             'remindTime': sendTime,
                                           }),
                                         );
@@ -862,6 +862,9 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                         var result = json.decode(resp.body);
                                         if (count == 3 &&
                                             result['response'] == 200) {
+                                          _showNotification(count,added[count-1], "It's time to work on your goal",
+                                              Time(int.parse(sendTime.substring(0,2)),selectedMin));
+
                                           Navigator.pushAndRemoveUntil(
                                               context,
                                               MaterialPageRoute(
@@ -1047,8 +1050,8 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                       'uid': uid,
                                       'goalName': added[count - 1],
                                       'goalNumber': count.toString(),
-                                      'goalLevel': goalsLevel,
-                                      'remindEveryday': remind,
+                                      'goalLevel': int.parse(goalsLevel),
+                                      'remindEveryday': int.parse(remind),
                                       'remindTime': sendTime,
                                       //                                'note':"",
                                     }),
@@ -1066,6 +1069,9 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                         count.toString()));
 
                                     print("goal saved :$savedGoal");
+
+                                    _showNotification(count,added[count-1], "It's time to work on your goal",
+                                        Time(int.parse(sendTime.substring(0,2)),selectedMin));
 
                                     Navigator.pop(context);
                                     setState(() {

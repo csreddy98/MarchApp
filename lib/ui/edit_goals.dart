@@ -68,7 +68,7 @@ class _EditGoalState extends State<EditGoal> {
         onSelectNotification: onSelectNotification);
   }
 
-  onSelectNotification(String payload) async {
+  Future onSelectNotification(String payload) async {
     print("Tapped on Notification");
   }
 
@@ -671,8 +671,8 @@ class _EditGoalState extends State<EditGoal> {
                                           'uid': widget.uid,
                                           'goalName': selectedGoal,
                                           'goalNumber': widget.gno,
-                                          'goalLevel': goalsLevel,
-                                          'remindEveryday': remind,
+                                          'goalLevel':int.parse(goalsLevel),
+                                          'remindEveryday': int.parse(remind),
                                           'remindTime': sendTime,
                                         }),
                                       );
@@ -712,6 +712,10 @@ class _EditGoalState extends State<EditGoal> {
                                                   widget.gno));
 
                                           print("goal saved :$savedGoal");
+
+                                          _showNotification(int.parse(widget.gno),selectedGoal, "It's time to work on your goal",
+                                              Time(int.parse(sendTime.substring(0,2)),selectedMin));
+
 
                                           Navigator.pushAndRemoveUntil(
                                               context,

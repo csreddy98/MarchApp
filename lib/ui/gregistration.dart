@@ -119,7 +119,7 @@ class _GRegisterState extends State<GRegister> {
           ec=x;
           nc=x;
         }
-        if(val.phoneNumber!=""){
+        if(val.phoneNumber!=""&& val.phoneNumber!=null){
           phone=val.phoneNumber;
           phoneColor=Colors.white;
           phc=x;
