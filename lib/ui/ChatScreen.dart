@@ -32,6 +32,9 @@ class _TextingScreenState extends State<TextingScreen> {
   final db = DataBaseHelper();
   WebSocketStatus socketStatus;
   int i = 0;
+  int msgCount = 0;
+  String remoteStatus = "done";
+  bool checkStatus = true;
   @override
   void initState() {
     _load();
@@ -47,7 +50,6 @@ class _TextingScreenState extends State<TextingScreen> {
   void dispose() {
     messageController.dispose();
     _scroller.dispose();
-    // socketIO.unSubscribesAll();
     super.dispose();
   }
 
@@ -73,9 +75,6 @@ class _TextingScreenState extends State<TextingScreen> {
     }).then((value) {
       db.markAsSeen(widget.user['user_id']);
     });
-    // if (i == 0) {
-    // i++;
-    // }
   }
 
   Widget _flightShuttleBuilder(
@@ -94,6 +93,29 @@ class _TextingScreenState extends State<TextingScreen> {
   @override
   Widget build(BuildContext context) {
     loadMessages();
+
+    if (messages.length > 10 && checkStatus) {
+      http.post("https://march.lbits.co/api/worker.php",
+          body: json.encode({
+            'serviceName': '',
+            'work': 'check testimonial status',
+            'writtenBy': '$myId',
+            'writtenTo': '${widget.user['user_id']}'
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          }).then((value) {
+        var jsonResp = json.decode(value.body);
+        print(jsonResp);
+        if (jsonResp['result'] == 'pending') {
+          setState(() {
+            remoteStatus = 'pending';
+            checkStatus = false;
+          });
+        }
+      });
+    }
     return Scaffold(
       backgroundColor: Color(0xFFFBFCFE),
       appBar: AppBar(
@@ -119,54 +141,107 @@ class _TextingScreenState extends State<TextingScreen> {
             ),
           )
         ],
-        title: Hero(
-          flightShuttleBuilder: _flightShuttleBuilder,
-          tag: "${widget.user['name']}",
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              ClipRRect(
-                child: Image.file(
-                    File.fromUri(Uri.file(widget.user['profile_pic'])),
-                    height: 50,
-                    width: 50,
-                    fit: BoxFit.cover),
-                borderRadius: BorderRadius.circular(10.0),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            ClipRRect(
+              child: Image.file(
+                  File.fromUri(Uri.file(widget.user['profile_pic'])),
+                  height: 50,
+                  width: 50,
+                  fit: BoxFit.cover),
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            SizedBox(width: 10),
+            Expanded(
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => ProfileScreen(
+                                fromNetwork: true,
+                                userId: widget.user['user_id'],
+                              )));
+                },
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        widget.user['name'],
+                        style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 20.0),
+                        textAlign: TextAlign.start,
+                      ),
+                      // Text(
+                      //   "${widget.user['profession']}",
+                      //   style: TextStyle(color: Colors.grey, fontSize: 15.0),
+                      //   textAlign: TextAlign.start,
+                      // )
+                    ]),
               ),
-              SizedBox(width: 10),
-              Expanded(
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => ProfileScreen(
-                                  fromNetwork: true,
-                                  userId: widget.user['user_id'],
-                                )));
-                  },
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          widget.user['name'],
-                          style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: 20.0),
-                          textAlign: TextAlign.start,
-                        ),
-                        // Text(
-                        //   "${widget.user['profession']}",
-                        //   style: TextStyle(color: Colors.grey, fontSize: 15.0),
-                        //   textAlign: TextAlign.start,
-                        // )
-                      ]),
-                ),
-              )
-            ],
-          ),
+            )
+          ],
         ),
       ),
+      floatingActionButton: (remoteStatus == 'done')
+          ? null
+          : FloatingActionButton(
+              child: Icon(Icons.edit),
+              backgroundColor: Theme.of(context).primaryColor,
+              onPressed: () {
+                var contentController = TextEditingController();
+                showDialog(
+                    barrierDismissible: true,
+                    context: context,
+                    child: AlertDialog(
+                      title: Text(
+                          "Write few words about ${widget.user['name'].toString().split(" ")[0]}"),
+                      content: TextField(
+                        minLines: 4,
+                        maxLines: 20,
+                        controller: contentController,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Theme.of(context).primaryColor,
+                                    width: 1),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(15)))),
+                      ),
+                      actions: <Widget>[
+                        RaisedButton(
+                          onPressed: () {
+                            String content = contentController.text;
+                            contentController.clear();
+                            http.post("https://march.lbits.co/api/worker.php",
+                                body: json.encode({
+                                  'serviceName': '',
+                                  'work': 'add testimonial',
+                                  'writtenBy': '$myId',
+                                  'writtenTo': '${widget.user['user_id']}',
+                                  'content': '$content'
+                                }),
+                                headers: {
+                                  'Content-Type': 'application/json',
+                                  'Authorization': 'Bearer $token'
+                                }).then((value) {
+                              print(value.body);
+                              setState(() {
+                                remoteStatus = 'done';
+                              });
+                            }).catchError((err) => print("ERRRO"));
+                            Navigator.pop(context);
+                          },
+                          child: Text("Add"),
+                          color: Theme.of(context).primaryColor,
+                        )
+                      ],
+                    ));
+              },
+            ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       body: Padding(
         padding: const EdgeInsets.only(top: 15.0),
         child: Column(
@@ -427,141 +502,129 @@ class _TextingScreenState extends State<TextingScreen> {
                                                         40)
                                                 ? boxSize.dx - 40
                                                 : boxSize.dx - 50,
-                                        child: Hero(
-                                          tag: '$index',
-                                          child: Container(
-                                              child: Column(
-                                            children: <Widget>[
-                                              Container(
-                                                constraints: BoxConstraints(
-                                                    maxHeight:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height /
-                                                            3,
-                                                    maxWidth:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.75),
-                                                padding:
-                                                    const EdgeInsets.all(15.0),
-                                                decoration: BoxDecoration(
-                                                  color: direction == 'right'
-                                                      ? Theme.of(context)
-                                                          .primaryColor
-                                                      : Color(0xFFeeeeee),
-                                                  borderRadius: (direction ==
-                                                          'right')
-                                                      ? BorderRadius.only(
-                                                          bottomLeft:
-                                                              Radius.circular(
-                                                                  10),
-                                                          topLeft:
-                                                              Radius.circular(
-                                                                  10),
-                                                          topRight:
-                                                              Radius.circular(
-                                                                  10),
-                                                        )
-                                                      : BorderRadius.only(
-                                                          topRight:
-                                                              Radius.circular(
-                                                                  10),
-                                                          bottomLeft:
-                                                              Radius.circular(
-                                                                  10),
-                                                          bottomRight:
-                                                              Radius.circular(
-                                                                  10),
-                                                        ),
-                                                ),
-                                                child: Text(
-                                                  "${messages[index]['message']}",
-                                                  style: TextStyle(
-                                                      color:
-                                                          direction == 'right'
-                                                              ? Colors.white
-                                                              : Colors.black),
-                                                ),
+                                        child: Container(
+                                            child: Column(
+                                          children: <Widget>[
+                                            Container(
+                                              constraints: BoxConstraints(
+                                                  maxHeight:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .height /
+                                                          3,
+                                                  maxWidth:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .width *
+                                                          0.75),
+                                              padding:
+                                                  const EdgeInsets.all(15.0),
+                                              decoration: BoxDecoration(
+                                                color: direction == 'right'
+                                                    ? Theme.of(context)
+                                                        .primaryColor
+                                                    : Color(0xFFeeeeee),
+                                                borderRadius: (direction ==
+                                                        'right')
+                                                    ? BorderRadius.only(
+                                                        bottomLeft:
+                                                            Radius.circular(10),
+                                                        topLeft:
+                                                            Radius.circular(10),
+                                                        topRight:
+                                                            Radius.circular(10),
+                                                      )
+                                                    : BorderRadius.only(
+                                                        topRight:
+                                                            Radius.circular(10),
+                                                        bottomLeft:
+                                                            Radius.circular(10),
+                                                        bottomRight:
+                                                            Radius.circular(10),
+                                                      ),
                                               ),
-                                              Container(
-                                                  decoration: BoxDecoration(
-                                                      color: Colors.black,
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  8.0))),
-                                                  child: Column(
-                                                    children: <Widget>[
-                                                      messages[index][
-                                                                  'msgTransportStatus'] ==
-                                                              "failed"
-                                                          ? actionButtons(
-                                                              'Retry', () {
-                                                              print("Retrying");
-                                                              sendMessage({
-                                                                'msgCode':
-                                                                    "${messages[index]['msgCode']}",
-                                                                'text':
-                                                                    "$message",
-                                                              }, context);
-                                                              Navigator.pop(
-                                                                  context);
-                                                              Toast.show(
-                                                                  'Attempting to Send Again',
-                                                                  context,
-                                                                  duration: Toast
-                                                                      .LENGTH_SHORT,
-                                                                  gravity: Toast
-                                                                      .BOTTOM);
-                                                            })
-                                                          : Container(),
-                                                      actionButtons('Copy', () {
-                                                        Clipboard.setData(
-                                                            new ClipboardData(
-                                                                text:
-                                                                    '${messages[index]['message']}'));
-                                                        Navigator.pop(context);
+                                              child: Text(
+                                                "${messages[index]['message']}",
+                                                style: TextStyle(
+                                                    color: direction == 'right'
+                                                        ? Colors.white
+                                                        : Colors.black),
+                                              ),
+                                            ),
+                                            Container(
+                                                decoration: BoxDecoration(
+                                                    color: Colors.black,
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                8.0))),
+                                                child: Column(
+                                                  children: <Widget>[
+                                                    messages[index][
+                                                                'msgTransportStatus'] ==
+                                                            "failed"
+                                                        ? actionButtons('Retry',
+                                                            () {
+                                                            print("Retrying");
+                                                            sendMessage({
+                                                              'msgCode':
+                                                                  "${messages[index]['msgCode']}",
+                                                              'text':
+                                                                  "$message",
+                                                            }, context);
+                                                            Navigator.pop(
+                                                                context);
+                                                            Toast.show(
+                                                                'Attempting to Send Again',
+                                                                context,
+                                                                duration: Toast
+                                                                    .LENGTH_SHORT,
+                                                                gravity: Toast
+                                                                    .BOTTOM);
+                                                          })
+                                                        : Container(),
+                                                    actionButtons('Copy', () {
+                                                      Clipboard.setData(
+                                                          new ClipboardData(
+                                                              text:
+                                                                  '${messages[index]['message']}'));
+                                                      Navigator.pop(context);
+                                                      Toast.show(
+                                                          'Coppied', context,
+                                                          duration: Toast
+                                                              .LENGTH_SHORT,
+                                                          gravity:
+                                                              Toast.BOTTOM);
+                                                    }),
+                                                    actionButtons(
+                                                        'Share', null),
+                                                    actionButtons('Delete', () {
+                                                      if (messages.length - 1 ==
+                                                          index) {
+                                                        db.updateLastMessage({
+                                                          'message':
+                                                              "${messages[index - 1]['message']}",
+                                                          'messageTime':
+                                                              '${DateTime.now()}',
+                                                          'otherId': widget
+                                                              .user['user_id']
+                                                        });
                                                         Toast.show(
-                                                            'Coppied', context,
+                                                            'cleared', context,
                                                             duration: Toast
                                                                 .LENGTH_SHORT,
                                                             gravity:
                                                                 Toast.BOTTOM);
-                                                      }),
-                                                      actionButtons(
-                                                          'Share', null),
-                                                      actionButtons('Delete',
-                                                          () {
-                                                        if (messages.length -
-                                                                1 ==
-                                                            index) {
-                                                          db.updateLastMessage({
-                                                            'message':
-                                                                "${messages[index - 1]['message']}",
-                                                            'messageTime':
-                                                                '${DateTime.now()}',
-                                                            'otherId': widget
-                                                                .user['user_id']
-                                                          });
-                                                          Toast.show('cleared',
-                                                              context,
-                                                              duration: Toast
-                                                                  .LENGTH_SHORT,
-                                                              gravity:
-                                                                  Toast.BOTTOM);
-                                                        }
-                                                        db.deleteMessage(messages[
-                                                                index][
-                                                            '${db.messageId}']);
-                                                        Navigator.pop(context);
-                                                      })
-                                                    ],
-                                                  ))
-                                            ],
-                                          )),
-                                        ))
+                                                      }
+                                                      db.deleteMessage(messages[
+                                                              index]
+                                                          ['${db.messageId}']);
+                                                      Navigator.pop(context);
+                                                    })
+                                                  ],
+                                                ))
+                                          ],
+                                        )))
                                   ],
                                 ),
                               ),
