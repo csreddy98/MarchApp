@@ -93,7 +93,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
     animationController.forward();
 
     var initializationSettingsAndroid =
-        AndroidInitializationSettings('app_icon');
+        AndroidInitializationSettings('@mipmap/ic_launcher');
     var initializationSettingsIOS = IOSInitializationSettings();
     var initializationSettings = InitializationSettings(
         initializationSettingsAndroid, initializationSettingsIOS);
