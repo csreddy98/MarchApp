@@ -15,6 +15,7 @@ import 'package:http/http.dart' as http;
 import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 import 'home.dart';
 
@@ -24,11 +25,12 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-
   GoogleSignIn google = new GoogleSignIn();
   FirebaseAuth _auth = FirebaseAuth.instance;
-  FacebookLogin fbLogin =new FacebookLogin();
-
+  FacebookLogin fbLogin = new FacebookLogin();
+  String yourClientId = "374789033499464";
+  String yourRedirectUrl =
+      "https://www.facebook.com/connect/login_success.html";
   String _message = 'Log in/out by pressing the buttons below.';
 
   void _showMessage(String message) {
@@ -38,15 +40,15 @@ class _LoginState extends State<Login> {
     });
   }
 
-
-  Future _signIn() async{
+  Future _signIn() async {
     GoogleSignInAccount googleSignInAccount = await google.signIn();
     GoogleSignInAuthentication gsa = await googleSignInAccount.authentication;
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       accessToken: gsa.accessToken,
       idToken: gsa.idToken,
     );
-    final FirebaseUser user = (await _auth.signInWithCredential(credential)).user;
+    final FirebaseUser user =
+        (await _auth.signInWithCredential(credential)).user;
     assert(user.email != null);
     assert(user.displayName != null);
     assert(!user.isAnonymous);
@@ -71,10 +73,8 @@ class _LoginState extends State<Login> {
       print('${resp.body}');
       var result = json.decode(resp.body);
       if (result['response'] == 300) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => Login()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (BuildContext context) => Login()));
       }
       if (result['response'] == 200) {
         var db = new DataBaseHelper();
@@ -111,7 +111,7 @@ class _LoginState extends State<Login> {
                 DataBaseHelper.friendNetworkPic: "${val['profile_pic']}",
                 DataBaseHelper.friendLastMessage: "",
                 DataBaseHelper.friendLastMessageTime:
-                DateTime.parse(val['time']).toString()
+                    DateTime.parse(val['time']).toString()
               }).then((value) => print(value));
             });
           });
@@ -145,7 +145,7 @@ class _LoginState extends State<Login> {
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => Select()),
-                        (route) => false);
+                    (route) => false);
               }
               for (var i = 0; i < cnt; i++) {
                 int savedGoal = await db.saveGoal(new Goal(
@@ -158,42 +158,56 @@ class _LoginState extends State<Login> {
                 ));
                 print("goal saved :$savedGoal");
               }
-              SharedPreferences prefs =
-              await SharedPreferences.getInstance();
+              SharedPreferences prefs = await SharedPreferences.getInstance();
               prefs.setInt('log', 1);
 
               Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => Home('')),
-                      (Route<dynamic> route) => false);
+                  (Route<dynamic> route) => false);
             });
           } else {
             Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => Select()),
-                    (Route<dynamic> route) => false);
+                (Route<dynamic> route) => false);
           }
         });
       } else {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(
-              builder: (context) => GRegister()),
-              (Route<dynamic> route) => false,
+          MaterialPageRoute(builder: (context) => GRegister()),
+          (Route<dynamic> route) => false,
         );
       }
     });
-
-
-
   }
-  
-  
+
+  loginWithFacebook() async {
+    String result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => CustomWebView(
+                  selectedUrl:
+                      'https://www.facebook.com/dialog/oauth?client_id=$yourClientId&redirect_uri=$yourRedirectUrl&response_type=token&scope=email,public_profile,',
+                ),
+            maintainState: true));
+    if (result != null) {
+      try {
+        final facebookAuthCred =
+            FacebookAuthProvider.getCredential(accessToken: result);
+        final user = await _auth.signInWithCredential(facebookAuthCred);
+        print("${user.additionalUserInfo.profile}");
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    ScreenUtil.init(context,width: 750, height: 1300, allowFontScaling: true);
+    ScreenUtil.init(context, width: 750, height: 1300, allowFontScaling: true);
     return Scaffold(
 //      backgroundColor: Color(0xff241332),
       body: SingleChildScrollView(
@@ -210,32 +224,73 @@ class _LoginState extends State<Login> {
             Column(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(top:100.0),
-                  child: Center(child: Text("Welcome ",style: TextStyle(fontFamily: 'montserrat' ,fontSize: 30,fontWeight: FontWeight.bold,color: Colors.black),)),
+                  padding: const EdgeInsets.only(top: 100.0),
+                  child: Center(
+                      child: Text(
+                    "Welcome ",
+                    style: TextStyle(
+                        fontFamily: 'montserrat',
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
+                  )),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text("to ",style: TextStyle(fontFamily: 'montserrat' ,fontSize: 30,fontWeight: FontWeight.bold,color: Colors.black),),
-                    Text("March",style: TextStyle(fontFamily: 'montserrat' ,fontSize: 30,fontWeight: FontWeight.bold,color: Theme.of(context).primaryColor),),
+                    Text(
+                      "to ",
+                      style: TextStyle(
+                          fontFamily: 'montserrat',
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    ),
+                    Text(
+                      "March",
+                      style: TextStyle(
+                          fontFamily: 'montserrat',
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor),
+                    ),
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top:180.0),
-                  child: Center(child: Column(
+                  padding: const EdgeInsets.only(top: 180.0),
+                  child: Center(
+                      child: Column(
                     children: <Widget>[
-                      Text("The best way to meet people who have",style: TextStyle(fontSize: 14,fontWeight: FontWeight.w200,color: Colors.black),),
-                      Text("goals as you. Let's get Started!",style: TextStyle(fontSize: 14,fontWeight: FontWeight.w200,color: Colors.black),),
+                      Text(
+                        "The best way to meet people who have",
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w200,
+                            color: Colors.black),
+                      ),
+                      Text(
+                        "goals as you. Let's get Started!",
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w200,
+                            color: Colors.black),
+                      ),
                     ],
                   )),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top:20.0,bottom: 10),
-                  child: Center(child: Text("CONTINUE WITH",style: TextStyle(fontSize: 14,fontWeight: FontWeight.w600,color: Colors.black),)),
+                  padding: const EdgeInsets.only(top: 20.0, bottom: 10),
+                  child: Center(
+                      child: Text(
+                    "CONTINUE WITH",
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black),
+                  )),
                 ),
-
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(50.0,5,50,3),
+                  padding: const EdgeInsets.fromLTRB(50.0, 5, 50, 3),
                   child: ButtonTheme(
                     minWidth: size.width,
                     height: 52.0,
@@ -244,15 +299,15 @@ class _LoginState extends State<Login> {
                           borderRadius: new BorderRadius.circular(50.0),
                           side: BorderSide(color: Colors.grey[100])),
                       onPressed: () {
-
-                       /* FirebaseAuth.instance.currentUser().then((val) async {
+                        /* FirebaseAuth.instance.currentUser().then((val) async {
                           print(val.uid);});*/
-                        Navigator.pushAndRemoveUntil(context,
-                          MaterialPageRoute(builder: (context) => PhoneAuthScreen()),
-                              (Route<dynamic> route) => true,
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PhoneAuthScreen()),
+                          (Route<dynamic> route) => true,
                         );
-
-                        },
+                      },
                       color: Colors.grey[100],
                       textColor: Colors.black,
                       child: Row(
@@ -277,7 +332,7 @@ class _LoginState extends State<Login> {
                 ),
                 SizedBox(height: 10.0),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(50.0,0,50,5),
+                  padding: const EdgeInsets.fromLTRB(50.0, 0, 50, 5),
                   child: ButtonTheme(
                     minWidth: size.width,
                     height: 52.0,
@@ -312,7 +367,7 @@ class _LoginState extends State<Login> {
                 ),
                 SizedBox(height: 10.0),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(50.0,0,50,5),
+                  padding: const EdgeInsets.fromLTRB(50.0, 0, 50, 5),
                   child: ButtonTheme(
                     minWidth: size.width,
                     height: 52.0,
@@ -320,32 +375,33 @@ class _LoginState extends State<Login> {
                       shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(50.0)),
                       onPressed: () {
-
-                        fbLogin.logIn(['email']).then((result){
-                          switch(result.status){
-                            case FacebookLoginStatus.loggedIn:
-                              final FacebookAccessToken accessToken = result.accessToken;
-                              _showMessage('''
-                                     Logged in!
-                                   Token: ${accessToken.token}
-                                   User id: ${accessToken.userId}
-                                   Expires: ${accessToken.expires}
-                                   Permissions: ${accessToken.permissions}
-                                    Declined permissions: ${accessToken.declinedPermissions}
-                                    ''');
-                              break;
-                            case FacebookLoginStatus.cancelledByUser:
-                              _showMessage('Login cancelled by the user.');
-                              break;
-                            case FacebookLoginStatus.error:
-                              _showMessage('Something went wrong with the login process.\n'
-                                  'Here\'s the error Facebook gave us: ${result.errorMessage}');
-                              break;
-                          }
-                        }).catchError((e){
-                          print(e);
-                        });
-
+                        loginWithFacebook();
+                        // fbLogin.logIn(['email']).then((result) {
+                        //   switch (result.status) {
+                        //     case FacebookLoginStatus.loggedIn:
+                        //       final FacebookAccessToken accessToken =
+                        //           result.accessToken;
+                        //       _showMessage('''
+                        //              Logged in!
+                        //            Token: ${accessToken.token}
+                        //            User id: ${accessToken.userId}
+                        //            Expires: ${accessToken.expires}
+                        //            Permissions: ${accessToken.permissions}
+                        //             Declined permissions: ${accessToken.declinedPermissions}
+                        //             ''');
+                        //       break;
+                        //     case FacebookLoginStatus.cancelledByUser:
+                        //       _showMessage('Login cancelled by the user.');
+                        //       break;
+                        //     case FacebookLoginStatus.error:
+                        //       _showMessage(
+                        //           'Something went wrong with the login process.\n'
+                        //           'Here\'s the error Facebook gave us: ${result.errorMessage}');
+                        //       break;
+                        //   }
+                        // }).catchError((e) {
+                        //   print(e);
+                        // });
                       },
                       color: Colors.grey[100],
                       textColor: Colors.black,
@@ -370,19 +426,33 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top:20.0),
-                  child: Center(child: Column(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: Center(
+                      child: Column(
                     children: <Widget>[
-                      Text("By Signing up you agree to the",style: TextStyle(fontSize: 12,fontWeight: FontWeight.normal,color: Colors.black),),
+                      Text(
+                        "By Signing up you agree to the",
+                        style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.normal,
+                            color: Colors.black),
+                      ),
                       GestureDetector(
-                          onTap: (){
-                            Navigator.pushAndRemoveUntil(context,
-                                MaterialPageRoute(builder: (context) => Select()),
-                            (Route<dynamic> route) => false,);
-
+                          onTap: () {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => Select()),
+                              (Route<dynamic> route) => false,
+                            );
                           },
-                          child: Text("terms of use",
-                            style: TextStyle(fontSize: 12,fontWeight: FontWeight.normal,decoration: TextDecoration.underline,color: Colors.black),)),
+                          child: Text(
+                            "terms of use",
+                            style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.normal,
+                                decoration: TextDecoration.underline,
+                                color: Colors.black),
+                          )),
                     ],
                   )),
                 ),
@@ -392,5 +462,56 @@ class _LoginState extends State<Login> {
         ),
       ),
     );
+  }
+}
+
+class CustomWebView extends StatefulWidget {
+  final String selectedUrl;
+
+  CustomWebView({this.selectedUrl});
+
+  @override
+  _CustomWebViewState createState() => _CustomWebViewState();
+}
+
+class _CustomWebViewState extends State<CustomWebView> {
+  final flutterWebviewPlugin = new FlutterWebviewPlugin();
+
+  @override
+  void initState() {
+    super.initState();
+
+    flutterWebviewPlugin.onUrlChanged.listen((String url) {
+      if (url.contains("#access_token")) {
+        succeed(url);
+      }
+
+      if (url.contains(
+          "https://www.facebook.com/connect/login_success.html?error=access_denied&error_code=200&error_description=Permissions+error&error_reason=user_denied")) {
+        denied();
+      }
+    });
+  }
+
+  denied() {
+    Navigator.pop(context);
+  }
+
+  succeed(String url) {
+    var params = url.split("access_token=");
+
+    var endparam = params[1].split("&");
+
+    Navigator.pop(context, endparam[0]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WebviewScaffold(
+        url: widget.selectedUrl,
+        appBar: new AppBar(
+          backgroundColor: Color.fromRGBO(66, 103, 178, 1),
+          title: new Text("Facebook login"),
+        ));
   }
 }
