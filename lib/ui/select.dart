@@ -32,12 +32,10 @@ class _SelectState extends State<Select>  with SingleTickerProviderStateMixin{
   List<String> suggestions1 = ["Newbie","Skilled","Proficient","Experienced","Expert"];
 // drop down
   var db = new DataBaseHelper();
-  String time = "1 Month";
   String note="";
   String goalsLevel="";
 // till here
    String sendTime="none";
-  String target = "";
   int cnt = 1;
   String uid;
   String token;
@@ -95,18 +93,14 @@ class _SelectState extends State<Select>  with SingleTickerProviderStateMixin{
 
   @override
   void dispose() {
-    myController.dispose();
     animationController.dispose();
     super.dispose();
   }
 
   int _disable = 0,_disable1=0;
-  SimpleAutoCompleteTextField textField;
-  bool showWhichErrorText = false;
 
   int selectedHour=0;
   int selectedMin=0;
-  int meridian;
   String ampm="AM";
 
   @override

@@ -1,14 +1,14 @@
-/*
 import 'dart:convert';
 
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:march/models/goal.dart';
+import 'package:march/ui/show_goals.dart';
 import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'home.dart';
 
 class EditGoal extends StatefulWidget {
   final String gno;
@@ -18,117 +18,45 @@ class EditGoal extends StatefulWidget {
   _EditGoalState createState() => _EditGoalState();
 }
 
-class Time{
-  int id;
-  String time;
-
-  Time(this.id,this.time);
-
-  static List<Time> getTime(){
-    return <Time> [
-      Time(1,'1 Month'),
-      Time(2,'3 Month'),
-      Time(3,'6 Month'),
-      Time(4,'1 Year'),
-      Time(5,'>1 Year'),
-    ];
-  }
-}
-
-class Level{
-  int id;
-  String level;
-
-  Level(this.id,this.level);
-
-  static List<Level> getLevel(){
-    return <Level> [
-      Level(1,'Beginner'),
-      Level(2,'Amateur'),
-      Level(3,'Intermediate'),
-      Level(4,'Professional'),
-    ];
-  }
-}
 
 class _EditGoalState extends State<EditGoal> {
 
-  List<Time> _time=Time.getTime();
-  List<Level> _level=Level.getLevel();
-  List<DropdownMenuItem<Time>> _dropdownMenuItems;
-  List<DropdownMenuItem<Level>> _dropdownMenuLevels;
   GlobalKey<AutoCompleteTextFieldState<String>> key = new GlobalKey();
-  Time _selectedTime;
-  Level _selectedLevel;
   String token;
-  String time="1 Month";
-  String level="Beginner";
   String selectedGoal="";
   final GlobalKey<ScaffoldState> _sk=GlobalKey<ScaffoldState>();
+  GlobalKey<AutoCompleteTextFieldState<String>> key1 = new GlobalKey();
+  String remind="0";
+  Color c=Colors.grey[100];
   int _disable=0;
+  int _disable1=0;
   String currentText="";
+  String currentText1 = "";
+  int click=0;
   List<String> suggestions = [];
+  List<String> suggestions1 = ["Newbie","Skilled","Proficient","Experienced","Expert"];
+  String note="";
+  String goalsLevel="";
+// till here
+  String sendTime="none";
+  bool checkedValue=false;
+  bool timeView=false;
+  String expertise="";
+  bool showWhichErrorText = false;
 
-
-  final myController = TextEditingController();
-  String target="";
-  onChangeDropDownItem(Time selectedTime){
-    setState(() {
-      _selectedTime=selectedTime;
-      time=selectedTime.time;
-    });
-  }
-
-  onChangeDropDownLevel(Level selectedLevel){
-    setState(() {
-      _selectedLevel=selectedLevel;
-      level=selectedLevel.level;
-    });
-  }
+  int selectedHour=0;
+  int selectedMin=0;
+  String ampm="AM";
 
   @override
   void initState() {
-    _dropdownMenuItems =buildDropDownMenuItems(_time);
-    _selectedTime=_dropdownMenuItems[0].value;
-    _dropdownMenuLevels =buildDropDownMenuLevels(_level);
-    _selectedLevel=_dropdownMenuLevels[0].value;
     _load();
     super.initState();
   }
 
-
-  List<DropdownMenuItem<Time>> buildDropDownMenuItems(List tim){
-    List<DropdownMenuItem<Time>> items=List();
-    for(Time time in tim){
-      items.add(DropdownMenuItem(
-        value:time,
-        child: Text(time.time),
-      )
-      );
-    }
-    return items;
-  }
-
-  List<DropdownMenuItem<Level>> buildDropDownMenuLevels(List lev){
-    List<DropdownMenuItem<Level>> items=List();
-    for(Level level in lev){
-      items.add(DropdownMenuItem(
-        value:level,
-        child: Text(level.level),
-      )
-      );
-    }
-    return items;
-  }
-
-  @override
-  void dispose() {
-    myController.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
+    Size size =MediaQuery.of(context).size;
     return Scaffold(
       key: _sk,
       appBar: AppBar(
@@ -168,7 +96,14 @@ class _EditGoalState extends State<EditGoal> {
                     child:SimpleAutoCompleteTextField(
                       key: key,
                       decoration: new InputDecoration(
+                          filled: true,
+                          fillColor: c,
                           hintText: "Enter Your Goals",
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: c, width: 1.0),
+                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          ),
+                          contentPadding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
                           border: new OutlineInputBorder(
                             borderRadius: const BorderRadius.all(
                               const Radius.circular(10.0),
@@ -243,62 +178,344 @@ class _EditGoalState extends State<EditGoal> {
                     ),
                   ):Container(),
 
+                  _disable1==1?Container() :Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+                    child: SimpleAutoCompleteTextField(
+                      key: key1,
+                      decoration: new InputDecoration(
+                          filled: true,
+                          fillColor: c,
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: c, width: 1.0),
+                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                          ),
+                          contentPadding: const EdgeInsets.fromLTRB(15, 15, 15, 5),
+                          hintText: "Choose Expertise",
+                          border: new OutlineInputBorder(
+                            borderRadius: const BorderRadius.all(
+                              const Radius.circular(10.0),
+                            ),
+                          )),
+                      controller: TextEditingController(),
+                      suggestions: suggestions1,
+                      textChanged: (text) => currentText1 = text,
+                      clearOnSubmit: true,
+                      textSubmitted: (text) => setState(() {
+                        if (text != "" && _disable1 == 0) {
+                          setState(() {
+                            expertise=text;
+                            _disable1=1;
+                            if(expertise=='Newbie'){
+                              goalsLevel="0";
+                            }
+                            else if(expertise=='Skilled'){
+                              goalsLevel="1";
+                            }
+                            else if(expertise=='Proficient'){
+                              goalsLevel="2";
+                            }
+                            else if(expertise=='Experienced'){
+                              goalsLevel="3";
+                            }
+                            else if(expertise=='Expert'){
+                              goalsLevel="4";
+                            }
 
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(25.0,60,20.0,0),
-                    child: Row(
-                      children: <Widget>[
-                        Text('Time Frame : '),
-                        SizedBox(width: 20,),
-                        DropdownButton(
-                          value: _selectedTime,
-                          items: _dropdownMenuItems,
-                          onChanged: onChangeDropDownItem,
-                        ),
-                      ],
+                          });
+                        } else {
+                          _sk.currentState.showSnackBar(SnackBar(
+                            content: Text(
+                              "Enter all details and Submit next",
+                              style: TextStyle(
+                                fontStyle: FontStyle.italic,
+                                fontSize: 15,
+                              ),
+                            ),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(12.0),
+                                    topRight: Radius.circular(12.0))),
+                            duration: Duration(seconds: 3),
+                            backgroundColor: Colors.lightBlueAccent,
+                          ));
+                        }
+                      }),
                     ),
                   ),
 
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(25.0,15,20.0,0),
-                    child: Row(
-                      children: <Widget>[
-                        Text('Your Level : '),
-                        SizedBox(width: 20,),
-                        DropdownButton(
-                          value: _selectedLevel,
-                          items: _dropdownMenuLevels,
-                          onChanged: onChangeDropDownLevel,
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  Padding(
-                    padding: const EdgeInsets.only(top:60.0,left: 15),
-                    child: Text("Mention the target for your goal"),
-                  ),
-
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(15.0,20,15,0),
+                  _disable1==1?Padding(
+                    padding: const EdgeInsets.all(20),
                     child: Container(
-                      child: TextField(
-                        maxLines: 3,
-                        decoration: InputDecoration(
-                          hintText: "Workout for an hour a day",
-                          border: OutlineInputBorder(),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey,
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
                         ),
-                        controller: myController,
-                        onChanged: (String value) {
-                          try {
-                            target = value;
-                          } catch (exception) {
-                            target ="";
-                          }
-                        },
-                      ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left:8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Expanded(
+                                  child: Text(expertise)),
+                              IconButton(
+                                  icon: Icon(
+                                    Icons.clear,
+                                    size: 16,
+                                    color: Colors.grey,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _disable1=0;
+                                      expertise="";
+                                    });
+                                  }),
+                            ],
+                          ),
+                        )
+                    ),
+                  ):Container(),
+
+
+                  CheckboxListTile(
+                    title: Text("Remind me every day",style: TextStyle(fontSize:16,color: Colors.black,fontWeight: FontWeight.w400),),
+                    value: checkedValue,
+                    activeColor: Theme.of(context).primaryColor,
+                    onChanged: (newValue) {
+                      setState(() {
+                        checkedValue = newValue;
+                      });
+                    },
+                    controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20.0,top: 5,right: 20),
+                    child: Divider(thickness: 1,),
+                  ),
+
+                  Center(
+                    child: Visibility(
+                        maintainSize: false,
+                        maintainAnimation: true,
+                        maintainState: true,
+                        visible: checkedValue,
+                        child: Container(
+                            height: size.height/2.9,
+                            width: size.width/1.14,
+                            margin: EdgeInsets.only(top: 5, bottom: 5),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+
+                                Text('Remind me Everyday at $selectedHour:$selectedMin $ampm',
+                                    style: TextStyle(color: Colors.black,
+                                        fontSize: 16)),
+                                Padding(
+                                  padding: const EdgeInsets.only(top:8.0),
+                                  child: Divider(thickness: 1,),
+                                ),
+
+                                Visibility(
+                                  maintainSize: false,
+                                  maintainAnimation: true,
+                                  maintainState: true,
+                                  visible: timeView==false?true:false,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: <Widget>[
+                                      GestureDetector(
+                                        onTap: (){
+                                          if(ampm=='PM'){
+                                            int hour=selectedHour+12;
+                                            String min=selectedMin.toString();
+                                            if(selectedMin<10){
+                                              min="0$selectedMin";
+                                            }
+                                            setState(() {
+                                              click=1;
+                                              sendTime="$hour:$min:00";
+                                              print(sendTime);
+                                            });
+                                          }
+                                          else{
+                                            String hr=selectedHour.toString();
+                                            String min=selectedMin.toString();
+                                            if(selectedHour<10){
+                                              min="0$selectedMin";
+                                            }
+                                            if(selectedMin<10){
+                                              hr="0$selectedHour";
+                                            }
+                                            setState(() {
+                                              click=1;
+                                              sendTime="$hr:$min:00";
+                                              print(sendTime);
+                                            });
+                                          }
+                                          setState(() {
+                                            timeView=true;
+                                          });
+                                        },
+                                        child: Text('Done',style: TextStyle(fontSize: 14),),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                timeView==false?Padding(
+                                  padding: const EdgeInsets.only(left:30),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      Center(
+                                        child: Container(
+                                          width: size.width/4.5,
+                                          height: size.height/4,
+                                          child: CupertinoPicker(
+                                            backgroundColor: Colors.transparent,
+                                            itemExtent: 50,
+                                            onSelectedItemChanged: (int index){
+                                              setState(() {
+                                                selectedHour = index+1;
+                                              });
+                                              //   print("$selectedHour");
+                                            },
+                                            children: <Widget>[
+                                              Text("01"), Text("02"),
+                                              Text("03"), Text("04"),
+                                              Text("05"), Text("06"),
+                                              Text("07"),Text("08"),
+                                              Text("09"),Text("10"),
+                                              Text("11"),Text("12"),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+
+//                                  SizedBox(width: size.width/50,),
+                                      Container(
+                                        width: 75,
+                                        height: 100,
+                                        child: CupertinoPicker(
+                                          backgroundColor: Colors.transparent,
+                                          itemExtent: 50,
+                                          children: <Widget>[
+                                            Text("01"), Text("02"),
+                                            Text("03"), Text("04"),
+                                            Text("05"), Text("06"),
+                                            Text("07"),Text("08"),
+                                            Text("09"),Text("10"),
+                                            Text("11"),Text("12"),
+                                            Text("13"), Text("14"),
+                                            Text("15"), Text("16"),
+                                            Text("17"), Text("18"),
+                                            Text("19"),Text("20"),
+                                            Text("21"),Text("22"),
+                                            Text("23"),Text("24"),
+                                            Text("25"), Text("26"),
+                                            Text("27"), Text("28"),
+                                            Text("29"), Text("30"),
+                                            Text("31"),Text("32"),
+                                            Text("33"),Text("34"),
+                                            Text("35"),Text("36"),
+                                            Text("37"), Text("38"),
+                                            Text("39"), Text("40"),
+                                            Text("41"), Text("42"),
+                                            Text("43"),Text("44"),
+                                            Text("45"),Text("46"),
+                                            Text("47"),Text("48"),
+                                            Text("49"), Text("50"),
+                                            Text("51"), Text("52"),
+                                            Text("53"), Text("54"),
+                                            Text("55"),Text("56"),
+                                            Text("57"),Text("58"),
+                                            Text("59"),
+                                          ],
+                                          onSelectedItemChanged: (int index){
+                                            setState(() {
+                                              selectedMin = index+1;
+                                            });
+                                            //   print("$selectedMin");
+                                          },
+                                        ),
+                                      ),
+                                      //                                SizedBox(width: size.width/50,),
+                                      Center(
+                                        child: Container(
+                                          width: 75,
+                                          height: 115,
+                                          child: CupertinoPicker(
+                                            backgroundColor: Colors.transparent,
+                                            itemExtent: 50,
+                                            onSelectedItemChanged: (int index){
+                                              if(index==0) {
+                                                setState(() {
+                                                  ampm = "AM";
+                                                });
+                                              }
+                                              else{
+                                                setState(() {
+                                                  ampm = "PM";
+                                                });
+                                              }
+                                            },
+                                            children: <Widget>[
+                                              Text("AM"), Text("PM"),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+
+                                    ],
+                                  ),
+                                ):
+                                Container(
+                                  height: 0,
+                                  width: 0,
+                                ),
+                                /*Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(top:12.0),
+                                  child: Text("Write a Note (Optional)",style: Theme.of(context).textTheme.subtitle2,),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(0.0,10.0,0.0,10),
+                                  child: TextField(
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: Colors.black
+                                    ),
+                                    decoration: InputDecoration(
+                                        hintText: "its time to work on your goal",
+                                        border: OutlineInputBorder(),
+                                        hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
+                                    onChanged: (String value) {
+                                      try {
+                                        note = value;
+                                      } catch (exception) {
+                                        note ="";
+                                      }
+                                    },
+                                  ),
+                                ),
+                                Text("these will be text on your notification",style: Theme.of(context).textTheme.headline3,),
+                              ],
+                            ),
+*/
+                              ],
+                            )
+                        )
                     ),
                   ),
+
+
+
 
 
                   Padding(
@@ -315,22 +532,31 @@ class _EditGoalState extends State<EditGoal> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: new BorderRadius.circular(6.0),
                                 ),
-                                color: Color.fromRGBO(63, 92, 200, 1) ,
+                                color: Theme.of(context).primaryColor,
+                                textColor: Colors.white,
                                 onPressed: () {
                                   setState(() {
-                                    target="";
-                                    time="1 Month";
                                     selectedGoal="";
                                     _disable=0;
-                                    myController.clear();
-                                    _selectedTime=_dropdownMenuItems[0].value;
+                                    selectedHour=0;
+                                    selectedMin=0;
+                                    checkedValue=false;
+                                    ampm='AM';
+                                    timeView=false;
+                                    expertise="";
+                                    sendTime="none";
+                                    remind="0";
+                                    note="";
+                                    click=0;
+                                    goalsLevel="";
+                                    _disable = 0;
+                                    _disable1=0;
                                   });
 
                                 },
-                                child: const Text(
+                                child: Text(
                                     'Clear',
-                                    style: TextStyle(fontSize: 12,color: Colors.white)
-
+                                    style: Theme.of(context).textTheme.button,
                                 ),
                               ),
                             ),
@@ -347,85 +573,130 @@ class _EditGoalState extends State<EditGoal> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: new BorderRadius.circular(6.0),
                                 ),
-                                color: Color.fromRGBO(63, 92, 200, 1) ,
+                                color: Theme.of(context).primaryColor,
+                                textColor: Colors.white,
                                 onPressed: () async{
 
-                                  print(level);
-                                  if(selectedGoal!=""&&myController.text!=""){
+                                  if((checkedValue==true && click==1)|| checkedValue==false){
 
-                                    _onLoading();
-                                    // print('time : '+time+' target :'+target+" "+widget.uid+" "+widget.gno);
+                                    if(selectedGoal!="" && expertise != ""){
 
-                                    var url= 'https://march.lbits.co/api/worker.php';
-                                    var resp=await http.post(url,
-                                      headers: {
-                                        'Content-Type':
-                                        'application/json',
-                                        'Authorization':
-                                        'Bearer $token'
-                                      },
-                                      body: json.encode(<String, dynamic>
-                                      {
-                                        'serviceName': "",
-                                        'work': "add goal",
-                                        'uid':widget.uid,
-                                        'goalName':selectedGoal,
-                                        'target':target,
-                                        'timeFrame':time,
-                                        'goalNumber':widget.gno,
-                                        'goalLevel':level,
-                                      }),
-                                    );
+                                      if(sendTime!="none"){
+                                        setState(() {
+                                          remind="1";
+                                        });
+                                      }
+                                      print(widget.gno+" goalno "+sendTime+"  "+remind +" "+goalsLevel);
+                                      _onLoading();
 
-                                    print("res "+resp.body.toString());
+                                      var url= 'https://march.lbits.co/api/worker.php';
+                                      var resp=await http.post(url,
+                                        headers: {
+                                          'Content-Type':
+                                          'application/json',
+                                          'Authorization':
+                                          'Bearer $token'
+                                        },
+                                        body: json.encode(<String, dynamic>
+                                        {
+                                          'serviceName': "",
+                                          'work': "add goal",
+                                          'uid':widget.uid,
+                                          'goalName':selectedGoal,
+                                          'goalNumber':widget.gno,
+                                          'goalLevel': goalsLevel,
+                                          'remindEveryday':remind,
+                                          'remindTime':sendTime,
+                                        }),
+                                      );
 
-                                   var result = json.decode(resp.body);
-                                    if(result['response'] == 200){
-                                      var db = new DataBaseHelper();
-                                      int cnt=await db.getGoalCount();
+                                      print("res "+resp.body.toString());
 
-                                      print(cnt);
-                                      if(cnt>=int.parse(widget.gno)){
+                                      var result = json.decode(resp.body);
+                                      if(result['response'] == 200){
+                                        var db = new DataBaseHelper();
+                                        int cnt=await db.getGoalCount();
 
-                                      //  print(widget.gno+" "+selectedGoal);
-                                        await db.updateGoal(Goal(widget.uid,selectedGoal,target,time,widget.gno));
+                                        print(cnt);
+                                        if(cnt>=int.parse(widget.gno)){
 
-                                        */
-/*Goal g=await db.getGoal(int.parse(widget.gno));
-                                        print(g.goalName+" "+g.goalNumber);*//*
-
+                                          //  print(widget.gno+" "+selectedGoal);
+                                        await db.updateGoal(
+                                            Goal(
+                                                widget.uid,
+                                                selectedGoal,
+                                                goalsLevel,
+                                                remind,
+                                                sendTime,
+                                                widget.gno));
 
                                         Navigator.pushAndRemoveUntil(context,
-                                            MaterialPageRoute(builder: (context) => Home('')),
+                                            MaterialPageRoute(builder: (context) => ShowGoals()),
                                                 (Route<dynamic> route) => false);
+
+                                        }
+                                        else{
+
+                                          int savedGoal = await db.saveGoal(
+                                              new Goal(
+                                                  widget.uid,
+                                                  selectedGoal,
+                                                  goalsLevel,
+                                                  remind,
+                                                  sendTime,
+                                                  widget.gno));
+
+                                          print("goal saved :$savedGoal");
+
+                                          Navigator.pushAndRemoveUntil(context,
+                                              MaterialPageRoute(builder: (context) => ShowGoals()),
+                                                  (Route<dynamic> route) => false);
+
+                                        }
 
                                       }
                                       else{
+                                        Navigator.pop(context);
+                                        setState(() {
+                                          selectedGoal="";
+                                          _disable=0;
+                                          selectedHour=0;
+                                          selectedMin=0;
+                                          checkedValue=false;
+                                          ampm='AM';
+                                          timeView=false;
+                                          expertise="";
+                                          sendTime="none";
+                                          remind="0";
+                                          note="";
+                                          click=0;
+                                          goalsLevel="";
+                                          _disable = 0;
+                                          _disable1=0;
+                                        });
 
-                                        int savedGoal =
-                                        await db.saveGoal(new Goal(widget.uid,selectedGoal,target,time,widget.gno));
+                                        _sk.currentState.showSnackBar(SnackBar(
+                                          content: Text("There is Some Technical Problem Submit again",
+                                            style: TextStyle(
+                                              fontStyle: FontStyle.italic,
+                                              fontSize: 15,
+                                            ),
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.only(
+                                                  topLeft: Radius.circular(12.0),
+                                                  topRight: Radius.circular(12.0))),
+                                          duration: Duration(seconds: 3),
+                                          backgroundColor: Colors.lightBlueAccent,
+                                        ));
 
-                                        print("goal saved :$savedGoal");
-
-                                        Navigator.pushAndRemoveUntil(context,
-                                            MaterialPageRoute(builder: (context) => Home('edit')),
-                                                (Route<dynamic> route) => false);
 
                                       }
 
                                     }
                                     else{
-                                      Navigator.pop(context);
-                                      setState(() {
-                                        _disable=0;
-                                        target="";
-                                        myController.clear();
-                                        time="1 Month";
-                                        _selectedTime=_dropdownMenuItems[0].value;
-                                      });
-
                                       _sk.currentState.showSnackBar(SnackBar(
-                                        content: Text("There is Some Technical Problem Submit again",
+                                        content: Text("Enter all Details",
                                           style: TextStyle(
                                             fontStyle: FontStyle.italic,
                                             fontSize: 15,
@@ -439,13 +710,13 @@ class _EditGoalState extends State<EditGoal> {
                                         backgroundColor: Colors.lightBlueAccent,
                                       ));
 
-
                                     }
 
                                   }
                                   else{
                                     _sk.currentState.showSnackBar(SnackBar(
-                                      content: Text("Enter all Details",
+                                      content: Text(
+                                        "click done",
                                         style: TextStyle(
                                           fontStyle: FontStyle.italic,
                                           fontSize: 15,
@@ -454,17 +725,18 @@ class _EditGoalState extends State<EditGoal> {
                                       shape: RoundedRectangleBorder(
                                           borderRadius: BorderRadius.only(
                                               topLeft: Radius.circular(12.0),
-                                              topRight: Radius.circular(12.0))),
+                                              topRight:
+                                              Radius.circular(12.0))),
                                       duration: Duration(seconds: 3),
                                       backgroundColor: Colors.lightBlueAccent,
                                     ));
-
                                   }
 
+
                                 },
-                                child: const Text(
+                                child: Text(
                                     'Submit',
-                                    style: TextStyle(fontSize: 12,color: Colors.white)
+                                    style: Theme.of(context).textTheme.button
 
                                 ),
                               ),
@@ -541,4 +813,4 @@ class _EditGoalState extends State<EditGoal> {
     );
   }
 }
-*/
+

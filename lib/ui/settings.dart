@@ -4,7 +4,7 @@ import 'package:march/ui/account_settings.dart';
 import 'package:march/ui/edit.dart';
 import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'show_goals.dart';
 import 'login.dart';
 
 class Settings extends StatefulWidget {
@@ -111,6 +111,55 @@ class _SettingsState extends State<Settings> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => Edit_Profile()),
+                        );
+                      },
+                    ),
+                    Divider(
+                      thickness: 1,
+                    ),
+                    InkWell(
+                      child: Container(
+                        child: Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(left: 20.0),
+                              child: Center(
+                                child: Text(
+                                  "Edit Goals",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w800,
+                                      color: Colors.black87),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                width: size.width,
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.arrow_forward_ios),
+                              iconSize: 20,
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ShowGoals()),
+                                );
+                              },
+                            )
+                          ],
+                        ),
+                        height: 50,
+                        width: double.infinity,
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ShowGoals()),
                         );
                       },
                     ),
