@@ -47,6 +47,8 @@ class _TestHomePageState extends State<TestHomePage> {
   List myUsers = [];
   bool loadPage = false;
   int pageNo = 0;
+  List allProfiles = [];
+  List allProfilesCrossCheck = [];
 
   @override
   void initState() {
@@ -57,6 +59,7 @@ class _TestHomePageState extends State<TestHomePage> {
     );
     socketIO.init();
     socketIO.connect();
+    _getAllPeople();
     super.initState();
   }
 
@@ -86,6 +89,7 @@ class _TestHomePageState extends State<TestHomePage> {
 
   Future<List<Widget>> _getPeople() async {
     // if (token != null && id != null && check == 1) {
+    _getAllPeople();
     var ur = 'https://march.lbits.co/api/worker.php';
     Map nearbyReqs = <String, dynamic>{
       'serviceName': "",
@@ -96,18 +100,7 @@ class _TestHomePageState extends State<TestHomePage> {
       'radius': '$radius',
       'maxAge': '$maxAge',
       'minAge': '$minAge',
-      'uid': id,
-      'goalLevel': 'none',
-      'listType': ''
-    };
-    Map allUsersList = {
-      'serviceName': "",
-      'work': "get all users",
-      'goals': "$goals",
-      'radius': '$radius',
-      'maxAge': '$maxAge',
-      'minAge': '$minAge',
-      'uid': id,
+      'uid': id
     };
     var resp = await http.post(
       ur,
@@ -115,9 +108,10 @@ class _TestHomePageState extends State<TestHomePage> {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token'
       },
-      body: json.encode((pageNo == 0) ? nearbyReqs : allUsersList),
+      body: json.encode(nearbyReqs),
     );
     var result = json.decode(resp.body);
+    // print(result);
     stackedCards.clear();
     if (result['response'] == 200) {
       int l = result['result'].length;
@@ -155,8 +149,44 @@ class _TestHomePageState extends State<TestHomePage> {
         });
       }
     }
-    // }
     return stackedCards;
+  }
+
+  _getAllPeople() async {
+    var ur = 'https://march.lbits.co/api/worker.php';
+    Map xxx = <String, dynamic>{
+      'serviceName': "",
+      'work': "get all profiles",
+      'maxAge': '$maxAge',
+      'minAge': '$minAge',
+      'goals': "$goals",
+      'uid': id,
+    };
+    http
+        .post(
+      ur,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token'
+      },
+      body: json.encode(xxx),
+    )
+        .then((resp) {
+      var jsonResp = json.decode(resp.body);
+      if (jsonResp['response'] == 200) {
+        print(jsonResp);
+        List allprofs = jsonResp['result'].toList()..shuffle();
+
+        allprofs.forEach((element) {
+          if (!allProfilesCrossCheck.contains(element['user_info']['id'])) {
+            setState(() {
+              allProfiles.add(element);
+              allProfilesCrossCheck.add(element['user_info']['id']);
+            });
+          }
+        });
+      }
+    });
   }
 
   Widget goalBox(goal) {
@@ -244,7 +274,7 @@ class _TestHomePageState extends State<TestHomePage> {
         },
         child: SizedBox(
           width: size.width * 0.95,
-          height: (0.55 * size.height),
+          height: (0.60 * size.height),
           child: Card(
             color: Colors.white,
             shadowColor: Colors.grey,
@@ -408,9 +438,11 @@ class _TestHomePageState extends State<TestHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    _getPeople().then((value) {
-      _getDataFromLocalDb();
-    });
+    (pageNo == 0)
+        ? _getPeople().then((value) {
+            _getDataFromLocalDb();
+          })
+        : _getAllPeople();
     Size size = MediaQuery.of(context).size;
     return Scaffold(
         body: SingleChildScrollView(
@@ -513,6 +545,7 @@ class _TestHomePageState extends State<TestHomePage> {
                       setState(() {
                         pageNo = 1;
                       });
+                      _getAllPeople();
                     },
                     child: Container(
                       width: 120,
@@ -555,7 +588,7 @@ class _TestHomePageState extends State<TestHomePage> {
                         width: 125.0,
                       ),
                     )
-              : allProfiles(),
+              : showAllProfiles(),
         ],
       ),
     ));
@@ -702,103 +735,138 @@ class _TestHomePageState extends State<TestHomePage> {
     }
   }
 
-  Widget allProfiles() {
+  Widget showAllProfiles() {
     Size size = MediaQuery.of(context).size;
+    print("$allProfiles");
     return Center(
       child: Container(
-        child: Column(
-          children: List.generate((details.length > 10) ? 10 : details.length,
-              (index) {
-            return Card(
-                child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                  width: size.width - 50,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(0.0),
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(15))),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(15)),
-                            child: CachedNetworkImage(
-                              imageUrl:
-                                  "${details[index]['user_info']['personPic']}",
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                                "${details[index]['user_info']['personName']}"),
-                            Text(
-                              "Age: ${details[index]['user_info']['personAge']}",
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            Text(
-                                "${details[index]['user_info']['personProfession']}"),
-                            Container(
-                              width: size.width * 0.57,
-                              child: Text(
-                                "${(details[index]['user_info']['personBio'].toString())}",
-                                style: TextStyle(fontSize: 14),
-                                maxLines: 3,
-                              ),
-                            ),
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                InkWell(
-                                  onTap: () {
-                                    db
-                                        .getSingleUser(details[index]
-                                            ['user_info']['personId'])
-                                        .then((value) {
-                                      add(
-                                          details[index]['user_info']
-                                              ['personId'],
-                                          details[index]['user_info']
-                                              ['personName'],
-                                          details[index]['user_info']
-                                              ['personPic'],
-                                          index);
-                                    });
-                                  },
-                                  child: Container(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 14.0, vertical: 8),
-                                      child: Text("Connect"),
+        child: (allProfiles.length == 0)
+            ? Center(
+                child: Image.asset(
+                  "assets/images/animat-search-color.gif",
+                  height: 125.0,
+                  width: 125.0,
+                ),
+              )
+            : Column(
+                children: List.generate(
+                    (allProfiles.length > 20) ? 20 : allProfiles.length,
+                    (index) {
+                  var userInfo = allProfiles[index]['user_info'];
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => ProfileScreen(
+                                    name: userInfo['fullName'],
+                                    pic: userInfo['profile_pic'],
+                                    bio: userInfo['bio'],
+                                    profession: userInfo['profession'],
+                                    goals: allProfiles[index]['goal_info'],
+                                    location: "Age: ${userInfo['age']}",
+                                    testimonials: [],
+                                    userId: userInfo['id'],
+                                    fromNetwork: false,
+                                  )));
+                    },
+                    child: Card(
+                        child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                          width: size.width - 50,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.all(0.0),
+                                child: Container(
+                                  width: 100,
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(15))),
+                                  child: ClipRRect(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(15)),
+                                    child: CachedNetworkImage(
+                                      imageUrl:
+                                          "${allProfiles[index]['user_info']['profile_pic']}",
+                                      fit: BoxFit.cover,
                                     ),
-                                    decoration: BoxDecoration(
-                                        color: Theme.of(context).primaryColor,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10))),
                                   ),
                                 ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  )),
-            ));
-          }),
-        ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                        "${allProfiles[index]['user_info']['fullName']}"),
+                                    Text(
+                                      "Age: ${allProfiles[index]['user_info']['age']}",
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    Text(
+                                        "${allProfiles[index]['user_info']['profession']}"),
+                                    Container(
+                                      width: size.width * 0.57,
+                                      child: Text(
+                                        "${(allProfiles[index]['user_info']['bio'].toString())}",
+                                        style: TextStyle(fontSize: 14),
+                                        maxLines: 3,
+                                      ),
+                                    ),
+                                    Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: <Widget>[
+                                        InkWell(
+                                          onTap: () {
+                                            db
+                                                .getSingleUser(
+                                                    allProfiles[index]
+                                                        ['user_info']['id'])
+                                                .then((value) {
+                                              add(
+                                                  allProfiles[index]
+                                                      ['user_info']['id'],
+                                                  allProfiles[index]
+                                                      ['user_info']['fullName'],
+                                                  allProfiles[index]
+                                                          ['user_info']
+                                                      ['profile_pic'],
+                                                  index);
+                                            });
+                                          },
+                                          child: Container(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 14.0,
+                                                      vertical: 8),
+                                              child: Text("Connect"),
+                                            ),
+                                            decoration: BoxDecoration(
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(10))),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )),
+                    )),
+                  );
+                }),
+              ),
       ),
     );
   }
@@ -869,7 +937,7 @@ class _TestHomePageState extends State<TestHomePage> {
                                           "work": "add new request",
                                           "uid": "$uid",
                                           "sender": "$id",
-                                          "receiver": "$id",
+                                          "receiver": "$userId",
                                           "message": "$msg",
                                           "requestStatus": "pending"
                                         }),
@@ -893,8 +961,7 @@ class _TestHomePageState extends State<TestHomePage> {
                                             }));
                                         Map<String, dynamic> messageMap = {
                                           DataBaseHelper.seenStatus: '0',
-                                          DataBaseHelper.messageCode:
-                                              UniqueKey(),
+                                          DataBaseHelper.messageCode: key,
                                           DataBaseHelper.messageOtherId: userId,
                                           DataBaseHelper.messageSentBy: id,
                                           DataBaseHelper.messageText: msg,
@@ -923,6 +990,7 @@ class _TestHomePageState extends State<TestHomePage> {
                                           db.addMessage(messageMap);
                                           setState(() async {
                                             details.removeAt(index);
+                                            allProfiles.removeAt(index);
                                             crossCheckList.removeAt(index);
                                             await db.peopleFinderRemovePerson(
                                                 userId);

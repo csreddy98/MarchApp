@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_socket_io/flutter_socket_io.dart';
 import 'package:flutter_socket_io/socket_io_manager.dart';
 import 'package:intl/intl.dart';
+import 'package:march/ui/profileScreen.dart';
 import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
@@ -77,6 +78,19 @@ class _TextingScreenState extends State<TextingScreen> {
     // }
   }
 
+  Widget _flightShuttleBuilder(
+    BuildContext flightContext,
+    Animation<double> animation,
+    HeroFlightDirection flightDirection,
+    BuildContext fromHeroContext,
+    BuildContext toHeroContext,
+  ) {
+    return DefaultTextStyle(
+      style: DefaultTextStyle.of(toHeroContext).style,
+      child: toHeroContext.widget,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     loadMessages();
@@ -106,6 +120,7 @@ class _TextingScreenState extends State<TextingScreen> {
           )
         ],
         title: Hero(
+          flightShuttleBuilder: _flightShuttleBuilder,
           tag: "${widget.user['name']}",
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -120,22 +135,33 @@ class _TextingScreenState extends State<TextingScreen> {
               ),
               SizedBox(width: 10),
               Expanded(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        widget.user['name'],
-                        style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontSize: 20.0),
-                        textAlign: TextAlign.start,
-                      ),
-                      // Text(
-                      //   "${widget.user['profession']}",
-                      //   style: TextStyle(color: Colors.grey, fontSize: 15.0),
-                      //   textAlign: TextAlign.start,
-                      // )
-                    ]),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => ProfileScreen(
+                                  fromNetwork: true,
+                                  userId: widget.user['user_id'],
+                                )));
+                  },
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          widget.user['name'],
+                          style: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontSize: 20.0),
+                          textAlign: TextAlign.start,
+                        ),
+                        // Text(
+                        //   "${widget.user['profession']}",
+                        //   style: TextStyle(color: Colors.grey, fontSize: 15.0),
+                        //   textAlign: TextAlign.start,
+                        // )
+                      ]),
+                ),
               )
             ],
           ),

@@ -335,6 +335,14 @@ class DataBaseHelper {
         "DELETE FROM $messagesTable WHERE $messageOtherId = $delUserId");
   }
 
+  Future<int> deleteSingleUser(delUserId) async {
+    var dbClient = await db;
+    await dbClient.rawDelete(
+        "DELETE FROM $messagesTable WHERE $messageOtherId = $delUserId");
+    return await dbClient
+        .rawDelete("DELETE FROM $friendsTable WHERE $friendId = $delUserId");
+  }
+
   Future<List> getUnseenMessages(String userId) async {
     var dbClient = await db;
     return await dbClient.rawQuery(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:march/widgets/ProfileWidget.dart';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:status_alert/status_alert.dart';
 import 'dart:ui' show ImageFilter;
 import 'dart:convert';
@@ -22,6 +21,7 @@ class ProfileScreen extends StatefulWidget {
   final String profession;
   final List goals;
   final List testimonials;
+  final bool fromNetwork;
 
   ProfileScreen(
       {Key key,
@@ -32,7 +32,8 @@ class ProfileScreen extends StatefulWidget {
       this.userId,
       this.profession,
       this.goals,
-      this.testimonials})
+      this.testimonials,
+      this.fromNetwork})
       : super(key: key);
 
   @override
@@ -44,26 +45,29 @@ class ProfileScreen extends StatefulWidget {
       this.userId,
       this.profession,
       this.goals,
-      this.testimonials);
+      this.testimonials,
+      this.fromNetwork);
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final String name;
-  final String pic;
-  final String bio;
-  final String location;
-  final String userId;
-  final String profession;
-  final List goals;
-  final List testimonials;
+  String name;
+  String pic;
+  String bio;
+  String location;
+  String userId;
+  String profession;
+  List goals;
+  List testimonials;
+  bool fromNetwork;
   TextEditingController messageController = TextEditingController();
   SocketIO socketIO;
   String token, id, uid;
   bool showButton = true;
+  bool isLoading = true;
   DataBaseHelper db = DataBaseHelper();
 
   _ProfileScreenState(this.name, this.pic, this.bio, this.location, this.userId,
-      this.profession, this.goals, this.testimonials);
+      this.profession, this.goals, this.testimonials, this.fromNetwork);
 
   @override
   void initState() {
@@ -72,6 +76,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
       'https://glacial-waters-33471.herokuapp.com',
       '/',
     );
+    if (this.fromNetwork != null && this.fromNetwork) {
+      setState(() {
+        isLoading = true;
+      });
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+    }
     socketIO.init();
     socketIO.connect();
     db.getSingleUser(this.userId).then((value) {
@@ -93,7 +106,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.transparent,
-          title: Text("${this.name}"),
+          title: Text("${(isLoading) ? "Loading..." : this.name}"),
           centerTitle: true,
           leading: ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(30)),
@@ -103,151 +116,161 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: <Widget>[
-                GestureDetector(
-                  onVerticalDragUpdate: (details) {
-                    if (details.delta.dy >= 6) {
-                      Navigator.pop(context);
-                      // Navigator.canPop(context);
-                    }
-                  },
-                  child: Hero(
-                    tag: "$userId",
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      color: Colors.transparent,
-                      child: ProfileTop(
-                          name: "$name",
-                          picUrl: "$pic",
-                          profession: "$profession",
-                          location: "$location"),
-                    ),
-                  ),
-                ),
-                (showButton)
-                    ? Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: InkWell(
-                          onTap: () {
-                            add(this.userId, this.name, this.pic);
-                          },
+        body: (isLoading)
+            ? Center(
+                child: Image.asset(
+                "assets/images/animat-rocket-color.gif",
+                width: 200,
+                height: 200,
+              ))
+            : SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: <Widget>[
+                      GestureDetector(
+                        onVerticalDragUpdate: (details) {
+                          if (details.delta.dy >= 6) {
+                            Navigator.pop(context);
+                          }
+                        },
+                        child: Hero(
+                          tag: "$userId",
                           child: Container(
-                            width: 130,
-                            height: 40,
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor,
-                                border: Border.all(
-                                    width: 1,
-                                    color: Theme.of(context).primaryColor),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10))),
-                            child: Center(
-                              child: Text(
-                                "Connect",
-                                style: TextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.bold),
+                            width: MediaQuery.of(context).size.width,
+                            color: Colors.transparent,
+                            child: ProfileTop(
+                                name: "$name",
+                                picUrl: "$pic",
+                                profession: "$profession",
+                                location: "$location"),
+                          ),
+                        ),
+                      ),
+                      (showButton)
+                          ? Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: InkWell(
+                                onTap: () {
+                                  add(this.userId, this.name, this.pic);
+                                },
+                                child: Container(
+                                  width: 130,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      border: Border.all(
+                                          width: 1,
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: Center(
+                                    child: Text(
+                                      "Connect",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                width: 130,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColor,
+                                    border: Border.all(
+                                        width: 1,
+                                        color: Theme.of(context).primaryColor),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                child: Center(
+                                  child: Text(
+                                    "Connected",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
                               ),
                             ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 13.0),
+                        child: Text(
+                          "$bio",
+                          maxLines: 4,
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                            fontFamily: 'montserrat',
+                            fontSize: 14,
+                            height: 1.2,
+                            fontWeight: FontWeight.normal,
                           ),
                         ),
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          width: 130,
-                          height: 40,
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor,
-                              border: Border.all(
-                                  width: 1,
-                                  color: Theme.of(context).primaryColor),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                          child: Center(
-                            child: Text(
-                              "Connected",
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              "$name's Goals",
                               style: TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.bold),
+                                  fontWeight: FontWeight.w600, fontSize: 14),
                             ),
-                          ),
+                          ],
                         ),
                       ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0, vertical: 13.0),
-                  child: Text(
-                    "$bio",
-                    maxLines: 4,
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
-                      fontFamily: 'montserrat',
-                      fontSize: 14,
-                      height: 1.2,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        "$name's Goals",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 14),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisSize: MainAxisSize.min,
+                          children: List.generate(
+                              this.goals.length,
+                              (index) => Expanded(
+                                  child: goalCardGenerator(
+                                      context,
+                                      "${this.goals[index]['personGoalName']}",
+                                      int.parse(this.goals[index]
+                                          ['personGoalLevel'])))),
+                        ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: Text(
+                          "Here’s what others are saying about ${this.name.split(" ")[0]}",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: 14),
+                        ),
+                      ),
+                      Container(
+                          // padding: const EdgeInsets.symmetric(vertical: 0),
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          testimonial(
+                              context,
+                              "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+                              "Emily",
+                              "By the same illusion which lifts the horizon of the sea to the level of the spectator on a hillside, the sable cloud beneath was dished out, and the car"),
+                          testimonial(
+                              context,
+                              "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+                              "Emily",
+                              "By the same illusion which lifts the horizon of the sea to the level of the spectator on a hillside, the sable cloud beneath was dished out, and the car")
+                        ],
+                      )),
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    mainAxisSize: MainAxisSize.min,
-                    children: List.generate(
-                        this.goals.length,
-                        (index) => Expanded(
-                            child: goalCardGenerator(
-                                context,
-                                "${this.goals[index]['personGoalName']}",
-                                int.parse(
-                                    this.goals[index]['personGoalLevel'])))),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: Text(
-                    "Here’s what others are saying about Mason",
-                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-                  ),
-                ),
-                Container(
-                    // padding: const EdgeInsets.symmetric(vertical: 0),
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    testimonial(
-                        context,
-                        "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-                        "Emily",
-                        "By the same illusion which lifts the horizon of the sea to the level of the spectator on a hillside, the sable cloud beneath was dished out, and the car"),
-                    testimonial(
-                        context,
-                        "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-                        "Emily",
-                        "By the same illusion which lifts the horizon of the sea to the level of the spectator on a hillside, the sable cloud beneath was dished out, and the car")
-                  ],
-                )),
-              ],
-            ),
-          ),
-        ));
+              ));
   }
 
   void add(userId, userName, userImage) {
@@ -316,7 +339,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           "work": "add new request",
                                           "uid": "$uid",
                                           "sender": "$id",
-                                          "receiver": "$id",
+                                          "receiver": "$userId",
                                           "message": "$msg",
                                           "requestStatus": "pending"
                                         }),
@@ -417,5 +440,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     socketIO.sendMessage('update my status',
         json.encode({"uid": "$id", "time": "${DateTime.now()}"}));
+
+    if (this.fromNetwork != null && this.fromNetwork) {
+      http
+          .post("https://march.lbits.co/api/worker.php",
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer $token'
+              },
+              body: json.encode({
+                'serviceName': '',
+                'work': 'get user profile',
+                'uid': '$uid',
+                'profileId': '${this.userId}'
+              }))
+          .then((value) {
+        var resp = json.decode(value.body);
+        print("$resp");
+        if (resp['response'] == 200) {
+          setState(() {
+            var userInfo = resp['result']['user_info'];
+            this.name = userInfo['fullName'];
+            this.pic = userInfo['profile_pic'];
+            this.profession = userInfo['profession'];
+            this.bio = userInfo['bio'];
+            this.location = "Age: ${userInfo['age']}";
+            this.goals = resp['result']['goal_info'];
+            this.testimonials = resp['result']['testimonials'];
+            isLoading = false;
+          });
+        }
+      });
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 }

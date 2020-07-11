@@ -6,11 +6,7 @@ class ProfileTop extends StatelessWidget {
       {@required this.name,
       @required this.picUrl,
       @required this.profession,
-      this.location})
-      : assert(name != null),
-        assert(picUrl != null),
-        assert(profession != null),
-        assert(location != null);
+      this.location});
   final String name;
   final String picUrl;
   final String profession;

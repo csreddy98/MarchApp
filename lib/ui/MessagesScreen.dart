@@ -642,7 +642,37 @@ class _MessagesScreenState extends State<MessagesScreen> {
                   icon: Icons.delete,
                   closeOnTap: true,
                   onTap: () {
-                    Toast.show('Deleted', context,
+                    var msg = "Deleted";
+                    http
+                        .post("https://march.lbits.co/api/worker.php",
+                            headers: {
+                              'Content-Type': 'application/json',
+                              'Authorization': 'Bearer $token'
+                            },
+                            body: json.encode(<String, dynamic>{
+                              'serviceName': '',
+                              'work': 'delete request',
+                              'myId': '$myId',
+                              'otherId': '${lastMessages[index]['user_id']}'
+                            }))
+                        .then((value) async {
+                      print(value.body);
+                      var res = json.decode(value.body);
+                      if (res['response'] == 200) {
+                        await db.deleteSingleUser(
+                            '${lastMessages[index]['user_id']}');
+                        Toast.show('$msg', context,
+                            duration: Toast.LENGTH_SHORT,
+                            gravity: Toast.BOTTOM);
+                      } else {
+                        msg = "Failed, Try later";
+                      }
+                    }).catchError((err) {
+                      msg = "Failed, Try Later";
+                      Toast.show('$msg', context,
+                          duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+                    });
+                    Toast.show('Deleting', context,
                         duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
                   },
                 ),
