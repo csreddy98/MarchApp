@@ -430,7 +430,6 @@ class _TestHomePageState extends State<TestHomePage> {
 
         i = i + 1;
       });
-      setState(() {});
     });
 
     return stackedCards;

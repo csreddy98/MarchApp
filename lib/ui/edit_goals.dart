@@ -10,6 +10,8 @@ import 'package:march/ui/show_goals.dart';
 import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'home.dart';
+
 class EditGoal extends StatefulWidget {
   final String gno;
   final String uid;
@@ -687,6 +689,11 @@ class _EditGoalState extends State<EditGoal> {
                                         print(cnt);
                                         if (cnt >= int.parse(widget.gno)) {
                                           //  print(widget.gno+" "+selectedGoal);
+                                          if(remind=="1"){
+                                            _showNotification(int.parse(widget.gno),selectedGoal, "It's time to work on your goal",
+                                                Time(int.parse(sendTime.substring(0,2)),selectedMin));
+                                          }
+
                                           await db.updateGoal(Goal(
                                               widget.uid,
                                               selectedGoal,
@@ -698,10 +705,14 @@ class _EditGoalState extends State<EditGoal> {
                                           Navigator.pushAndRemoveUntil(
                                               context,
                                               MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ShowGoals()),
-                                              (Route<dynamic> route) => false);
+                                                  builder: (context) => Home('edit')),
+                                                  (Route<dynamic> route) => false);
                                         } else {
+                                          if(remind=="1"){
+                                            _showNotification(int.parse(widget.gno),selectedGoal, "It's time to work on your goal",
+                                                Time(int.parse(sendTime.substring(0,2)),selectedMin));
+                                          }
+
                                           int savedGoal = await db.saveGoal(
                                               new Goal(
                                                   widget.uid,
@@ -713,16 +724,11 @@ class _EditGoalState extends State<EditGoal> {
 
                                           print("goal saved :$savedGoal");
 
-                                          _showNotification(int.parse(widget.gno),selectedGoal, "It's time to work on your goal",
-                                              Time(int.parse(sendTime.substring(0,2)),selectedMin));
-
-
                                           Navigator.pushAndRemoveUntil(
                                               context,
                                               MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ShowGoals()),
-                                              (Route<dynamic> route) => false);
+                                                  builder: (context) => Home('edit')),
+                                                  (Route<dynamic> route) => false);
                                         }
                                       } else {
                                         Navigator.pop(context);
