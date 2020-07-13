@@ -433,7 +433,6 @@ class _TestHomePageState extends State<TestHomePage> {
 
         i = i + 1;
       });
-      setState(() {});
     });
 
     return stackedCards;
@@ -454,7 +453,7 @@ class _TestHomePageState extends State<TestHomePage> {
         children: <Widget>[
           Container(
             width: size.width,
-            height: size.height * 0.25,
+            height: size.height * 0.22,
             child: Stack(
               children: <Widget>[
                 Positioned(
@@ -462,16 +461,16 @@ class _TestHomePageState extends State<TestHomePage> {
                     decoration: BoxDecoration(
                         color: Theme.of(context).primaryColor,
                         borderRadius: BorderRadius.only(
-                            bottomRight: Radius.elliptical(250, 110))),
+                            bottomRight: Radius.elliptical(250, 120))),
                   ),
                 ),
                 Positioned(
-                    top: 20,
-                    right: 0,
+                    top: 30,
+                    right: 5,
                     child: Image.asset(
-                      "assets/images/HomeGoal.png",
-                      width: 130,
-                      height: 130,
+                      "assets/images/topimage.png",
+                      width: 100,
+                      height: 100,
                     )),
                 Positioned(
                   top: 40,
@@ -485,7 +484,7 @@ class _TestHomePageState extends State<TestHomePage> {
                             color: Colors.black,
                             wordSpacing: 1,
                             letterSpacing: 0,
-                            height: 1.5,
+                            //height: 1.5,
                             fontFamily: 'montserrat'),
                         children: [
                           TextSpan(
@@ -496,7 +495,7 @@ class _TestHomePageState extends State<TestHomePage> {
                 ),
                 Container(
                   child: Positioned(
-                      bottom: 25,
+                      bottom: 15,
                       left: 25,
                       child: Text(
                         "March towards your goal\nwith like minded souls",

@@ -48,7 +48,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  Color activeColor = Color.fromRGBO(254, 209, 125, 1);
+  Color activeColor = Color(0xffFFBF46);
   AnimationController animationController;
   Animation d1, p1, d2, p2, d3, p3, d4, p4, d5;
   TextEditingController nameController;
@@ -127,6 +127,12 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
 
     return Scaffold(
       key: _sk,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text('Select Your Goals', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),),
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
         child: Container(
           height: MediaQuery.of(context).size.height * 1.2,
@@ -134,18 +140,10 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 50.0, bottom: 10.0),
-                child: Center(
-                    child: Text(
-                  "Select Your Goals",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-                )),
-              ),
               Center(
                   child: Text(
                 "Goal " + cnt.toString() + " of 3",
-                style: Theme.of(context).textTheme.caption,
+                style: Theme.of(context).textTheme.headline2,
               )),
               AnimatedBuilder(
                 animation: animationController,
@@ -862,8 +860,11 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                         var result = json.decode(resp.body);
                                         if (count == 3 &&
                                             result['response'] == 200) {
-                                          _showNotification(count,added[count-1], "It's time to work on your goal",
-                                              Time(int.parse(sendTime.substring(0,2)),selectedMin));
+
+                                          if(remind=="1"){
+                                            _showNotification(count,added[count-1], "It's time to work on your goal",
+                                                Time(int.parse(sendTime.substring(0,2)),selectedMin));
+                                          }
 
                                           Navigator.pushAndRemoveUntil(
                                               context,
@@ -889,6 +890,11 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                           prefs.setInt('log', 1);
                                         } else if (result['response'] == 200) {
                                           // check what to save
+                                          if(remind=="1"){
+                                            _showNotification(count,added[count-1], "It's time to work on your goal",
+                                                Time(int.parse(sendTime.substring(0,2)),selectedMin));
+                                          }
+
                                           int savedGoal = await db.saveGoal(
                                               new Goal(
                                                   uid,
@@ -1060,6 +1066,11 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                   print(resp.body.toString());
                                   var result = json.decode(resp.body);
                                   if (result['response'] == 200) {
+                                    if(remind=="1"){
+                                      _showNotification(count,added[count-1], "It's time to work on your goal",
+                                          Time(int.parse(sendTime.substring(0,2)),selectedMin));
+                                    }
+
                                     int savedGoal = await db.saveGoal(new Goal(
                                         uid,
                                         added[count - 1],
@@ -1069,9 +1080,6 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                         count.toString()));
 
                                     print("goal saved :$savedGoal");
-
-                                    _showNotification(count,added[count-1], "It's time to work on your goal",
-                                        Time(int.parse(sendTime.substring(0,2)),selectedMin));
 
                                     Navigator.pop(context);
                                     setState(() {

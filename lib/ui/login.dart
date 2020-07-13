@@ -16,7 +16,7 @@ import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-
+import 'package:flutter_icons/flutter_icons.dart';
 import 'home.dart';
 
 class Login extends StatefulWidget {
@@ -371,7 +371,7 @@ class _LoginState extends State<Login> {
             Column(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(top: 100.0),
+                  padding: const EdgeInsets.only(top: 50.0),
                   child: Center(
                       child: Text(
                     "Welcome ",
@@ -403,8 +403,13 @@ class _LoginState extends State<Login> {
                     ),
                   ],
                 ),
+                Image.asset(
+                            'assets/images/opendoodle.png',
+                            height: 200,
+                            width: 200,
+                          ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 180.0),
+                  padding: const EdgeInsets.only(top: 10.0),
                   child: Center(
                       child: Column(
                     children: <Widget>[
@@ -432,19 +437,19 @@ class _LoginState extends State<Login> {
                     "CONTINUE WITH",
                     style: TextStyle(
                         fontSize: 14,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
                         color: Colors.black),
                   )),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(50.0, 5, 50, 3),
+                  padding: const EdgeInsets.fromLTRB(20.0, 5, 20, 3),
                   child: ButtonTheme(
                     minWidth: size.width,
                     height: 52.0,
                     child: RaisedButton(
                       shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(50.0),
-                          side: BorderSide(color: Colors.grey[100])),
+                          borderRadius: new BorderRadius.circular(10.0),
+                        ),
                       onPressed: () {
                         /* FirebaseAuth.instance.currentUser().then((val) async {
                           print(val.uid);});*/
@@ -455,18 +460,17 @@ class _LoginState extends State<Login> {
                           (Route<dynamic> route) => true,
                         );
                       },
-                      color: Colors.grey[100],
+                      color: Color(0xfff6f6f6),
                       textColor: Colors.black,
                       child: Row(
                         children: <Widget>[
                           SizedBox(
                             width: 20,
                           ),
-                          Image.asset(
-                            'assets/images/phone.png',
-                          ),
+                          
+                          Icon(AntDesign.mobile1, color: Color(0xff0D8E88),size: 22),
                           SizedBox(
-                            width: 30,
+                            width: 45,
                           ),
                           Center(
                             child: Text("Continue With Phone",
@@ -479,29 +483,28 @@ class _LoginState extends State<Login> {
                 ),
                 SizedBox(height: 10.0),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(50.0, 0, 50, 5),
+                  padding: const EdgeInsets.fromLTRB(20.0, 0, 20, 5),
                   child: ButtonTheme(
                     minWidth: size.width,
                     height: 52.0,
                     child: RaisedButton(
                       shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(50.0),
-                          side: BorderSide(color: Colors.grey[100])),
+                          borderRadius: new BorderRadius.circular(10.0),
+                          // side: BorderSide(color: Colors.grey[50])
+                        ),
                       onPressed: () {
                         _signIn();
                       },
-                      color: Colors.grey[100],
+                      color: Color(0xfff6f6f6),
                       textColor: Colors.black,
                       child: Row(
                         children: <Widget>[
                           SizedBox(
                             width: 20,
                           ),
-                          Image.asset(
-                            'assets/images/google.png',
-                          ),
+                          Icon(AntDesign.googleplus,color: Color(0xffdb4a39),),
                           SizedBox(
-                            width: 30,
+                            width: 45,
                           ),
                           Center(
                             child: Text("Continue With Google",
@@ -514,13 +517,13 @@ class _LoginState extends State<Login> {
                 ),
                 SizedBox(height: 10.0),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(50.0, 0, 50, 5),
+                  padding: const EdgeInsets.fromLTRB(20.0, 0, 20, 5),
                   child: ButtonTheme(
                     minWidth: size.width,
                     height: 52.0,
                     child: RaisedButton(
                       shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(50.0)),
+                          borderRadius: new BorderRadius.circular(10.0)),
                       onPressed: () {
                         loginWithFacebook();
                         // fbLogin.logIn(['email']).then((result) {
@@ -550,22 +553,20 @@ class _LoginState extends State<Login> {
                         //   print(e);
                         // });
                       },
-                      color: Colors.grey[100],
+                      color: Color(0xfff6f6f6),
                       textColor: Colors.black,
                       child: Row(
                         children: <Widget>[
                           SizedBox(
                             width: 20,
                           ),
-                          Image.asset(
-                            'assets/images/fb.png',
-                          ),
+                          Icon(AntDesign.facebook_square,color: Color(0xff3B5998),size: 22),
                           SizedBox(
-                            width: 30,
+                            width: 40,
                           ),
                           Center(
                             child: Text("Continue With Facebook",
-                                style: TextStyle(fontSize: 14)),
+                                style: TextStyle(fontSize: 14 )),
                           ),
                         ],
                       ),

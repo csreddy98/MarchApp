@@ -17,9 +17,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'montserrat',
         scaffoldBackgroundColor: Colors.white,
-        buttonColor: Color.fromRGBO(254, 209, 125, 1),
+        buttonColor: Color(0xffFFBF46),
         disabledColor: Color.fromRGBO(254, 209, 125, 0.5),
-        primaryColor: Color.fromRGBO(254, 209, 125, 1),
+        primaryColor: Color(0xffFFBF46),
         textTheme: TextTheme(
             headline1: TextStyle(
               color: Colors.white,
@@ -39,10 +39,10 @@ class MyApp extends StatelessWidget {
             caption: TextStyle(
                 color: Colors.black, fontWeight: FontWeight.w400, fontSize: 12),
             button: TextStyle(
-                color: Colors.black, fontWeight: FontWeight.w600, fontSize: 14),
+                color: Colors.black, fontWeight: FontWeight.w700, fontSize: 16),
             subtitle1: TextStyle(
                 fontSize: 17,
-                color: Color.fromRGBO(254, 209, 125, 1),
+                color: Color(0xffFED17D),
                 fontWeight: FontWeight.w600),
             subtitle2: TextStyle(
                 fontSize: 16, fontWeight: FontWeight.w400, color: Colors.black),

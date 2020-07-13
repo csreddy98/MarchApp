@@ -286,8 +286,8 @@ class _HomeState extends State<Home> {
     return BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         iconSize: 20,
-        elevation: 0,
-        backgroundColor: Color(0xFFFFFFFF),
+        elevation: 1,
+        backgroundColor: Color(0xFFffffff),
         currentIndex: _currentindex,
         items: [
           new BottomNavigationBarItem(
@@ -332,7 +332,7 @@ class _HomeState extends State<Home> {
               title: Text("Profile")),
         ],
         showUnselectedLabels: false,
-        unselectedItemColor: Theme.of(context).disabledColor,
+        unselectedItemColor: Theme.of(context).primaryColor,
         selectedItemColor: Theme.of(context).primaryColor,
         onTap: (index) {
           setState(() {
