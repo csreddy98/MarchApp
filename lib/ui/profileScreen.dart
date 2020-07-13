@@ -254,18 +254,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          testimonial(
-                              context,
-                              "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-                              "Emily",
-                              "By the same illusion which lifts the horizon of the sea to the level of the spectator on a hillside, the sable cloud beneath was dished out, and the car"),
-                          testimonial(
-                              context,
-                              "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-                              "Emily",
-                              "By the same illusion which lifts the horizon of the sea to the level of the spectator on a hillside, the sable cloud beneath was dished out, and the car")
-                        ],
+                        children: List.generate(
+                            this.testimonials.length,
+                            (index) => testimonial(
+                                context,
+                                this.testimonials[index]['profile_pic'],
+                                this.testimonials[index]['fullName'],
+                                this.testimonials[index]['message'])),
                       )),
                     ],
                   ),

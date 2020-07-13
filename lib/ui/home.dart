@@ -54,7 +54,7 @@ class _HomeState extends State<Home> {
   final db = DataBaseHelper();
   final FirebaseMessaging _fcm = FirebaseMessaging();
   var iosSubscription;
-  List tabs;
+  List<Widget> tabs;
   bool newMsgs = false;
 
   messageChecker() async {
@@ -351,8 +351,9 @@ class _HomeState extends State<Home> {
 
     return Scaffold(
       appBar: (_currentindex == 2 || _currentindex == 0) ? null : appBar(),
-      body: Center(
-        child: tabs[_currentindex],
+      body: IndexedStack(
+        index: _currentindex,
+        children: tabs,
       ),
       bottomNavigationBar: Container(
           height: 70,

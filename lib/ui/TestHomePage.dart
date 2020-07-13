@@ -253,7 +253,7 @@ class _TestHomePageState extends State<TestHomePage> {
   }
 
   Widget cardGenerator(tag, id, name, pic, profession, location, description,
-      List goals, int index) {
+      List goals, List testimonials, int index) {
     Size size = MediaQuery.of(context).size;
     return GestureDetector(
         onVerticalDragUpdate: (x) {
@@ -269,6 +269,7 @@ class _TestHomePageState extends State<TestHomePage> {
                           location: location,
                           bio: description,
                           goals: goals,
+                          testimonials: testimonials,
                         )));
           }
         },
@@ -404,6 +405,7 @@ class _TestHomePageState extends State<TestHomePage> {
       // print('This is from Local DB: $value Hello');
       value.forEach((element) {
         List goals = [];
+        List testimonials = [];
         db.selectGoals("${element['personId']}").then((value2) {
           goals = value2;
         }).then((value) {
@@ -421,6 +423,7 @@ class _TestHomePageState extends State<TestHomePage> {
                   element['personLocation'],
                   element['personBio'],
                   goals,
+                  testimonials,
                   i));
             });
             crossCheckList.add(element['personId']);
@@ -579,6 +582,7 @@ class _TestHomePageState extends State<TestHomePage> {
                           uinfo['personLocation'],
                           uinfo['personBio'],
                           details[(details.length - 1) - index]['goal_info'],
+                          [],
                           (details.length - 1) - index);
                     }))
                   : Center(
