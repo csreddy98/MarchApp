@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import './VerifyScreen.dart';
 import 'package:march/support/PhoneAuthCode.dart' show FirebasePhoneAuth;
+import 'package:flutter_icons/flutter_icons.dart';
 
 class PhoneAuthScreen extends StatefulWidget {
   final Color cardBackgroundColor = Color(0xFF6874C2);
@@ -32,10 +33,12 @@ class _PhoneAuthGetPhoneState extends State<PhoneAuthScreen> {
         elevation: 0,
         leading: RaisedButton(
           onPressed: ()=>Navigator.pop(context),
-          child: Icon(Icons.arrow_back_ios),
+          child: Icon(Ionicons.ios_arrow_back),
           color: Colors.white,
           elevation: 0,
-        )
+        ),
+        title: Text('Verify Phone Number'),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -51,48 +54,47 @@ class _PhoneAuthGetPhoneState extends State<PhoneAuthScreen> {
                     padding: EdgeInsets.fromLTRB(20,0,20,20),
                     child: Column(
                       children: <Widget>[
-                        Text(
-                          "Phone Number",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 25.0,
-                              fontWeight: FontWeight.w400),
-                        ),
                         Padding(
                           padding: const EdgeInsets.only(top:15.0),
                           child: Text(
                             "To Verify your account,\nPlease enter your phone number",
-                            style: TextStyle(fontSize: 16.0, color: Colors.black),textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 14.0, color: Colors.black),textAlign: TextAlign.center,
                           ),
                         )
                       ],
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left:20,right: 20),
+                    padding: const EdgeInsets.only(left:10,right: 10),
                     child: TextField(
-                      style: TextStyle(fontSize: 23, color: Colors.black),
+                      style: TextStyle(fontSize: 20, color: Colors.black, letterSpacing: 1.5),
                       onChanged: (value) {
                         this.phoneNo = value;
                       },
                       controller: _phoneNumberController,
                       maxLength: 10,
-                      
+                      cursorColor: Colors.black,
                       decoration: InputDecoration(
+                        // fillColor: Colors.grey[200],
+                        // filled: true,
                         labelText: "Enter Phone Number",
-                        labelStyle: TextStyle(fontSize: 18),
+                        labelStyle: TextStyle(fontSize: 16, letterSpacing: 0),
                         prefix: Text("+91 ",style: TextStyle(color: Colors.black),),
-                        contentPadding: const EdgeInsets.fromLTRB(15,15,15,5),
+                        contentPadding: const EdgeInsets.fromLTRB(15,20,20,10),
+                        focusColor: Colors.green,
+                        hoverColor: Colors.green,
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.blueAccent),
-                          borderRadius: BorderRadius.circular(5),
+                          borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                          borderRadius: BorderRadius.circular(6),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Theme.of(context).primaryColor),
-                          borderRadius: BorderRadius.circular(5),
+                          borderSide: BorderSide(color: Colors.grey[300] ),
+                          borderRadius: BorderRadius.circular(6),
                         ),
                       ),
                       keyboardType: TextInputType.phone,
+                      textInputAction: TextInputAction.done,
+                    
                     ),
                   ),
                   SizedBox(
@@ -102,7 +104,7 @@ class _PhoneAuthGetPhoneState extends State<PhoneAuthScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(20.0,20,20,0),
+                        padding: const EdgeInsets.fromLTRB(10,10,10,0),
                         child: FlatButton(
                           child: Text(
                             'VERIFY',

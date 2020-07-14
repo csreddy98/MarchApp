@@ -189,7 +189,8 @@ class _TestHomePageState extends State<TestHomePage> {
     });
   }
 
-  Widget goalBox(goal) {
+  Widget goalBox(goal, BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     List<Map> goalAssets = [
       {
         'name': 'Newbie',
@@ -227,13 +228,13 @@ class _TestHomePageState extends State<TestHomePage> {
           color: goalAssets[int.parse(goal['personGoalLevel'])]['bgColor'],
           borderRadius: BorderRadius.all(Radius.circular(20))),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
         child: Text(
           goal['personGoalName'],
           style: TextStyle(
               color: goalAssets[int.parse(goal['personGoalLevel'])]
                   ['textColor'],
-              fontSize: 14),
+              fontSize: size.height / 48, fontWeight: FontWeight.w600),
         ),
       ),
     );
@@ -253,7 +254,7 @@ class _TestHomePageState extends State<TestHomePage> {
   }
 
   Widget cardGenerator(tag, id, name, pic, profession, location, description,
-      List goals, int index) {
+      List goals, List testimonials, int index) {
     Size size = MediaQuery.of(context).size;
     return GestureDetector(
         onVerticalDragUpdate: (x) {
@@ -269,17 +270,18 @@ class _TestHomePageState extends State<TestHomePage> {
                           location: location,
                           bio: description,
                           goals: goals,
+                          testimonials: testimonials,
                         )));
           }
         },
         child: SizedBox(
           width: size.width * 0.95,
-          height: (0.60 * size.height),
+          height: (0.58 * size.height),
           child: Card(
             color: Colors.white,
-            shadowColor: Colors.grey,
+            shadowColor: Colors.grey[50],
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20))),
+                borderRadius: BorderRadius.all(Radius.circular(10))),
             // elevation: 5.0 * (index),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -298,24 +300,24 @@ class _TestHomePageState extends State<TestHomePage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 15.0, vertical: 14.0),
+                        horizontal: 15.0, vertical: 10.0),
                     child: Text(
                       "$description",
                       style: TextStyle(
                           fontFamily: 'montserrat',
-                          fontSize: 14,
-                          fontWeight: FontWeight.w100),
+                          fontSize: size.height / 47,
+                          fontWeight: FontWeight.w500),
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 8.0, left: 10),
+                    padding: const EdgeInsets.only(left: 15),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         Text(
                           "$name's Goals",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600, fontSize: 14),
+                          style: TextStyle( color: Colors.grey[700],
+                              fontWeight: FontWeight.w600, fontSize: size.height / 45),
                         ),
                       ],
                     ),
@@ -326,14 +328,14 @@ class _TestHomePageState extends State<TestHomePage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: List.generate(
-                            goals.length, (index) => goalBox(goals[index])),
+                            goals.length, (index) => goalBox(goals[index], context)),
                       ),
                     ),
                   ),
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 12.0, horizontal: 15.0),
+                          vertical: 5.0, horizontal: 15.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -342,8 +344,8 @@ class _TestHomePageState extends State<TestHomePage> {
                               deleteItem(index, id);
                             },
                             child: Container(
-                              width: 130,
-                              height: 40,
+                              width: size.width * 0.35,
+                              height: size.height * 0.06,
                               decoration: BoxDecoration(
                                   border: Border.all(
                                       width: 1,
@@ -354,7 +356,7 @@ class _TestHomePageState extends State<TestHomePage> {
                                 child: Text(
                                   "Skip",
                                   style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: size.height / 44,
                                       fontWeight: FontWeight.bold),
                                 ),
                               ),
@@ -365,8 +367,8 @@ class _TestHomePageState extends State<TestHomePage> {
                               add(id, name, pic, index);
                             },
                             child: Container(
-                              width: 130,
-                              height: 40,
+                              width: size.width * 0.35,
+                              height: size.height * 0.06,
                               decoration: BoxDecoration(
                                   color: Theme.of(context).primaryColor,
                                   border: Border.all(
@@ -378,7 +380,7 @@ class _TestHomePageState extends State<TestHomePage> {
                                 child: Text(
                                   "Connect",
                                   style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: size.height / 44,
                                       fontWeight: FontWeight.bold),
                                 ),
                               ),
@@ -404,6 +406,7 @@ class _TestHomePageState extends State<TestHomePage> {
       // print('This is from Local DB: $value Hello');
       value.forEach((element) {
         List goals = [];
+        List testimonials = [];
         db.selectGoals("${element['personId']}").then((value2) {
           goals = value2;
         }).then((value) {
@@ -421,6 +424,7 @@ class _TestHomePageState extends State<TestHomePage> {
                   element['personLocation'],
                   element['personBio'],
                   goals,
+                  testimonials,
                   i));
             });
             crossCheckList.add(element['personId']);
@@ -444,13 +448,14 @@ class _TestHomePageState extends State<TestHomePage> {
         : _getAllPeople();
     Size size = MediaQuery.of(context).size;
     return Scaffold(
+        backgroundColor: Colors.grey[100],
         body: SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           Container(
             width: size.width,
-            height: size.height * 0.25,
+            height: size.height * 0.22,
             child: Stack(
               children: <Widget>[
                 Positioned(
@@ -458,16 +463,16 @@ class _TestHomePageState extends State<TestHomePage> {
                     decoration: BoxDecoration(
                         color: Theme.of(context).primaryColor,
                         borderRadius: BorderRadius.only(
-                            bottomRight: Radius.elliptical(250, 110))),
+                            bottomRight: Radius.elliptical(250, 120))),
                   ),
                 ),
                 Positioned(
-                    top: 20,
-                    right: 0,
+                    top: 30,
+                    right: 5,
                     child: Image.asset(
-                      "assets/images/HomeGoal.png",
-                      width: 130,
-                      height: 130,
+                      "assets/images/topimage.png",
+                      width: 100,
+                      height: 100,
                     )),
                 Positioned(
                   top: 40,
@@ -481,7 +486,7 @@ class _TestHomePageState extends State<TestHomePage> {
                             color: Colors.black,
                             wordSpacing: 1,
                             letterSpacing: 0,
-                            height: 1.5,
+                            //height: 1.5,
                             fontFamily: 'montserrat'),
                         children: [
                           TextSpan(
@@ -492,7 +497,7 @@ class _TestHomePageState extends State<TestHomePage> {
                 ),
                 Container(
                   child: Positioned(
-                      bottom: 25,
+                      bottom: 15,
                       left: 25,
                       child: Text(
                         "March towards your goal\nwith like minded souls",
@@ -508,7 +513,7 @@ class _TestHomePageState extends State<TestHomePage> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 10.0, bottom: 5.0),
+            padding: const EdgeInsets.only(top: 10.0,bottom: 6.0),
             child: Container(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -522,12 +527,12 @@ class _TestHomePageState extends State<TestHomePage> {
                     },
                     child: Container(
                       width: 120,
-                      height: 40,
+                      height: size.height * 0.06,
                       child: Center(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
-                            Icon(Icons.my_location),
+                            Icon(Icons.my_location, size: 18,),
                             Text(
                               "Near Me",
                               style: TextStyle(
@@ -548,7 +553,7 @@ class _TestHomePageState extends State<TestHomePage> {
                     },
                     child: Container(
                       width: 120,
-                      height: 40,
+                      height: size.height * 0.06,
                       child: Center(
                         child: Text(
                           "All",
@@ -578,6 +583,7 @@ class _TestHomePageState extends State<TestHomePage> {
                           uinfo['personLocation'],
                           uinfo['personBio'],
                           details[(details.length - 1) - index]['goal_info'],
+                          [],
                           (details.length - 1) - index);
                     }))
                   : Center(
@@ -881,7 +887,7 @@ class _TestHomePageState extends State<TestHomePage> {
                   borderRadius: BorderRadius.all(
                       Radius.circular(15.0))), //this right here
               child: Container(
-                height: 250,
+                height: MediaQuery.of(context).size.height * 0.40,
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
@@ -891,7 +897,7 @@ class _TestHomePageState extends State<TestHomePage> {
                       Text(
                         "Send A Message",
                         style: TextStyle(
-                            fontSize: 20,
+                            fontSize: MediaQuery.of(context).size.height / 35,
                             color: Colors.black,
                             fontWeight: FontWeight.w600),
                       ),
@@ -900,12 +906,14 @@ class _TestHomePageState extends State<TestHomePage> {
                       ),
                       TextField(
                         keyboardType: TextInputType.multiline,
+                        textCapitalization: TextCapitalization.sentences,
                         maxLines: 3,
+                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
                         controller: messageController,
                         decoration: InputDecoration(
                             enabledBorder: OutlineInputBorder(
                               borderSide:
-                                  BorderSide(color: Colors.grey, width: 1.0),
+                                  BorderSide(color: Colors.grey[300], width: 1.0),
                             ),
                             hintText: 'Enter a Message'),
                       ),
@@ -920,7 +928,7 @@ class _TestHomePageState extends State<TestHomePage> {
                               width: 100,
                               child: RaisedButton(
                                   shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(35)),
+                                      borderRadius: BorderRadius.circular(10)),
                                   onPressed: () async {
                                     var msg = messageController.text;
                                     var db = DataBaseHelper();
@@ -1009,7 +1017,7 @@ class _TestHomePageState extends State<TestHomePage> {
                                   },
                                   child: Text(
                                     "Add",
-                                    style: TextStyle(color: Colors.white),
+                                    style: TextStyle(color: Colors.black),
                                   ),
                                   color: Theme.of(context).primaryColor),
                             ),

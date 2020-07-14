@@ -176,7 +176,7 @@ class _RegisterState extends State<Register> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text("Registration",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 24,color: Colors.black)),
+        title: Text('hello'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -236,6 +236,7 @@ class _RegisterState extends State<Register> {
                       email ="";
                     }
                   },
+                  keyboardType: TextInputType.emailAddress,
                 ),
               ),
               Padding(
@@ -261,7 +262,8 @@ class _RegisterState extends State<Register> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(20.0,0.0,20.0,0),
                 child: TextField(
-                  maxLines: 2,
+                  textInputAction: TextInputAction.done,
+                  maxLines: 1,
                   style: TextStyle(
                       fontSize: 15,
                       color: Colors.black

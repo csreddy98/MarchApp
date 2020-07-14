@@ -15,7 +15,7 @@ class _PeopleFinderState extends State<PeopleFinder> {
   Widget build(BuildContext context) {
     size = MediaQuery.of(context).size;
     return Scaffold(
-        backgroundColor: Color(0xFFF5F5F5),
+        backgroundColor: Color(0xffFFBF46),
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[

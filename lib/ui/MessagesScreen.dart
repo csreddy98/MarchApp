@@ -46,7 +46,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
     Timer(Duration(seconds: 1), () {
       setState(() {
         tptext =
-            "Oops... Seems like you don't have anyone to talk to.\n Try Connecting.";
+            "Oops... Seems like you don't have anyone to talk to. Try Connecting.";
       });
     });
   }
@@ -145,8 +145,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
                     width: 120.0,
                   ),
                   color:
-                      (chats == true) ? Color(0xFFabb7b7) : Color(0xFFdadfe1),
-                  // shape: RoundedRectangleBorder(side: BorderSide(width: 1.0)),
+                      (chats == true) ? Theme.of(context).primaryColor : Color(0xFFdadfe1),
+                  //  shape: RoundedRectangleBorder(side: BorderSide(width: 1.0)),
                 ),
                 FlatButton(
                   onPressed: () {
@@ -164,7 +164,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                     width: 120.0,
                   ),
                   color:
-                      (chats == false) ? Color(0xFFabb7b7) : Color(0xFFdadfe1),
+                      (chats == false) ? Theme.of(context).primaryColor : Color(0xFFdadfe1),
                   // shape: RoundedRectangleBorder(side: BorderSide(width: 1.0)),
                 )
               ],
@@ -175,13 +175,18 @@ class _MessagesScreenState extends State<MessagesScreen> {
                 child: chats == true
                     ? lastMessages.length > 0
                         ? recentChats(lastMessages)
-                        : Center(
-                            child: Text("$tptext"),
-                          )
+                        : Padding(
+                          padding: const EdgeInsets.fromLTRB(20,0,20,0),
+                          child: Center(
+                              child: Text("$tptext", style: TextStyle(fontSize: 16)),
+                            ),
+                        )
                     : pending.length == 0
                         ? Center(
                             child: Text(
-                                "Seems like nobody has sent you a Request"),
+                                "Seems like nobody has sent you a Request",
+                                 style: TextStyle(fontSize: 16),
+                                ),
                           )
                         : ListView.builder(
                             shrinkWrap: true,

@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -202,16 +202,18 @@ class _GRegisterState extends State<GRegister> {
 
     return Scaffold(
       key:_sk,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text('Create Profile', style: TextStyle(fontWeight: FontWeight.w600,letterSpacing: 0)),
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
         child: Container(
           child: Column(
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(top:30.0),
-                child: Center(child: Text("Registration",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 28),)),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top:15.0),
+                padding: const EdgeInsets.only(top:5.0),
                 child: GestureDetector(
                   onTap: (){
                     _showDialog();
@@ -221,7 +223,7 @@ class _GRegisterState extends State<GRegister> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top:5.0),
-                child: Center(child: Text("Upload Profile Picture",style: TextStyle(fontSize: 12),)),
+                child: Center(child: Text("Upload Profile Picture",style: TextStyle(fontSize: 14),)),
               ),
 
               Padding(
@@ -237,9 +239,11 @@ class _GRegisterState extends State<GRegister> {
                     child: TextFormField(
                       controller: _controllername,
                       maxLines: 1,
+                      textCapitalization: TextCapitalization.words,
                       style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.black
+                          fontSize: 16,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400
                       ),
                       decoration: InputDecoration(
                           filled: true,
@@ -250,7 +254,7 @@ class _GRegisterState extends State<GRegister> {
                           ),
                           border: OutlineInputBorder(),
                           hintText:"Full Name",
-                          hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
+                          hintStyle: TextStyle(color: Colors.black26, fontSize: 16.0)),
                       onChanged: (String value) {
                         try {
                           name = value;
@@ -275,9 +279,11 @@ class _GRegisterState extends State<GRegister> {
                   child: TextFormField(
                     maxLines: 1,
                     controller: _controlleremail,
+                    keyboardType: TextInputType.emailAddress, 
                     style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.black
+                        fontSize: 16,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w400
                     ),
                     decoration: InputDecoration(
                         filled: true,
@@ -287,8 +293,8 @@ class _GRegisterState extends State<GRegister> {
                           borderRadius: BorderRadius.all(Radius.circular(10.0)),
                         ),
                         border: OutlineInputBorder(),
-                        hintText:" Email",
-                        hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
+                        hintText:"Email",
+                        hintStyle: TextStyle(color: Colors.black26, fontSize: 16.0)),
                     onChanged: (String value) {
                       try {
                         email = value;
@@ -312,9 +318,11 @@ class _GRegisterState extends State<GRegister> {
                     child: TextFormField(
                       maxLines: 1,
                       controller: _controllerph,
+                      keyboardType: TextInputType.phone,
                       style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.black
+                          fontSize: 16,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400
                       ),
                       decoration: InputDecoration(
                          filled: true,
@@ -324,8 +332,8 @@ class _GRegisterState extends State<GRegister> {
                             borderRadius: BorderRadius.all(Radius.circular(10.0)),
                           ),
                           border: OutlineInputBorder(),
-                          hintText:" Phone Number",
-                          hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
+                          hintText:"Phone Number",
+                          hintStyle: TextStyle(color: Colors.black26, fontSize: 16.0)),
                       onChanged: (String value) {
                         try {
                           phone = value;
@@ -350,9 +358,11 @@ class _GRegisterState extends State<GRegister> {
                     },
                     child: TextField(
                       maxLines: 1,
+                      textCapitalization: TextCapitalization.sentences,
                       style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.black
+                          fontSize: 16,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400
                       ),
                       decoration: InputDecoration(
                           filled: true,
@@ -363,7 +373,7 @@ class _GRegisterState extends State<GRegister> {
                             borderRadius: BorderRadius.all(Radius.circular(10.0)),
                           ),
                           border: OutlineInputBorder(),
-                          hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
+                          hintStyle: TextStyle(color: Colors.black26, fontSize: 16.0)),
                       onChanged: (String value) {
                         try {
                           profession = value;
@@ -388,10 +398,13 @@ class _GRegisterState extends State<GRegister> {
                       });
                     },
                     child: TextField(
-                      maxLines: 2,
+                      maxLines: 3,
+                      textInputAction: TextInputAction.done,
+                      textCapitalization: TextCapitalization.sentences,
                       style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.black
+                          fontSize: 16,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400
                       ),
                       decoration: InputDecoration(
                           fillColor: bioColor,
@@ -416,7 +429,7 @@ class _GRegisterState extends State<GRegister> {
               ),
 
               Padding(
-                padding: const EdgeInsets.fromLTRB(20.0,0.0,20.0,0),
+                padding: const EdgeInsets.fromLTRB(20.0,0.0,0,0),
                 child: Row(
                   children: <Widget>[
                     _value==''?
@@ -426,11 +439,11 @@ class _GRegisterState extends State<GRegister> {
                         width: 100,
                         child: GestureDetector(
                           onTap: (){
-                            _selectDate();
+                             _selectDate();      
                           },
                           child: Text('Date of birth',
                             style: TextStyle(
-                              fontSize: 15,
+                              fontSize: 16,
                               decoration: TextDecoration.underline,
                             ),),
                         ),
@@ -438,31 +451,28 @@ class _GRegisterState extends State<GRegister> {
                     )
                         :Row(
                       children: <Widget>[
-                        Text(_value.substring(8,10)+"-"+_value.substring(5,7)+"-"+_value.substring(0,4)),
+                        Text('DOB: ' + _value.substring(8,10)+"-"+_value.substring(5,7)+"-"+_value.substring(0,4) , style: TextStyle(fontSize: 16),),
                         IconButton(
-                          icon: Icon(Icons.edit),
+                          icon: Icon(Icons.edit,size: 16,),
                           onPressed: (){
                             _selectDate();
                           },
                         ),
                       ],
                     ),
-
+                    SizedBox(width: 10,),
                     Expanded(
                       flex: 2,
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20.0,10,20.0,0),
-                        child: Row(
-                          children: <Widget>[
-                            Text('Gender: ',style: TextStyle(fontSize: 15),),
-                            SizedBox(width: 20,),
-                            DropdownButton(
-                              value: _selectedGender,
-                              items: _dropdownMenuItems,
-                              onChanged: onChangeDropDownItem,
-                            ),
-                          ],
-                        ),
+                      child: Row(
+                        children: <Widget>[
+                          Text('Gender: ',style: TextStyle(fontSize: 16),),
+                          SizedBox(width: 10,),
+                          DropdownButton(
+                            value: _selectedGender,
+                            items: _dropdownMenuItems,
+                            onChanged: onChangeDropDownItem,
+                          ),
+                        ],
                       ),
 
                     ),
@@ -479,7 +489,7 @@ class _GRegisterState extends State<GRegister> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(20.0,20,20,0),
+                    padding: const EdgeInsets.fromLTRB(20.0,20,20,20),
                     child: FlatButton(
                         child: Text(
                           'NEXT',
@@ -719,7 +729,7 @@ onTap: () async{
           return Dialog(
             shape: RoundedRectangleBorder(
                 borderRadius:
-                BorderRadius.circular(20.0)),
+                BorderRadius.circular(10.0)),
             child: Container(
               height: 200,
               child: Padding(
@@ -728,12 +738,12 @@ onTap: () async{
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Center(child: Text("Choose",style: TextStyle(fontSize: 20.0,color: Colors.black),)),
+                    Center(child: Text("Choose Image",style: TextStyle(fontSize: 20.0,color: Colors.black),)),
                     Padding(
                       padding: const EdgeInsets.only(top: 15.0),
                       child: Center(
                         child: SizedBox(
-                          width: 100.0,
+                          width: 150.0,
                           child: RaisedButton(
                             onPressed: () {
                               _captureImage();
@@ -741,9 +751,9 @@ onTap: () async{
                             },
                             child: Text(
                               "Camera",
-                              style: TextStyle(color: Colors.white),
+                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
                             ),
-                            color: const Color(0xFF1BC0C5),
+                            color: const Color(0xffFFBF46),
                           ),
                         ),
                       ),
@@ -752,7 +762,7 @@ onTap: () async{
                       padding: const EdgeInsets.only(top:10.0),
                       child: Center(
                         child: SizedBox(
-                          width: 100.0,
+                          width: 150.0,
                           child: RaisedButton(
                             onPressed: (){
                               _loadFromGallery();
@@ -760,9 +770,9 @@ onTap: () async{
                             },
                             child: Text(
                               "Gallery",
-                              style: TextStyle(color: Colors.white),
+                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
                             ),
-                            color: const Color(0xFF1BC0C5),
+                            color: const Color(0xffFFBF46),
                           ),
                         ),
                       ),

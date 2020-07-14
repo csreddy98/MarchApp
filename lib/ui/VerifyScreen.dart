@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -187,7 +187,7 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
           ),
           leading: RaisedButton(
             onPressed: () => Navigator.pop(context),
-            child: Icon(Icons.arrow_back_ios),
+            child: Icon(Ionicons.ios_arrow_back),
             color: Colors.white,
             elevation: 0,
           )),
@@ -235,21 +235,21 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
             Center(
               child: Text(
                 "SMS with code has been sent",
-                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w300),
+                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
                 textAlign: TextAlign.center,
               ),
             ),
             Center(
               child: Text(
                 "to " + widget.number,
-                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w300),
+                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
                 textAlign: TextAlign.center,
               ),
             ),
 
-            SizedBox(height: 46.0),
+            SizedBox(height: 30.0),
             Container(
-              width: MediaQuery.of(context).size.width / 1.8,
+              width: MediaQuery.of(context).size.width / 1.6,
               child: Column(
                 children: <Widget>[
                   TextField(
@@ -265,21 +265,21 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
                       WhitelistingTextInputFormatter.digitsOnly,
                       LengthLimitingTextInputFormatter(6),
                     ],
-                    decoration: InputDecoration(border: InputBorder.none),
+                    autofocus: true,
                     textAlign: TextAlign.center,
                     cursorColor: Colors.black,
                     keyboardType: TextInputType.number,
                     style: TextStyle(
                         letterSpacing: 23,
                         fontSize: 25.0,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w600,
                         color: Colors.black),
                   ),
-                  LinearProgressIndicator(
-                    backgroundColor: Colors.grey[300],
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                        Theme.of(context).primaryColor),
-                  )
+                  // LinearProgressIndicator(
+                  //   backgroundColor: Colors.grey[300],
+                  //   valueColor: AlwaysStoppedAnimation<Color>(
+                  //       Theme.of(context).primaryColor),
+                  // )
                 ],
               ),
             ),
@@ -289,8 +289,8 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
                 child: Row(
               children: <Widget>[
                 SizedBox(width: 150.0),
-                Text("0:01 "),
-                Text("Resend"),
+                // Text("0:01 "),
+                // Text("Resend"),
               ],
             )),
             SizedBox(height: 32.0),

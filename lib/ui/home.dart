@@ -54,7 +54,7 @@ class _HomeState extends State<Home> {
   final db = DataBaseHelper();
   final FirebaseMessaging _fcm = FirebaseMessaging();
   var iosSubscription;
-  List tabs;
+  List<Widget> tabs;
   bool newMsgs = false;
 
   messageChecker() async {
@@ -286,8 +286,8 @@ class _HomeState extends State<Home> {
     return BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         iconSize: 20,
-        elevation: 0,
-        backgroundColor: Color(0xFFFFFFFF),
+        elevation: 1,
+        backgroundColor: Color(0xFFffffff),
         currentIndex: _currentindex,
         items: [
           new BottomNavigationBarItem(
@@ -309,7 +309,7 @@ class _HomeState extends State<Home> {
                             decoration: BoxDecoration(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(8.0)),
-                              color: Colors.red,
+                                  color: Colors.red,
                             ),
                           ),
                         )
@@ -332,7 +332,7 @@ class _HomeState extends State<Home> {
               title: Text("Profile")),
         ],
         showUnselectedLabels: false,
-        unselectedItemColor: Theme.of(context).disabledColor,
+        unselectedItemColor: Theme.of(context).primaryColor,
         selectedItemColor: Theme.of(context).primaryColor,
         onTap: (index) {
           setState(() {
@@ -351,11 +351,12 @@ class _HomeState extends State<Home> {
 
     return Scaffold(
       appBar: (_currentindex == 2 || _currentindex == 0) ? null : appBar(),
-      body: Center(
-        child: tabs[_currentindex],
+      body: IndexedStack(
+        index: _currentindex,
+        children: tabs,
       ),
       bottomNavigationBar: Container(
-          height: 70,
+          height: 65,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
@@ -364,7 +365,7 @@ class _HomeState extends State<Home> {
                       alignment: FractionalOffset(0.1, 0.6),
                       child: Container(
                         color: Theme.of(context).primaryColor,
-                        width: 68,
+                        width: 60,
                         height: 3,
                       ),
                     )
@@ -373,13 +374,13 @@ class _HomeState extends State<Home> {
                           alignment: FractionalOffset(0.9, 0.6),
                           child: Container(
                             color: Theme.of(context).primaryColor,
-                            width: 65,
+                            width: 60,
                             height: 3,
                           ),
                         )
                       : Container(
                           color: Theme.of(context).primaryColor,
-                          width: 68,
+                          width: 60,
                           height: 3,
                         ),
               bottomNavBar()
