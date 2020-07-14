@@ -14,11 +14,12 @@ class ProfileTop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Column(
       children: <Widget>[
         Container(
-          width: 120,
-          height: 120,
+          width: size.width / 3.5,
+          height: size.width / 3.5,
           decoration: BoxDecoration(
               border: Border.all(width: 5, color: Colors.white),
               borderRadius: BorderRadius.all(Radius.circular(10))),
@@ -30,20 +31,20 @@ class ProfileTop extends StatelessWidget {
               )),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 8.0),
+          padding: const EdgeInsets.only(top: 0.0),
           child: Text(
             "$name",
-            style: TextStyle(fontSize: 18, fontFamily: 'montserrat'),
+            style: TextStyle(fontSize: size.height / 38,fontWeight: FontWeight.w600),
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 8.0),
+          padding: const EdgeInsets.only(top: 5.0),
           child: Text(
             "$profession",
             style: TextStyle(
-                fontSize: 15,
+                fontSize: size.height / 45,
                 fontFamily: 'montserrat',
-                fontWeight: FontWeight.normal),
+                fontWeight: FontWeight.w500),
           ),
         ),
         (location != null)
@@ -52,13 +53,13 @@ class ProfileTop extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Icon(Icons.location_on),
+                    Icon(Icons.location_on, size: 15,),
                     Text(
                       "$location",
                       style: TextStyle(
                           fontWeight: FontWeight.w100,
                           fontFamily: 'montserrat',
-                          fontSize: 13),
+                          fontSize: size.height / 48),
                     ),
                   ],
                 ),

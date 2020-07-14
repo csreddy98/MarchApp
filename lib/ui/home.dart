@@ -309,7 +309,7 @@ class _HomeState extends State<Home> {
                             decoration: BoxDecoration(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(8.0)),
-                              color: Colors.red,
+                                  color: Colors.red,
                             ),
                           ),
                         )
@@ -356,7 +356,7 @@ class _HomeState extends State<Home> {
         children: tabs,
       ),
       bottomNavigationBar: Container(
-          height: 70,
+          height: 65,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
@@ -365,7 +365,7 @@ class _HomeState extends State<Home> {
                       alignment: FractionalOffset(0.1, 0.6),
                       child: Container(
                         color: Theme.of(context).primaryColor,
-                        width: 68,
+                        width: 60,
                         height: 3,
                       ),
                     )
@@ -374,13 +374,13 @@ class _HomeState extends State<Home> {
                           alignment: FractionalOffset(0.9, 0.6),
                           child: Container(
                             color: Theme.of(context).primaryColor,
-                            width: 65,
+                            width: 60,
                             height: 3,
                           ),
                         )
                       : Container(
                           color: Theme.of(context).primaryColor,
-                          width: 68,
+                          width: 60,
                           height: 3,
                         ),
               bottomNavBar()

@@ -460,7 +460,7 @@ class _GRegisterState extends State<GRegister> {
                         ),
                       ],
                     ),
-                    SizedBox(width: 20,),
+                    SizedBox(width: 10,),
                     Expanded(
                       flex: 2,
                       child: Row(
