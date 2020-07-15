@@ -10,6 +10,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:march/ui/ChatScreen.dart';
 import 'package:http/http.dart' as http;
+import 'package:march/ui/ChatScreen2.dart';
 import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
@@ -40,6 +41,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
   List lastMessages = [];
   List msgCount = [];
   SocketIO socketIO;
+
   // List pending = [];
   _MessagesScreenState(this.screenState) {
     updateLastMessages();
@@ -71,6 +73,9 @@ class _MessagesScreenState extends State<MessagesScreen> {
 
   _socketStatus(data) {
     print("THIS IS THE SOCKET STATUS: $data");
+    setState(() {
+      // socketStatus = data;
+    });
   }
 
   updateLastMessages() {
@@ -120,8 +125,27 @@ class _MessagesScreenState extends State<MessagesScreen> {
   @override
   Widget build(BuildContext context) {
     updateLastMessages();
+    // print("Scoket Status: $socketStatus");
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text("Inbox"),
+        centerTitle: true,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(23.0),
+            child: Container(
+              width: 10,
+              height: 10,
+              decoration: BoxDecoration(
+                  color: Colors.green,
+                  borderRadius: BorderRadius.all(Radius.circular(100))),
+            ),
+          )
+        ],
+      ),
       body: Column(
         children: <Widget>[
           Container(
@@ -144,8 +168,9 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                 fontWeight: FontWeight.w600))),
                     width: 120.0,
                   ),
-                  color:
-                      (chats == true) ? Theme.of(context).primaryColor : Color(0xFFdadfe1),
+                  color: (chats == true)
+                      ? Theme.of(context).primaryColor
+                      : Color(0xFFdadfe1),
                   //  shape: RoundedRectangleBorder(side: BorderSide(width: 1.0)),
                 ),
                 FlatButton(
@@ -163,8 +188,9 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                 fontWeight: FontWeight.w600))),
                     width: 120.0,
                   ),
-                  color:
-                      (chats == false) ? Theme.of(context).primaryColor : Color(0xFFdadfe1),
+                  color: (chats == false)
+                      ? Theme.of(context).primaryColor
+                      : Color(0xFFdadfe1),
                   // shape: RoundedRectangleBorder(side: BorderSide(width: 1.0)),
                 )
               ],
@@ -176,17 +202,18 @@ class _MessagesScreenState extends State<MessagesScreen> {
                     ? lastMessages.length > 0
                         ? recentChats(lastMessages)
                         : Padding(
-                          padding: const EdgeInsets.fromLTRB(20,0,20,0),
-                          child: Center(
-                              child: Text("$tptext", style: TextStyle(fontSize: 16)),
+                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                            child: Center(
+                              child: Text("$tptext",
+                                  style: TextStyle(fontSize: 16)),
                             ),
-                        )
+                          )
                     : pending.length == 0
                         ? Center(
                             child: Text(
-                                "Seems like nobody has sent you a Request",
-                                 style: TextStyle(fontSize: 16),
-                                ),
+                              "Seems like nobody has sent you a Request",
+                              style: TextStyle(fontSize: 16),
+                            ),
                           )
                         : ListView.builder(
                             shrinkWrap: true,

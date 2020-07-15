@@ -75,25 +75,6 @@ class _TextingScreenState extends State<TextingScreen> {
     }).then((value) {
       db.markAsSeen(widget.user['user_id']);
     });
-  }
-
-  Widget _flightShuttleBuilder(
-    BuildContext flightContext,
-    Animation<double> animation,
-    HeroFlightDirection flightDirection,
-    BuildContext fromHeroContext,
-    BuildContext toHeroContext,
-  ) {
-    return DefaultTextStyle(
-      style: DefaultTextStyle.of(toHeroContext).style,
-      child: toHeroContext.widget,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    loadMessages();
-
     if (messages.length > 10 && checkStatus) {
       http.post("https://march.lbits.co/api/worker.php",
           body: json.encode({
@@ -116,6 +97,11 @@ class _TextingScreenState extends State<TextingScreen> {
         }
       });
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    loadMessages();
     return Scaffold(
       backgroundColor: Color(0xFFFBFCFE),
       appBar: AppBar(

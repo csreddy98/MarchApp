@@ -350,7 +350,7 @@ class _HomeState extends State<Home> {
     });
 
     return Scaffold(
-      appBar: (_currentindex == 2 || _currentindex == 0) ? null : appBar(),
+      // appBar: (_currentindex == 2 || _currentindex == 0) ? null : appBar(),
       body: IndexedStack(
         index: _currentindex,
         children: tabs,
