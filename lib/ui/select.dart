@@ -27,13 +27,6 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
   Color c = Colors.grey[100];
   final GlobalKey<ScaffoldState> _sk = GlobalKey<ScaffoldState>();
   List<String> suggestions = [];
-  List<String> suggestions1 = [
-    "Newbie",
-    "Skilled",
-    "Proficient",
-    "Experienced",
-    "Expert"
-  ];
 // drop down
   var db = new DataBaseHelper();
   String note = "";
@@ -106,7 +99,6 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
   }
 
   final myController = TextEditingController();
-  String expertise = "";
 
   @override
   void dispose() {
@@ -114,7 +106,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  int _disable = 0, _disable1 = 0;
+  int _disable = 0;
 
   int selectedHour = 0;
   int selectedMin = 0;
@@ -383,103 +375,73 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                           )),
                     )
                   : Container(),
-              _disable1 == 1
-                  ? Container()
-                  : Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
-                      child: SimpleAutoCompleteTextField(
-                        key: key1,
-                        decoration: new InputDecoration(
-                            filled: true,
-                            fillColor: c,
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: c, width: 1.0),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10.0)),
+
+              Padding(
+                padding: const EdgeInsets.fromLTRB(18.0,8,18,8),
+                child: Theme(
+                  data: ThemeData(primaryColor: Colors.black),
+                  child: Container(
+                    color: Colors.grey[100],
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: DropdownButtonFormField<String>(
+                        decoration: InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                                borderSide:
+                                BorderSide(color: Colors.grey[100]))),
+                        items: [
+                          DropdownMenuItem<String>(
+                            value: "0",
+                            child: Text(
+                              "Newbie",
                             ),
-                            contentPadding:
-                                const EdgeInsets.fromLTRB(15, 15, 15, 5),
-                            hintText: "Choose Expertise",
-                            border: new OutlineInputBorder(
-                              borderRadius: const BorderRadius.all(
-                                const Radius.circular(10.0),
-                              ),
-                            )),
-                        controller: TextEditingController(),
-                        suggestions: suggestions1,
-                        textChanged: (text) => currentText1 = text,
-                        clearOnSubmit: true,
-                        textSubmitted: (text) => setState(() {
-                          if (text != "" && _disable1 == 0) {
-                            setState(() {
-                              expertise = text;
-                              _disable1 = 1;
-                              if (expertise == 'Newbie') {
-                                goalsLevel = "0";
-                              } else if (expertise == 'Skilled') {
-                                goalsLevel = "1";
-                              } else if (expertise == 'Proficient') {
-                                goalsLevel = "2";
-                              } else if (expertise == 'Experienced') {
-                                goalsLevel = "3";
-                              } else if (expertise == 'Expert') {
-                                goalsLevel = "4";
-                              }
-                            });
-                          } else {
-                            _sk.currentState.showSnackBar(SnackBar(
-                              content: Text(
-                                "Enter all details and Submit next",
-                                style: TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                  fontSize: 15,
-                                ),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(12.0),
-                                      topRight: Radius.circular(12.0))),
-                              duration: Duration(seconds: 3),
-                              backgroundColor: Colors.lightBlueAccent,
-                            ));
-                          }
-                        }),
+                          ),
+                          DropdownMenuItem<String>(
+                            value: "1",
+                            child: Text(
+                              "Skilled",
+                            ),
+                          ),
+                          DropdownMenuItem<String>(
+                            value: "2",
+                            child: Text(
+                              "Proficient",
+                            ),
+                          ),
+                          DropdownMenuItem<String>(
+                            value: "3",
+                            child: Text(
+                              "Experienced",
+                            ),
+                          ),
+                          DropdownMenuItem<String>(
+                            value: "4",
+                            child: Text(
+                              "Expert",
+                            ),
+                          ),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            goalsLevel=value;
+                          });
+                        },
+                        isExpanded: true,
+                        hint: Text(
+                          "Choose Your Expertise ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.3,
+                            fontFamily: 'montserrat',
+                            color: Colors.black54,
+                          ),
+                        ),
                       ),
                     ),
-              _disable1 == 1
-                  ? Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                Expanded(child: Text(expertise)),
-                                IconButton(
-                                    icon: Icon(
-                                      Icons.clear,
-                                      size: 16,
-                                      color: Colors.grey,
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        _disable1 = 0;
-                                        expertise = "";
-                                      });
-                                    }),
-                              ],
-                            ),
-                          )),
-                    )
-                  : Container(),
+                  ),
+                ),
+              ),
+
               CheckboxListTile(
                 title: Text(
                   "Remind me every day",
@@ -821,7 +783,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                   onPressed: () async {
                                     if ((checkedValue == true && click == 1) ||
                                         checkedValue == false) {
-                                      if (expertise != "" &&
+                                      if (goalsLevel != "" &&
                                           added[count - 1] != "") {
                                         if (sendTime != "none") {
                                           setState(() {
@@ -832,7 +794,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                         print('cnt :' +
                                             cnt.toString() +
                                             ' expertise :' +
-                                            expertise);
+                                            goalsLevel);
 
                                         print(remind + " " + sendTime);
 
@@ -909,7 +871,6 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                           Navigator.pop(context);
                                           setState(() {
                                             _disable = 0;
-                                            _disable1 = 0;
                                             selectedHour = 0;
                                             selectedMin = 0;
                                             sendTime = "none";
@@ -919,7 +880,6 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                             timeView = false;
                                             checkedValue = false;
                                             click = 0;
-                                            expertise = "";
                                             goalsLevel = "";
                                             cnt = cnt + 1;
                                           });
@@ -931,14 +891,12 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                             checkedValue = false;
                                             ampm = 'AM';
                                             timeView = false;
-                                            expertise = "";
                                             sendTime = "none";
                                             remind = "0";
                                             note = "";
                                             click = 0;
                                             goalsLevel = "";
                                             _disable = 0;
-                                            _disable1 = 0;
                                             added[count - 1] = "";
                                             count = count - 1;
                                           });
@@ -1028,7 +986,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                             onPressed: () async {
                               if ((checkedValue == true && click == 1) ||
                                   checkedValue == false) {
-                                if (expertise != "" && added[0] != "") {
+                                if (goalsLevel != "" && added[0] != "") {
                                   if (sendTime != "none") {
                                     setState(() {
                                       remind = "1";
@@ -1038,7 +996,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                   print('cnt :' +
                                       cnt.toString() +
                                       ' expertise :' +
-                                      expertise);
+                                      goalsLevel);
 
                                   print(remind + " " + sendTime);
 
@@ -1084,7 +1042,6 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                     Navigator.pop(context);
                                     setState(() {
                                       _disable = 0;
-                                      _disable1 = 0;
                                       selectedHour = 0;
                                       selectedMin = 0;
                                       ampm = 'AM';
@@ -1094,7 +1051,6 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                       checkedValue = false;
                                       sendTime = "none";
                                       remind = "0";
-                                      expertise = "";
                                       goalsLevel = "";
                                       cnt = cnt + 1;
                                     });
@@ -1104,7 +1060,6 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                       selectedHour = 0;
                                       selectedMin = 0;
                                       ampm = 'AM';
-                                      expertise = "";
                                       goalsLevel = "";
                                       note = "";
                                       click = 0;
@@ -1113,7 +1068,6 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                       sendTime = "none";
                                       remind = "0";
                                       _disable = 0;
-                                      _disable1 = 0;
                                       added[count - 1] = "";
                                       count = count - 1;
                                     });
