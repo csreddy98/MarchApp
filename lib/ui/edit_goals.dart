@@ -29,25 +29,16 @@ class _EditGoalState extends State<EditGoal> {
   String remind = "0";
   Color c = Colors.grey[100];
   int _disable = 0;
-  int _disable1 = 0;
   String currentText = "";
   String currentText1 = "";
   int click = 0;
   List<String> suggestions = [];
-  List<String> suggestions1 = [
-    "Newbie",
-    "Skilled",
-    "Proficient",
-    "Experienced",
-    "Expert"
-  ];
   String note = "";
   String goalsLevel = "";
 // till here
   String sendTime = "none";
   bool checkedValue = false;
   bool timeView = false;
-  String expertise = "";
   bool showWhichErrorText = false;
 
   int selectedHour = 0;
@@ -203,9 +194,7 @@ class _EditGoalState extends State<EditGoal> {
                               )),
                         )
                       : Container(),
-                  _disable1 == 1
-                      ? Container()
-                      : Padding(
+                   /*Padding(
                           padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
                           child: SimpleAutoCompleteTextField(
                             key: key1,
@@ -265,41 +254,73 @@ class _EditGoalState extends State<EditGoal> {
                               }
                             }),
                           ),
-                        ),
-                  _disable1 == 1
-                      ? Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.grey,
-                                  width: 1,
+                        ),*/
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(18.0,8,18,8),
+                    child: Theme(
+                      data: ThemeData(primaryColor: Colors.black),
+                      child: Container(
+                        color: Colors.grey[100],
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: DropdownButtonFormField<String>(
+                            decoration: InputDecoration(
+                                enabledBorder: UnderlineInputBorder(
+                                    borderSide:
+                                    BorderSide(color: Colors.grey[100]))),
+                            items: [
+                              DropdownMenuItem<String>(
+                                value: "0",
+                                child: Text(
+                                  "Newbie",
                                 ),
-                                borderRadius: BorderRadius.circular(5),
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: <Widget>[
-                                    Expanded(child: Text(expertise)),
-                                    IconButton(
-                                        icon: Icon(
-                                          Icons.clear,
-                                          size: 16,
-                                          color: Colors.grey,
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            _disable1 = 0;
-                                            expertise = "";
-                                          });
-                                        }),
-                                  ],
+                              DropdownMenuItem<String>(
+                                value: "1",
+                                child: Text(
+                                  "Skilled",
                                 ),
-                              )),
-                        )
-                      : Container(),
+                              ),
+                              DropdownMenuItem<String>(
+                                value: "2",
+                                child: Text(
+                                  "Proficient",
+                                ),
+                              ),
+                              DropdownMenuItem<String>(
+                                value: "3",
+                                child: Text(
+                                  "Experienced",
+                                ),
+                              ),
+                              DropdownMenuItem<String>(
+                                value: "4",
+                                child: Text(
+                                  "Expert",
+                                ),
+                              ),
+                            ],
+                            onChanged: (value) {
+                              setState(() {
+                                goalsLevel=value;
+                              });
+                            },
+                            isExpanded: true,
+                            hint: Text(
+                              "Choose Your Expertise ",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.3,
+                                fontFamily: 'montserrat',
+                                color: Colors.black54,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
                   CheckboxListTile(
                     title: Text(
                       "Remind me every day",
@@ -611,14 +632,12 @@ class _EditGoalState extends State<EditGoal> {
                                     checkedValue = false;
                                     ampm = 'AM';
                                     timeView = false;
-                                    expertise = "";
                                     sendTime = "none";
                                     remind = "0";
                                     note = "";
                                     click = 0;
                                     goalsLevel = "";
                                     _disable = 0;
-                                    _disable1 = 0;
                                   });
                                 },
                                 child: Text(
@@ -644,7 +663,7 @@ class _EditGoalState extends State<EditGoal> {
                                 onPressed: () async {
                                   if ((checkedValue == true && click == 1) ||
                                       checkedValue == false) {
-                                    if (selectedGoal != "" && expertise != "") {
+                                    if (selectedGoal != "" && goalsLevel != "") {
                                       if (sendTime != "none") {
                                         setState(() {
                                           remind = "1";
@@ -740,14 +759,12 @@ class _EditGoalState extends State<EditGoal> {
                                           checkedValue = false;
                                           ampm = 'AM';
                                           timeView = false;
-                                          expertise = "";
                                           sendTime = "none";
                                           remind = "0";
                                           note = "";
                                           click = 0;
                                           goalsLevel = "";
                                           _disable = 0;
-                                          _disable1 = 0;
                                         });
 
                                         _sk.currentState.showSnackBar(SnackBar(
