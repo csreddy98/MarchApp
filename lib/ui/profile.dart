@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:march/models/goal.dart';
 import 'package:march/models/user.dart';
+import 'package:march/support/Api/api.dart';
 import 'package:march/ui/settings.dart';
 import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:march/widgets/ProfileWidget.dart';
 import 'package:march/widgets/functions.dart';
+// import 'package:http/http.dart' as http;
 
 class Profile extends StatefulWidget {
   @override
@@ -13,12 +15,13 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  String name, bio, pic, dob, uid, age, profession;
+  String name, bio, pic, dob, uid, age, profession, id;
   var db = new DataBaseHelper();
   User user;
 
   List goals = [];
   List testimonials = [];
+  Api api = Api();
 
   PageController _controller =
       PageController(initialPage: 0, viewportFraction: 0.85);
@@ -33,6 +36,20 @@ class _ProfileState extends State<Profile> {
   void initState() {
     _load();
     super.initState();
+  }
+
+  _getTestimonials() async {
+    api.getUserTestimonials({
+      'serviceName': '',
+      'work': 'get user profile',
+      'profileId': '$id',
+      'uid': '$uid'
+    }).then((val) {
+      print(val);
+      setState(() {
+        testimonials.addAll(val['result']['testimonials']);
+      });
+    });
   }
 
   @override
@@ -149,21 +166,15 @@ class _ProfileState extends State<Profile> {
                 ),
                 Container(
                     child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    testimonial(
-                        context,
-                        "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-                        "Emily",
-                        "By the same illusion which lifts the horizon of the sea to the level of the spectator on a hillside, the sable cloud beneath was dished out, and the car"),
-                    testimonial(
-                        context,
-                        "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-                        "Emily",
-                        "By the same illusion which lifts the horizon of the sea to the level of the spectator on a hillside, the sable cloud beneath was dished out, and the car")
-                  ],
-                )),
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: List.generate(
+                            testimonials.length,
+                            (index) => testimonial(
+                                context,
+                                testimonials[index]['profile_pic'],
+                                testimonials[index]['fullName'],
+                                testimonials[index]['message'])))),
               ],
             ),
           ),
@@ -186,6 +197,8 @@ class _ProfileState extends State<Profile> {
       );
       age = prefs.getString('age');
       uid = user.userId;
+      id = prefs.getString('id');
     });
+    _getTestimonials();
   }
 }
