@@ -8,11 +8,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_socket_io/flutter_socket_io.dart';
 import 'package:flutter_socket_io/socket_io_manager.dart';
 import 'package:intl/intl.dart';
+import 'package:march/support/Api/api.dart';
 import 'package:march/ui/profileScreen.dart';
 import 'package:march/utils/database_helper.dart';
+import 'package:march/widgets/MessageWidget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:http/http.dart' as http;
+import 'dart:math' as math;
 
 class TextingScreen extends StatefulWidget {
   final Map user;
@@ -35,6 +38,7 @@ class _TextingScreenState extends State<TextingScreen> {
   int msgCount = 0;
   String remoteStatus = "done";
   bool checkStatus = true;
+  Api api = Api();
   @override
   void initState() {
     _load();
@@ -67,8 +71,7 @@ class _TextingScreenState extends State<TextingScreen> {
       });
       Timer(Duration(milliseconds: 500), () {
         if (i == 0) {
-          _scroller.animateTo(_scroller.position.maxScrollExtent,
-              duration: Duration(microseconds: 200), curve: Curves.bounceInOut);
+          _scroller.jumpTo(_scroller.position.maxScrollExtent);
           i++;
         }
       });
@@ -228,84 +231,114 @@ class _TextingScreenState extends State<TextingScreen> {
               },
             ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
-      body: Padding(
-        padding: const EdgeInsets.only(top: 15.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Expanded(
-              child: (messages == null)
-                  ? Center(child: Text("No Messages"))
-                  : ListView.builder(
-                      addRepaintBoundaries: false,
-                      itemCount: messages.length,
-                      controller: _scroller,
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      itemBuilder: (BuildContext context, int index) {
-                        return (messages[index]['sentBy'] != this.myId)
-                            ? message('left', '${messages[index]['message']}',
-                                messages[index]['time'], index)
-                            : message('right', "${messages[index]['message']}",
-                                messages[index]['time'], index);
-                      }),
-            ),
-            Container(
-              // margin: EdgeInsets.all(15.0),
-              height: 61,
-              // color: Colors.grey,
-              decoration: BoxDecoration(
-                  // borderRadius: BorderRadius.circular(35.0),
-                  color: Colors.transparent),
-              child: Row(
-                children: [
-                  SizedBox(width: 10.0),
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(35.0),
-                        boxShadow: [
-                          BoxShadow(
-                              offset: Offset(0, 3),
-                              blurRadius: 5,
-                              color: Colors.grey)
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: 20.0,
-                          ),
-                          Expanded(
-                            child: TextField(
-                              onTap: () {
-                                Timer(Duration(milliseconds: 500), () {
-                                  _scroller.jumpTo(
-                                      _scroller.position.maxScrollExtent);
-                                });
-                              },
-                              controller: messageController,
-                              decoration: InputDecoration(
-                                  hintText: "Type Something...",
-                                  border: InputBorder.none),
+      body: GestureDetector(
+        onHorizontalDragStart: (details) {
+          print("${details.localPosition.direction}");
+          if (details.localPosition.direction > 1.4) {
+            Navigator.pop(context);
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(top: 15.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Expanded(
+                child: (messages == null)
+                    ? Center(child: Text("No Messages"))
+                    : ListView.builder(
+                        addRepaintBoundaries: false,
+                        itemCount: messages.length,
+                        controller: _scroller,
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemBuilder: (BuildContext context, int index) {
+                          return (messages[index]['sentBy'] != this.myId)
+                              // ? message('left', '${messages[index]['message']}',
+                              //     messages[index]['time'], index)
+                              ? MessageBubble(
+                                  mainContext: context,
+                                  direction: 'left',
+                                  message: '${messages[index]['message']}',
+                                  messages: messages,
+                                  messageKeys: _keys,
+                                  myId: this.myId,
+                                  userId: widget.user['user_id'],
+                                  time: '${messages[index]['time']}',
+                                  index: index,
+                                )
+                              : MessageBubble(
+                                  mainContext: context,
+                                  direction: 'right',
+                                  message: '${messages[index]['message']}',
+                                  messages: messages,
+                                  messageKeys: _keys,
+                                  myId: this.myId,
+                                  userId: widget.user['user_id'],
+                                  time: '${messages[index]['time']}',
+                                  index: index,
+                                );
+                        }),
+              ),
+              Container(
+                height: 60,
+                decoration: BoxDecoration(color: Colors.grey[200]),
+                child: Row(
+                  children: [
+                    SizedBox(width: 10.0),
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(),
+                        child: Row(
+                          children: [
+                            Flexible(
+                              child: new ConstrainedBox(
+                                constraints: new BoxConstraints(
+                                  minHeight: 25.0,
+                                  maxHeight: 135.0,
+                                ),
+                                child: new Scrollbar(
+                                  child: new TextField(
+                                    onTap: () {
+                                      Timer(Duration(milliseconds: 100), () {
+                                        _scroller.jumpTo(
+                                            _scroller.position.maxScrollExtent);
+                                      });
+                                    },
+                                    cursorColor: Colors.red,
+                                    keyboardType: TextInputType.multiline,
+                                    maxLines: null,
+                                    controller: messageController,
+                                    style: TextStyle(color: Colors.black),
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      contentPadding: EdgeInsets.only(
+                                          top: 2.0,
+                                          left: 13.0,
+                                          right: 13.0,
+                                          bottom: 2.0),
+                                      hintText: "Type your message",
+                                      hintStyle: TextStyle(
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
-                          )
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(width: 15),
-                  Container(
-                    padding: const EdgeInsets.all(12.0),
-                    decoration: BoxDecoration(
-                        color: Color(0xFF3F5CC8), shape: BoxShape.circle),
-                    child: InkWell(
+                    RawMaterialButton(
+                      padding: EdgeInsets.all(15.0),
+                      shape: CircleBorder(),
+                      fillColor: Theme.of(context).primaryColor,
                       child: Icon(
                         Icons.send,
                         color: Colors.white,
                       ),
-                      onTap: () async {
+                      onPressed: () async {
                         final text = messageController.text;
                         messageController.clear();
                         var msgCode = UniqueKey();
@@ -330,51 +363,17 @@ class _TextingScreenState extends State<TextingScreen> {
                             'text': text,
                             'msgCode': msgCode,
                           }, context);
-                          _scroller.animateTo(
-                              _scroller.position.maxScrollExtent,
-                              duration: Duration(milliseconds: 300),
-                              curve: Curves.bounceInOut);
-                        }
-                      },
-                      onDoubleTap: () async {
-                        final text = messageController.text;
-                        messageController.clear();
-                        var msgCode = UniqueKey();
-                        if (text != "") {
-                          db.addMessage({
-                            DataBaseHelper.messageCode: "$msgCode",
-                            DataBaseHelper.messageSentBy: this.myId,
-                            DataBaseHelper.messageOtherId:
-                                widget.user['user_id'],
-                            DataBaseHelper.messageText: text,
-                            DataBaseHelper.messageContainsImage: '0',
-                            DataBaseHelper.messageImage: "none",
-                            DataBaseHelper.messageTransportStatus: "pending",
-                            DataBaseHelper.seenStatus: "seen",
-                            DataBaseHelper.messageTime: '${DateTime.now()}',
-                          });
-                          db.updateLastMessage({
-                            'message': "you: $text",
-                            'messageTime': "${DateTime.now()}",
-                            'otherId': widget.user['user_id']
-                          });
-                          sendMessage({
-                            'text': text,
-                            'msgCode': msgCode,
-                          }, context);
-                          _scroller.animateTo(
-                              _scroller.position.maxScrollExtent,
-                              duration: Duration(milliseconds: 300),
-                              curve: Curves.bounceInOut);
+                          _scroller.jumpTo(
+                            _scroller.position.maxScrollExtent,
+                          );
                         }
                       },
                     ),
-                  ),
-                  SizedBox(width: 10.0)
-                ],
+                  ],
+                ),
               ),
-            )
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -382,23 +381,18 @@ class _TextingScreenState extends State<TextingScreen> {
 
   sendMessage(Map msgInfo, context) async {
     print("SENDING MESSAGE");
-    http.post("https://march.lbits.co/api/worker.php",
-        body: json.encode({
-          'serviceName': 'generatetoken',
-          'work': 'add message',
-          'msgCode': '${msgInfo['msgCode']}',
-          'receiver': widget.user['user_id'],
-          'sender': this.myId,
-          'message': msgInfo['text'],
-          'containsImage': 'false',
-          'imageUrl': 'none',
-          'messageTime': '${DateTime.now()}'
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token'
-        }).then((value) {
-      var resp = json.decode(value.body);
+    api.sendMessage({
+      'serviceName': 'generatetoken',
+      'work': 'add message',
+      'msgCode': '${msgInfo['msgCode']}',
+      'receiver': widget.user['user_id'],
+      'sender': this.myId,
+      'message': msgInfo['text'],
+      'containsImage': 'false',
+      'imageUrl': 'none',
+      'messageTime': '${DateTime.now()}'
+    }).then((value) {
+      Map resp = value;
       print("Response: $resp");
       if (resp['response'] == 200) {
         socketIO.sendMessage(
@@ -424,273 +418,6 @@ class _TextingScreenState extends State<TextingScreen> {
       db.updateTransportStatus(
           {'msgCode': msgInfo['msgCode'], 'status': "failed"});
     });
-  }
-
-  Widget message(String direction, String message, String time, int index) {
-    if (messages[index]['msgCode'] == null) {
-      print("NULL $message");
-    }
-    return Column(
-      children: <Widget>[
-        Row(
-          mainAxisAlignment: (direction == 'right')
-              ? MainAxisAlignment.end
-              : MainAxisAlignment.start,
-          children: [
-            GestureDetector(
-              onDoubleTap: () {
-                final RenderBox renderBox =
-                    _keys[index].currentContext.findRenderObject();
-                final boxSize = renderBox.localToGlobal(Offset.zero);
-                showDialog(
-                  barrierDismissible: true,
-                  context: context,
-                  builder: (context) {
-                    return Scaffold(
-                        backgroundColor: Colors.transparent,
-                        floatingActionButton: FloatingActionButton(
-                          onPressed: () => Navigator.pop(context),
-                          backgroundColor: Theme.of(context).primaryColor,
-                          child: Icon(Icons.close),
-                        ),
-                        body: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                            child: Padding(
-                              padding: const EdgeInsets.all(0.0),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: MediaQuery.of(context).size.height,
-                                child: Stack(
-                                  children: <Widget>[
-                                    Positioned(
-                                        top: ((MediaQuery.of(context)
-                                                        .size
-                                                        .height -
-                                                    (MediaQuery.of(context)
-                                                            .size
-                                                            .height /
-                                                        3.5)) >
-                                                boxSize.dy)
-                                            ? boxSize.dy
-                                            : MediaQuery.of(context)
-                                                    .size
-                                                    .height -
-                                                (MediaQuery.of(context)
-                                                        .size
-                                                        .height /
-                                                    2.3),
-                                        left: (boxSize.dx < 20)
-                                            ? boxSize.dx + 20
-                                            : (boxSize.dx >
-                                                    MediaQuery.of(context)
-                                                            .size
-                                                            .width -
-                                                        40)
-                                                ? boxSize.dx - 40
-                                                : boxSize.dx - 50,
-                                        child: Container(
-                                            child: Column(
-                                          children: <Widget>[
-                                            Container(
-                                              constraints: BoxConstraints(
-                                                  maxHeight:
-                                                      MediaQuery.of(context)
-                                                              .size
-                                                              .height /
-                                                          3,
-                                                  maxWidth:
-                                                      MediaQuery.of(context)
-                                                              .size
-                                                              .width *
-                                                          0.75),
-                                              padding:
-                                                  const EdgeInsets.all(15.0),
-                                              decoration: BoxDecoration(
-                                                color: direction == 'right'
-                                                    ? Theme.of(context)
-                                                        .primaryColor
-                                                    : Color(0xFFeeeeee),
-                                                borderRadius: (direction ==
-                                                        'right')
-                                                    ? BorderRadius.only(
-                                                        bottomLeft:
-                                                            Radius.circular(10),
-                                                        topLeft:
-                                                            Radius.circular(10),
-                                                        topRight:
-                                                            Radius.circular(10),
-                                                      )
-                                                    : BorderRadius.only(
-                                                        topRight:
-                                                            Radius.circular(10),
-                                                        bottomLeft:
-                                                            Radius.circular(10),
-                                                        bottomRight:
-                                                            Radius.circular(10),
-                                                      ),
-                                              ),
-                                              child: Text(
-                                                "${messages[index]['message']}",
-                                                style: TextStyle(
-                                                    color: direction == 'right'
-                                                        ? Colors.white
-                                                        : Colors.black),
-                                              ),
-                                            ),
-                                            Container(
-                                                decoration: BoxDecoration(
-                                                    color: Colors.black,
-                                                    borderRadius:
-                                                        BorderRadius.all(
-                                                            Radius.circular(
-                                                                8.0))),
-                                                child: Column(
-                                                  children: <Widget>[
-                                                    messages[index][
-                                                                'msgTransportStatus'] ==
-                                                            "failed"
-                                                        ? actionButtons('Retry',
-                                                            () {
-                                                            print("Retrying");
-                                                            sendMessage({
-                                                              'msgCode':
-                                                                  "${messages[index]['msgCode']}",
-                                                              'text':
-                                                                  "$message",
-                                                            }, context);
-                                                            Navigator.pop(
-                                                                context);
-                                                            Toast.show(
-                                                                'Attempting to Send Again',
-                                                                context,
-                                                                duration: Toast
-                                                                    .LENGTH_SHORT,
-                                                                gravity: Toast
-                                                                    .BOTTOM);
-                                                          })
-                                                        : Container(),
-                                                    actionButtons('Copy', () {
-                                                      Clipboard.setData(
-                                                          new ClipboardData(
-                                                              text:
-                                                                  '${messages[index]['message']}'));
-                                                      Navigator.pop(context);
-                                                      Toast.show(
-                                                          'Coppied', context,
-                                                          duration: Toast
-                                                              .LENGTH_SHORT,
-                                                          gravity:
-                                                              Toast.BOTTOM);
-                                                    }),
-                                                    actionButtons(
-                                                        'Share', null),
-                                                    actionButtons('Delete', () {
-                                                      if (messages.length - 1 ==
-                                                          index) {
-                                                        db.updateLastMessage({
-                                                          'message':
-                                                              "${messages[index - 1]['message']}",
-                                                          'messageTime':
-                                                              '${DateTime.now()}',
-                                                          'otherId': widget
-                                                              .user['user_id']
-                                                        });
-                                                        Toast.show(
-                                                            'cleared', context,
-                                                            duration: Toast
-                                                                .LENGTH_SHORT,
-                                                            gravity:
-                                                                Toast.BOTTOM);
-                                                      }
-                                                      db.deleteMessage(messages[
-                                                              index]
-                                                          ['${db.messageId}']);
-                                                      Navigator.pop(context);
-                                                    })
-                                                  ],
-                                                ))
-                                          ],
-                                        )))
-                                  ],
-                                ),
-                              ),
-                            )));
-                  },
-                );
-              },
-              child: Column(
-                crossAxisAlignment: (direction == 'right')
-                    ? CrossAxisAlignment.end
-                    : CrossAxisAlignment.start,
-                children: [
-                  Hero(
-                    tag: '$index',
-                    child: Container(
-                      key: _keys[index],
-                      constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * .75),
-                      padding: const EdgeInsets.all(15.0),
-                      decoration: BoxDecoration(
-                        color: direction == 'right'
-                            ? (messages[index]['msgTransportStatus'] ==
-                                    'failed')
-                                ? Colors.red
-                                : Theme.of(context).primaryColor
-                            : Color(0x22161F3D),
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(10),
-                          topLeft: Radius.circular(10),
-                          topRight: Radius.circular(10),
-                        ),
-                      ),
-                      child: Text(
-                        "$message",
-                        style: TextStyle(
-                            color: direction == 'right'
-                                ? Colors.white
-                                : Colors.black),
-                      ),
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: (direction == 'right')
-                        ? MainAxisAlignment.end
-                        : MainAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                          "${DateFormat('kk:mm').format((DateTime.parse(time)))}",
-                          style: TextStyle(color: Colors.grey)),
-                      // SizedBox(width: 10.0),
-                      // Icon(
-                      //   Icons.done_all,
-                      //   size: 20.0,
-                      // ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-            SizedBox(width: 5),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget actionButtons(String name, Function onPress) {
-    return InkWell(
-      onTap: onPress,
-      child: Container(
-        padding: EdgeInsets.all(15),
-        decoration: BoxDecoration(
-          color: Colors.black,
-        ),
-        child: Text(
-          name,
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-    );
   }
 
   void _load() async {

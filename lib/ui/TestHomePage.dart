@@ -111,7 +111,7 @@ class _TestHomePageState extends State<TestHomePage> {
       body: json.encode(nearbyReqs),
     );
     var result = json.decode(resp.body);
-    // print(result);
+    print(result);
     stackedCards.clear();
     if (result['response'] == 200) {
       int l = result['result'].length;
@@ -140,8 +140,10 @@ class _TestHomePageState extends State<TestHomePage> {
                 db.addPersonGoal({
                   DataBaseHelper.peopleFinderPersonId: requiredRes[i]
                       ['user_info']['id'],
-                  DataBaseHelper.peopleFinderGoalName: element['goal'],
-                  DataBaseHelper.peopleFinderGoalLevel: element['level']
+                  DataBaseHelper.peopleFinderGoalName:
+                      element['personGoalName'],
+                  DataBaseHelper.peopleFinderGoalLevel:
+                      element['personGoalLevel']
                 }).then((value) => print("ADDED"));
               });
             });
@@ -173,6 +175,7 @@ class _TestHomePageState extends State<TestHomePage> {
     )
         .then((resp) {
       var jsonResp = json.decode(resp.body);
+      print(jsonResp);
       if (jsonResp['response'] == 200) {
         print(jsonResp);
         List allprofs = jsonResp['result'].toList()..shuffle();
@@ -234,7 +237,8 @@ class _TestHomePageState extends State<TestHomePage> {
           style: TextStyle(
               color: goalAssets[int.parse(goal['personGoalLevel'])]
                   ['textColor'],
-              fontSize: size.height / 48, fontWeight: FontWeight.w600),
+              fontSize: size.height / 48,
+              fontWeight: FontWeight.w600),
         ),
       ),
     );
@@ -316,8 +320,10 @@ class _TestHomePageState extends State<TestHomePage> {
                       children: <Widget>[
                         Text(
                           "$name's Goals",
-                          style: TextStyle( color: Colors.grey[700],
-                              fontWeight: FontWeight.w600, fontSize: size.height / 45),
+                          style: TextStyle(
+                              color: Colors.grey[700],
+                              fontWeight: FontWeight.w600,
+                              fontSize: size.height / 45),
                         ),
                       ],
                     ),
@@ -327,8 +333,8 @@ class _TestHomePageState extends State<TestHomePage> {
                       padding: const EdgeInsets.symmetric(vertical: 10.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: List.generate(
-                            goals.length, (index) => goalBox(goals[index], context)),
+                        children: List.generate(goals.length,
+                            (index) => goalBox(goals[index], context)),
                       ),
                     ),
                   ),
@@ -450,160 +456,168 @@ class _TestHomePageState extends State<TestHomePage> {
     return Scaffold(
         backgroundColor: Colors.grey[100],
         body: SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          Container(
-            width: size.width,
-            height: size.height * 0.22,
-            child: Stack(
-              children: <Widget>[
-                Positioned(
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.only(
-                            bottomRight: Radius.elliptical(250, 120))),
-                  ),
-                ),
-                Positioned(
-                    top: 30,
-                    right: 5,
-                    child: Image.asset(
-                      "assets/images/topimage.png",
-                      width: 100,
-                      height: 100,
-                    )),
-                Positioned(
-                  top: 40,
-                  left: 25,
-                  child: RichText(
-                    text: TextSpan(
-                        text: "A New Great Day,\n",
-                        style: TextStyle(
-                            fontWeight: FontWeight.normal,
-                            fontSize: 22,
-                            color: Colors.black,
-                            wordSpacing: 1,
-                            letterSpacing: 0,
-                            //height: 1.5,
-                            fontFamily: 'montserrat'),
-                        children: [
-                          TextSpan(
-                              text: "${name.split(" ")[0]}!",
-                              style: TextStyle(fontWeight: FontWeight.normal))
-                        ]),
-                  ),
-                ),
-                Container(
-                  child: Positioned(
-                      bottom: 15,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Container(
+                width: size.width,
+                height: size.height * 0.22,
+                child: Stack(
+                  children: <Widget>[
+                    Positioned(
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            borderRadius: BorderRadius.only(
+                                bottomRight: Radius.elliptical(250, 120))),
+                      ),
+                    ),
+                    Positioned(
+                        top: 30,
+                        right: 5,
+                        child: Image.asset(
+                          "assets/images/topimage.png",
+                          width: 100,
+                          height: 100,
+                        )),
+                    Positioned(
+                      top: 40,
                       left: 25,
-                      child: Text(
-                        "March towards your goal\nwith like minded souls",
-                        style: TextStyle(
-                            color: Colors.black,
-                            textBaseline: TextBaseline.alphabetic,
-                            fontSize: 14,
-                            fontStyle: FontStyle.italic,
-                            fontWeight: FontWeight.w500),
-                      )),
+                      child: RichText(
+                        text: TextSpan(
+                            text: "A New Great Day,\n",
+                            style: TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 22,
+                                color: Colors.black,
+                                wordSpacing: 1,
+                                letterSpacing: 0,
+                                //height: 1.5,
+                                fontFamily: 'montserrat'),
+                            children: [
+                              TextSpan(
+                                  text: "${name.split(" ")[0]}!",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.normal))
+                            ]),
+                      ),
+                    ),
+                    Container(
+                      child: Positioned(
+                          bottom: 15,
+                          left: 25,
+                          child: Text(
+                            "March towards your goal\nwith like minded souls",
+                            style: TextStyle(
+                                color: Colors.black,
+                                textBaseline: TextBaseline.alphabetic,
+                                fontSize: 14,
+                                fontStyle: FontStyle.italic,
+                                fontWeight: FontWeight.w500),
+                          )),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 10.0,bottom: 6.0),
-            child: Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  InkWell(
-                    onTap: () {
-                      setState(() {
-                        pageNo = 0;
-                      });
-                    },
-                    child: Container(
-                      width: 120,
-                      height: size.height * 0.06,
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Icon(Icons.my_location, size: 18,),
-                            Text(
-                              "Near Me",
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0, bottom: 6.0),
+                child: Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            pageNo = 0;
+                          });
+                        },
+                        child: Container(
+                          width: 120,
+                          height: size.height * 0.06,
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Icon(
+                                  Icons.my_location,
+                                  size: 18,
+                                ),
+                                Text(
+                                  "Near Me",
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ],
+                            ),
+                          ),
+                          decoration: (pageNo == 0) ? selected() : unSelected(),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            pageNo = 1;
+                          });
+                          _getAllPeople();
+                        },
+                        child: Container(
+                          width: 120,
+                          height: size.height * 0.06,
+                          child: Center(
+                            child: Text(
+                              "All",
                               style: TextStyle(
                                   fontSize: 14, fontWeight: FontWeight.w600),
                             ),
-                          ],
+                          ),
+                          decoration: (pageNo == 1) ? selected() : unSelected(),
                         ),
                       ),
-                      decoration: (pageNo == 0) ? selected() : unSelected(),
-                    ),
+                    ],
                   ),
-                  InkWell(
-                    onTap: () {
-                      setState(() {
-                        pageNo = 1;
-                      });
-                      _getAllPeople();
-                    },
-                    child: Container(
-                      width: 120,
-                      height: size.height * 0.06,
-                      child: Center(
-                        child: Text(
-                          "All",
-                          style: TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                      decoration: (pageNo == 1) ? selected() : unSelected(),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
+              (pageNo == 0)
+                  ? (details.length > 0)
+                      ? Stack(
+                          children: List.generate(details.length, (index) {
+                          var uinfo = details[(details.length - 1) - index]
+                              ['user_info'];
+                          return cardGenerator(
+                              uinfo['personName'],
+                              uinfo['personId'],
+                              uinfo['personName'],
+                              uinfo['personPic'],
+                              uinfo['personProfession'],
+                              uinfo['personLocation'],
+                              uinfo['personBio'],
+                              details[(details.length - 1) - index]
+                                  ['goal_info'],
+                              [],
+                              (details.length - 1) - index);
+                        }))
+                      : Center(
+                          child: Image.asset(
+                            "assets/images/animat-search-color.gif",
+                            height: 125.0,
+                            width: 125.0,
+                          ),
+                        )
+                  : showAllProfiles(),
+            ],
           ),
-          (pageNo == 0)
-              ? (details.length > 0)
-                  ? Stack(
-                      children: List.generate(details.length, (index) {
-                      var uinfo =
-                          details[(details.length - 1) - index]['user_info'];
-                      return cardGenerator(
-                          uinfo['personName'],
-                          uinfo['personId'],
-                          uinfo['personName'],
-                          uinfo['personPic'],
-                          uinfo['personProfession'],
-                          uinfo['personLocation'],
-                          uinfo['personBio'],
-                          details[(details.length - 1) - index]['goal_info'],
-                          [],
-                          (details.length - 1) - index);
-                    }))
-                  : Center(
-                      child: Image.asset(
-                        "assets/images/animat-search-color.gif",
-                        height: 125.0,
-                        width: 125.0,
-                      ),
-                    )
-              : showAllProfiles(),
-        ],
-      ),
-    ));
+        ));
   }
 
   deleteItem(index, id) {
-    details.removeAt(index);
-    crossCheckList.removeAt(index);
-    db.peopleFinderRemovePerson(id);
-    db.removePersonGoals(id);
+    setState(() {
+      details.removeAt(index);
+      crossCheckList.removeAt(index);
+      db.peopleFinderRemovePerson(id);
+      db.removePersonGoals(id);
+    });
   }
 
   void _load() async {
@@ -908,12 +922,13 @@ class _TestHomePageState extends State<TestHomePage> {
                         keyboardType: TextInputType.multiline,
                         textCapitalization: TextCapitalization.sentences,
                         maxLines: 3,
-                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.w500),
                         controller: messageController,
                         decoration: InputDecoration(
                             enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: Colors.grey[300], width: 1.0),
+                              borderSide: BorderSide(
+                                  color: Colors.grey[300], width: 1.0),
                             ),
                             hintText: 'Enter a Message'),
                       ),
@@ -954,6 +969,7 @@ class _TestHomePageState extends State<TestHomePage> {
                                         }).then((value) {
                                       var resp = json.decode(value.body);
                                       if (resp['response'] == 200) {
+                                        Navigator.pop(context);
                                         var key = UniqueKey();
                                         socketIO.sendMessage(
                                             "New user Request",
@@ -968,7 +984,7 @@ class _TestHomePageState extends State<TestHomePage> {
                                             }));
                                         Map<String, dynamic> messageMap = {
                                           DataBaseHelper.seenStatus: '0',
-                                          DataBaseHelper.messageCode: key,
+                                          DataBaseHelper.messageCode: '$key',
                                           DataBaseHelper.messageOtherId: userId,
                                           DataBaseHelper.messageSentBy: id,
                                           DataBaseHelper.messageText: msg,
@@ -999,16 +1015,14 @@ class _TestHomePageState extends State<TestHomePage> {
                                             details.removeAt(index);
                                             allProfiles.removeAt(index);
                                             crossCheckList.removeAt(index);
-                                            await db.peopleFinderRemovePerson(
-                                                userId);
-                                            await db.removePersonGoals(userId);
                                           });
+                                          db.peopleFinderRemovePerson(userId);
+                                          db.removePersonGoals(userId);
                                         });
                                       } else {
                                         print("$resp");
                                       }
                                     });
-                                    Navigator.pop(context);
                                     StatusAlert.show(context,
                                         duration: Duration(seconds: 2),
                                         title: "Added",

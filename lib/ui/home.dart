@@ -5,8 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:march/ui/MessagesScreen.dart';
-// import 'package:march/ui/find_screen.dart';
-import 'package:march/ui/peopleFinderHome.dart';
+// import 'package:march/ui/peopleFinder.dart';
+// import 'package:march/ui/TestHomePage.dart';
+// import 'package:march/ui/peopleFinderHome.dart';
 import 'package:march/ui/profile.dart';
 import 'package:march/ui/settings.dart';
 import 'package:march/utils/database_helper.dart';
@@ -309,7 +310,7 @@ class _HomeState extends State<Home> {
                             decoration: BoxDecoration(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(8.0)),
-                                  color: Colors.red,
+                              color: Colors.red,
                             ),
                           ),
                         )
