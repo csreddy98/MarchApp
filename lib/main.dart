@@ -78,10 +78,12 @@ class _MyHomePageState extends State<MyHomePage> {
       child: SplashScreen(
         seconds: 4,
         navigateAfterSeconds: n == 1 ? Home('') : Login(),
-        image: new Image.asset("assets/images/logo1x.jpeg"),
+        image: new Image(
+          image: AssetImage("assets/images/splash.gif"),
+        ),
         photoSize: 200,
-        backgroundColor: Colors.white,
-        loaderColor: Theme.of(context).primaryColor,
+        backgroundColor: Theme.of(context).primaryColor,
+        loaderColor: Colors.black,
       ),
     );
   }

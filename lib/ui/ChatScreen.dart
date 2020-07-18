@@ -43,11 +43,6 @@ class _TextingScreenState extends State<TextingScreen> {
   void initState() {
     _load();
     super.initState();
-
-    socketIO = SocketIOManager().createSocketIO(
-        'https://glacial-waters-33471.herokuapp.com', '/',
-        socketStatusCallback: _socketStatus);
-    socketIO.init();
   }
 
   @override
@@ -62,6 +57,7 @@ class _TextingScreenState extends State<TextingScreen> {
   }
 
   void loadMessages() {
+    print("Before: $checkStatus");
     db.getMessage(widget.user['user_id']).then((value) {
       for (var item in value) {
         _keys.add(GlobalKey());
@@ -97,6 +93,7 @@ class _TextingScreenState extends State<TextingScreen> {
             remoteStatus = 'pending';
             checkStatus = false;
           });
+          print("After: $checkStatus");
         }
       });
     }
@@ -421,6 +418,7 @@ class _TextingScreenState extends State<TextingScreen> {
   }
 
   void _load() async {
+    print("--------- SEE THIS ----------");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token');
     myId = prefs.getString('id');
@@ -432,6 +430,10 @@ class _TextingScreenState extends State<TextingScreen> {
         prefs.setString('uid', uid);
       });
     }
+    socketIO = SocketIOManager().createSocketIO(
+        'https://glacial-waters-33471.herokuapp.com', '/',
+        socketStatusCallback: _socketStatus);
+    socketIO.init();
     socketIO.sendMessage('update my status',
         json.encode({"uid": "$myId", "time": "${DateTime.now()}"}));
   }
