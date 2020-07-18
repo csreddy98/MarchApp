@@ -274,7 +274,7 @@ class _TestHomePageState extends State<TestHomePage> {
                           location: location,
                           bio: description,
                           goals: goals,
-                          testimonials: testimonials,
+                          fromNetwork: false,
                         )));
           }
         },
@@ -412,7 +412,7 @@ class _TestHomePageState extends State<TestHomePage> {
       // print('This is from Local DB: $value Hello');
       value.forEach((element) {
         List goals = [];
-        List testimonials = [];
+        // List testimonials = [];
         db.selectGoals("${element['personId']}").then((value2) {
           goals = value2;
         }).then((value) {
@@ -430,7 +430,7 @@ class _TestHomePageState extends State<TestHomePage> {
                   element['personLocation'],
                   element['personBio'],
                   goals,
-                  testimonials,
+                  null,
                   i));
             });
             crossCheckList.add(element['personId']);
@@ -784,7 +784,6 @@ class _TestHomePageState extends State<TestHomePage> {
                                     profession: userInfo['profession'],
                                     goals: allProfiles[index]['goal_info'],
                                     location: "Age: ${userInfo['age']}",
-                                    testimonials: [],
                                     userId: userInfo['id'],
                                     fromNetwork: false,
                                   )));

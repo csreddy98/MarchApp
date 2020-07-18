@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:march/support/Api/api.dart';
 import 'package:march/widgets/ProfileWidget.dart';
 import 'package:status_alert/status_alert.dart';
 import 'dart:ui' show ImageFilter;
@@ -20,7 +21,6 @@ class ProfileScreen extends StatefulWidget {
   final String userId;
   final String profession;
   final List goals;
-  final List testimonials;
   final bool fromNetwork;
 
   ProfileScreen(
@@ -32,7 +32,6 @@ class ProfileScreen extends StatefulWidget {
       this.userId,
       this.profession,
       this.goals,
-      this.testimonials,
       this.fromNetwork})
       : super(key: key);
 
@@ -45,7 +44,6 @@ class ProfileScreen extends StatefulWidget {
       this.userId,
       this.profession,
       this.goals,
-      this.testimonials,
       this.fromNetwork);
 }
 
@@ -57,7 +55,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String userId;
   String profession;
   List goals;
-  List testimonials;
+  List testimonials = [];
+  bool testimonialStatus = false;
   bool fromNetwork;
   TextEditingController messageController = TextEditingController();
   SocketIO socketIO;
@@ -65,9 +64,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool showButton = true;
   bool isLoading = true;
   DataBaseHelper db = DataBaseHelper();
-
+  Api api = Api();
   _ProfileScreenState(this.name, this.pic, this.bio, this.location, this.userId,
-      this.profession, this.goals, this.testimonials, this.fromNetwork);
+      this.profession, this.goals, this.fromNetwork);
 
   @override
   void initState() {
@@ -97,6 +96,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
     });
     super.initState();
+  }
+
+  _getTestimonials() async {
+    api.getUserTestimonials({
+      'serviceName': '',
+      'work': 'get user profile',
+      'profileId': '${this.userId}',
+      'uid': '$uid'
+    }).then((val) {
+      print(val);
+      setState(() {
+        // testimonials.addAll(val['result']['testimonials']);
+        testimonials = val['result']['testimonials'];
+        testimonialStatus = true;
+      });
+    });
   }
 
   @override
@@ -249,19 +264,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               fontWeight: FontWeight.w600, fontSize: 14),
                         ),
                       ),
-                      Container(
-                          // padding: const EdgeInsets.symmetric(vertical: 0),
-                          child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: List.generate(
-                            this.testimonials.length,
-                            (index) => testimonial(
-                                context,
-                                this.testimonials[index]['profile_pic'],
-                                this.testimonials[index]['fullName'],
-                                this.testimonials[index]['message'])),
-                      )),
+                      (this.testimonials.length > 0)
+                          ? Container(
+                              child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: List.generate(
+                                  this.testimonials.length,
+                                  (index) => testimonial(
+                                      context,
+                                      this.testimonials[index]['profile_pic'],
+                                      this.testimonials[index]['fullName'],
+                                      this.testimonials[index]['message'])),
+                            ))
+                          : Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height * 0.2,
+                              child: Center(
+                                child: (testimonialStatus == true)
+                                    ? Text(
+                                        "Nobody wrote about ${this.name.split(" ")[0]} yet")
+                                    : CircularProgressIndicator(),
+                              ),
+                            ),
                     ],
                   ),
                 ),
@@ -432,7 +457,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         prefs.setString('uid', uid);
       });
     }
-
+    _getTestimonials();
     socketIO.sendMessage('update my status',
         json.encode({"uid": "$id", "time": "${DateTime.now()}"}));
 

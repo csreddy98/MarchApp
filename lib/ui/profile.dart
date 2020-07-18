@@ -160,21 +160,26 @@ class _ProfileState extends State<Profile> {
                 Padding(
                   padding: const EdgeInsets.only(top: 20),
                   child: Text(
-                    "Here’s what others are saying about Mason",
+                    "Here’s what others are saying about you",
                     style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
                   ),
                 ),
                 Container(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: List.generate(
-                            testimonials.length,
-                            (index) => testimonial(
-                                context,
-                                testimonials[index]['profile_pic'],
-                                testimonials[index]['fullName'],
-                                testimonials[index]['message'])))),
+                    child: testimonials.length > 0
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: List.generate(
+                                testimonials.length,
+                                (index) => testimonial(
+                                    context,
+                                    testimonials[index]['profile_pic'],
+                                    testimonials[index]['fullName'],
+                                    testimonials[index]['message'])))
+                        : Center(
+                            child: Text(
+                                "So sad, Nobody wrote about you.\nTry Socializing more..."),
+                          )),
               ],
             ),
           ),
