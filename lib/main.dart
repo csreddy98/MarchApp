@@ -78,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
       child: SplashScreen(
         seconds: 4,
         navigateAfterSeconds: n == 1 ? Home('') : Login(),
-        image: new Image.asset("assets/images/logo1x.jpeg"),
+        image: new Image.asset("assets/images/splash.png"),
         photoSize: 200,
         backgroundColor: Colors.white,
         loaderColor: Theme.of(context).primaryColor,

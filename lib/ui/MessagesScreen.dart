@@ -287,20 +287,25 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                                 Colors.black))
                                                   ]),
                                             ),
-                                            RichText(
-                                              text: TextSpan(
-                                                  text: "Goals: ",
-                                                  style: TextStyle(
-                                                      color: Theme.of(context)
-                                                          .primaryColor,
-                                                      fontSize: 19),
-                                                  children: [
-                                                    TextSpan(
-                                                        text: "$goalString",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.black)),
-                                                  ]),
+                                            Container(
+                                              width:MediaQuery.of(context).size.width*0.6,
+                                              child: RichText(
+                                                text: TextSpan(
+                                                    text: "Goals: ",
+                                                    style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .primaryColor,
+                                                        fontSize: 19),
+                                                    children: [
+                                                      TextSpan(
+                                                          text: "$goalString",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.black,),
+                                                      ),
+                                                    ]),
+                                                maxLines: 2,
+                                              ),
                                             ),
                                             SizedBox(
                                               height: 5,

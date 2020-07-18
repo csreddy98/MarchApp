@@ -14,7 +14,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   flutter_screenutil: ^1.1.0
   autocomplete_textfield: ^1.7.3
-  firebase_auth: ^0.16.1
+  firebase_auth:
   country_pickers: ^1.2.0
   google_sign_in: ^4.5.1
   flutter_facebook_login:

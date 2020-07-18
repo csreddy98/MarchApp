@@ -17,12 +17,17 @@ import 'package:toast/toast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:math' as math;
 
+import 'home.dart';
+
 class TextingScreen extends StatefulWidget {
   final Map user;
   TextingScreen({this.user});
 
   @override
   _TextingScreenState createState() => _TextingScreenState();
+}
+enum Choose{
+  block
 }
 
 class _TextingScreenState extends State<TextingScreen> {
@@ -105,6 +110,9 @@ class _TextingScreenState extends State<TextingScreen> {
   @override
   Widget build(BuildContext context) {
     loadMessages();
+
+    Choose _selection;
+
     return Scaffold(
       backgroundColor: Color(0xFFFBFCFE),
       appBar: AppBar(
@@ -122,11 +130,55 @@ class _TextingScreenState extends State<TextingScreen> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
         ),
         actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Icon(
-              Icons.more_vert,
-              color: Theme.of(context).primaryColor,
+          Theme(
+            data:ThemeData(primaryColor: Colors.black),
+            child: PopupMenuButton<Choose>(
+              onSelected: (Choose choose) async {
+                if(choose.index==0){
+
+                  print(myId);
+                  print(widget.user['user_id']);
+                  var url =
+                      'https://march.lbits.co/api/worker.php';
+                  var resp = await http.post(
+                    url,
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': 'Bearer $token'
+                    },
+                    body: json.encode(<String, dynamic>{
+                      'serviceName': "",
+                      'work': "block user",
+                      'myId': myId,
+                      'otherId': widget.user['user_id'],
+                    }),
+                  );
+
+                  print("res " + resp.body.toString());
+
+                  var result = json.decode(resp.body);
+                  if (result['response'] == 200) {
+
+                    await db.deleteSingleUser(widget.user['user_id']);
+
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Home('block user')),
+                            (Route<dynamic> route) => false);
+
+                  }
+
+                  }
+                setState(() {
+                 _selection=choose;
+               });
+              },
+              itemBuilder: (BuildContext context)=><PopupMenuEntry<Choose>>[
+                const PopupMenuItem<Choose>(
+                    value: Choose.block,
+                    child: Text('Block User'))
+              ],
             ),
           )
         ],
