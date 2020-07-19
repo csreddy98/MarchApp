@@ -56,20 +56,20 @@ class _GRegisterState extends State<GRegister> {
 
 
   Future _loadFromGallery() async {
-    File _galleryImage;
-    _galleryImage = await ImagePicker.pickImage(source: ImageSource.gallery);
+    final picker=ImagePicker();
+    final _galleryImage = await picker.getImage(source: ImageSource.gallery);
 
     setState(() {
-      _image = _galleryImage;
+      _image = File(_galleryImage.path);
     });
   }
 
   Future _captureImage() async {
-    File _caturedImage;
+    final picker=ImagePicker();
+    final _capturedImage = await picker.getImage(source: ImageSource.camera);
 
-    _caturedImage = await ImagePicker.pickImage(source: ImageSource.camera);
     setState(() {
-      _image = _caturedImage;
+      _image = File(_capturedImage.path);
     });
   }
 
