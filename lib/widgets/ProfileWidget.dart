@@ -31,7 +31,7 @@ class ProfileTop extends StatelessWidget {
               )),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 5.0),
+          padding: const EdgeInsets.only(top: 10.0),
           child: Text(
             "$name",
             style: TextStyle(fontSize: size.height / 38,fontWeight: FontWeight.w600),
@@ -42,9 +42,10 @@ class ProfileTop extends StatelessWidget {
           child: Text(
             "$profession",
             style: TextStyle(
-                fontSize: size.height / 45,
+                color: Colors.black54,
+                fontSize: size.height / 42,
                 fontFamily: 'montserrat',
-                fontWeight: FontWeight.w500),
+                fontWeight: FontWeight.w600),
           ),
         ),
         (location != null)

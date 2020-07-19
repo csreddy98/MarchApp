@@ -334,6 +334,7 @@ class CustomCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Hero(
       tag: '${this.index}',
       child: Container(
@@ -381,6 +382,7 @@ class CustomCard extends StatelessWidget {
                 Text(
                   "$message",
                   style: TextStyle(
+                      fontSize: size.height / 42,
                       color:
                           direction == 'right' ? Colors.black : Colors.black),
                 ),
@@ -391,7 +393,7 @@ class CustomCard extends StatelessWidget {
                     style: TextStyle(
                         color:
                             direction == 'right' ? Colors.black : Colors.black,
-                        fontSize: 12))
+                        fontSize: 12,))
               ],
             ),
           ),

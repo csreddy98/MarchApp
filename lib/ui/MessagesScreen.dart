@@ -132,8 +132,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
       appBar: AppBar(
         title: Text("Inbox",
         style: TextStyle(
-          fontSize: size.height / 32,
-          fontWeight: FontWeight.w600,
+          fontSize: size.height / 35,
+          fontWeight: FontWeight.w500,
         ),
         ),
         centerTitle: true,
@@ -237,19 +237,18 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: Card(
                                     child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: <Widget>[
                                         Padding(
                                           padding: const EdgeInsets.all(12.0),
                                           child: ClipRRect(
                                             child: CachedNetworkImage(
-                                                imageUrl: pending[i]
-                                                        ['user_info']
-                                                    ['profile_pic'],
-                                                width: MediaQuery.of(context).size.width /4.5,
-                                                // height: MediaQuery.of(_).size.height,
-                                                fit: BoxFit.cover),
-                                            borderRadius:
-                                                BorderRadius.circular(10.0),
+                                                imageUrl: pending[i]['user_info']['profile_pic'],
+                                                width: MediaQuery.of(context).size.width / 4.5,
+                                                height: MediaQuery.of(context).size.width / 4.5,
+                                                
+                                                ),
+                                            borderRadius: BorderRadius.circular(10.0),
                                           ),
                                         ),
                                         Column(
@@ -262,15 +261,15 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                               text: TextSpan(
                                                   text: "Name: ",
                                                   style: TextStyle(
-                                                      color: Theme.of(context)
-                                                          .primaryColor,
-                                                      fontSize: 19),
+                                                      color: Theme.of(context).primaryColor,
+                                                      fontSize: 16 ),
                                                   children: [
                                                     TextSpan(
                                                         text:
                                                             "${pending[i]['user_info']['fullName']}",
                                                         style: TextStyle(
                                                           color: Colors.black,
+                                                          fontSize: 17
                                                         ))
                                                   ]),
                                             ),
@@ -280,14 +279,15 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                   style: TextStyle(
                                                       color: Theme.of(context)
                                                           .primaryColor,
-                                                      fontSize: 19),
+                                                      fontSize: 16),
                                                   children: [
                                                     TextSpan(
                                                         text:
                                                             "${pending[i]['user_info']['age']}",
                                                         style: TextStyle(
-                                                            color:
-                                                                Colors.black))
+                                                            color:Colors.black,
+                                                            fontSize: 17
+                                                                ))
                                                   ]),
                                             ),
                                             Container(
@@ -298,11 +298,11 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                     style: TextStyle(
                                                         color: Theme.of(context)
                                                             .primaryColor,
-                                                        fontSize: 19),
+                                                        fontSize: 16),
                                                     children: [
                                                       TextSpan(
                                                           text: "$goalString",
-                                                          style: TextStyle(
+                                                          style: TextStyle( fontSize: 17,
                                                               color:
                                                                   Colors.black,),
                                                       ),
@@ -325,6 +325,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                     softWrap: true,
                                                     style: TextStyle(
                                                         color: Colors.black,
+                                                        fontSize: 16,
                                                         fontWeight:
                                                             FontWeight.w600),
                                                   ),
@@ -478,22 +479,24 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                       });
                                                     },
                                                     child: Container(
-                                                        color: Theme.of(context)
-                                                            .primaryColor,
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  vertical: 10,
-                                                                  horizontal:
-                                                                      15),
-                                                          child: Text(
-                                                            "Accept",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white),
-                                                          ),
-                                                        )),
+                                              width: size.width * 0.26,
+                                              height: size.height * 0.05,
+                                              decoration: BoxDecoration(
+                                                  color: Theme.of(context).primaryColor,
+                                                  border: Border.all(
+                                                      width: 1,
+                                                      color: Theme.of(context).primaryColor),
+                                                  borderRadius:
+                                                      BorderRadius.all(Radius.circular(10))),
+                                              child: Center(
+                                                child: Text(
+                                                  "Accept",
+                                                  style: TextStyle(
+                                                      fontSize: size.height / 44,
+                                                      fontWeight: FontWeight.bold),
+                                                ),
+                                              ),
+                                            ),
                                                     // color: Theme.of(context).primaryColor,
                                                   ),
                                                   SizedBox(width: 40),
@@ -549,22 +552,24 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                       });
                                                     },
                                                     child: Container(
-                                                        color: Theme.of(context)
-                                                            .primaryColor,
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  vertical: 10,
-                                                                  horizontal:
-                                                                      15),
-                                                          child: Text(
-                                                            "Reject",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white),
-                                                          ),
-                                                        )),
+                                                      width: size.width * 0.26,
+                                                      height: size.height * 0.05,
+                                                      decoration: BoxDecoration(
+                                                          color: Theme.of(context).primaryColor,
+                                                          border: Border.all(
+                                                              width: 1,
+                                                              color: Theme.of(context).primaryColor),
+                                                          borderRadius:
+                                                              BorderRadius.all(Radius.circular(10))),
+                                                      child: Center(
+                                                        child: Text(
+                                                          "Reject",
+                                                          style: TextStyle(
+                                                              fontSize: size.height / 44,
+                                                              fontWeight: FontWeight.bold),
+                                                        ),
+                                                      ),
+                                                    ),
                                                   )
                                                 ],
                                               ),

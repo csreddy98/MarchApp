@@ -60,8 +60,8 @@ class _ProfileState extends State<Profile> {
           centerTitle: true,
           title: Text("Your Profile",
           style: TextStyle(
-          fontSize: size.height / 32,
-          fontWeight: FontWeight.w600,
+          fontSize: size.height / 35,
+          fontWeight: FontWeight.w500,
           ),
           ),
           elevation: 0,
