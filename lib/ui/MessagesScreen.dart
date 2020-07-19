@@ -124,12 +124,18 @@ class _MessagesScreenState extends State<MessagesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     updateLastMessages();
     // print("Scoket Status: $socketStatus");
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Inbox"),
+        title: Text("Inbox",
+        style: TextStyle(
+          fontSize: size.height / 32,
+          fontWeight: FontWeight.w600,
+        ),
+        ),
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
@@ -200,19 +206,19 @@ class _MessagesScreenState extends State<MessagesScreen> {
             child: Container(
                 child: chats == true
                     ? lastMessages.length > 0
-                        ? recentChats(lastMessages)
+                        ? recentChats(lastMessages, context)
                         : Padding(
                             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                             child: Center(
                               child: Text("$tptext",
-                                  style: TextStyle(fontSize: 16)),
+                                  style: TextStyle(fontSize: size.height / 44)),
                             ),
                           )
                     : pending.length == 0
                         ? Center(
                             child: Text(
                               "Seems like nobody has sent you a Request",
-                              style: TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: size.height / 44),
                             ),
                           )
                         : ListView.builder(
@@ -239,10 +245,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                 imageUrl: pending[i]
                                                         ['user_info']
                                                     ['profile_pic'],
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                    4.5,
+                                                width: MediaQuery.of(context).size.width /4.5,
                                                 // height: MediaQuery.of(_).size.height,
                                                 fit: BoxFit.cover),
                                             borderRadius:
@@ -591,7 +594,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
     );
   }
 
-  Widget recentChats(List usersList) {
+  Widget recentChats(List usersList, BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     Map unSeenMessages = {};
     msgCount.forEach((element) {
       unSeenMessages['${element['otherId']}'] = element['msgCount'];
@@ -754,8 +758,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                   lastMessages[index]['name'],
                                   style: TextStyle(
                                     color: Theme.of(context).primaryColor,
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.normal,
+                                    fontSize: size.height / 38,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                                 SizedBox(height: 5.0),
@@ -766,7 +770,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                     '${(lastMessages.isNotEmpty) ? lastMessages[index]['lastMessage'] : ''}',
                                     style: TextStyle(
                                       color: Colors.blueGrey,
-                                      fontSize: 13.0,
+                                      fontSize: size.height / 46,
                                       fontWeight: (unSeenMessages[
                                                   '${lastMessages[index]['user_id']}'] !=
                                               null)
@@ -790,7 +794,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                             "${durationCalculator(lastMessages[index]['LastMessageTime'])}",
                             style: TextStyle(
                               color: Colors.grey,
-                              fontSize: 12.0,
+                              fontSize: size.height / 55,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

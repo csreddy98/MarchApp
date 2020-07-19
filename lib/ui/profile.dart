@@ -54,10 +54,16 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text("Your Profile"),
+          title: Text("Your Profile",
+          style: TextStyle(
+          fontSize: size.height / 32,
+          fontWeight: FontWeight.w600,
+          ),
+          ),
           elevation: 0,
           backgroundColor: Colors.transparent,
           actions: <Widget>[
@@ -103,13 +109,13 @@ class _ProfileState extends State<Profile> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0, vertical: 13.0),
+                      horizontal: 10.0, vertical: 10.0),
                   child: Text(
                     "Age: $age",
                     textAlign: TextAlign.justify,
                     style: TextStyle(
                       fontFamily: 'montserrat',
-                      fontSize: 14,
+                      fontSize: size.height / 45,
                       height: 1.2,
                       fontWeight: FontWeight.normal,
                     ),
@@ -178,7 +184,9 @@ class _ProfileState extends State<Profile> {
                                     testimonials[index]['message'])))
                         : Center(
                             child: Text(
-                                "So sad, Nobody wrote about you.\nTry Socializing more..."),
+                                "Ughh Nobody wrote about you.\nTry Socializing more...",
+                                style: TextStyle(fontSize: size.height / 48),
+                                ),
                           )),
               ],
             ),

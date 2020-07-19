@@ -18,10 +18,10 @@ class ProfileTop extends StatelessWidget {
     return Column(
       children: <Widget>[
         Container(
-          width: size.width / 3.5,
-          height: size.width / 3.5,
+          width: size.width / 4,
+          height: size.width / 4,
           decoration: BoxDecoration(
-              border: Border.all(width: 5, color: Colors.white),
+              // border: Border.all(width: 5, color: Colors.white),
               borderRadius: BorderRadius.all(Radius.circular(10))),
           child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -31,7 +31,7 @@ class ProfileTop extends StatelessWidget {
               )),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 0.0),
+          padding: const EdgeInsets.only(top: 5.0),
           child: Text(
             "$name",
             style: TextStyle(fontSize: size.height / 38,fontWeight: FontWeight.w600),
