@@ -120,7 +120,7 @@ class _TextingScreenState extends State<TextingScreen> {
           },
           child: Icon(
             Icons.arrow_back_ios,
-            color: Theme.of(context).primaryColor,
+            // color: Theme.of(context).primaryColor,
           ),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
@@ -167,7 +167,11 @@ class _TextingScreenState extends State<TextingScreen> {
               },
               itemBuilder: (BuildContext context) => <PopupMenuEntry<Choose>>[
                 const PopupMenuItem<Choose>(
-                    value: Choose.block, child: Text('Block User'))
+                    value: Choose.block,
+                    child: Text(
+                      'Block User',
+                      style: TextStyle(fontFamily: 'Monsterrat'),
+                    ))
               ],
             ),
           )
@@ -362,11 +366,14 @@ class _TextingScreenState extends State<TextingScreen> {
                                             _scroller.position.maxScrollExtent);
                                       });
                                     },
-                                    cursorColor: Colors.red,
+                                    cursorColor: Colors.blueGrey,
                                     keyboardType: TextInputType.multiline,
+                                    textInputAction: TextInputAction.done,
                                     maxLines: null,
                                     controller: messageController,
-                                    style: TextStyle(color: Colors.black),
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.normal),
                                     decoration: InputDecoration(
                                       border: InputBorder.none,
                                       contentPadding: EdgeInsets.only(

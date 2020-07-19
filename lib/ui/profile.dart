@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:march/models/goal.dart';
+//import 'package:march/models/goal.dart';
 import 'package:march/models/user.dart';
 import 'package:march/support/Api/api.dart';
 import 'package:march/ui/settings.dart';
@@ -54,10 +54,16 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text("Your Profile"),
+          title: Text("Your Profile",
+          style: TextStyle(
+          fontSize: size.height / 35,
+          fontWeight: FontWeight.w500,
+          ),
+          ),
           elevation: 0,
           backgroundColor: Colors.transparent,
           actions: <Widget>[
@@ -103,13 +109,13 @@ class _ProfileState extends State<Profile> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0, vertical: 13.0),
+                      horizontal: 10.0, vertical: 10.0),
                   child: Text(
                     "Age: $age",
                     textAlign: TextAlign.justify,
                     style: TextStyle(
                       fontFamily: 'montserrat',
-                      fontSize: 14,
+                      fontSize: size.height / 45,
                       height: 1.2,
                       fontWeight: FontWeight.normal,
                     ),
@@ -124,27 +130,27 @@ class _ProfileState extends State<Profile> {
                     textAlign: TextAlign.justify,
                     style: TextStyle(
                       fontFamily: 'montserrat',
-                      fontSize: 14,
+                      fontSize: size.height / 42,
                       height: 1.2,
                       fontWeight: FontWeight.normal,
                     ),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  padding: const EdgeInsets.only(top: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
                         "Your Goals",
                         style: TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 14),
+                            color: Colors.blueGrey , fontWeight: FontWeight.w600, fontSize: size.height / 46),
                       ),
                     ],
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  padding: const EdgeInsets.only(top: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     mainAxisSize: MainAxisSize.min,
@@ -161,7 +167,7 @@ class _ProfileState extends State<Profile> {
                   padding: const EdgeInsets.only(top: 20),
                   child: Text(
                     "Here’s what others are saying about you",
-                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: size.height / 43),
                   ),
                 ),
                 Container(
@@ -176,10 +182,15 @@ class _ProfileState extends State<Profile> {
                                     testimonials[index]['profile_pic'],
                                     testimonials[index]['fullName'],
                                     testimonials[index]['message'])))
-                        : Center(
-                            child: Text(
-                                "So sad, Nobody wrote about you.\nTry Socializing more..."),
-                          )),
+                        : Padding(
+                          padding: const EdgeInsets.only(top: 15.0),
+                          child: Center(
+                              child: Text(
+                                  "Ughh Nobody wrote about you.\nTry Socializing more...",
+                                  style: TextStyle(fontSize: size.height / 48),
+                                  ),
+                            ),
+                        )),
               ],
             ),
           ),

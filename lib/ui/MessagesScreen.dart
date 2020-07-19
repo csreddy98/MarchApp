@@ -125,12 +125,18 @@ class _MessagesScreenState extends State<MessagesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     updateLastMessages();
     // print("Scoket Status: $socketStatus");
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Inbox"),
+        title: Text("Inbox",
+        style: TextStyle(
+          fontSize: size.height / 35,
+          fontWeight: FontWeight.w500,
+        ),
+        ),
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
@@ -201,19 +207,19 @@ class _MessagesScreenState extends State<MessagesScreen> {
             child: Container(
                 child: chats == true
                     ? lastMessages.length > 0
-                        ? recentChats(lastMessages)
+                        ? recentChats(lastMessages, context)
                         : Padding(
                             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                             child: Center(
                               child: Text("$tptext",
-                                  style: TextStyle(fontSize: 16)),
+                                  style: TextStyle(fontSize: size.height / 44)),
                             ),
                           )
                     : pending.length == 0
                         ? Center(
                             child: Text(
                               "Seems like nobody has sent you a Request",
-                              style: TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: size.height / 44),
                             ),
                           )
                         : ListView.builder(
@@ -232,22 +238,18 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: Card(
                                     child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: <Widget>[
                                         Padding(
                                           padding: const EdgeInsets.all(12.0),
                                           child: ClipRRect(
                                             child: CachedNetworkImage(
-                                                imageUrl: pending[i]
-                                                        ['user_info']
-                                                    ['profile_pic'],
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                    4.5,
-                                                // height: MediaQuery.of(_).size.height,
-                                                fit: BoxFit.cover),
-                                            borderRadius:
-                                                BorderRadius.circular(10.0),
+                                                imageUrl: pending[i]['user_info']['profile_pic'],
+                                                width: MediaQuery.of(context).size.width / 4.5,
+                                                height: MediaQuery.of(context).size.width / 4.5,
+                                                
+                                                ),
+                                            borderRadius: BorderRadius.circular(10.0),
                                           ),
                                         ),
                                         Column(
@@ -260,15 +262,15 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                               text: TextSpan(
                                                   text: "Name: ",
                                                   style: TextStyle(
-                                                      color: Theme.of(context)
-                                                          .primaryColor,
-                                                      fontSize: 19),
+                                                      color: Theme.of(context).primaryColor,
+                                                      fontSize: 16 ),
                                                   children: [
                                                     TextSpan(
                                                         text:
                                                             "${pending[i]['user_info']['fullName']}",
                                                         style: TextStyle(
                                                           color: Colors.black,
+                                                          fontSize: 17
                                                         ))
                                                   ]),
                                             ),
@@ -278,14 +280,15 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                   style: TextStyle(
                                                       color: Theme.of(context)
                                                           .primaryColor,
-                                                      fontSize: 19),
+                                                      fontSize: 16),
                                                   children: [
                                                     TextSpan(
                                                         text:
                                                             "${pending[i]['user_info']['age']}",
                                                         style: TextStyle(
-                                                            color:
-                                                                Colors.black))
+                                                            color:Colors.black,
+                                                            fontSize: 17
+                                                                ))
                                                   ]),
                                             ),
                                             Container(
@@ -299,13 +302,13 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                     style: TextStyle(
                                                         color: Theme.of(context)
                                                             .primaryColor,
-                                                        fontSize: 19),
+                                                        fontSize: 16),
                                                     children: [
                                                       TextSpan(
-                                                        text: "$goalString",
-                                                        style: TextStyle(
-                                                          color: Colors.black,
-                                                        ),
+                                                          text: "$goalString",
+                                                          style: TextStyle( fontSize: 17,
+                                                              color:
+                                                                  Colors.black,),
                                                       ),
                                                     ]),
                                                 maxLines: 2,
@@ -326,6 +329,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                     softWrap: true,
                                                     style: TextStyle(
                                                         color: Colors.black,
+                                                        fontSize: 16,
                                                         fontWeight:
                                                             FontWeight.w600),
                                                   ),
@@ -479,22 +483,24 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                       });
                                                     },
                                                     child: Container(
-                                                        color: Theme.of(context)
-                                                            .primaryColor,
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  vertical: 10,
-                                                                  horizontal:
-                                                                      15),
-                                                          child: Text(
-                                                            "Accept",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white),
-                                                          ),
-                                                        )),
+                                              width: size.width * 0.26,
+                                              height: size.height * 0.05,
+                                              decoration: BoxDecoration(
+                                                  color: Theme.of(context).primaryColor,
+                                                  border: Border.all(
+                                                      width: 1,
+                                                      color: Theme.of(context).primaryColor),
+                                                  borderRadius:
+                                                      BorderRadius.all(Radius.circular(10))),
+                                              child: Center(
+                                                child: Text(
+                                                  "Accept",
+                                                  style: TextStyle(
+                                                      fontSize: size.height / 44,
+                                                      fontWeight: FontWeight.bold),
+                                                ),
+                                              ),
+                                            ),
                                                     // color: Theme.of(context).primaryColor,
                                                   ),
                                                   SizedBox(width: 40),
@@ -550,22 +556,24 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                       });
                                                     },
                                                     child: Container(
-                                                        color: Theme.of(context)
-                                                            .primaryColor,
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  vertical: 10,
-                                                                  horizontal:
-                                                                      15),
-                                                          child: Text(
-                                                            "Reject",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white),
-                                                          ),
-                                                        )),
+                                                      width: size.width * 0.26,
+                                                      height: size.height * 0.05,
+                                                      decoration: BoxDecoration(
+                                                          color: Theme.of(context).primaryColor,
+                                                          border: Border.all(
+                                                              width: 1,
+                                                              color: Theme.of(context).primaryColor),
+                                                          borderRadius:
+                                                              BorderRadius.all(Radius.circular(10))),
+                                                      child: Center(
+                                                        child: Text(
+                                                          "Reject",
+                                                          style: TextStyle(
+                                                              fontSize: size.height / 44,
+                                                              fontWeight: FontWeight.bold),
+                                                        ),
+                                                      ),
+                                                    ),
                                                   )
                                                 ],
                                               ),
@@ -595,7 +603,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
     );
   }
 
-  Widget recentChats(List usersList) {
+  Widget recentChats(List usersList, BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     Map unSeenMessages = {};
     msgCount.forEach((element) {
       unSeenMessages['${element['otherId']}'] = element['msgCount'];
@@ -758,8 +767,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                   lastMessages[index]['name'],
                                   style: TextStyle(
                                     color: Theme.of(context).primaryColor,
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.normal,
+                                    fontSize: size.height / 38,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                                 SizedBox(height: 5.0),
@@ -770,7 +779,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                     '${(lastMessages.isNotEmpty) ? lastMessages[index]['lastMessage'] : ''}',
                                     style: TextStyle(
                                       color: Colors.blueGrey,
-                                      fontSize: 13.0,
+                                      fontSize: size.height / 46,
                                       fontWeight: (unSeenMessages[
                                                   '${lastMessages[index]['user_id']}'] !=
                                               null)
@@ -794,7 +803,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                             "${durationCalculator(lastMessages[index]['LastMessageTime'])}",
                             style: TextStyle(
                               color: Colors.grey,
-                              fontSize: 12.0,
+                              fontSize: size.height / 55,
                               fontWeight: FontWeight.bold,
                             ),
                           ),

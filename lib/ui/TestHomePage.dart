@@ -789,6 +789,10 @@ class _TestHomePageState extends State<TestHomePage> {
                                   )));
                     },
                     child: Card(
+                      color: Colors.white,
+                      shadowColor: Colors.grey[200],
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
                         child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
@@ -797,16 +801,16 @@ class _TestHomePageState extends State<TestHomePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Padding(
-                                padding: const EdgeInsets.all(0.0),
+                                padding: const EdgeInsets.only(left:5,top: 5),
                                 child: Container(
-                                  width: 100,
-                                  height: 100,
+                                  width: size.width / 4,
+                                  height: size.width / 4,
                                   decoration: BoxDecoration(
+                                      //border: Border.all(width: 5, color: Colors.white),
                                       borderRadius: BorderRadius.all(
-                                          Radius.circular(15))),
+                                          Radius.circular(10))),
                                   child: ClipRRect(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(15)),
+                                    borderRadius: BorderRadius.all(Radius.circular(10)),
                                     child: CachedNetworkImage(
                                       imageUrl:
                                           "${allProfiles[index]['user_info']['profile_pic']}",
@@ -816,29 +820,44 @@ class _TestHomePageState extends State<TestHomePage> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.only(top:8.0, left: 8.0, bottom: 8.0),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Text(
-                                        "${allProfiles[index]['user_info']['fullName']}"),
+                                        "${allProfiles[index]['user_info']['fullName']}",
+                                        style: TextStyle(fontSize: size.height / 39,fontWeight: FontWeight.w600),
+                                    ),
+                                    SizedBox(height: 3),
+                                    Text(
+                                        "${allProfiles[index]['user_info']['profession']}",
+                                        style: TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: size.height / 43,
+                                            fontFamily: 'montserrat',
+                                            fontWeight: FontWeight.w600),
+                                        
+                                        ),
+                                        SizedBox(height: 3),
                                     Text(
                                       "Age: ${allProfiles[index]['user_info']['age']}",
-                                      style: TextStyle(fontSize: 16),
+                                      style: TextStyle(
+                                        fontSize: size.height / 48,
+                                        fontFamily: 'montserrat',
+                                        fontWeight: FontWeight.w400),
                                     ),
-                                    Text(
-                                        "${allProfiles[index]['user_info']['profession']}"),
+                                    SizedBox(height: 6),  
                                     Container(
                                       width: size.width * 0.57,
                                       child: Text(
                                         "${(allProfiles[index]['user_info']['bio'].toString())}",
-                                        style: TextStyle(fontSize: 14),
+                                        style: TextStyle(fontSize: size.height / 46),
                                         maxLines: 3,
                                       ),
                                     ),
+                                    SizedBox(height:10),
                                     Row(
-                                      mainAxisSize: MainAxisSize.max,
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: <Widget>[
                                         InkWell(
@@ -859,20 +878,25 @@ class _TestHomePageState extends State<TestHomePage> {
                                                   index);
                                             });
                                           },
-                                          child: Container(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 14.0,
-                                                      vertical: 8),
-                                              child: Text("Connect"),
+                                            child: Container(
+                                              width: size.width * 0.26,
+                                              height: size.height * 0.05,
+                                              decoration: BoxDecoration(
+                                                  color: Theme.of(context).primaryColor,
+                                                  border: Border.all(
+                                                      width: 1,
+                                                      color: Theme.of(context).primaryColor),
+                                                  borderRadius:
+                                                      BorderRadius.all(Radius.circular(10))),
+                                              child: Center(
+                                                child: Text(
+                                                  "Connect",
+                                                  style: TextStyle(
+                                                      fontSize: size.height / 44,
+                                                      fontWeight: FontWeight.bold),
+                                                ),
+                                              ),
                                             ),
-                                            decoration: BoxDecoration(
-                                                color: Theme.of(context)
-                                                    .primaryColor,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10))),
-                                          ),
                                         ),
                                       ],
                                     )
