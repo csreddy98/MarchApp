@@ -65,11 +65,18 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int n;
-
+  AssetImage myImage;
   @override
   void initState() {
     _load();
+    myImage = AssetImage("assets/images/logo.png");
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    precacheImage(myImage, context);
   }
 
   @override
@@ -79,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
         seconds: 4,
         navigateAfterSeconds: n == 1 ? Home('') : Login(),
         image: new Image(
-          image: AssetImage("assets/images/splash.gif"),
+          image: myImage,
         ),
         photoSize: 200,
         backgroundColor: Theme.of(context).primaryColor,
