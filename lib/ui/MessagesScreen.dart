@@ -41,6 +41,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
   List lastMessages = [];
   List msgCount = [];
   SocketIO socketIO;
+  bool connectionStatus = true;
 
   // List pending = [];
   _MessagesScreenState(this.screenState) {
@@ -140,7 +141,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
               width: 10,
               height: 10,
               decoration: BoxDecoration(
-                  color: Colors.green,
+                  color: (connectionStatus) ? Colors.green : Colors.red,
                   borderRadius: BorderRadius.all(Radius.circular(100))),
             ),
           )
@@ -287,20 +288,28 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                                 Colors.black))
                                                   ]),
                                             ),
-                                            RichText(
-                                              text: TextSpan(
-                                                  text: "Goals: ",
-                                                  style: TextStyle(
-                                                      color: Theme.of(context)
-                                                          .primaryColor,
-                                                      fontSize: 19),
-                                                  children: [
-                                                    TextSpan(
+                                            Container(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.6,
+                                              child: RichText(
+                                                text: TextSpan(
+                                                    text: "Goals: ",
+                                                    style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .primaryColor,
+                                                        fontSize: 19),
+                                                    children: [
+                                                      TextSpan(
                                                         text: "$goalString",
                                                         style: TextStyle(
-                                                            color:
-                                                                Colors.black)),
-                                                  ]),
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                    ]),
+                                                maxLines: 2,
+                                              ),
                                             ),
                                             SizedBox(
                                               height: 5,
@@ -875,5 +884,20 @@ class _MessagesScreenState extends State<MessagesScreen> {
 
     socketIO.sendMessage('update my status',
         json.encode({"uid": "$myId", "time": "${DateTime.now()}"}));
+
+    try {
+      final result = await InternetAddress.lookup('march.lbits.co');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        setState(() {
+          connectionStatus = true;
+        });
+        print('connected $result');
+      }
+    } on SocketException catch (_) {
+      print('not connected');
+      setState(() {
+        connectionStatus = false;
+      });
+    }
   }
 }

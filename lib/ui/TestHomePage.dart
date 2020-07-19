@@ -1010,7 +1010,7 @@ class _TestHomePageState extends State<TestHomePage> {
                                           };
                                           db.addUser(friendsMap);
                                           db.addMessage(messageMap);
-                                          setState(() async {
+                                          setState(() {
                                             details.removeAt(index);
                                             allProfiles.removeAt(index);
                                             crossCheckList.removeAt(index);

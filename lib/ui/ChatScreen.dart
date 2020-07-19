@@ -17,6 +17,8 @@ import 'package:toast/toast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:math' as math;
 
+import 'home.dart';
+
 class TextingScreen extends StatefulWidget {
   final Map user;
   TextingScreen({this.user});
@@ -24,6 +26,8 @@ class TextingScreen extends StatefulWidget {
   @override
   _TextingScreenState createState() => _TextingScreenState();
 }
+
+enum Choose { block }
 
 class _TextingScreenState extends State<TextingScreen> {
   ScrollController _scroller = ScrollController();
@@ -102,6 +106,9 @@ class _TextingScreenState extends State<TextingScreen> {
   @override
   Widget build(BuildContext context) {
     loadMessages();
+
+    Choose _selection;
+
     return Scaffold(
       backgroundColor: Color(0xFFFBFCFE),
       appBar: AppBar(
@@ -119,11 +126,49 @@ class _TextingScreenState extends State<TextingScreen> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
         ),
         actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Icon(
-              Icons.more_vert,
-              color: Theme.of(context).primaryColor,
+          Theme(
+            data: ThemeData(primaryColor: Colors.black),
+            child: PopupMenuButton<Choose>(
+              onSelected: (Choose choose) async {
+                if (choose.index == 0) {
+                  print(myId);
+                  print(widget.user['user_id']);
+                  var url = 'https://march.lbits.co/api/worker.php';
+                  var resp = await http.post(
+                    url,
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': 'Bearer $token'
+                    },
+                    body: json.encode(<String, dynamic>{
+                      'serviceName': "",
+                      'work': "block user",
+                      'myId': myId,
+                      'otherId': widget.user['user_id'],
+                    }),
+                  );
+
+                  print("res " + resp.body.toString());
+
+                  var result = json.decode(resp.body);
+                  if (result['response'] == 200) {
+                    await db.deleteSingleUser(widget.user['user_id']);
+
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Home('block user')),
+                        (Route<dynamic> route) => false);
+                  }
+                }
+                setState(() {
+                  _selection = choose;
+                });
+              },
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<Choose>>[
+                const PopupMenuItem<Choose>(
+                    value: Choose.block, child: Text('Block User'))
+              ],
             ),
           )
         ],
@@ -171,63 +216,6 @@ class _TextingScreenState extends State<TextingScreen> {
           ],
         ),
       ),
-      floatingActionButton: (remoteStatus == 'done')
-          ? null
-          : FloatingActionButton(
-              child: Icon(Icons.edit),
-              backgroundColor: Theme.of(context).primaryColor,
-              onPressed: () {
-                var contentController = TextEditingController();
-                showDialog(
-                    barrierDismissible: true,
-                    context: context,
-                    child: AlertDialog(
-                      title: Text(
-                          "Write few words about ${widget.user['name'].toString().split(" ")[0]}"),
-                      content: TextField(
-                        minLines: 4,
-                        maxLines: 20,
-                        controller: contentController,
-                        decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).primaryColor,
-                                    width: 1),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(15)))),
-                      ),
-                      actions: <Widget>[
-                        RaisedButton(
-                          onPressed: () {
-                            String content = contentController.text;
-                            contentController.clear();
-                            http.post("https://march.lbits.co/api/worker.php",
-                                body: json.encode({
-                                  'serviceName': '',
-                                  'work': 'add testimonial',
-                                  'writtenBy': '$myId',
-                                  'writtenTo': '${widget.user['user_id']}',
-                                  'content': '$content'
-                                }),
-                                headers: {
-                                  'Content-Type': 'application/json',
-                                  'Authorization': 'Bearer $token'
-                                }).then((value) {
-                              print(value.body);
-                              setState(() {
-                                remoteStatus = 'done';
-                              });
-                            }).catchError((err) => print("ERRRO"));
-                            Navigator.pop(context);
-                          },
-                          child: Text("Add"),
-                          color: Theme.of(context).primaryColor,
-                        )
-                      ],
-                    ));
-              },
-            ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       body: GestureDetector(
         onHorizontalDragStart: (details) {
           print("${details.localPosition.direction}");
@@ -288,6 +276,78 @@ class _TextingScreenState extends State<TextingScreen> {
                         decoration: BoxDecoration(),
                         child: Row(
                           children: [
+                            (remoteStatus == 'done')
+                                ? Container()
+                                : FlatButton(
+                                    child: Container(
+                                        height: 60, child: Icon(Icons.edit)),
+                                    color: Theme.of(context).primaryColor,
+                                    onPressed: () {
+                                      var contentController =
+                                          TextEditingController();
+                                      showDialog(
+                                          barrierDismissible: true,
+                                          context: context,
+                                          child: AlertDialog(
+                                            title: Text(
+                                                "Write few words about ${widget.user['name'].toString().split(" ")[0]}"),
+                                            content: TextField(
+                                              minLines: 4,
+                                              maxLines: 20,
+                                              controller: contentController,
+                                              decoration: InputDecoration(
+                                                  border: OutlineInputBorder(
+                                                      borderSide: BorderSide(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .primaryColor,
+                                                          width: 1),
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  15)))),
+                                              style: TextStyle(
+                                                  color: Colors.black),
+                                            ),
+                                            actions: <Widget>[
+                                              RaisedButton(
+                                                onPressed: () {
+                                                  String content =
+                                                      contentController.text;
+                                                  contentController.clear();
+                                                  http.post(
+                                                      "https://march.lbits.co/api/worker.php",
+                                                      body: json.encode({
+                                                        'serviceName': '',
+                                                        'work':
+                                                            'add testimonial',
+                                                        'writtenBy': '$myId',
+                                                        'writtenTo':
+                                                            '${widget.user['user_id']}',
+                                                        'content': '$content'
+                                                      }),
+                                                      headers: {
+                                                        'Content-Type':
+                                                            'application/json',
+                                                        'Authorization':
+                                                            'Bearer $token'
+                                                      }).then((value) {
+                                                    print(value.body);
+                                                    setState(() {
+                                                      remoteStatus = 'done';
+                                                    });
+                                                  }).catchError(
+                                                      (err) => print("ERRRO"));
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text("Add"),
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                              )
+                                            ],
+                                          ));
+                                    },
+                                  ),
                             Flexible(
                               child: new ConstrainedBox(
                                 constraints: new BoxConstraints(
