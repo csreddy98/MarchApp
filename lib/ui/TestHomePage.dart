@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_socket_io/flutter_socket_io.dart';
@@ -237,7 +238,7 @@ class _TestHomePageState extends State<TestHomePage> {
           style: TextStyle(
               color: goalAssets[int.parse(goal['personGoalLevel'])]
                   ['textColor'],
-              fontSize: size.height / 48,
+              fontSize: size.height / 60,
               fontWeight: FontWeight.w600),
         ),
       ),
@@ -314,7 +315,7 @@ class _TestHomePageState extends State<TestHomePage> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 15),
+                    padding: const EdgeInsets.only(left: 25),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
@@ -330,12 +331,14 @@ class _TestHomePageState extends State<TestHomePage> {
                   ),
                   Container(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: List.generate(goals.length,
-                            (index) => goalBox(goals[index], context)),
-                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 5.0),
+                      child: Wrap(
+                          children: List.generate(goals.length,
+                                  (index) => Padding(
+                                    padding: const EdgeInsets.fromLTRB(0,5,5,5),
+                                    child: goalBox(goals[index], context),
+                                  )),
+                        ),
                     ),
                   ),
                   Expanded(

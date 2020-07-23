@@ -391,35 +391,35 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                 BorderSide(color: Colors.grey[100]))),
                         items: [
                           DropdownMenuItem<String>(
-                            value: "0",
-                            child: Text(
-                              "Newbie",
-                            ),
-                          ),
-                          DropdownMenuItem<String>(
-                            value: "1",
-                            child: Text(
-                              "Skilled",
-                            ),
-                          ),
-                          DropdownMenuItem<String>(
-                            value: "2",
-                            child: Text(
-                              "Proficient",
-                            ),
-                          ),
-                          DropdownMenuItem<String>(
-                            value: "3",
-                            child: Text(
-                              "Experienced",
-                            ),
-                          ),
-                          DropdownMenuItem<String>(
-                            value: "4",
-                            child: Text(
-                              "Expert",
-                            ),
-                          ),
+                                value: "0",
+                                child: Text(
+                                  "Newbie ( Level 1 )",
+                                ),
+                              ),
+                              DropdownMenuItem<String>(
+                                value: "1",
+                                child: Text(
+                                  "Skilled ( Level 2 )",
+                                ),
+                              ),
+                              DropdownMenuItem<String>(
+                                value: "2",
+                                child: Text(
+                                  "Proficient  ( Level 3 )",
+                                ),
+                              ),
+                              DropdownMenuItem<String>(
+                                value: "3",
+                                child: Text(
+                                  "Experienced  ( Level 4 )",
+                                ),
+                              ),
+                              DropdownMenuItem<String>(
+                                value: "4",
+                                child: Text(
+                                  "Expert ( Level 5 )",
+                                ),
+                              ),
                         ],
                         onChanged: (value) {
                           setState(() {

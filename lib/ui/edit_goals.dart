@@ -272,31 +272,31 @@ class _EditGoalState extends State<EditGoal> {
                               DropdownMenuItem<String>(
                                 value: "0",
                                 child: Text(
-                                  "Newbie",
+                                  "Newbie ( Level 1 )",
                                 ),
                               ),
                               DropdownMenuItem<String>(
                                 value: "1",
                                 child: Text(
-                                  "Skilled",
+                                  "Skilled ( Level 2 )",
                                 ),
                               ),
                               DropdownMenuItem<String>(
                                 value: "2",
                                 child: Text(
-                                  "Proficient",
+                                  "Proficient  ( Level 3 )",
                                 ),
                               ),
                               DropdownMenuItem<String>(
                                 value: "3",
                                 child: Text(
-                                  "Experienced",
+                                  "Experienced  ( Level 4 )",
                                 ),
                               ),
                               DropdownMenuItem<String>(
                                 value: "4",
                                 child: Text(
-                                  "Expert",
+                                  "Expert ( Level 5 )",
                                 ),
                               ),
                             ],

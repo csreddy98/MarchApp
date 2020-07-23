@@ -101,15 +101,15 @@ class DataBaseHelper {
         " $columnUserPhone TEXT"
         ")");
 
-    await db.execute("CREATE TABLE $goalTable( $columnId INTEGER PRIMARY KEY,"
+    await db.execute("CREATE TABLE $goalTable( $columnId INTEGER PRIMARY KEY NOT NULL,"
         " $columnUserId TEXT,$columnGoalName TEXT,"
         " $columnLevel TEXT,$columnShouldRemind BOOLEAN,"
         " $remindTime TEXT, $columnGoalNumber TEXT"
         ")");
 
     await db.execute("CREATE TABLE $friendsTable("
-        " $friendRowId INTEGER PRIMARY KEY,"
-        " $friendId TEXT, $friendName TEXT, $friendSmallPic TEXT, "
+        " $friendRowId INTEGER PRIMARY KEY NOT NULL,"
+        " $friendId TEXT UNIQUE NOT NULL, $friendName TEXT, $friendSmallPic TEXT, "
         " $friendPic TEXT, $friendNetworkPic TEXT, $friendLastMessage TEXT,"
         " $friendLastMessageTime TEXT"
         ")");
