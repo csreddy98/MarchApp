@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       title: 'March',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        fontFamily: 'montserrat',
+        fontFamily: 'Nunito',
         scaffoldBackgroundColor: Colors.white,
         buttonColor: Color(0xffFFBF46),
         disabledColor: Color.fromRGBO(254, 209, 125, 0.5),
@@ -25,17 +25,17 @@ class MyApp extends StatelessWidget {
         textTheme: TextTheme(
             headline1: TextStyle(
               color: Colors.white,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
               fontSize: 14,
             ),
             headline2: TextStyle(
               color: Color(0xffFFBF46),
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
               fontSize: 14,
             ),
             headline3: TextStyle(
               color: Colors.black,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
               fontSize: 14,
             ),
             caption: TextStyle(
