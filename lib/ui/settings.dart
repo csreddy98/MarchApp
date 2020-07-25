@@ -272,14 +272,14 @@ class _SettingsState extends State<Settings> {
                             IconButton(
                               icon: Icon(Icons.arrow_forward_ios),
                               iconSize: 20,
-                              onPressed: () {},
+                              onPressed: () =>_launchURL('https://letsmarch.in/termsofuse.html'),
                             )
                           ],
                         ),
                         height: 50,
                         width: double.infinity,
                       ),
-                      onTap: () => debugPrint("Terms Of Use"),
+                      onTap: () => _launchURL('https://letsmarch.in/termsofuse.html'),
                     ),
                     Divider(
                       thickness: 1,

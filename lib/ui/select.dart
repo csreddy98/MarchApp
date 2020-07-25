@@ -110,10 +110,6 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
 
   int _disable = 0;
 
-  int selectedHour = 0;
-  int selectedMin = 0;
-  String ampm = "AM";
-
   @override
   Widget build(BuildContext context) {
     final dotSize = 20.0;
@@ -639,7 +635,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
 
                                           if(remind=="1"){
                                             _showNotification(count,added[count-1], "It's time to work on your goal",
-                                                Time(int.parse(sendTime.substring(0,2)),selectedMin));
+                                                Time(time.hour,time.minute));
                                           }
 
                                           Navigator.pushAndRemoveUntil(
@@ -668,7 +664,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                           // check what to save
                                           if(remind=="1"){
                                             _showNotification(count,added[count-1], "It's time to work on your goal",
-                                                Time(int.parse(sendTime.substring(0,2)),selectedMin));
+                                                Time(time.hour,time.minute));
                                           }
 
                                           int savedGoal = await db.saveGoal(
@@ -685,11 +681,8 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                           Navigator.pop(context);
                                           setState(() {
                                             _disable = 0;
-                                            selectedHour = 0;
-                                            selectedMin = 0;
                                             sendTime = "none";
                                             remind = "0";
-                                            ampm = 'AM';
                                             note = "";
                                             timeView = false;
                                             checkedValue = false;
@@ -700,10 +693,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                         } else {
                                           Navigator.pop(context);
                                           setState(() {
-                                            selectedHour = 0;
-                                            selectedMin = 0;
                                             checkedValue = false;
-                                            ampm = 'AM';
                                             timeView = false;
                                             sendTime = "none";
                                             remind = "0";
@@ -820,7 +810,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                   if (result['response'] == 200) {
                                     if(remind=="1"){
                                       _showNotification(count,added[count-1], "It's time to work on your goal",
-                                          Time(int.parse(sendTime.substring(0,2)),selectedMin));
+                                          Time(time.hour,time.minute));
                                     }
 
                                     int savedGoal = await db.saveGoal(new Goal(
@@ -836,9 +826,6 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                     Navigator.pop(context);
                                     setState(() {
                                       _disable = 0;
-                                      selectedHour = 0;
-                                      selectedMin = 0;
-                                      ampm = 'AM';
                                       note = "";
                                       click = 0;
                                       timeView = false;
@@ -851,9 +838,6 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                   } else {
                                     Navigator.pop(context);
                                     setState(() {
-                                      selectedHour = 0;
-                                      selectedMin = 0;
-                                      ampm = 'AM';
                                       goalsLevel = "";
                                       note = "";
                                       click = 0;

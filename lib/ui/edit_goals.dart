@@ -43,9 +43,6 @@ class _EditGoalState extends State<EditGoal> {
   bool showWhichErrorText = false;
   TimeOfDay time;
 
-  int selectedHour = 0;
-  int selectedMin = 0;
-  String ampm = "AM";
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
@@ -646,10 +643,7 @@ class _EditGoalState extends State<EditGoal> {
                                   setState(() {
                                     selectedGoal = "";
                                     _disable = 0;
-                                    selectedHour = 0;
-                                    selectedMin = 0;
                                     checkedValue = false;
-                                    ampm = 'AM';
                                     timeView = false;
                                     sendTime = "none";
                                     remind = "0";
@@ -728,7 +722,7 @@ class _EditGoalState extends State<EditGoal> {
                                           //  print(widget.gno+" "+selectedGoal);
                                           if(remind=="1"){
                                             _showNotification(int.parse(widget.gno),selectedGoal, "It's time to work on your goal",
-                                                Time(int.parse(sendTime.substring(0,2)),selectedMin));
+                                                Time(time.hour,time.minute));
                                           }
 
                                           await db.updateGoal(Goal(
@@ -747,7 +741,7 @@ class _EditGoalState extends State<EditGoal> {
                                         } else {
                                           if(remind=="1"){
                                             _showNotification(int.parse(widget.gno),selectedGoal, "It's time to work on your goal",
-                                                Time(int.parse(sendTime.substring(0,2)),selectedMin));
+                                                Time(time.hour,time.minute));
                                           }
 
                                           int savedGoal = await db.saveGoal(
@@ -772,10 +766,7 @@ class _EditGoalState extends State<EditGoal> {
                                         setState(() {
                                           selectedGoal = "";
                                           _disable = 0;
-                                          selectedHour = 0;
-                                          selectedMin = 0;
                                           checkedValue = false;
-                                          ampm = 'AM';
                                           timeView = false;
                                           sendTime = "none";
                                           remind = "0";

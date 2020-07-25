@@ -294,7 +294,7 @@ class _HomeState extends State<Home> {
           new BottomNavigationBarItem(
               icon: new Icon(
                 Ionicons.ios_people,
-                size: 30,
+                size: 28,
               ),
               title: Text("Find People")),
           //   new BottomNavigationBarItem(icon: new Icon(Icons.date_range,size: 30,),title: Text("")),
@@ -320,7 +320,7 @@ class _HomeState extends State<Home> {
                         ),
                   new Icon(
                     FontAwesome.send,
-                    size: 22,
+                    size: 20,
                   )
                 ],
               ),
@@ -328,7 +328,7 @@ class _HomeState extends State<Home> {
           new BottomNavigationBarItem(
               icon: new Icon(
                 Icons.person,
-                size: 30,
+                size: 28,
               ),
               title: Text("Profile")),
         ],

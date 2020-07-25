@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:url_launcher/url_launcher.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -360,14 +360,6 @@ class _LoginState extends State<Login> {
       body: SingleChildScrollView(
         child: Stack(
           children: <Widget>[
-            /*Center(
-              child: new Image.asset(
-                'assets/images/image.png',
-                width: size.width,
-                height: size.height,
-                fit: BoxFit.cover,
-              ),
-            ),*/
             Column(
               children: <Widget>[
                 Padding(
@@ -377,7 +369,7 @@ class _LoginState extends State<Login> {
                     "Welcome ",
                     style: TextStyle(
                         fontFamily: 'montserrat',
-                        fontSize: 30,
+                        fontSize: size.height/23,
                         fontWeight: FontWeight.bold,
                         color: Colors.black),
                   )),
@@ -389,7 +381,7 @@ class _LoginState extends State<Login> {
                       "to ",
                       style: TextStyle(
                           fontFamily: 'montserrat',
-                          fontSize: 30,
+                          fontSize: size.height/23,
                           fontWeight: FontWeight.bold,
                           color: Colors.black),
                     ),
@@ -397,7 +389,7 @@ class _LoginState extends State<Login> {
                       "March",
                       style: TextStyle(
                           fontFamily: 'montserrat',
-                          fontSize: 30,
+                          fontSize: size.height/23,
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).primaryColor),
                     ),
@@ -416,14 +408,14 @@ class _LoginState extends State<Login> {
                       Text(
                         "The best way to meet people who have",
                         style: TextStyle(
-                            fontSize: 14,
+                            fontSize: size.height/50,
                             fontWeight: FontWeight.w200,
                             color: Colors.black),
                       ),
                       Text(
                         "goals as you. Let's get Started!",
                         style: TextStyle(
-                            fontSize: 14,
+                            fontSize: size.height/50,
                             fontWeight: FontWeight.w200,
                             color: Colors.black),
                       ),
@@ -436,7 +428,7 @@ class _LoginState extends State<Login> {
                       child: Text(
                     "CONTINUE WITH",
                     style: TextStyle(
-                        fontSize: 14,
+                        fontSize: size.height/50,
                         fontWeight: FontWeight.w500,
                         color: Colors.black),
                   )),
@@ -445,14 +437,12 @@ class _LoginState extends State<Login> {
                   padding: const EdgeInsets.fromLTRB(20.0, 5, 20, 3),
                   child: ButtonTheme(
                     minWidth: size.width,
-                    height: 52.0,
+                    height: size.height/13,
                     child: RaisedButton(
                       shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(10.0),
                         ),
                       onPressed: () {
-                        /* FirebaseAuth.instance.currentUser().then((val) async {
-                          print(val.uid);});*/
                         Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
@@ -463,30 +453,30 @@ class _LoginState extends State<Login> {
                       color: Color(0xfff6f6f6),
                       textColor: Colors.black,
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
                           SizedBox(
-                            width: 20,
+                            width:size.width/40,
                           ),
-                          
-                          Icon(AntDesign.mobile1, color: Color(0xff0D8E88),size: 22),
-                          SizedBox(
-                            width: 45,
-                          ),
-                          Center(
-                            child: Text("Continue With Phone",
-                                style: TextStyle(fontSize: 14)),
+                          Icon(AntDesign.mobile1, color: Color(0xff0D8E88),size: size.height/32),
+
+                          Expanded(
+                            child: Center(
+                              child: Text("Continue With Phone   ",
+                                  style: TextStyle(fontSize: size.height/48)),
+                            ),
                           ),
                         ],
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 10.0),
+                SizedBox(height: size.height/55),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20.0, 0, 20, 5),
                   child: ButtonTheme(
                     minWidth: size.width,
-                    height: 52.0,
+                    height: size.height/13,
                     child: RaisedButton(
                       shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(10.0),
@@ -498,29 +488,29 @@ class _LoginState extends State<Login> {
                       color: Color(0xfff6f6f6),
                       textColor: Colors.black,
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
                           SizedBox(
-                            width: 20,
+                            width: size.width/40,
                           ),
-                          Icon(AntDesign.googleplus,color: Color(0xffdb4a39),),
-                          SizedBox(
-                            width: 45,
-                          ),
-                          Center(
-                            child: Text("Continue With Google",
-                                style: TextStyle(fontSize: 14)),
+                          Icon(AntDesign.googleplus,color: Color(0xffdb4a39),size: size.height/32,),
+                          Expanded(
+                            child: Center(
+                              child: Text("Continue With Google   ",
+                                  style: TextStyle(fontSize: size.height/48)),
+                            ),
                           ),
                         ],
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 10.0),
+                SizedBox(height: size.height/55),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20.0, 0, 20, 5),
                   child: ButtonTheme(
                     minWidth: size.width,
-                    height: 52.0,
+                    height: size.height/13,
                     child: RaisedButton(
                       shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(10.0)),
@@ -556,17 +546,18 @@ class _LoginState extends State<Login> {
                       color: Color(0xfff6f6f6),
                       textColor: Colors.black,
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Icon(AntDesign.facebook_square,color: Color(0xff3B5998),size: 22),
-                          SizedBox(
-                            width: 40,
-                          ),
-                          Center(
-                            child: Text("Continue With Facebook",
-                                style: TextStyle(fontSize: 14 )),
+                         SizedBox(
+                         width: size.width/40,
+                         ),
+                          Icon(AntDesign.facebook_square,color: Color(0xff3B5998),size: size.height/32),
+
+                          Expanded(
+                            child: Center(
+                              child: Text("Continue With Facebook   ",
+                                  style: TextStyle(fontSize: size.height/48)),
+                            ),
                           ),
                         ],
                       ),
@@ -581,22 +572,18 @@ class _LoginState extends State<Login> {
                       Text(
                         "By Signing up you agree to the",
                         style: TextStyle(
-                            fontSize: 12,
+                            fontSize: size.height/60,
                             fontWeight: FontWeight.normal,
                             color: Colors.black),
                       ),
                       GestureDetector(
                           onTap: () {
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(builder: (context) => Select()),
-                              (Route<dynamic> route) => false,
-                            );
+                            _launchURL('https://letsmarch.in/termsofuse.html');
                           },
                           child: Text(
                             "terms of use",
                             style: TextStyle(
-                                fontSize: 12,
+                                fontSize: size.height/60,
                                 fontWeight: FontWeight.normal,
                                 decoration: TextDecoration.underline,
                                 color: Colors.black),
@@ -661,5 +648,12 @@ class _CustomWebViewState extends State<CustomWebView> {
           backgroundColor: Color.fromRGBO(66, 103, 178, 1),
           title: new Text("Facebook login"),
         ));
+  }
+}
+_launchURL(url) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
   }
 }

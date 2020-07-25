@@ -833,15 +833,18 @@ class _TestHomePageState extends State<TestHomePage> {
                                         style: TextStyle(fontSize: size.height / 39,fontWeight: FontWeight.w600),
                                     ),
                                     SizedBox(height: 3),
-                                    Text(
-                                        "${allProfiles[index]['user_info']['profession']}",
-                                        style: TextStyle(
-                                            color: Colors.black54,
-                                            fontSize: size.height / 43,
-                                            fontFamily: 'montserrat',
-                                            fontWeight: FontWeight.w600),
-                                        
-                                        ),
+                                    Container(
+                                      width: size.width * 0.57,
+                                      child: Text(
+                                          "${allProfiles[index]['user_info']['profession']}",
+                                          style: TextStyle(
+                                              color: Colors.black54,
+                                              fontSize: size.height / 43,
+                                              fontFamily: 'montserrat',
+                                              fontWeight: FontWeight.w600),
+                                            maxLines: 2,
+                                          ),
+                                    ),
                                         SizedBox(height: 3),
                                     Text(
                                       "Age: ${allProfiles[index]['user_info']['age']}",
@@ -853,7 +856,7 @@ class _TestHomePageState extends State<TestHomePage> {
                                     SizedBox(height: 6),  
                                     Container(
                                       width: size.width * 0.57,
-                                      child: Text(
+                                      child: AutoSizeText(
                                         "${(allProfiles[index]['user_info']['bio'].toString())}",
                                         style: TextStyle(fontSize: size.height / 46),
                                         maxLines: 3,
