@@ -418,6 +418,7 @@ class _GRegisterState extends State<GRegister> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(20.0, 0.0, 0, 0),
                 child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     _value == ''
                         ? Expanded(
@@ -428,11 +429,23 @@ class _GRegisterState extends State<GRegister> {
                                 onTap: () {
                                   _selectDate();
                                 },
-                                child: Text(
-                                  'Date of birth',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    decoration: TextDecoration.underline,
+                                child: Container( 
+                                 decoration: BoxDecoration(
+                                  border: Border.all(
+                                  color: Colors.grey[300],
+                                  width: 1,
+                                 ),
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(3.0),
+                                    child: Text(
+                                      'Date of birth',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey[500]
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -461,7 +474,7 @@ class _GRegisterState extends State<GRegister> {
                             ],
                           ),
                     SizedBox(
-                      width: 10,
+                      width: 30,
                     ),
                     Expanded(
                       flex: 2,

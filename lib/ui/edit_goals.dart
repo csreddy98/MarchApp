@@ -15,7 +15,8 @@ import 'home.dart';
 class EditGoal extends StatefulWidget {
   final String gno;
   final String uid;
-  EditGoal(this.gno, this.uid);
+  final String gname;
+  EditGoal(this.gno, this.uid ,this.gname);
   @override
   _EditGoalState createState() => _EditGoalState();
 }
@@ -40,6 +41,7 @@ class _EditGoalState extends State<EditGoal> {
   bool checkedValue = false;
   bool timeView = false;
   bool showWhichErrorText = false;
+  TimeOfDay time;
 
   int selectedHour = 0;
   int selectedMin = 0;
@@ -51,7 +53,13 @@ class _EditGoalState extends State<EditGoal> {
   void initState() {
     _load();
     super.initState();
-
+     time=TimeOfDay.now();
+    if(widget.gname!=""){
+      setState(() {
+        _disable=1;
+        selectedGoal=widget.gname;
+      });
+    } 
     var initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
     var initializationSettingsIOS = IOSInitializationSettings();
@@ -76,12 +84,11 @@ class _EditGoalState extends State<EditGoal> {
         iconTheme: IconThemeData(
           color: Colors.black, //change your color here
         ),
-        title: Center(
-            child: Text(
+        title: Text(
           "Update Goal",
           style: TextStyle(
-              color: Colors.black, fontSize: 18, fontFamily: 'montserrat'),
-        )),
+          color: Colors.black, fontSize: 18, fontFamily: 'montserrat'),
+        ),
         centerTitle: true,
       ),
       body: Padding(
@@ -181,7 +188,7 @@ class _EditGoalState extends State<EditGoal> {
                                         icon: Icon(
                                           Icons.clear,
                                           size: 16,
-                                          color: Color.fromRGBO(63, 92, 200, 1),
+                                          color: Colors.black,
                                         ),
                                         onPressed: () {
                                           setState(() {
@@ -335,6 +342,18 @@ class _EditGoalState extends State<EditGoal> {
                       setState(() {
                         checkedValue = newValue;
                       });
+                      if(checkedValue==true){
+                        setState(() {
+                          sendTime='${time.hour}:${time.minute}:00';
+                        });
+                        _pickTime();
+                      }
+                      else{
+                        setState(() {
+                          sendTime='none';
+                          print(sendTime);
+                        });
+                      }
                     },
                     controlAffinity: ListTileControlAffinity
                         .leading, //  <-- leading Checkbox
@@ -353,14 +372,14 @@ class _EditGoalState extends State<EditGoal> {
                         maintainState: true,
                         visible: checkedValue,
                         child: Container(
-                            height: size.height / 2.9,
+                            height: size.height / 10,
                             width: size.width / 1.14,
                             margin: EdgeInsets.only(top: 5, bottom: 5),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                    'Remind me Everyday at $selectedHour:$selectedMin $ampm',
+                                    'Remind me Everyday at ${time.hour}:${time.minute} ',
                                     style: TextStyle(
                                         color: Colors.black, fontSize: 16)),
                                 Padding(
@@ -369,7 +388,7 @@ class _EditGoalState extends State<EditGoal> {
                                     thickness: 1,
                                   ),
                                 ),
-                                Visibility(
+                                /*Visibility(
                                   maintainSize: false,
                                   maintainAnimation: true,
                                   maintainState: true,
@@ -416,8 +435,8 @@ class _EditGoalState extends State<EditGoal> {
                                       )
                                     ],
                                   ),
-                                ),
-                                timeView == false
+                                ),*/
+                                /*timeView == false
                                     ? Padding(
                                         padding:
                                             const EdgeInsets.only(left: 30),
@@ -570,7 +589,7 @@ class _EditGoalState extends State<EditGoal> {
                                     : Container(
                                         height: 0,
                                         width: 0,
-                                      ),
+                                      ),*/
                                 /*Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -661,8 +680,7 @@ class _EditGoalState extends State<EditGoal> {
                                 color: Theme.of(context).primaryColor,
                                 textColor: Colors.white,
                                 onPressed: () async {
-                                  if ((checkedValue == true && click == 1) ||
-                                      checkedValue == false) {
+
                                     if (selectedGoal != "" && goalsLevel != "") {
                                       if (sendTime != "none") {
                                         setState(() {
@@ -804,23 +822,6 @@ class _EditGoalState extends State<EditGoal> {
                                         backgroundColor: Colors.lightBlueAccent,
                                       ));
                                     }
-                                  } else {
-                                    _sk.currentState.showSnackBar(SnackBar(
-                                      content: Text(
-                                        "click done",
-                                        style: TextStyle(
-                                          fontStyle: FontStyle.italic,
-                                          fontSize: 15,
-                                        ),
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(12.0),
-                                              topRight: Radius.circular(12.0))),
-                                      duration: Duration(seconds: 3),
-                                      backgroundColor: Colors.lightBlueAccent,
-                                    ));
-                                  }
                                 },
                                 child: Text('Submit',
                                     style: Theme.of(context).textTheme.button),
@@ -885,6 +886,21 @@ class _EditGoalState extends State<EditGoal> {
         for (var i = 0; i < n.length; i++) {
           suggestions.add(res['result'][i].toString());
         }
+      });
+    }
+  }
+
+  _pickTime() async{
+    TimeOfDay t = await showTimePicker(
+        context: context,
+        initialTime: time,
+    );
+
+    if(t!=null){
+      setState(() {
+        sendTime='${t.hour}:${t.minute}:00';
+        print(sendTime);
+        time=t;
       });
     }
   }

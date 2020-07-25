@@ -7,6 +7,7 @@ import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:march/widgets/ProfileWidget.dart';
 import 'package:march/widgets/functions.dart';
+import 'package:march/support/back_profile.dart';
 // import 'package:http/http.dart' as http;
 
 class Profile extends StatefulWidget {
@@ -65,7 +66,7 @@ class _ProfileState extends State<Profile> {
           ),
           ),
           elevation: 0,
-          backgroundColor: Colors.transparent,
+          backgroundColor: Theme.of(context).primaryColor,
           actions: <Widget>[
             InkWell(
               onTap: () {
@@ -83,118 +84,122 @@ class _ProfileState extends State<Profile> {
           ],
         ),
         body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
             child: Column(
-              children: <Widget>[
-                GestureDetector(
-                  onVerticalDragUpdate: (details) {
-                    if (details.delta.dy >= 6) {
-                      Navigator.pop(context);
-                    }
-                  },
-                  child: Hero(
-                    tag: "$name",
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      color: Colors.transparent,
-                      child: ProfileTop(
-                        name: "$name",
-                        picUrl: "$pic",
-                        profession: "$profession",
-                        // location: "Age",
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0, vertical: 10.0),
-                  child: Text(
-                    "Age: $age",
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
-                      fontFamily: 'montserrat',
-                      fontSize: size.height / 45,
-                      height: 1.2,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 10.0, vertical: 13.0),
-                  child: Text(
-                    "$bio",
-                    maxLines: 4,
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
-                      fontFamily: 'montserrat',
-                      fontSize: size.height / 42,
-                      height: 1.2,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        "Your Goals",
-                        style: TextStyle(
-                            color: Colors.blueGrey , fontWeight: FontWeight.w600, fontSize: size.height / 46),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    mainAxisSize: MainAxisSize.min,
-                    children: List.generate(
-                        this.goals.length,
-                        (index) => Expanded(
-                            child: goalCardGenerator(
-                                context,
-                                "${this.goals[index]['goalName']}",
-                                int.parse(this.goals[index]['level'])))),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: Text(
-                    "Here’s what others are saying about you",
-                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: size.height / 43),
-                  ),
-                ),
-                Container(
-                    child: testimonials.length > 0
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: List.generate(
-                                testimonials.length,
-                                (index) => testimonial(
-                                    context,
-                                    testimonials[index]['profile_pic'],
-                                    testimonials[index]['fullName'],
-                                    testimonials[index]['message'])))
-                        : Padding(
-                          padding: const EdgeInsets.only(top: 15.0),
-                          child: Center(
-                              child: Text(
-                                  "Ughh Nobody wrote about you.\nTry Socializing more...",
-                                  style: TextStyle(fontSize: size.height / 48),
-                                  ),
-                            ),
-                        )),
-              ],
+        children: <Widget>[
+          CustomPaint(
+            painter: BackProfile(context),
+            child: Column(children: <Widget>[
+            GestureDetector(
+            onVerticalDragUpdate: (details) {
+            if (details.delta.dy >= 6) {
+              Navigator.pop(context);
+            }
+            },
+            child: Hero(
+            tag: "$name",
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              color: Colors.transparent,
+              child: ProfileTop(
+                name: "$name",
+                picUrl: "$pic",
+                profession: "$profession",
+                // location: "Age",
+              ),
+            ),
             ),
           ),
-        ));
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10.0, vertical: 10.0),
+            child: Text(
+            "Age: $age",
+            textAlign: TextAlign.justify,
+            style: TextStyle(
+              fontFamily: 'montserrat',
+              fontSize: size.height / 45,
+              height: 1.2,
+              fontWeight: FontWeight.normal,
+            ),
+            ),
+          ),
+          SizedBox(
+            height: size.height / 16,
+            child: Container(),)
+          ],),),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10.0, vertical: 13.0),
+            child: Text(
+            "$bio",
+            maxLines: 4,
+            textAlign: TextAlign.justify,
+            style: TextStyle(
+              fontFamily: 'montserrat',
+              fontSize: size.height / 42,
+              height: 1.2,
+              fontWeight: FontWeight.normal,
+            ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "Your Goals",
+                style: TextStyle(
+                    color: Colors.blueGrey , fontWeight: FontWeight.w600, fontSize: size.height / 46),
+              ),
+            ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.min,
+            children: List.generate(
+                this.goals.length,
+                    (index) => Expanded(
+                    child: goalCardGenerator(
+                        context,
+                        "${this.goals[index]['goalName']}",
+                        int.parse(this.goals[index]['level'])))),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 20),
+            child: Text(
+            "Here’s what others are saying about you",
+            style: TextStyle(fontWeight: FontWeight.w600, fontSize: size.height / 43),
+            ),
+          ),
+          Container(
+            child: testimonials.length > 0
+                ? Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: List.generate(
+                    testimonials.length,
+                        (index) => testimonial(
+                        context,
+                        testimonials[index]['profile_pic'],
+                        testimonials[index]['fullName'],
+                        testimonials[index]['message'])))
+                : Padding(
+              padding: const EdgeInsets.only(top: 15.0),
+              child: Center(
+                child: Text(
+                  "Ughh Nobody wrote about you.\nTry Socializing more...",
+                  style: TextStyle(fontSize: size.height / 48),
+                ),
+              ),
+            )),
+        ],
+            ),
+          ));
   }
 
   void _load() async {

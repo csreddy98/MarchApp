@@ -57,7 +57,7 @@ class _ShowGoalsState extends State<ShowGoals> {
                            mainAxisAlignment: MainAxisAlignment.end,
                            children: <Widget>[
                              Expanded(
-                                child: Row(
+                                child: Wrap(
                                   children: <Widget>[
                                     Text("Goal Name :  ",style: TextStyle(fontWeight: FontWeight.w600),),
                                     AutoSizeText(goals[index]['goalName'])
@@ -70,7 +70,7 @@ class _ShowGoalsState extends State<ShowGoals> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                      builder: (context) => EditGoal(goals[index]['goalNumber'],goals[index]['userId'])));
+                                      builder: (context) => EditGoal(goals[index]['goalNumber'],goals[index]['userId'],goals[index]['goalName'])));
                                 },
                              )
                            ],
@@ -125,7 +125,7 @@ class _ShowGoalsState extends State<ShowGoals> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => EditGoal((goals.length+1).toString(),goals[0]['userId'])));
+                      builder: (context) => EditGoal((goals.length+1).toString(),goals[0]['userId'],"")));
             },
             child: Icon(Icons.add),
           ),

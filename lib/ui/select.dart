@@ -48,6 +48,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
   TextEditingController numberController;
   TextEditingController dateController;
   TextEditingController cvvController;
+  TimeOfDay time;
 
   @override
   void initState() {
@@ -58,6 +59,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
     });
     _load();
     super.initState();
+    time=TimeOfDay.now();
     nameController = TextEditingController();
     numberController = TextEditingController();
     dateController = TextEditingController();
@@ -456,6 +458,18 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                   setState(() {
                     checkedValue = newValue;
                   });
+                  if(checkedValue==true){
+                    setState(() {
+                      sendTime='${time.hour}:${time.minute}:00';
+                    });
+                    _pickTime();
+                  }
+                  else{
+                    setState(() {
+                      sendTime='none';
+                      print(sendTime);
+                    });
+                  }
                 },
                 controlAffinity:
                     ListTileControlAffinity.leading, //  <-- leading Checkbox
@@ -473,14 +487,14 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                     maintainState: true,
                     visible: checkedValue,
                     child: Container(
-                        height: size.height / 2.9,
+                        height: size.height / 10,
                         width: size.width / 1.14,
                         margin: EdgeInsets.only(top: 5, bottom: 5),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                                'Remind me Everyday at $selectedHour:$selectedMin $ampm',
+                                'Remind me Everyday at ${time.hour}:${time.minute} ',
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 16)),
                             Padding(
@@ -489,205 +503,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                 thickness: 1,
                               ),
                             ),
-                            Visibility(
-                              maintainSize: false,
-                              maintainAnimation: true,
-                              maintainState: true,
-                              visible: timeView == false ? true : false,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: <Widget>[
-                                  GestureDetector(
-                                    onTap: () {
-                                      if (ampm == 'PM') {
-                                        int hour = selectedHour + 12;
-                                        String min = selectedMin.toString();
-                                        if (selectedMin < 10) {
-                                          min = "0$selectedMin";
-                                        }
-                                        setState(() {
-                                          click = 1;
-                                          sendTime = "$hour:$min:00";
-                                          print(sendTime);
-                                        });
-                                      } else {
-                                        String hr = selectedHour.toString();
-                                        String min = selectedMin.toString();
-                                        if (selectedHour < 10) {
-                                          min = "0$selectedMin";
-                                        }
-                                        if (selectedMin < 10) {
-                                          hr = "0$selectedHour";
-                                        }
-                                        setState(() {
-                                          click = 1;
-                                          sendTime = "$hr:$min:00";
-                                          print(sendTime);
-                                        });
-                                      }
-                                      setState(() {
-                                        timeView = true;
-                                      });
-                                    },
-                                    child: Text(
-                                      'Done',
-                                      style: TextStyle(fontSize: 14),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            timeView == false
-                                ? Padding(
-                                    padding: const EdgeInsets.only(left: 30),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: <Widget>[
-                                        Center(
-                                          child: Container(
-                                            width: size.width / 4.5,
-                                            height: size.height / 4,
-                                            child: CupertinoPicker(
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                              itemExtent: 50,
-                                              onSelectedItemChanged:
-                                                  (int index) {
-                                                setState(() {
-                                                  selectedHour = index + 1;
-                                                });
-                                                //   print("$selectedHour");
-                                              },
-                                              children: <Widget>[
-                                                Text("01"),
-                                                Text("02"),
-                                                Text("03"),
-                                                Text("04"),
-                                                Text("05"),
-                                                Text("06"),
-                                                Text("07"),
-                                                Text("08"),
-                                                Text("09"),
-                                                Text("10"),
-                                                Text("11"),
-                                                Text("12"),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
 
-//                                  SizedBox(width: size.width/50,),
-                                        Container(
-                                          width: 75,
-                                          height: 100,
-                                          child: CupertinoPicker(
-                                            backgroundColor: Colors.transparent,
-                                            itemExtent: 50,
-                                            children: <Widget>[
-                                              Text("01"),
-                                              Text("02"),
-                                              Text("03"),
-                                              Text("04"),
-                                              Text("05"),
-                                              Text("06"),
-                                              Text("07"),
-                                              Text("08"),
-                                              Text("09"),
-                                              Text("10"),
-                                              Text("11"),
-                                              Text("12"),
-                                              Text("13"),
-                                              Text("14"),
-                                              Text("15"),
-                                              Text("16"),
-                                              Text("17"),
-                                              Text("18"),
-                                              Text("19"),
-                                              Text("20"),
-                                              Text("21"),
-                                              Text("22"),
-                                              Text("23"),
-                                              Text("24"),
-                                              Text("25"),
-                                              Text("26"),
-                                              Text("27"),
-                                              Text("28"),
-                                              Text("29"),
-                                              Text("30"),
-                                              Text("31"),
-                                              Text("32"),
-                                              Text("33"),
-                                              Text("34"),
-                                              Text("35"),
-                                              Text("36"),
-                                              Text("37"),
-                                              Text("38"),
-                                              Text("39"),
-                                              Text("40"),
-                                              Text("41"),
-                                              Text("42"),
-                                              Text("43"),
-                                              Text("44"),
-                                              Text("45"),
-                                              Text("46"),
-                                              Text("47"),
-                                              Text("48"),
-                                              Text("49"),
-                                              Text("50"),
-                                              Text("51"),
-                                              Text("52"),
-                                              Text("53"),
-                                              Text("54"),
-                                              Text("55"),
-                                              Text("56"),
-                                              Text("57"),
-                                              Text("58"),
-                                              Text("59"),
-                                            ],
-                                            onSelectedItemChanged: (int index) {
-                                              setState(() {
-                                                selectedMin = index + 1;
-                                              });
-                                              //   print("$selectedMin");
-                                            },
-                                          ),
-                                        ),
-                                        //                                SizedBox(width: size.width/50,),
-                                        Center(
-                                          child: Container(
-                                            width: 75,
-                                            height: 115,
-                                            child: CupertinoPicker(
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                              itemExtent: 50,
-                                              onSelectedItemChanged:
-                                                  (int index) {
-                                                if (index == 0) {
-                                                  setState(() {
-                                                    ampm = "AM";
-                                                  });
-                                                } else {
-                                                  setState(() {
-                                                    ampm = "PM";
-                                                  });
-                                                }
-                                              },
-                                              children: <Widget>[
-                                                Text("AM"),
-                                                Text("PM"),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                : Container(
-                                    height: 0,
-                                    width: 0,
-                                  ),
                             /*Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -781,8 +597,6 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                   color: Theme.of(context).primaryColor,
                                   textColor: Colors.white,
                                   onPressed: () async {
-                                    if ((checkedValue == true && click == 1) ||
-                                        checkedValue == false) {
                                       if (goalsLevel != "" &&
                                           added[count - 1] != "") {
                                         if (sendTime != "none") {
@@ -941,25 +755,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                               Colors.lightBlueAccent,
                                         ));
                                       }
-                                    } else {
-                                      _sk.currentState.showSnackBar(SnackBar(
-                                        content: Text(
-                                          "click done",
-                                          style: TextStyle(
-                                            fontStyle: FontStyle.italic,
-                                            fontSize: 15,
-                                          ),
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(12.0),
-                                                topRight:
-                                                    Radius.circular(12.0))),
-                                        duration: Duration(seconds: 3),
-                                        backgroundColor: Colors.lightBlueAccent,
-                                      ));
                                     }
-                                  },
                                 ),
                               ),
                             ],
@@ -984,8 +780,6 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                             color: Theme.of(context).primaryColor,
                             textColor: Colors.white,
                             onPressed: () async {
-                              if ((checkedValue == true && click == 1) ||
-                                  checkedValue == false) {
                                 if (goalsLevel != "" && added[0] != "") {
                                   if (sendTime != "none") {
                                     setState(() {
@@ -1105,24 +899,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                     backgroundColor: Colors.lightBlueAccent,
                                   ));
                                 }
-                              } else {
-                                _sk.currentState.showSnackBar(SnackBar(
-                                  content: Text(
-                                    "Click Done",
-                                    style: TextStyle(
-                                      fontStyle: FontStyle.italic,
-                                      fontSize: 15,
-                                    ),
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(12.0),
-                                          topRight: Radius.circular(12.0))),
-                                  duration: Duration(seconds: 3),
-                                  backgroundColor: Colors.lightBlueAccent,
-                                ));
                               }
-                            },
                           ),
                         ),
                       ],
@@ -1151,6 +928,22 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
       platformChannelSpecifics,
     );
   }
+
+  _pickTime() async{
+    TimeOfDay t = await showTimePicker(
+      context: context,
+      initialTime: time,
+    );
+
+    if(t!=null){
+      setState(() {
+        sendTime='${t.hour}:${t.minute}:00';
+        print(sendTime);
+        time=t;
+      });
+    }
+  }
+
 
   void _onLoading() {
     showDialog(

@@ -4,6 +4,7 @@ import 'package:march/ui/account_settings.dart';
 import 'package:march/ui/edit.dart';
 import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'show_goals.dart';
 import 'login.dart';
 
@@ -209,6 +210,7 @@ class _SettingsState extends State<Settings> {
                       thickness: 1,
                     ),
                     InkWell(
+
                       child: Container(
                         child: Row(
                           children: <Widget>[
@@ -233,14 +235,14 @@ class _SettingsState extends State<Settings> {
                             IconButton(
                               icon: Icon(Icons.arrow_forward_ios),
                               iconSize: 20,
-                              onPressed: () {},
+                              onPressed: () =>_launchURL('http://march.lbits.co/'),
                             )
                           ],
                         ),
                         height: 50,
                         width: double.infinity,
                       ),
-                      onTap: () => debugPrint("Privacy Policies"),
+                      onTap: () => _launchURL('http://march.lbits.co/'),
                     ),
                     Divider(
                       thickness: 1,
@@ -364,5 +366,12 @@ class _SettingsState extends State<Settings> {
         ),
       ),
     );
+  }
+}
+_launchURL(url) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
   }
 }

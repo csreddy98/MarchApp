@@ -20,6 +20,8 @@ class MyApp extends StatelessWidget {
         buttonColor: Color(0xffFFBF46),
         disabledColor: Color.fromRGBO(254, 209, 125, 0.5),
         primaryColor: Color(0xffFFBF46),
+        accentColor:Color(0xffFFBF46),
+        buttonBarTheme: ButtonBarThemeData(buttonTextTheme: ButtonTextTheme.accent),
         textTheme: TextTheme(
             headline1: TextStyle(
               color: Colors.white,
@@ -27,7 +29,7 @@ class MyApp extends StatelessWidget {
               fontSize: 14,
             ),
             headline2: TextStyle(
-              color: Color(0xFF3a7b8b),
+              color: Color(0xffFFBF46),
               fontWeight: FontWeight.w500,
               fontSize: 14,
             ),
