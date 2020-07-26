@@ -50,7 +50,7 @@ class _ViewProfileState extends State<ViewProfile> {
         elevation: 0,
         backgroundColor: Theme.of(context).primaryColor,
         title: Center(child: Text("User Profile", style: TextStyle(
-            color: Colors.white, fontSize: 18, fontFamily: 'montserrat'),)),
+            color: Colors.white, fontSize: 18, fontFamily: 'Nunito'),)),
         actions: <Widget>[
           IconButton(
               icon: Icon(AntDesign.adduser),

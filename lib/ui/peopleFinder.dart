@@ -130,7 +130,7 @@
 //                                 wordSpacing: 1,
 //                                 letterSpacing: 0,
 //                                 //height: 1.5,
-//                                 fontFamily: 'montserrat'),
+//                                 fontFamily: 'Nunito'),
 //                             children: [
 //                               TextSpan(
 //                                   text: "${name.split(" ")[0]}!",
@@ -521,7 +521,7 @@
 //                     child: Text(
 //                       "$description",
 //                       style: TextStyle(
-//                           fontFamily: 'montserrat',
+//                           fontFamily: 'Nunito',
 //                           fontSize: size.height / 47,
 //                           fontWeight: FontWeight.w500),
 //                     ),

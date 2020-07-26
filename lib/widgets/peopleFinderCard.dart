@@ -70,7 +70,7 @@ class _PeopleFinderCardState extends State<PeopleFinderCard> {
               child: Text(
                 "By the same illusion which lifts the horizon of the sea to the level of the spectator on",
                 style: TextStyle(
-                    fontFamily: 'montserrat',
+                    fontFamily: 'Nunito',
                     fontSize: 14,
                     fontWeight: FontWeight.w100),
               ),

@@ -380,7 +380,7 @@ class _RegisterState extends State<Register> {
                         style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            fontFamily: 'montserrat'
+                            fontFamily: 'Nunito'
                         ),
                       ),
                       shape: RoundedRectangleBorder(

@@ -221,7 +221,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           maxLines: 4,
                           textAlign: TextAlign.justify,
                           style: TextStyle(
-                            fontFamily: 'montserrat',
+                            fontFamily: 'Nunito',
                             fontSize: 14,
                             height: 1.2,
                             fontWeight: FontWeight.normal,

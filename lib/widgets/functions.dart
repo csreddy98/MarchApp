@@ -33,7 +33,7 @@ Widget testimonial(context, String image, String name, String description) {
                     maxLines: 4,
                     textAlign: TextAlign.justify,
                     style: TextStyle(
-                      fontFamily: 'montserrat',
+                      fontFamily: 'Nunito',
                       fontSize: 14,
                       height: 1.2,
                       fontWeight: FontWeight.normal,

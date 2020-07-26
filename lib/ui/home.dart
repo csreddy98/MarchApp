@@ -254,14 +254,14 @@ class _HomeState extends State<Home> {
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
-                    fontFamily: 'montserrat'),
+                    fontFamily: 'Nunito'),
               )),
             )
           : Center(
               child: Text(
               title,
               style: TextStyle(
-                  color: Colors.black, fontSize: 18, fontFamily: 'montserrat'),
+                  color: Colors.black, fontSize: 18, fontFamily: 'Nunito'),
             )),
       actions: <Widget>[
         //if added change it to 3
@@ -284,9 +284,9 @@ class _HomeState extends State<Home> {
   }
 
   Widget bottomNavBar() {
+    Size size=MediaQuery.of(context).size;
     return BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        iconSize: 20,
         elevation: 1,
         backgroundColor: Color(0xFFffffff),
         currentIndex: _currentindex,
@@ -294,7 +294,7 @@ class _HomeState extends State<Home> {
           new BottomNavigationBarItem(
               icon: new Icon(
                 Ionicons.ios_people,
-                size: 28,
+                size: size.height/28
               ),
               title: Text("Find People")),
           //   new BottomNavigationBarItem(icon: new Icon(Icons.date_range,size: 30,),title: Text("")),
@@ -320,7 +320,8 @@ class _HomeState extends State<Home> {
                         ),
                   new Icon(
                     FontAwesome.send,
-                    size: 20,
+                    size: size.height/34,
+                    //20
                   )
                 ],
               ),
@@ -328,7 +329,7 @@ class _HomeState extends State<Home> {
           new BottomNavigationBarItem(
               icon: new Icon(
                 Icons.person,
-                size: 28,
+                size: size.height/28
               ),
               title: Text("Profile")),
         ],

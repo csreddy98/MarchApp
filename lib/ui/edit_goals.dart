@@ -84,7 +84,7 @@ class _EditGoalState extends State<EditGoal> {
         title: Text(
           "Update Goal",
           style: TextStyle(
-          color: Colors.black, fontSize: 18, fontFamily: 'montserrat'),
+          color: Colors.black, fontSize: 18, fontFamily: 'Nunito'),
         ),
         centerTitle: true,
       ),
@@ -315,7 +315,7 @@ class _EditGoalState extends State<EditGoal> {
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 letterSpacing: 0.3,
-                                fontFamily: 'montserrat',
+                                fontFamily: 'Nunito',
                                 color: Colors.black54,
                               ),
                             ),

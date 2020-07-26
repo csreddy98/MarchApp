@@ -117,7 +117,7 @@ class _EditProfileState extends State<Edit_Profile> {
         ),
         title: Text("Edit Profile",
           style: TextStyle(
-              color: Colors.black,fontSize: 18,fontFamily: 'montserrat'
+              color: Colors.black,fontSize: 18,fontFamily: 'Nunito'
           ),),
 
         centerTitle: true,

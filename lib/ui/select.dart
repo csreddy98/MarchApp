@@ -430,7 +430,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             letterSpacing: 0.3,
-                            fontFamily: 'montserrat',
+                            fontFamily: 'Nunito',
                             color: Colors.black54,
                           ),
                         ),

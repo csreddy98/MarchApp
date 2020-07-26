@@ -41,6 +41,7 @@ class _LoginState extends State<Login> {
   }
 
   Future _signIn() async {
+    try{
     GoogleSignInAccount googleSignInAccount = await google.signIn();
     GoogleSignInAuthentication gsa = await googleSignInAccount.authentication;
     final AuthCredential credential = GoogleAuthProvider.getCredential(
@@ -181,6 +182,15 @@ class _LoginState extends State<Login> {
         );
       }
     });
+    }
+    catch (e) {
+        if (e.code != 'ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL')
+        throw e;
+       else {
+        Navigator.pop(context);
+        dialog('facebook');
+        }
+      }
   }
 
   void _onLoading() {
@@ -212,6 +222,7 @@ class _LoginState extends State<Login> {
                 ),
             maintainState: true));
     if (result != null) {
+      print(result.toString());
       _onLoading();
       try {
         final facebookAuthCred =
@@ -347,10 +358,43 @@ class _LoginState extends State<Login> {
         });
 
       } catch (e) {
-        print(e);
+        if (e.code != 'ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL')
+        throw e;
+        else {
+        Navigator.pop(context);
+        dialog('google');
+        }
       }
     }
   }
+
+  Future<void> dialog(auth) async {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false, // user must tap button!
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Login Issue',style: TextStyle(fontWeight: FontWeight.bold,color: Theme.of(context).primaryColor)),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text('Try to login with different account.',style: TextStyle(color: Colors.black)),
+              Text('You already have an account in $auth',style: TextStyle(color: Colors.black)),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Ok'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -493,7 +537,7 @@ class _LoginState extends State<Login> {
                           SizedBox(
                             width: size.width/40,
                           ),
-                          Icon(AntDesign.googleplus,color: Color(0xffdb4a39),size: size.height/30,),
+                          Icon(AntDesign.google,color: Color(0xffdb4a39),size: size.height/30,),
                           Expanded(
                             child: Center(
                               child: Text("Continue With Google   ",

@@ -32,7 +32,7 @@ class _AccountSettingsState extends State<Account_Settings> {
             child: Text(
           "Account Settings",
           style: TextStyle(
-              color: Colors.black, fontSize: 18, fontFamily: 'montserrat'),
+              color: Colors.black, fontSize: 18, fontFamily: 'Nunito'),
         )),
       ),
       body: Container(

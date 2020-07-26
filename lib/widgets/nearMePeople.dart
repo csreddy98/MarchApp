@@ -172,7 +172,7 @@ class _NearMePeopleState extends State<NearMePeople>
                     child: Text(
                       "$description",
                       style: TextStyle(
-                          fontFamily: 'montserrat',
+                          fontFamily: 'Nunito',
                           fontSize: 14,
                           fontWeight: FontWeight.w100),
                     ),

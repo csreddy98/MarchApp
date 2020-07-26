@@ -44,7 +44,7 @@ class ProfileTop extends StatelessWidget {
             style: TextStyle(
                 color: Colors.black54,
                 fontSize: size.height / 42,
-                fontFamily: 'montserrat',
+                fontFamily: 'Nunito',
                 fontWeight: FontWeight.w600),
           ),
         ),
@@ -59,7 +59,7 @@ class ProfileTop extends StatelessWidget {
                       "$location",
                       style: TextStyle(
                           fontWeight: FontWeight.w100,
-                          fontFamily: 'montserrat',
+                          fontFamily: 'Nunito',
                           fontSize: size.height / 48),
                     ),
                   ],

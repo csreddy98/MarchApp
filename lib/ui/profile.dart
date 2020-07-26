@@ -116,7 +116,7 @@ class _ProfileState extends State<Profile> {
             "Age: $age",
             textAlign: TextAlign.justify,
             style: TextStyle(
-              fontFamily: 'montserrat',
+              fontFamily: 'Nunito',
               fontSize: size.height / 45,
               height: 1.2,
               fontWeight: FontWeight.normal,
@@ -135,7 +135,7 @@ class _ProfileState extends State<Profile> {
             maxLines: 4,
             textAlign: TextAlign.justify,
             style: TextStyle(
-              fontFamily: 'montserrat',
+              fontFamily: 'Nunito',
               fontSize: size.height / 42,
               height: 1.2,
               fontWeight: FontWeight.normal,

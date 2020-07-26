@@ -157,7 +157,7 @@ class _NotifyState extends State<Notify> {
                         flex: 3,
                         child: Center(child: Padding(
                           padding: const EdgeInsets.only(left:35.0),
-                          child: Text(goals[0]!=""?goals[0]:"",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontWeight: FontWeight.bold,fontFamily: 'montserrat',fontSize: 20),),
+                          child: Text(goals[0]!=""?goals[0]:"",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontWeight: FontWeight.bold,fontFamily: 'Nunito',fontSize: 20),),
                         ))),
                     IconButton(icon: Icon(Icons.edit,size: 18,color: Color.fromRGBO(63, 92, 200, 1),),
                     onPressed: (){
@@ -372,7 +372,7 @@ class _NotifyState extends State<Notify> {
                       flex: 3,
                       child: Center(child: Padding(
                         padding: const EdgeInsets.only(left:35.0),
-                        child: Text(goals[1]!=""?goals[1]:"",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontWeight: FontWeight.bold,fontFamily: 'montserrat',fontSize: 20),),
+                        child: Text(goals[1]!=""?goals[1]:"",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontWeight: FontWeight.bold,fontFamily: 'Nunito',fontSize: 20),),
                       ))),
                   IconButton(icon: Icon(Icons.edit,size: 18,color: Color.fromRGBO(63, 92, 200, 1),),onPressed: (){
                     setState(() {
@@ -582,7 +582,7 @@ class _NotifyState extends State<Notify> {
                       flex: 3,
                       child: Center(child: Padding(
                         padding: const EdgeInsets.only(left:35.0),
-                        child: Text(goals[2]!=""?goals[2]:"",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontWeight: FontWeight.bold,fontFamily: 'montserrat',fontSize: 20),),
+                        child: Text(goals[2]!=""?goals[2]:"",style: TextStyle(color: Color.fromRGBO(63, 92, 200, 1) ,fontWeight: FontWeight.bold,fontFamily: 'Nunito',fontSize: 20),),
                       ))),
                   IconButton(icon: Icon(Icons.edit,size: 18,color: Color.fromRGBO(63, 92, 200, 1),),
                   onPressed:(){

@@ -84,7 +84,7 @@ class _SlidercontainerState extends State<Slider_container> {
         title: Text(
           "Filters",
           style: TextStyle(
-              color: Colors.black, fontSize: 22, fontFamily: 'montserrat'),
+              color: Colors.black, fontSize: 22, fontFamily: 'Nunito'),
         ),
         centerTitle: true,
       ),

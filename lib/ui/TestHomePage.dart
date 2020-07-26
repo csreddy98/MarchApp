@@ -309,7 +309,7 @@ class _TestHomePageState extends State<TestHomePage> {
                     child: Text(
                       "$description",
                       style: TextStyle(
-                          fontFamily: 'montserrat',
+                          fontFamily: 'Nunito',
                           fontSize: size.height / 47,
                           fontWeight: FontWeight.w500),
                     ),
@@ -496,7 +496,7 @@ class _TestHomePageState extends State<TestHomePage> {
                                 wordSpacing: 1,
                                 letterSpacing: 0,
                                 //height: 1.5,
-                                fontFamily: 'montserrat'),
+                                fontFamily: 'Nunito'),
                             children: [
                               TextSpan(
                                   text: "${name.split(" ")[0]}!",
@@ -840,7 +840,7 @@ class _TestHomePageState extends State<TestHomePage> {
                                           style: TextStyle(
                                               color: Colors.black54,
                                               fontSize: size.height / 43,
-                                              fontFamily: 'montserrat',
+                                              fontFamily: 'Nunito',
                                               fontWeight: FontWeight.w600),
                                             maxLines: 2,
                                           ),
@@ -850,7 +850,7 @@ class _TestHomePageState extends State<TestHomePage> {
                                       "Age: ${allProfiles[index]['user_info']['age']}",
                                       style: TextStyle(
                                         fontSize: size.height / 48,
-                                        fontFamily: 'montserrat',
+                                        fontFamily: 'Nunito',
                                         fontWeight: FontWeight.w400),
                                     ),
                                     SizedBox(height: 6),  

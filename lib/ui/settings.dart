@@ -51,7 +51,7 @@ class _SettingsState extends State<Settings> {
         title: Text(
           "Settings",
           style: TextStyle(
-              color: Colors.black, fontSize: 18, fontFamily: 'montserrat'),
+              color: Colors.black, fontSize: 18, fontFamily: 'Nunito'),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
