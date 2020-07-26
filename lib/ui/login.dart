@@ -363,13 +363,14 @@ class _LoginState extends State<Login> {
             Column(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(top: 50.0),
+                  
+                  padding: const EdgeInsets.only(top: 70.0),
                   child: Center(
                       child: Text(
                     "Welcome ",
                     style: TextStyle(
-                        fontFamily: 'montserrat',
-                        fontSize: size.height/23,
+                        fontFamily: 'Nunito',
+                        fontSize: size.height/26,
                         fontWeight: FontWeight.bold,
                         color: Colors.black),
                   )),
@@ -380,16 +381,16 @@ class _LoginState extends State<Login> {
                     Text(
                       "to ",
                       style: TextStyle(
-                          fontFamily: 'montserrat',
-                          fontSize: size.height/23,
+                          fontFamily: 'Nunito',
+                          fontSize: size.height/26,
                           fontWeight: FontWeight.bold,
                           color: Colors.black),
                     ),
                     Text(
                       "March",
                       style: TextStyle(
-                          fontFamily: 'montserrat',
-                          fontSize: size.height/23,
+                          fontFamily: 'Nunito',
+                          fontSize: size.height/26,
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).primaryColor),
                     ),
@@ -397,11 +398,10 @@ class _LoginState extends State<Login> {
                 ),
                 Image.asset(
                             'assets/images/opendoodle.png',
-                            height: 200,
-                            width: 200,
+                            height: size.height/ 4,
                           ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
+                  padding: const EdgeInsets.only(top: 20.0),
                   child: Center(
                       child: Column(
                     children: <Widget>[
@@ -409,14 +409,14 @@ class _LoginState extends State<Login> {
                         "The best way to meet people who have",
                         style: TextStyle(
                             fontSize: size.height/50,
-                            fontWeight: FontWeight.w200,
+                            fontWeight: FontWeight.w400,
                             color: Colors.black),
                       ),
                       Text(
                         "goals as you. Let's get Started!",
                         style: TextStyle(
                             fontSize: size.height/50,
-                            fontWeight: FontWeight.w200,
+                            fontWeight: FontWeight.w400,
                             color: Colors.black),
                       ),
                     ],
@@ -426,10 +426,10 @@ class _LoginState extends State<Login> {
                   padding: const EdgeInsets.only(top: 20.0, bottom: 10),
                   child: Center(
                       child: Text(
-                    "CONTINUE WITH",
+                    "Login / Signup",
                     style: TextStyle(
                         fontSize: size.height/50,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w400,
                         color: Colors.black),
                   )),
                 ),
@@ -437,7 +437,7 @@ class _LoginState extends State<Login> {
                   padding: const EdgeInsets.fromLTRB(20.0, 5, 20, 3),
                   child: ButtonTheme(
                     minWidth: size.width,
-                    height: size.height/13,
+                    height: size.height/15,
                     child: RaisedButton(
                       shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(10.0),
@@ -476,7 +476,7 @@ class _LoginState extends State<Login> {
                   padding: const EdgeInsets.fromLTRB(20.0, 0, 20, 5),
                   child: ButtonTheme(
                     minWidth: size.width,
-                    height: size.height/13,
+                    height: size.height/15,
                     child: RaisedButton(
                       shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(10.0),
@@ -493,7 +493,7 @@ class _LoginState extends State<Login> {
                           SizedBox(
                             width: size.width/40,
                           ),
-                          Icon(AntDesign.googleplus,color: Color(0xffdb4a39),size: size.height/32,),
+                          Icon(AntDesign.googleplus,color: Color(0xffdb4a39),size: size.height/30,),
                           Expanded(
                             child: Center(
                               child: Text("Continue With Google   ",
@@ -510,7 +510,7 @@ class _LoginState extends State<Login> {
                   padding: const EdgeInsets.fromLTRB(20.0, 0, 20, 5),
                   child: ButtonTheme(
                     minWidth: size.width,
-                    height: size.height/13,
+                    height: size.height/15,
                     child: RaisedButton(
                       shape: new RoundedRectangleBorder(
                           borderRadius: new BorderRadius.circular(10.0)),
@@ -572,8 +572,9 @@ class _LoginState extends State<Login> {
                       Text(
                         "By Signing up you agree to the",
                         style: TextStyle(
-                            fontSize: size.height/60,
-                            fontWeight: FontWeight.normal,
+                            fontSize: size.height/55,
+                            letterSpacing: 0.2,
+                            fontWeight: FontWeight.w300,
                             color: Colors.black),
                       ),
                       GestureDetector(
@@ -581,10 +582,11 @@ class _LoginState extends State<Login> {
                             _launchURL('https://letsmarch.in/termsofuse.html');
                           },
                           child: Text(
-                            "terms of use",
+                            "Terms of Use",
                             style: TextStyle(
-                                fontSize: size.height/60,
-                                fontWeight: FontWeight.normal,
+                                fontSize: size.height/55,
+                                letterSpacing: 0.2,
+                                fontWeight: FontWeight.w300,
                                 decoration: TextDecoration.underline,
                                 color: Colors.black),
                           )),

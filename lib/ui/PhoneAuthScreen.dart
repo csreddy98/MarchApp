@@ -57,8 +57,9 @@ class _PhoneAuthGetPhoneState extends State<PhoneAuthScreen> {
                         Padding(
                           padding: const EdgeInsets.only(top:15.0),
                           child: Text(
-                            "To Verify your account,\nPlease enter your phone number",
-                            style: TextStyle(fontSize: 14.0, color: Colors.black),textAlign: TextAlign.center,
+                            // To Verify your account, Please enter your phone number
+                            "Please enter your phone number,\n to verify your account",
+                            style: TextStyle(fontSize: _height/55 , color: Colors.black),textAlign: TextAlign.center,
                           ),
                         )
                       ],
