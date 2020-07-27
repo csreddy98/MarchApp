@@ -59,7 +59,7 @@ class _PhoneAuthGetPhoneState extends State<PhoneAuthScreen> {
                           child: Text(
                             // To Verify your account, Please enter your phone number
                             "Please enter your phone number,\n to verify your account",
-                            style: TextStyle(fontSize: _height/55 , color: Colors.black),textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: _height/44 , color: Colors.black),textAlign: TextAlign.center,
                           ),
                         )
                       ],

@@ -51,7 +51,7 @@ class _SettingsState extends State<Settings> {
         title: Text(
           "Settings",
           style: TextStyle(
-              color: Colors.black, fontSize: 18, fontFamily: 'Nunito'),
+              color: Colors.black, fontSize: size.height / 32, fontFamily: 'Nunito'),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -60,11 +60,11 @@ class _SettingsState extends State<Settings> {
         child: Container(
           width: double.infinity,
           height: size.height,
-          color: Colors.grey.withAlpha(30),
+          // color: Colors.grey.withAlpha(30),
           child: Column(
             children: <Widget>[
               Container(
-                margin: EdgeInsets.only(left: 30, right: 30, top: 15),
+                margin: EdgeInsets.only(left: 10, right: 10, top: 15),
                 width: size.width / 0.5,
                 height: size.height / 1.4,
                 decoration: BoxDecoration(
@@ -86,9 +86,10 @@ class _SettingsState extends State<Settings> {
                                   "Edit Profile",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w800,
-                                      color: Colors.black87),
+                                      fontSize: size.height/40,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black,
+                                      letterSpacing: 0.3),
                                 ),
                               ),
                             ),
@@ -129,9 +130,10 @@ class _SettingsState extends State<Settings> {
                                   "Edit Goals",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w800,
-                                      color: Colors.black87),
+                                      fontSize: size.height/40,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black,
+                                      letterSpacing: 0.3),
                                 ),
                               ),
                             ),
@@ -178,9 +180,10 @@ class _SettingsState extends State<Settings> {
                                     "Account Settings",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w800,
-                                        color: Colors.black87),
+                                        fontSize: size.height/40,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black,
+                                      letterSpacing: 0.3),
                                   ),
                                 ),
                               ),
@@ -221,9 +224,10 @@ class _SettingsState extends State<Settings> {
                                   "Privacy Policies",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w800,
-                                      color: Colors.black87),
+                                      fontSize: size.height/40,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black,
+                                      letterSpacing: 0.3),
                                 ),
                               ),
                             ),
@@ -258,9 +262,10 @@ class _SettingsState extends State<Settings> {
                                   "Terms of Use",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w800,
-                                      color: Colors.black87),
+                                      fontSize: size.height/40,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black,
+                                      letterSpacing: 0.3),
                                 ),
                               ),
                             ),
@@ -295,9 +300,10 @@ class _SettingsState extends State<Settings> {
                                   "FAQ's",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w800,
-                                      color: Colors.black87),
+                                      fontSize: size.height/40,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black,
+                                      letterSpacing: 0.3),
                                 ),
                               ),
                             ),

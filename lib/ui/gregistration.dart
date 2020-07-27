@@ -228,6 +228,7 @@ class _GRegisterState extends State<GRegister> {
                           color: Colors.black,
                           fontWeight: FontWeight.w400),
                       decoration: InputDecoration(
+                          contentPadding: EdgeInsets.fromLTRB(15,10,10,10),
                           filled: true,
                           fillColor: nameColor,
                           enabledBorder: OutlineInputBorder(
@@ -252,7 +253,7 @@ class _GRegisterState extends State<GRegister> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(20.0, 20, 20, 0),
+                padding: const EdgeInsets.fromLTRB(20.0, 15, 20, 0),
                 child: FocusScope(
                   onFocusChange: (focus) {
                     setState(() {
@@ -269,6 +270,7 @@ class _GRegisterState extends State<GRegister> {
                         color: Colors.black,
                         fontWeight: FontWeight.w400),
                     decoration: InputDecoration(
+                        contentPadding: EdgeInsets.fromLTRB(15,10,10,10),
                         filled: true,
                         fillColor: emailColor,
                         enabledBorder: OutlineInputBorder(
@@ -291,7 +293,7 @@ class _GRegisterState extends State<GRegister> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(20.0, 20, 20, 0),
+                padding: const EdgeInsets.fromLTRB(20.0, 15, 20, 0),
                 child: FocusScope(
                   child: Focus(
                     onFocusChange: (focus) {
@@ -309,6 +311,7 @@ class _GRegisterState extends State<GRegister> {
                           color: Colors.black,
                           fontWeight: FontWeight.w400),
                       decoration: InputDecoration(
+                          contentPadding: EdgeInsets.fromLTRB(15,10,10,10),
                           filled: true,
                           fillColor: phoneColor,
                           enabledBorder: OutlineInputBorder(
@@ -333,7 +336,7 @@ class _GRegisterState extends State<GRegister> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(20.0, 20, 20, 20),
+                padding: const EdgeInsets.fromLTRB(20.0, 15, 20, 15),
                 child: FocusScope(
                   child: Focus(
                     onFocusChange: (focus) {
@@ -350,6 +353,7 @@ class _GRegisterState extends State<GRegister> {
                           color: Colors.black,
                           fontWeight: FontWeight.w400),
                       decoration: InputDecoration(
+                          contentPadding: EdgeInsets.fromLTRB(15,10,10,10),
                           filled: true,
                           fillColor: proColor,
                           hintText: "What do you do",
@@ -392,6 +396,7 @@ class _GRegisterState extends State<GRegister> {
                           color: Colors.black,
                           fontWeight: FontWeight.w400),
                       decoration: InputDecoration(
+                          contentPadding: EdgeInsets.fromLTRB(15,10,10,10),
                           fillColor: bioColor,
                           filled: true,
                           hintText: "Tell us something about you",
@@ -403,7 +408,7 @@ class _GRegisterState extends State<GRegister> {
                           ),
                           border: OutlineInputBorder(),
                           hintStyle:
-                              TextStyle(color: Colors.black26, fontSize: 15.0)),
+                              TextStyle(color: Colors.black26, fontSize: 16.0)),
                       onChanged: (String value) {
                         try {
                           bio = value;
@@ -416,41 +421,41 @@ class _GRegisterState extends State<GRegister> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(20.0, 0.0, 0, 0),
+                padding: const EdgeInsets.fromLTRB(20.0, 5, 20, 0),
                 child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     _value == ''
-                        ? Expanded(
-                            flex: 1,
-                            child: SizedBox(
-                              width: 100,
-                              child: GestureDetector(
-                                onTap: () {
-                                  _selectDate();
-                                },
-                                child: Container( 
-                                 decoration: BoxDecoration(
-                                  border: Border.all(
-                                  color: Colors.grey[300],
-                                  width: 1,
-                                 ),
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(3.0),
-                                    child: Text(
-                                      'Date of birth',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.grey[500]
-                                      ),
+                        ? SizedBox(
+                          width: 100,
+                          child: GestureDetector(
+                            onTap: () {
+                              _selectDate();
+                            },
+                            child: Container( 
+                             decoration: BoxDecoration(
+                              border: Border.all(
+                              color: Colors.grey[500],
+                              width: 1,
+                             ),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(3.0),
+                                child: Center(
+                                  child: Text(
+                                    'Date of birth',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey[500]
                                     ),
                                   ),
                                 ),
                               ),
                             ),
-                          )
+                          ),
+                        )
                         : Row(
                             children: <Widget>[
                               Text(
@@ -473,27 +478,24 @@ class _GRegisterState extends State<GRegister> {
                               ),
                             ],
                           ),
-                    SizedBox(
-                      width: 30,
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Row(
-                        children: <Widget>[
-                          Text(
-                            'Gender: ',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          DropdownButton(
-                            value: _selectedGender,
-                            items: _dropdownMenuItems,
-                            onChanged: onChangeDropDownItem,
-                          ),
-                        ],
-                      ),
+                    // SizedBox(
+                    //   width: MediaQuery.of(context).size.width / 30,
+                    // ),
+                    Row(
+                      children: <Widget>[
+                        Text(
+                          'Gender: ',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        DropdownButton(
+                          value: _selectedGender,
+                          items: _dropdownMenuItems,
+                          onChanged: onChangeDropDownItem,
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -502,7 +504,7 @@ class _GRegisterState extends State<GRegister> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(20.0, 20, 20, 20),
+                    padding: const EdgeInsets.fromLTRB(20.0, 5, 20, 20),
                     child: FlatButton(
                         child: Text(
                           'NEXT',

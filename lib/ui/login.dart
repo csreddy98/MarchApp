@@ -408,13 +408,13 @@ class _LoginState extends State<Login> {
               children: <Widget>[
                 Padding(
                   
-                  padding: const EdgeInsets.only(top: 70.0),
+                  padding: const EdgeInsets.only(top: 60.0),
                   child: Center(
                       child: Text(
                     "Welcome ",
                     style: TextStyle(
                         fontFamily: 'Nunito',
-                        fontSize: size.height/26,
+                        fontSize: size.height/24,
                         fontWeight: FontWeight.bold,
                         color: Colors.black),
                   )),
@@ -426,7 +426,7 @@ class _LoginState extends State<Login> {
                       "to ",
                       style: TextStyle(
                           fontFamily: 'Nunito',
-                          fontSize: size.height/26,
+                          fontSize: size.height/24,
                           fontWeight: FontWeight.bold,
                           color: Colors.black),
                     ),
@@ -434,7 +434,7 @@ class _LoginState extends State<Login> {
                       "March",
                       style: TextStyle(
                           fontFamily: 'Nunito',
-                          fontSize: size.height/26,
+                          fontSize: size.height/24,
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).primaryColor),
                     ),
@@ -452,14 +452,14 @@ class _LoginState extends State<Login> {
                       Text(
                         "The best way to meet people who have",
                         style: TextStyle(
-                            fontSize: size.height/50,
+                            fontSize: size.height/45,
                             fontWeight: FontWeight.w400,
                             color: Colors.black),
                       ),
                       Text(
                         "goals as you. Let's get Started!",
                         style: TextStyle(
-                            fontSize: size.height/50,
+                            fontSize: size.height/45,
                             fontWeight: FontWeight.w400,
                             color: Colors.black),
                       ),
@@ -472,8 +472,8 @@ class _LoginState extends State<Login> {
                       child: Text(
                     "Login / Signup",
                     style: TextStyle(
-                        fontSize: size.height/50,
-                        fontWeight: FontWeight.w400,
+                        fontSize: size.height/45,
+                        fontWeight: FontWeight.w600,
                         color: Colors.black),
                   )),
                 ),
@@ -507,7 +507,7 @@ class _LoginState extends State<Login> {
                           Expanded(
                             child: Center(
                               child: Text("Continue With Phone   ",
-                                  style: TextStyle(fontSize: size.height/48)),
+                                  style: TextStyle(fontSize: size.height/42)),
                             ),
                           ),
                         ],
@@ -541,7 +541,7 @@ class _LoginState extends State<Login> {
                           Expanded(
                             child: Center(
                               child: Text("Continue With Google   ",
-                                  style: TextStyle(fontSize: size.height/48)),
+                                  style: TextStyle(fontSize: size.height/42)),
                             ),
                           ),
                         ],
@@ -600,7 +600,7 @@ class _LoginState extends State<Login> {
                           Expanded(
                             child: Center(
                               child: Text("Continue With Facebook   ",
-                                  style: TextStyle(fontSize: size.height/48)),
+                                  style: TextStyle(fontSize: size.height/42)),
                             ),
                           ),
                         ],

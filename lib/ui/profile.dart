@@ -61,7 +61,7 @@ class _ProfileState extends State<Profile> {
           centerTitle: true,
           title: Text("Your Profile",
           style: TextStyle(
-          fontSize: size.height / 35,
+          fontSize: size.height / 32,
           fontWeight: FontWeight.w500,
           ),
           ),
@@ -74,10 +74,10 @@ class _ProfileState extends State<Profile> {
                     context, MaterialPageRoute(builder: (_) => Settings()));
               },
               child: Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: const EdgeInsets.only(right:20.0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.all(Radius.circular(25)),
-                  child: Icon(Icons.tune),
+                  child: Icon(Icons.settings),
                 ),
               ),
             )
@@ -128,8 +128,16 @@ class _ProfileState extends State<Profile> {
             child: Container(),)
           ],),),
           Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+                  "About",
+                  style: TextStyle(
+                      color: Colors.blueGrey , fontWeight: FontWeight.w600, fontSize: size.height / 46),
+            ),
+          ),
+          Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: 10.0, vertical: 13.0),
+              horizontal: 20.0, vertical: 13.0),
             child: Text(
             "$bio",
             maxLines: 4,

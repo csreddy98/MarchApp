@@ -375,47 +375,86 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                   : Container(),
 
               Padding(
-                padding: const EdgeInsets.fromLTRB(18.0,8,18,8),
+                padding: const EdgeInsets.fromLTRB(12.0,8,12,8),
                 child: Theme(
                   data: ThemeData(primaryColor: Colors.black),
                   child: Container(
-                    color: Colors.grey[100],
+                    // color: Colors.grey[100],
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: DropdownButtonFormField<String>(
                         decoration: InputDecoration(
-                            enabledBorder: UnderlineInputBorder(
-                                borderSide:
-                                BorderSide(color: Colors.grey[100]))),
+                            // filled: true,
+                            // fillColor: c,
+                            // enabledBorder: OutlineInputBorder(
+                            //   borderSide: BorderSide(color: c, width: 1.0),
+                            //   borderRadius:
+                            //       BorderRadius.all(Radius.circular(10.0)),
+                            // ),
+                            contentPadding:
+                                const EdgeInsets.fromLTRB(10, 5, 5, 5),
+                            border: new OutlineInputBorder(
+                              borderRadius: const BorderRadius.all(
+                                const Radius.circular(5.0),
+                              ),
+                            ),
+                          
+                            ),
                         items: [
                           DropdownMenuItem<String>(
                                 value: "0",
                                 child: Text(
-                                  "Newbie ( Level 1 )",
+                                  "Newbie",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.3,
+                                    fontSize: 16,
+                                    fontFamily: 'Nunito',
+                                  ),
                                 ),
                               ),
                               DropdownMenuItem<String>(
                                 value: "1",
                                 child: Text(
-                                  "Skilled ( Level 2 )",
+                                  "Skilled",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.3,
+                                    fontFamily: 'Nunito',
+                                  ),
                                 ),
                               ),
                               DropdownMenuItem<String>(
                                 value: "2",
                                 child: Text(
-                                  "Proficient  ( Level 3 )",
+                                  "Proficient",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.3,
+                                    fontFamily: 'Nunito',
+                                  ),
                                 ),
                               ),
                               DropdownMenuItem<String>(
                                 value: "3",
                                 child: Text(
-                                  "Experienced  ( Level 4 )",
+                                  "Experienced",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.3,
+                                    fontFamily: 'Nunito',
+                                  ),
                                 ),
                               ),
                               DropdownMenuItem<String>(
                                 value: "4",
                                 child: Text(
-                                  "Expert ( Level 5 )",
+                                  "Expert",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.3,
+                                    fontFamily: 'Nunito',
+                                  ),
                                 ),
                               ),
                         ],
@@ -428,7 +467,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                         hint: Text(
                           "Choose Your Expertise ",
                           style: TextStyle(
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w500,
                             letterSpacing: 0.3,
                             fontFamily: 'Nunito',
                             color: Colors.black54,
