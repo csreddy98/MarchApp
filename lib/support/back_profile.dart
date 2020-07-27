@@ -12,7 +12,7 @@ class BackProfile extends CustomPainter {
     var path = Path();
     path.moveTo(0, size.height);
     path.quadraticBezierTo(
-        size.width, size.height*0.63, size.width, size.height * 0.63);
+        size.width, size.height*0.68, size.width, size.height * 0.68);
     path.lineTo(size.width, 0);
     path.lineTo(0, 0);
     path.close();

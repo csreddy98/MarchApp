@@ -272,7 +272,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
               _disable == 1
                   ? Container()
                   : Padding(
-                      padding: const EdgeInsets.all(20.0),
+                      padding: const EdgeInsets.fromLTRB(20.0,20,20,10),
                       child: SimpleAutoCompleteTextField(
                         key: key,
                         decoration: new InputDecoration(
@@ -340,7 +340,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                     ),
               _disable == 1
                   ? Padding(
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.fromLTRB(20,20,20,10),
                       child: Container(
                           decoration: BoxDecoration(
                             border: Border.all(
@@ -375,7 +375,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                   : Container(),
 
               Padding(
-                padding: const EdgeInsets.fromLTRB(12.0,8,12,8),
+                padding: const EdgeInsets.fromLTRB(12.0,0,12,8),
                 child: Theme(
                   data: ThemeData(primaryColor: Colors.black),
                   child: Container(
@@ -384,15 +384,15 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                       padding: const EdgeInsets.all(8.0),
                       child: DropdownButtonFormField<String>(
                         decoration: InputDecoration(
-                            // filled: true,
-                            // fillColor: c,
-                            // enabledBorder: OutlineInputBorder(
-                            //   borderSide: BorderSide(color: c, width: 1.0),
-                            //   borderRadius:
-                            //       BorderRadius.all(Radius.circular(10.0)),
-                            // ),
+                            filled: true,
+                            fillColor: goalsLevel==""?c:Colors.white,
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: goalsLevel==""?c:Colors.grey, width: 1.0),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                            ),
                             contentPadding:
-                                const EdgeInsets.fromLTRB(10, 5, 5, 5),
+                                const EdgeInsets.fromLTRB(15, 15, 15, 5),
                             border: new OutlineInputBorder(
                               borderRadius: const BorderRadius.all(
                                 const Radius.circular(5.0),

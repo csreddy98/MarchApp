@@ -239,49 +239,49 @@ class _HomeState extends State<Home> {
     return myMap;
   }
 
-  Widget appBar() {
-    return AppBar(
-      elevation: 0,
-      backgroundColor: _currentindex == 2
-          ? Theme.of(context).primaryColor
-          : Color(0xFFFFFFFF),
-      title: _currentindex == 2
-          ? Padding(
-              padding: const EdgeInsets.only(left: 45.0),
-              child: Center(
-                  child: Text(
-                title,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontFamily: 'Nunito'),
-              )),
-            )
-          : Center(
-              child: Text(
-              title,
-              style: TextStyle(
-                  color: Colors.black, fontSize: 18, fontFamily: 'Nunito'),
-            )),
-      actions: <Widget>[
-        //if added change it to 3
-        _currentindex == 2
-            ? IconButton(
-                icon: Icon(
-                  Icons.tune,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Settings()),
-                  );
-                },
-              )
-            : Container(),
-      ],
-    );
-  }
+  // Widget appBar() {
+  //   return AppBar(
+  //     elevation: 0,
+  //     backgroundColor: _currentindex == 2
+  //         ? Theme.of(context).primaryColor
+  //         : Color(0xFFFFFFFF),
+  //     title: _currentindex == 2
+  //         ? Padding(
+  //             padding: const EdgeInsets.only(left: 45.0),
+  //             child: Center(
+  //                 child: Text(
+  //               title,
+  //               style: TextStyle(
+  //                   color: Colors.white,
+  //                   fontSize: 18,
+  //                   fontFamily: 'Nunito'),
+  //             )),
+  //           )
+  //         : Center(
+  //             child: Text(
+  //             title,
+  //             style: TextStyle(
+  //                 color: Colors.black, fontSize: 18, fontFamily: 'Nunito'),
+  //           )),
+  //     actions: <Widget>[
+  //       //if added change it to 3
+  //       _currentindex == 2
+  //           ? IconButton(
+  //               icon: Icon(
+  //                 Icons.tune,
+  //                 color: Colors.white,
+  //               ),
+  //               onPressed: () {
+  //                 Navigator.push(
+  //                   context,
+  //                   MaterialPageRoute(builder: (context) => Settings()),
+  //                 );
+  //               },
+  //             )
+  //           : Container(),
+  //     ],
+  //   );
+  // }
 
   Widget bottomNavBar() {
     Size size=MediaQuery.of(context).size;

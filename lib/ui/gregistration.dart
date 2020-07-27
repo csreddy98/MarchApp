@@ -77,15 +77,6 @@ class _GRegisterState extends State<GRegister> {
 
   String _value = '';
 
-  Future _selectDate() async {
-    DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: new DateTime.now(),
-        firstDate: new DateTime(1930),
-        lastDate: new DateTime(2022));
-    if (picked != null) setState(() => _value = picked.toString());
-  }
-
   Color nameColor, emailColor, phoneColor, proColor, bioColor;
   Color c = Colors.grey[100];
   Color x = Colors.grey;
@@ -481,21 +472,24 @@ class _GRegisterState extends State<GRegister> {
                     // SizedBox(
                     //   width: MediaQuery.of(context).size.width / 30,
                     // ),
-                    Row(
-                      children: <Widget>[
-                        Text(
-                          'Gender: ',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        DropdownButton(
-                          value: _selectedGender,
-                          items: _dropdownMenuItems,
-                          onChanged: onChangeDropDownItem,
-                        ),
-                      ],
+                    Theme(
+                      data: ThemeData(primaryColor: Colors.black),
+                       child: Row(
+                        children: <Widget>[
+                          Text(
+                            'Gender: ',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          DropdownButton(
+                            value: _selectedGender,
+                            items: _dropdownMenuItems,
+                            onChanged: onChangeDropDownItem,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -718,6 +712,29 @@ class _GRegisterState extends State<GRegister> {
             ),
           );
         });
+  }
+
+_selectDate() async {
+    DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: new DateTime.now(),
+        firstDate: new DateTime(1930),
+        lastDate: new DateTime(2022),
+        builder: (BuildContext context, Widget child) {
+         return Theme(
+            data: ThemeData.light().copyWith(
+            primaryColor: Theme.of(context).primaryColor,
+            accentColor: Theme.of(context).primaryColor,
+            colorScheme: ColorScheme.light(primary: Theme.of(context).primaryColor),
+            buttonTheme: ButtonThemeData(
+            textTheme: ButtonTextTheme.primary
+          ),
+      ),
+       child: child,
+       );
+      }
+    );
+    if (picked != null) setState(() => _value = picked.toString());
   }
 
   void _onLoading() {

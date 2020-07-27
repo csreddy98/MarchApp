@@ -269,41 +269,80 @@ class _EditGoalState extends State<EditGoal> {
                           padding: const EdgeInsets.all(8.0),
                           child: DropdownButtonFormField<String>(
                             decoration: InputDecoration(
-                                enabledBorder: UnderlineInputBorder(
-                                    borderSide:
-                                    BorderSide(color: Colors.grey[100]))),
-                            items: [
-                              DropdownMenuItem<String>(
+                            filled: true,
+                            fillColor: goalsLevel==""?Colors.grey[100]:Colors.white,
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: goalsLevel==""?Colors.grey[100]:Colors.grey, width: 1.0),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10.0)),
+                            ),
+                            contentPadding:
+                                const EdgeInsets.fromLTRB(15, 15, 15, 5),
+                            border: new OutlineInputBorder(
+                              borderRadius: const BorderRadius.all(
+                                const Radius.circular(5.0),
+                              ),
+                            ),
+                          
+                            ),
+                        items: [
+                          DropdownMenuItem<String>(
                                 value: "0",
                                 child: Text(
-                                  "Newbie ( Level 1 )",
+                                  "Newbie",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.3,
+                                    fontSize: 16,
+                                    fontFamily: 'Nunito',
+                                  ),
                                 ),
                               ),
                               DropdownMenuItem<String>(
                                 value: "1",
                                 child: Text(
-                                  "Skilled ( Level 2 )",
+                                  "Skilled",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.3,
+                                    fontFamily: 'Nunito',
+                                  ),
                                 ),
                               ),
                               DropdownMenuItem<String>(
                                 value: "2",
                                 child: Text(
-                                  "Proficient  ( Level 3 )",
+                                  "Proficient",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.3,
+                                    fontFamily: 'Nunito',
+                                  ),
                                 ),
                               ),
                               DropdownMenuItem<String>(
                                 value: "3",
                                 child: Text(
-                                  "Experienced  ( Level 4 )",
+                                  "Experienced",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.3,
+                                    fontFamily: 'Nunito',
+                                  ),
                                 ),
                               ),
                               DropdownMenuItem<String>(
                                 value: "4",
                                 child: Text(
-                                  "Expert ( Level 5 )",
+                                  "Expert",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.3,
+                                    fontFamily: 'Nunito',
+                                  ),
                                 ),
                               ),
-                            ],
+                        ],
                             onChanged: (value) {
                               setState(() {
                                 goalsLevel=value;
