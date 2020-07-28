@@ -51,7 +51,7 @@ class _GRegisterState extends State<GRegister> {
 
   Future _loadFromGallery() async {
     final picker=ImagePicker();
-    final _galleryImage = await picker.getImage(source: ImageSource.gallery);
+    final _galleryImage = await picker.getImage(source: ImageSource.gallery,maxHeight: 1080,maxWidth:1080);
 
     setState(() {
       _image = File(_galleryImage.path);
@@ -60,7 +60,7 @@ class _GRegisterState extends State<GRegister> {
 
   Future _captureImage() async {
     final picker=ImagePicker();
-    final _capturedImage = await picker.getImage(source: ImageSource.camera);
+    final _capturedImage = await picker.getImage(source: ImageSource.camera,maxHeight: 1080,maxWidth:1080);
 
     setState(() {
       _image = File(_capturedImage.path);
@@ -142,11 +142,12 @@ class _GRegisterState extends State<GRegister> {
 
   @override
   Widget build(BuildContext context) {
+  Size size=MediaQuery.of(context).size;
     Widget showImage() {
       if (_image != null) {
         return new Container(
-            width: 80.0,
-            height: 80.0,
+            width: size.width/4,
+            height: size.width/4,
             decoration: new BoxDecoration(
               borderRadius: BorderRadius.circular(15.0),
               shape: BoxShape.rectangle,
@@ -157,8 +158,8 @@ class _GRegisterState extends State<GRegister> {
             ));
       } else {
         return new Container(
-          height: 80,
-          width: 80,
+          height: size.width/4,
+          width: size.width/4,
           margin:
               const EdgeInsets.only(bottom: 6.0), //Same as `blurRadius` i guess
           decoration: BoxDecoration(

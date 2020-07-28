@@ -56,7 +56,7 @@ class _EditProfileState extends State<Edit_Profile> {
 
   Future _loadFromGallery() async {
     final picker=ImagePicker();
-    final _galleryImage = await picker.getImage(source: ImageSource.gallery);
+    final _galleryImage = await picker.getImage(source: ImageSource.gallery,maxHeight: 1080,maxWidth:1080);
 
     setState(() {
       _image = File(_galleryImage.path);
@@ -65,19 +65,19 @@ class _EditProfileState extends State<Edit_Profile> {
 
   Future _captureImage() async {
     final picker=ImagePicker();
-    final _capturedImage = await picker.getImage(source: ImageSource.camera);
+    final _capturedImage = await picker.getImage(source: ImageSource.camera,maxHeight: 1080,maxWidth: 1080);
 
     setState(() {
       _image = File(_capturedImage.path);
     });
   }
 
-
   @override
   void initState() {
      _load();
     super.initState();
   }
+
 /*
   List<Gender> _gender=Gender.getGender();
   List<DropdownMenuItem<Gender>> _dropdownMenuItems;
@@ -106,8 +106,8 @@ class _EditProfileState extends State<Edit_Profile> {
 
   @override
   Widget build(BuildContext context) {
+  Size size = MediaQuery.of(context).size;
 
-    Size size = MediaQuery.of(context).size;
     return Scaffold(
       key: _sk,
       appBar: AppBar(
@@ -146,8 +146,8 @@ class _EditProfileState extends State<Edit_Profile> {
                            child: Padding(
                             padding: const EdgeInsets.only(bottom: 10,top: 15),
                             child:Container(
-                              width: 90.0,
-                              height: 90.0,
+                              width: size.width/4,
+                              height: size.width/4,
                               decoration: BoxDecoration(
                                 image: DecorationImage(
                                     fit: BoxFit.cover,
