@@ -170,7 +170,7 @@ class _EditGoalState extends State<EditGoal> {
                           child: Container(
                               decoration: BoxDecoration(
                                 border: Border.all(
-                                  color: Colors.black,
+                                  color: Colors.grey,
                                   width: 1,
                                 ),
                                 borderRadius: BorderRadius.circular(5),
@@ -185,7 +185,7 @@ class _EditGoalState extends State<EditGoal> {
                                         icon: Icon(
                                           Icons.clear,
                                           size: 16,
-                                          color: Colors.black,
+                                          color: Colors.grey,
                                         ),
                                         onPressed: () {
                                           setState(() {
@@ -260,11 +260,11 @@ class _EditGoalState extends State<EditGoal> {
                           ),
                         ),*/
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(18.0,8,18,8),
+                    padding: const EdgeInsets.fromLTRB(12.0,0,12,8),
                     child: Theme(
                       data: ThemeData(primaryColor: Colors.black),
                       child: Container(
-                        color: Colors.grey[100],
+                       // color: Colors.grey[100],
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: DropdownButtonFormField<String>(
