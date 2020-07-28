@@ -467,7 +467,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                         hint: Text(
                           "Choose Your Expertise ",
                           style: TextStyle(
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w600,
                             letterSpacing: 0.3,
                             fontFamily: 'Nunito',
                             color: Colors.black54,

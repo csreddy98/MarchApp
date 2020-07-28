@@ -479,7 +479,7 @@ class _TestHomePageState extends State<TestHomePage> {
                         top: 30,
                         right: 5,
                         child: Image.asset(
-                          "assets/images/topimage.png",
+                          "assets/images/09.png",
                           width: 100,
                           height: 100,
                         )),
@@ -507,7 +507,7 @@ class _TestHomePageState extends State<TestHomePage> {
                     ),
                     Container(
                       child: Positioned(
-                          bottom: 15,
+                          bottom: 13,
                           left: 25,
                           child: Text(
                             "March towards your goal\nwith like minded souls",

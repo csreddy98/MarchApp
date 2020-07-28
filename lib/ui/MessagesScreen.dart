@@ -133,7 +133,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
       appBar: AppBar(
         title: Text("Inbox",
         style: TextStyle(
-          fontSize: size.height / 35,
+          fontSize: size.height / 30,
           fontWeight: FontWeight.w500,
         ),
         ),

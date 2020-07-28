@@ -89,6 +89,7 @@ Widget goalCardGenerator(context, String goalName, int goalLevel) {
         width: size.width * 0.26,
         decoration: BoxDecoration(
           color: goalAssets[goalLevel]['bgColor'],
+  
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),

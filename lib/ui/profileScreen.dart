@@ -184,7 +184,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     child: Text(
                                       "Connect",
                                       style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: 16,
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ),
@@ -222,7 +222,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           textAlign: TextAlign.justify,
                           style: TextStyle(
                             fontFamily: 'Nunito',
-                            fontSize: 14,
+                            fontSize: 16,
                             height: 1.2,
                             fontWeight: FontWeight.normal,
                           ),
@@ -261,7 +261,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: Text(
                           "Here’s what others are saying about ${this.name.split(" ")[0]}",
                           style: TextStyle(
-                              fontWeight: FontWeight.w600, fontSize: 14),
+                              fontWeight: FontWeight.w600, fontSize: 16),
                         ),
                       ),
                       (this.testimonials.length > 0)
@@ -283,7 +283,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: Center(
                                 child: (testimonialStatus == true)
                                     ? Text(
-                                        "Nobody wrote about ${this.name.split(" ")[0]} yet")
+                                        "Nobody wrote about ${this.name.split(" ")[0]} yet",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                        ),
+                                        )
                                     : CircularProgressIndicator(),
                               ),
                             ),
