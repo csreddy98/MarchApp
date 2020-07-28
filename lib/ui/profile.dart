@@ -96,51 +96,57 @@ class _ProfileState extends State<Profile> {
               CustomPaint(
                 painter: BackProfile(context),
                 child: Column(children: <Widget>[
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        SizedBox(
-                          width: size.width/10,
-                        ),
-                        Expanded(
-                            child: Center(
-                              child: Text("Your Profile",
-                               style: TextStyle(
-                                  fontSize: size.height / 32,
-                                  fontWeight: FontWeight.w500,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          SizedBox(
+                            width: size.width/10,
+                          ),
+                          Expanded(
+                              child: Center(
+                                child: Text("Your Profile",
+                                 style: TextStyle(
+                                    fontSize: size.height / 32,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               ),
-                            ),
+                          ),
+                     InkWell(
+                         onTap: () {
+                           Navigator.push(
+                             context,
+                             MaterialPageRoute(builder: (context) => Settings()),
+                            );
+                         },
+                     child: Padding(
+                         padding: const EdgeInsets.only(right:20.0),
+                         child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(25)),
+                          child: Icon(Icons.settings),
                         ),
-                   InkWell(
-                       onTap: () {
-                         Navigator.push(
-                           context,
-                           MaterialPageRoute(builder: (context) => Settings()),
-                          );
-                       },
-                   child: Padding(
-                       padding: const EdgeInsets.only(right:20.0),
-                       child: ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(25)),
-                        child: Icon(Icons.settings),
-                      ),
-                  ),
+                    ),
                 )
-                       ],
-                      ),
-                Hero(
-                tag: "$name ",
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  color: Colors.transparent,
-                  child: ProfileTop(
-                      name: "$name",
-                      picUrl: "$pic",
-                      profession: "$profession",
-                      // location: "Age",
+                         ],
+                        ),
                   ),
-                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Hero(
+                  tag: "$name ",
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    color: Colors.transparent,
+                    child: ProfileTop(
+                        name: "$name",
+                        picUrl: "$pic",
+                        profession: "$profession",
+                        // location: "Age",
+                    ),
+                  ),
+                  ),
                 ),
               Padding(
                 padding: const EdgeInsets.symmetric(
