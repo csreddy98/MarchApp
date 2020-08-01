@@ -48,6 +48,8 @@ class _TestHomePageState extends State<TestHomePage> {
   List myUsers = [];
   bool loadPage = false;
   int pageNo = 0;
+  int alen=0;
+  int nlen=0;
   List allProfiles = [];
   List allProfilesCrossCheck = [];
 
@@ -180,7 +182,17 @@ class _TestHomePageState extends State<TestHomePage> {
       if (jsonResp['response'] == 200) {
         print(jsonResp);
         List allprofs = jsonResp['result'].toList()..shuffle();
-
+        if(allprofs.length==0){
+          setState(() {
+            alen=1;
+            //alen is 0 before checking , 1 if len is 0,
+          });
+        }
+        else{
+          setState(() {
+            alen=0;
+          });
+        }
         allprofs.forEach((element) {
           if (!allProfilesCrossCheck.contains(element['user_info']['id'])) {
             setState(() {
@@ -413,6 +425,16 @@ class _TestHomePageState extends State<TestHomePage> {
     // details.clear();
     db.getPeopleFinderPeople().then((value) {
       // print('This is from Local DB: $value Hello');
+      if(value.length==0){
+        setState(() {
+         nlen=1;
+        });
+      }
+      else{
+        setState(() {
+         nlen=0;
+        });
+      }
       value.forEach((element) {
         List goals = [];
         // List testimonials = [];
@@ -601,12 +623,30 @@ class _TestHomePageState extends State<TestHomePage> {
                               [],
                               (details.length - 1) - index);
                         }))
-                      : Center(
+                      :nlen==0? Center(
                           child: Image.asset(
                             "assets/images/animat-search-color.gif",
                             height: 125.0,
                             width: 125.0,
                           ),
+                        ):Container(
+                          child: Column(
+                            children: <Widget>[
+                                Padding(
+                                 padding: const EdgeInsets.only(top:20.0),
+                                   child: Image.asset(
+                                     'assets/images/oops.png',
+                                      height: size.height/ 2.5,
+                                    ),
+                                ),
+                               Padding(
+                                 padding: const EdgeInsets.only(top:8.0),
+                                 child: Center(
+                                   child: Text('No Similar People',style: TextStyle(fontWeight: FontWeight.bold),),
+                                 ),
+                              ),
+                            ],
+                          )
                         )
                   : showAllProfiles(),
             ],
@@ -763,15 +803,33 @@ class _TestHomePageState extends State<TestHomePage> {
     return Center(
       child: Container(
         child: (allProfiles.length == 0)
-            ? Center(
+            ? alen==0?Center(
                 child: Image.asset(
                   "assets/images/animat-search-color.gif",
                   height: 125.0,
                   width: 125.0,
                 ),
-              )
-            : Column(
-                children: List.generate(
+              ):Container(
+                    child: Column(
+                       children: <Widget>[
+                           Padding(
+                             padding: const EdgeInsets.only(top:20.0),
+                             child: Image.asset(
+                                   'assets/images/oops.png',
+                                    height: size.height/ 2.5,
+                                 ),
+                           ),
+                              Padding(
+                                padding: const EdgeInsets.only(top:8.0),
+                                child: Center(
+                                  child: Text('No Similar People',style: TextStyle(fontWeight: FontWeight.bold),),
+                                 ),
+                              ),
+                        ],
+                      )
+                    )
+             : Column(
+                 children: List.generate(
                     (allProfiles.length > 20) ? 20 : allProfiles.length,
                     (index) {
                   var userInfo = allProfiles[index]['user_info'];

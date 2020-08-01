@@ -42,6 +42,7 @@ class _EditGoalState extends State<EditGoal> {
   bool timeView = false;
   bool showWhichErrorText = false;
   TimeOfDay time;
+  TextEditingController con;
 
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
@@ -50,6 +51,7 @@ class _EditGoalState extends State<EditGoal> {
   void initState() {
     _load();
     super.initState();
+     con=new TextEditingController();
      time=TimeOfDay.now();
     if(widget.gname!=""){
       setState(() {
@@ -133,11 +135,12 @@ class _EditGoalState extends State<EditGoal> {
                                     const Radius.circular(10.0),
                                   ),
                                 )),
-                            controller: TextEditingController(),
+                            controller: con,
                             suggestions: suggestions,
                             textChanged: (text) => currentText = text,
                             clearOnSubmit: true,
                             textSubmitted: (text) => setState(() {
+                              print(text);
                               if (text != "" && _disable == 0) {
                                 print(text);
                                 setState(() {
@@ -189,6 +192,7 @@ class _EditGoalState extends State<EditGoal> {
                                         ),
                                         onPressed: () {
                                           setState(() {
+                                            con.clear();
                                             _disable = 0;
                                             selectedGoal = "";
                                           });
