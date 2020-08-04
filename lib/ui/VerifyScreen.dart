@@ -9,18 +9,18 @@ import 'package:march/support/PhoneAuthCode.dart';
 import 'package:http/http.dart' as http;
 import 'package:march/ui/gregistration.dart';
 import 'package:march/ui/login.dart';
-import 'package:march/ui/registration.dart';
 import 'package:march/ui/select.dart';
 import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:march/support/functions.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'home.dart';
 
 class PhoneAuthVerify extends StatefulWidget {
   final Color cardBackgroundColor = Color(0xFFFCA967);
-  final String appName = "Flowance app";
-  String number;
+  final String appName = "March App";
+  final String number;
 
   PhoneAuthVerify(this.number);
 
@@ -32,7 +32,8 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
   TextEditingController _controller = new TextEditingController();
   String code = "";
   int maxLength = 6;
-
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
   @override
   void initState() {
     FirebasePhoneAuth.phoneAuthState.stream
@@ -133,25 +134,33 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
                     }
                     for (var i = 0; i < cnt; i++) {
                       int savedGoal = await db.saveGoal(new Goal(
-                          val.uid,
-                          resultx['result'][i]['goal'],
-                          resultx['result'][i]['level'],
-                          resultx['result'][i]['remindEveryDay'],
-                          resultx['result'][i]['everyDayRemindTime'],
-                          resultx['result'][i]['goal_number'],
+                        val.uid,
+                        resultx['result'][i]['goal'],
+                        resultx['result'][i]['level'],
+                        resultx['result'][i]['remindEveryDay'],
+                        resultx['result'][i]['everyDayRemindTime'],
+                        resultx['result'][i]['goal_number'],
                       ));
                       print("goal saved :$savedGoal");
+                      if (resultx['result'][i]['remindEveryDay'] == "1") {
+                        var reminderTime = DateTime.parse(
+                            resultx['result'][i]['everyDayRemindTime']);
+                        _showNotification(
+                            int.parse(resultx['result'][i]['goal_number']),
+                            resultx['result'][i]['goal'],
+                            "It's time to work on your goal",
+                            Time(reminderTime.hour, reminderTime.minute));
+                      }
                     }
                     SharedPreferences prefs =
-                    await SharedPreferences.getInstance();
+                        await SharedPreferences.getInstance();
                     prefs.setInt('log', 1);
 
                     Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => Home('')),
-                            (Route<dynamic> route) => false);
+                        (Route<dynamic> route) => false);
                   });
-
                 } else {
                   Navigator.pushAndRemoveUntil(
                       context,
@@ -162,8 +171,7 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
             } else {
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => GRegister()),
+                MaterialPageRoute(builder: (context) => GRegister()),
                 (Route<dynamic> route) => false,
               );
             }
@@ -172,6 +180,17 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
       }
     });
     super.initState();
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings('@drawable/icon');
+    var initializationSettingsIOS = IOSInitializationSettings();
+    var initializationSettings = InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
+  }
+
+  Future onSelectNotification(String payload) async {
+    print("Tapped on Notification");
   }
 
   @override
@@ -321,6 +340,24 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
           ],
         ),
       );
+
+  Future _showNotification(int goalNumber, String title, String content,
+      Time notificationTime) async {
+    var androidPlatformChannelSpecifics = new AndroidNotificationDetails('100',
+        'Goal Reminder', 'This channel is reserved for the goal Reminders',
+        playSound: false, importance: Importance.Max, priority: Priority.High);
+    var iOSPlatformChannelSpecifics =
+        new IOSNotificationDetails(presentSound: false);
+    var platformChannelSpecifics = new NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.showDailyAtTime(
+      goalNumber,
+      '$title',
+      '$content',
+      notificationTime,
+      platformChannelSpecifics,
+    );
+  }
 
   signIn() {
     // if (code.length != 6) {

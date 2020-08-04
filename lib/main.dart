@@ -20,8 +20,9 @@ class MyApp extends StatelessWidget {
         buttonColor: Color(0xffFFBF46),
         disabledColor: Color.fromRGBO(254, 209, 125, 0.5),
         primaryColor: Color(0xffFFBF46),
-        accentColor:Color(0xffFFBF46),
-        buttonBarTheme: ButtonBarThemeData(buttonTextTheme: ButtonTextTheme.accent),
+        accentColor: Color(0xffFFBF46),
+        buttonBarTheme:
+            ButtonBarThemeData(buttonTextTheme: ButtonTextTheme.accent),
         textTheme: TextTheme(
             headline1: TextStyle(
               color: Colors.white,

@@ -48,10 +48,12 @@ class _TestHomePageState extends State<TestHomePage> {
   List myUsers = [];
   bool loadPage = false;
   int pageNo = 0;
-  int alen=0;
-  int nlen=0;
+  int alen = 0;
+  int nlen = 0;
   List allProfiles = [];
   List allProfilesCrossCheck = [];
+  bool checkStatus = false;
+  String defaultMsg = "";
 
   @override
   void initState() {
@@ -178,19 +180,18 @@ class _TestHomePageState extends State<TestHomePage> {
     )
         .then((resp) {
       var jsonResp = json.decode(resp.body);
-      print(jsonResp);
+      // print(jsonResp);
       if (jsonResp['response'] == 200) {
         print(jsonResp);
         List allprofs = jsonResp['result'].toList()..shuffle();
-        if(allprofs.length==0){
+        if (allprofs.length == 0) {
           setState(() {
-            alen=1;
+            alen = 1;
             //alen is 0 before checking , 1 if len is 0,
           });
-        }
-        else{
+        } else {
           setState(() {
-            alen=0;
+            alen = 0;
           });
         }
         allprofs.forEach((element) {
@@ -345,12 +346,14 @@ class _TestHomePageState extends State<TestHomePage> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 5.0),
                       child: Wrap(
-                          children: List.generate(goals.length,
-                                  (index) => Padding(
-                                    padding: const EdgeInsets.fromLTRB(0,5,5,5),
-                                    child: goalBox(goals[index], context),
-                                  )),
-                        ),
+                        children: List.generate(
+                            goals.length,
+                            (index) => Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 5, 5, 5),
+                                  child: goalBox(goals[index], context),
+                                )),
+                      ),
                     ),
                   ),
                   Expanded(
@@ -425,14 +428,13 @@ class _TestHomePageState extends State<TestHomePage> {
     // details.clear();
     db.getPeopleFinderPeople().then((value) {
       // print('This is from Local DB: $value Hello');
-      if(value.length==0){
+      if (value.length == 0) {
         setState(() {
-         nlen=1;
+          nlen = 1;
         });
-      }
-      else{
+      } else {
         setState(() {
-         nlen=0;
+          nlen = 0;
         });
       }
       value.forEach((element) {
@@ -623,31 +625,36 @@ class _TestHomePageState extends State<TestHomePage> {
                               [],
                               (details.length - 1) - index);
                         }))
-                      :nlen==0? Center(
-                          child: Image.asset(
-                            "assets/images/animat-search-color.gif",
-                            height: 125.0,
-                            width: 125.0,
-                          ),
-                        ):Container(
-                          child: Column(
-                            children: <Widget>[
-                                Padding(
-                                 padding: const EdgeInsets.only(top:20.0),
-                                   child: Image.asset(
-                                     'assets/images/oops.png',
-                                      height: size.height/ 2.5,
-                                    ),
-                                ),
-                               Padding(
-                                 padding: const EdgeInsets.only(top:8.0),
-                                 child: Center(
-                                   child: Text('No Similar People',style: TextStyle(fontWeight: FontWeight.bold),),
-                                 ),
+                      : nlen == 0
+                          ? Center(
+                              child: Image.asset(
+                                "assets/images/animat-search-color.gif",
+                                height: 125.0,
+                                width: 125.0,
                               ),
-                            ],
-                          )
-                        )
+                            )
+                          : Container(
+                              child: Column(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 20.0),
+                                  child: Image.asset(
+                                    'assets/images/oops.png',
+                                    height: size.height / 2.5,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: Center(
+                                    child: Text(
+                                      'No Similar People',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ))
                   : showAllProfiles(),
             ],
           ),
@@ -668,7 +675,9 @@ class _TestHomePageState extends State<TestHomePage> {
     String userToken = prefs.getString('token') ?? "";
     // uid = prefs.getString('uid') ?? "";
     id = prefs.getString('id') ?? "";
-
+    setState(() {
+      messageController.text = prefs.getString("DefaultMessage");
+    });
     // SQLITE
 
     int n;
@@ -803,33 +812,37 @@ class _TestHomePageState extends State<TestHomePage> {
     return Center(
       child: Container(
         child: (allProfiles.length == 0)
-            ? alen==0?Center(
-                child: Image.asset(
-                  "assets/images/animat-search-color.gif",
-                  height: 125.0,
-                  width: 125.0,
-                ),
-              ):Container(
+            ? alen == 0
+                ? Center(
+                    child: Image.asset(
+                      "assets/images/animat-search-color.gif",
+                      height: 125.0,
+                      width: 125.0,
+                    ),
+                  )
+                : Container(
                     child: Column(
-                       children: <Widget>[
-                           Padding(
-                             padding: const EdgeInsets.only(top:20.0),
-                             child: Image.asset(
-                                   'assets/images/oops.png',
-                                    height: size.height/ 2.5,
-                                 ),
-                           ),
-                              Padding(
-                                padding: const EdgeInsets.only(top:8.0),
-                                child: Center(
-                                  child: Text('No Similar People',style: TextStyle(fontWeight: FontWeight.bold),),
-                                 ),
-                              ),
-                        ],
-                      )
-                    )
-             : Column(
-                 children: List.generate(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Image.asset(
+                          'assets/images/oops.png',
+                          height: size.height / 2.5,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Center(
+                          child: Text(
+                            'No Similar People',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ))
+            : Column(
+                children: List.generate(
                     (allProfiles.length > 20) ? 20 : allProfiles.length,
                     (index) {
                   var userInfo = allProfiles[index]['user_info'];
@@ -850,126 +863,143 @@ class _TestHomePageState extends State<TestHomePage> {
                                   )));
                     },
                     child: Card(
-                      color: Colors.white,
-                      shadowColor: Colors.grey[200],
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                        color: Colors.white,
+                        shadowColor: Colors.grey[200],
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
                         child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                          width: size.width - 50,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(left:5,top: 5),
-                                child: Container(
-                                  width: size.width / 4,
-                                  height: size.width / 4,
-                                  decoration: BoxDecoration(
-                                      //border: Border.all(width: 5, color: Colors.white),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10))),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                                    child: CachedNetworkImage(
-                                      imageUrl:
-                                          "${allProfiles[index]['user_info']['profile_pic']}",
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top:8.0, left: 8.0, bottom: 8.0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text(
-                                        "${allProfiles[index]['user_info']['fullName']}",
-                                        style: TextStyle(fontSize: size.height / 39,fontWeight: FontWeight.w600),
-                                    ),
-                                    SizedBox(height: 3),
-                                    Container(
-                                      width: size.width * 0.57,
-                                      child: Text(
-                                          "${allProfiles[index]['user_info']['profession']}",
-                                          style: TextStyle(
-                                              color: Colors.black54,
-                                              fontSize: size.height / 43,
-                                              fontFamily: 'Nunito',
-                                              fontWeight: FontWeight.w600),
-                                            maxLines: 2,
-                                          ),
-                                    ),
-                                        SizedBox(height: 3),
-                                    Text(
-                                      "Age: ${allProfiles[index]['user_info']['age']}",
-                                      style: TextStyle(
-                                        fontSize: size.height / 48,
-                                        fontFamily: 'Nunito',
-                                        fontWeight: FontWeight.w400),
-                                    ),
-                                    SizedBox(height: 6),  
-                                    Container(
-                                      width: size.width * 0.57,
-                                      child: AutoSizeText(
-                                        "${(allProfiles[index]['user_info']['bio'].toString())}",
-                                        style: TextStyle(fontSize: size.height / 46),
-                                        maxLines: 3,
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                              width: size.width - 50,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.only(left: 5, top: 5),
+                                    child: Container(
+                                      width: size.width / 4,
+                                      height: size.width / 4,
+                                      decoration: BoxDecoration(
+                                          //border: Border.all(width: 5, color: Colors.white),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10)),
+                                        child: CachedNetworkImage(
+                                          imageUrl:
+                                              "${allProfiles[index]['user_info']['profile_pic']}",
+                                          fit: BoxFit.cover,
+                                        ),
                                       ),
                                     ),
-                                    SizedBox(height:10),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 8.0, left: 8.0, bottom: 8.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: <Widget>[
-                                        InkWell(
-                                          onTap: () {
-                                            db
-                                                .getSingleUser(
-                                                    allProfiles[index]
-                                                        ['user_info']['id'])
-                                                .then((value) {
-                                              add(
-                                                  allProfiles[index]
-                                                      ['user_info']['id'],
-                                                  allProfiles[index]
-                                                      ['user_info']['fullName'],
-                                                  allProfiles[index]
-                                                          ['user_info']
-                                                      ['profile_pic'],
-                                                  index);
-                                            });
-                                          },
-                                            child: Container(
-                                              width: size.width * 0.26,
-                                              height: size.height * 0.05,
-                                              decoration: BoxDecoration(
-                                                  color: Theme.of(context).primaryColor,
-                                                  border: Border.all(
-                                                      width: 1,
-                                                      color: Theme.of(context).primaryColor),
-                                                  borderRadius:
-                                                      BorderRadius.all(Radius.circular(10))),
-                                              child: Center(
-                                                child: Text(
-                                                  "Connect",
-                                                  style: TextStyle(
-                                                      fontSize: size.height / 44,
-                                                      fontWeight: FontWeight.bold),
+                                        Text(
+                                          "${allProfiles[index]['user_info']['fullName']}",
+                                          style: TextStyle(
+                                              fontSize: size.height / 39,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                        SizedBox(height: 3),
+                                        Container(
+                                          width: size.width * 0.57,
+                                          child: Text(
+                                            "${allProfiles[index]['user_info']['profession']}",
+                                            style: TextStyle(
+                                                color: Colors.black54,
+                                                fontSize: size.height / 43,
+                                                fontFamily: 'Nunito',
+                                                fontWeight: FontWeight.w600),
+                                            maxLines: 2,
+                                          ),
+                                        ),
+                                        SizedBox(height: 3),
+                                        Text(
+                                          "Age: ${allProfiles[index]['user_info']['age']}",
+                                          style: TextStyle(
+                                              fontSize: size.height / 48,
+                                              fontFamily: 'Nunito',
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                        SizedBox(height: 6),
+                                        Container(
+                                          width: size.width * 0.57,
+                                          child: AutoSizeText(
+                                            "${(allProfiles[index]['user_info']['bio'].toString())}",
+                                            style: TextStyle(
+                                                fontSize: size.height / 46),
+                                            maxLines: 3,
+                                          ),
+                                        ),
+                                        SizedBox(height: 10),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: <Widget>[
+                                            InkWell(
+                                              onTap: () {
+                                                db
+                                                    .getSingleUser(
+                                                        allProfiles[index]
+                                                            ['user_info']['id'])
+                                                    .then((value) {
+                                                  add(
+                                                      allProfiles[index]
+                                                          ['user_info']['id'],
+                                                      allProfiles[index]
+                                                              ['user_info']
+                                                          ['fullName'],
+                                                      allProfiles[index]
+                                                              ['user_info']
+                                                          ['profile_pic'],
+                                                      index);
+                                                });
+                                              },
+                                              child: Container(
+                                                width: size.width * 0.26,
+                                                height: size.height * 0.05,
+                                                decoration: BoxDecoration(
+                                                    color: Theme.of(context)
+                                                        .primaryColor,
+                                                    border: Border.all(
+                                                        width: 1,
+                                                        color: Theme.of(context)
+                                                            .primaryColor),
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                10))),
+                                                child: Center(
+                                                  child: Text(
+                                                    "Connect",
+                                                    style: TextStyle(
+                                                        fontSize:
+                                                            size.height / 44,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                        ),
+                                          ],
+                                        )
                                       ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ],
-                          )),
-                    )),
+                                    ),
+                                  ),
+                                ],
+                              )),
+                        )),
                   );
                 }),
               ),
@@ -1020,6 +1050,20 @@ class _TestHomePageState extends State<TestHomePage> {
                             hintText: 'Enter a Message'),
                       ),
                       Row(
+                        children: <Widget>[
+                          Checkbox(
+                            value: checkStatus,
+                            onChanged: (value) {
+                              setState(() {
+                                checkStatus = value;
+                              });
+                              rememberMessage(value, messageController.text);
+                            },
+                          ),
+                          Text("Set as Default")
+                        ],
+                      ),
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
                           Container(
@@ -1035,6 +1079,7 @@ class _TestHomePageState extends State<TestHomePage> {
                                     var msg = messageController.text;
                                     var db = DataBaseHelper();
                                     messageController.clear();
+                                    rememberMessage(checkStatus, msg);
                                     SharedPreferences prefs =
                                         await SharedPreferences.getInstance();
                                     String id = prefs.getString('id') ?? "";
@@ -1132,5 +1177,12 @@ class _TestHomePageState extends State<TestHomePage> {
             ),
           );
         });
+  }
+
+  rememberMessage(value, message) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    (value)
+        ? prefs.setString("DefaultMessage", message)
+        : prefs.remove("DefaultMessage");
   }
 }

@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'show_goals.dart';
 import 'login.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -16,6 +17,16 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
   bool switchVal1 = false;
   bool switchVal2 = false;
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  // @override
+  // void initState() {
+  // }
+
+  // Future onSelectNotification(String payload) async {
+  //   print("Tapped on Notification");
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +62,9 @@ class _SettingsState extends State<Settings> {
         title: Text(
           "Settings",
           style: TextStyle(
-              color: Colors.black, fontSize: size.height / 32, fontFamily: 'Nunito'),
+              color: Colors.black,
+              fontSize: size.height / 32,
+              fontFamily: 'Nunito'),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -86,7 +99,7 @@ class _SettingsState extends State<Settings> {
                                   "Edit Profile",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      fontSize: size.height/40,
+                                      fontSize: size.height / 40,
                                       fontWeight: FontWeight.w700,
                                       color: Colors.black,
                                       letterSpacing: 0.3),
@@ -99,7 +112,10 @@ class _SettingsState extends State<Settings> {
                               ),
                             ),
                             IconButton(
-                              icon: Icon(Icons.arrow_forward_ios,color: Colors.black,),
+                              icon: Icon(
+                                Icons.arrow_forward_ios,
+                                color: Colors.black,
+                              ),
                               iconSize: 20,
                               onPressed: null,
                             )
@@ -130,7 +146,7 @@ class _SettingsState extends State<Settings> {
                                   "Edit Goals",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      fontSize: size.height/40,
+                                      fontSize: size.height / 40,
                                       fontWeight: FontWeight.w700,
                                       color: Colors.black,
                                       letterSpacing: 0.3),
@@ -161,8 +177,7 @@ class _SettingsState extends State<Settings> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => ShowGoals()),
+                          MaterialPageRoute(builder: (context) => ShowGoals()),
                         );
                       },
                     ),
@@ -180,10 +195,10 @@ class _SettingsState extends State<Settings> {
                                     "Account Settings",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        fontSize: size.height/40,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.black,
-                                      letterSpacing: 0.3),
+                                        fontSize: size.height / 40,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.black,
+                                        letterSpacing: 0.3),
                                   ),
                                 ),
                               ),
@@ -213,7 +228,6 @@ class _SettingsState extends State<Settings> {
                       thickness: 1,
                     ),
                     InkWell(
-
                       child: Container(
                         child: Row(
                           children: <Widget>[
@@ -224,7 +238,7 @@ class _SettingsState extends State<Settings> {
                                   "Privacy Policies",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      fontSize: size.height/40,
+                                      fontSize: size.height / 40,
                                       fontWeight: FontWeight.w700,
                                       color: Colors.black,
                                       letterSpacing: 0.3),
@@ -239,7 +253,8 @@ class _SettingsState extends State<Settings> {
                             IconButton(
                               icon: Icon(Icons.arrow_forward_ios),
                               iconSize: 20,
-                              onPressed: () =>_launchURL('http://march.lbits.co/'),
+                              onPressed: () =>
+                                  _launchURL('http://march.lbits.co/'),
                             )
                           ],
                         ),
@@ -262,7 +277,7 @@ class _SettingsState extends State<Settings> {
                                   "Terms of Use",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      fontSize: size.height/40,
+                                      fontSize: size.height / 40,
                                       fontWeight: FontWeight.w700,
                                       color: Colors.black,
                                       letterSpacing: 0.3),
@@ -277,14 +292,16 @@ class _SettingsState extends State<Settings> {
                             IconButton(
                               icon: Icon(Icons.arrow_forward_ios),
                               iconSize: 20,
-                              onPressed: () =>_launchURL('https://letsmarch.in/termsofuse.html'),
+                              onPressed: () => _launchURL(
+                                  'https://letsmarch.in/termsofuse.html'),
                             )
                           ],
                         ),
                         height: 50,
                         width: double.infinity,
                       ),
-                      onTap: () => _launchURL('https://letsmarch.in/termsofuse.html'),
+                      onTap: () =>
+                          _launchURL('https://letsmarch.in/termsofuse.html'),
                     ),
                     Divider(
                       thickness: 1,
@@ -300,7 +317,7 @@ class _SettingsState extends State<Settings> {
                                   "FAQ's",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      fontSize: size.height/40,
+                                      fontSize: size.height / 40,
                                       fontWeight: FontWeight.w700,
                                       color: Colors.black,
                                       letterSpacing: 0.3),
@@ -360,6 +377,7 @@ class _SettingsState extends State<Settings> {
                   await db.deleteGoalsInfo();
                   await db.deleteFriendsInfo();
                   await db.deleteMessages();
+                  flutterLocalNotificationsPlugin.cancelAll();
                   Navigator.pop(context, true);
                   Navigator.pushReplacement(
                     context,
@@ -374,6 +392,7 @@ class _SettingsState extends State<Settings> {
     );
   }
 }
+
 _launchURL(url) async {
   if (await canLaunch(url)) {
     await launch(url);
