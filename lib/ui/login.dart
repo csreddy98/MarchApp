@@ -18,6 +18,8 @@ import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'home.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 
 class Login extends StatefulWidget {
   @override
@@ -25,6 +27,8 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
   GoogleSignIn google = new GoogleSignIn();
   FirebaseAuth _auth = FirebaseAuth.instance;
   FacebookLogin fbLogin = new FacebookLogin();
@@ -158,6 +162,15 @@ class _LoginState extends State<Login> {
                   resultx['result'][i]['goal_number'],
                 ));
                 print("goal saved :$savedGoal");
+                if (resultx['result'][i]['remindEveryDay'] == "1") {
+                        var reminderTime = DateTime.parse(
+                            resultx['result'][i]['everyDayRemindTime']);
+                        _showNotification(
+                            int.parse(resultx['result'][i]['goal_number']),
+                            resultx['result'][i]['goal'],
+                            "It's time to work on your goal",
+                            Time(reminderTime.hour, reminderTime.minute));
+                      }
               }
               SharedPreferences prefs = await SharedPreferences.getInstance();
               prefs.setInt('log', 1);
@@ -332,6 +345,15 @@ class _LoginState extends State<Login> {
                       resultx['result'][i]['goal_number'],
                     ));
                     print("goal saved :$savedGoal");
+                    if (resultx['result'][i]['remindEveryDay'] == "1") {
+                        var reminderTime = DateTime.parse(
+                            resultx['result'][i]['everyDayRemindTime']);
+                        _showNotification(
+                            int.parse(resultx['result'][i]['goal_number']),
+                            resultx['result'][i]['goal'],
+                            "It's time to work on your goal",
+                            Time(reminderTime.hour, reminderTime.minute));
+                      }
                   }
                   SharedPreferences prefs = await SharedPreferences.getInstance();
                   prefs.setInt('log', 1);
@@ -396,6 +418,21 @@ class _LoginState extends State<Login> {
   );
 }
 
+@override
+  void initState() {
+    super.initState();
+  var initializationSettingsAndroid =
+        AndroidInitializationSettings('@drawable/icon');
+    var initializationSettingsIOS = IOSInitializationSettings();
+    var initializationSettings = InitializationSettings(
+        initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: onSelectNotification);
+  }
+
+  Future onSelectNotification(String payload) async {
+    print("Tapped on Notification");
+  }
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -642,6 +679,23 @@ class _LoginState extends State<Login> {
           ],
         ),
       ),
+    );
+  }
+   Future _showNotification(int goalNumber, String title, String content,
+      Time notificationTime) async {
+    var androidPlatformChannelSpecifics = new AndroidNotificationDetails('100',
+        'Goal Reminder', 'This channel is reserved for the goal Reminders',
+        playSound: false, importance: Importance.Max, priority: Priority.High);
+    var iOSPlatformChannelSpecifics =
+        new IOSNotificationDetails(presentSound: false);
+    var platformChannelSpecifics = new NotificationDetails(
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.showDailyAtTime(
+      goalNumber,
+      '$title',
+      '$content',
+      notificationTime,
+      platformChannelSpecifics,
     );
   }
 }

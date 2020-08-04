@@ -44,7 +44,6 @@ class _TestHomePageState extends State<TestHomePage> {
   LocationData _locationData;
   PermissionStatus _permissionGranted;
   bool _serviceEnabled;
-  TextEditingController messageController = new TextEditingController();
   List myUsers = [];
   bool loadPage = false;
   int pageNo = 0;
@@ -52,7 +51,6 @@ class _TestHomePageState extends State<TestHomePage> {
   int nlen = 0;
   List allProfiles = [];
   List allProfilesCrossCheck = [];
-  bool checkStatus = false;
   String defaultMsg = "";
 
   @override
@@ -675,9 +673,6 @@ class _TestHomePageState extends State<TestHomePage> {
     String userToken = prefs.getString('token') ?? "";
     // uid = prefs.getString('uid') ?? "";
     id = prefs.getString('id') ?? "";
-    setState(() {
-      messageController.text = prefs.getString("DefaultMessage");
-    });
     // SQLITE
 
     int n;
@@ -1007,11 +1002,27 @@ class _TestHomePageState extends State<TestHomePage> {
     );
   }
 
-  void add(userId, userName, userImage, index) {
+  void add(userId, userName, userImage, index) async{
+    bool checkStatus = false;
+    TextEditingController messageController = new TextEditingController();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String msg = prefs.getString('DefaultMessage') ?? "";
+    messageController.text = "";
+    setState(() {
+      if(msg!=""){
+          messageController.text = msg;
+          checkStatus=true;
+      }
+      else{
+        messageController.clear();
+      }
+    });
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return BackdropFilter(
+          return StatefulBuilder( // StatefulBuilder
+          builder: (context, setState) {
+            return BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
             child: Dialog(
               shape: RoundedRectangleBorder(
@@ -1176,6 +1187,7 @@ class _TestHomePageState extends State<TestHomePage> {
               ),
             ),
           );
+          });
         });
   }
 
