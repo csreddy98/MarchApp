@@ -164,7 +164,7 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
                 print("goal saved :$savedGoal");
                 if (resultx['result'][i]['remindEveryDay'] == "1") {
                         var reminderTime = DateTime.parse(
-                            resultx['result'][i]['everyDayRemindTime']);
+                         "0000-00-00 "+ resultx['result'][i]['everyDayRemindTime']);
                         _showNotification(
                             int.parse(resultx['result'][i]['goal_number']),
                             resultx['result'][i]['goal'],
@@ -347,7 +347,7 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
                     print("goal saved :$savedGoal");
                     if (resultx['result'][i]['remindEveryDay'] == "1") {
                         var reminderTime = DateTime.parse(
-                            resultx['result'][i]['everyDayRemindTime']);
+                           "0000-00-00 "+ resultx['result'][i]['everyDayRemindTime']);
                         _showNotification(
                             int.parse(resultx['result'][i]['goal_number']),
                             resultx['result'][i]['goal'],
