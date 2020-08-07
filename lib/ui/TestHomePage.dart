@@ -387,6 +387,7 @@ class _TestHomePageState extends State<TestHomePage> {
                           InkWell(
                             onTap: () {
                               add(id, name, pic, index);
+                              deleteItem(index, id);
                             },
                             child: Container(
                               width: size.width * 0.35,
@@ -1002,7 +1003,7 @@ class _TestHomePageState extends State<TestHomePage> {
     );
   }
 
-  void add(userId, userName, userImage, index) async{
+  Future<void> add(userId, userName, userImage, index) async{
     bool checkStatus = false;
     TextEditingController messageController = new TextEditingController();
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -1112,7 +1113,14 @@ class _TestHomePageState extends State<TestHomePage> {
                                         }).then((value) {
                                       var resp = json.decode(value.body);
                                       if (resp['response'] == 200) {
-                                        Navigator.pop(context);
+                                        print('res:200');
+                                        Navigator.pop(context,(){
+                                          setState(() {
+                                            details.removeAt(index);
+                                            allProfiles.removeAt(index);
+                                            crossCheckList.removeAt(index);
+                                          });
+                                        });
                                         var key = UniqueKey();
                                         socketIO.sendMessage(
                                             "New user Request",
@@ -1154,16 +1162,11 @@ class _TestHomePageState extends State<TestHomePage> {
                                           };
                                           db.addUser(friendsMap);
                                           db.addMessage(messageMap);
-                                          setState(() {
-                                            details.removeAt(index);
-                                            allProfiles.removeAt(index);
-                                            crossCheckList.removeAt(index);
-                                          });
                                           db.peopleFinderRemovePerson(userId);
                                           db.removePersonGoals(userId);
                                         });
                                       } else {
-                                        print("$resp");
+                                        print("res: "+"$resp");
                                       }
                                     });
                                     StatusAlert.show(context,
