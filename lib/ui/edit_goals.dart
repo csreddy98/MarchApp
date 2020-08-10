@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:march/models/goal.dart';
+import 'package:march/models/user.dart';
 import 'package:march/ui/show_goals.dart';
 import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -192,6 +193,7 @@ class _EditGoalState extends State<EditGoal> {
                                         ),
                                         onPressed: () {
                                           setState(() {
+                                            suggestions.add(selectedGoal);
                                             con.clear();
                                             _disable = 0;
                                             selectedGoal = "";
@@ -916,10 +918,21 @@ class _EditGoalState extends State<EditGoal> {
     var res = json.decode(resp.body);
     if (res['response'] == 200) {
       List n = res['result'];
+      List goals=[];
+      var db = new DataBaseHelper();
       setState(() {
         for (var i = 0; i < n.length; i++) {
           suggestions.add(res['result'][i].toString());
         }
+        db.getGoal(1).then((value) {
+          setState(() {
+            goals.addAll(value);
+            for(int i=0;i<value.length;i++){
+              suggestions.remove(goals[i]['goalName']);
+            }
+          });
+          print(goals);
+        });
       });
     }
   }

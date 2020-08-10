@@ -719,6 +719,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
 
                                           Navigator.pop(context);
                                           setState(() {
+                                            suggestions.remove(added[count - 1]);
                                             _disable = 0;
                                             sendTime = "none";
                                             remind = "0";
@@ -864,6 +865,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
 
                                     Navigator.pop(context);
                                     setState(() {
+                                      suggestions.remove(added[count - 1]);
                                       _disable = 0;
                                       note = "";
                                       click = 0;
