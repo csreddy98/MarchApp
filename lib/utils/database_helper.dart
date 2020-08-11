@@ -101,8 +101,9 @@ class DataBaseHelper {
         " $columnUserPhone TEXT"
         ")");
 
-    await db.execute("CREATE TABLE $goalTable( $columnId INTEGER PRIMARY KEY NOT NULL,"
-        " $columnUserId TEXT,$columnGoalName TEXT,"
+    await db.execute(
+        "CREATE TABLE $goalTable( $columnId INTEGER PRIMARY KEY NOT NULL,"
+        " $columnUserId TEXT, $columnGoalName TEXT UNIQUE NOT NULL,"
         " $columnLevel TEXT,$columnShouldRemind BOOLEAN,"
         " $remindTime TEXT, $columnGoalNumber TEXT"
         ")");
@@ -219,7 +220,8 @@ class DataBaseHelper {
 
   Future<List> getGoal(int id) async {
     var dbClient = await db;
-    var result = await dbClient.rawQuery("SELECT * FROM $goalTable");
+    var result = await dbClient
+        .rawQuery("SELECT * FROM $goalTable WHERE $columnGoalName LIMIT 3");
     return result;
   }
 
@@ -379,7 +381,7 @@ class DataBaseHelper {
   Future<List> selectGoals(personId) async {
     var dbClient = await db;
     return await dbClient.rawQuery(
-        "SELECT * FROM $peopleFinderGoalsTable WHERE $peopleFinderPersonId = '$personId'");
+        "SELECT * FROM $peopleFinderGoalsTable WHERE $peopleFinderPersonId = '$personId' LIMIT 3");
   }
 
   Future<int> removePersonGoals(personId) async {

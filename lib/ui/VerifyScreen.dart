@@ -143,8 +143,8 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
                       ));
                       print("goal saved :$savedGoal");
                       if (resultx['result'][i]['remindEveryDay'] == "1") {
-                        var reminderTime = DateTime.parse(
-                            "0000-00-00 "+resultx['result'][i]['everyDayRemindTime']);
+                        var reminderTime = DateTime.parse("0000-00-00 " +
+                            resultx['result'][i]['everyDayRemindTime']);
                         _showNotification(
                             int.parse(resultx['result'][i]['goal_number']),
                             resultx['result'][i]['goal'],

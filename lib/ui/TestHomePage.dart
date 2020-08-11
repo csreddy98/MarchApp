@@ -114,7 +114,7 @@ class _TestHomePageState extends State<TestHomePage> {
       body: json.encode(nearbyReqs),
     );
     var result = json.decode(resp.body);
-    print(result);
+    // print(result);
     stackedCards.clear();
     if (result['response'] == 200) {
       int l = result['result'].length;
@@ -180,7 +180,7 @@ class _TestHomePageState extends State<TestHomePage> {
       var jsonResp = json.decode(resp.body);
       // print(jsonResp);
       if (jsonResp['response'] == 200) {
-        print(jsonResp);
+        // print(jsonResp);
         List allprofs = jsonResp['result'].toList()..shuffle();
         if (allprofs.length == 0) {
           setState(() {
@@ -444,7 +444,7 @@ class _TestHomePageState extends State<TestHomePage> {
         }).then((value) {
           // setState(() {
           if (!crossCheckList.contains(element['personId'])) {
-            print("$element, $goals");
+            // print("$element, $goals");
             details.add({"user_info": element, "goal_info": goals});
             setState(() {
               stackedCards.add(cardGenerator(
@@ -664,9 +664,9 @@ class _TestHomePageState extends State<TestHomePage> {
     setState(() {
       details.removeAt(index);
       crossCheckList.removeAt(index);
-      db.peopleFinderRemovePerson(id);
-      db.removePersonGoals(id);
     });
+    db.peopleFinderRemovePerson(id);
+    db.removePersonGoals(id);
   }
 
   void _load() async {
@@ -700,7 +700,7 @@ class _TestHomePageState extends State<TestHomePage> {
           goals = goals + "," + m["goalName"];
           goalList.add(m["goalName"]);
         }
-        print(goals);
+        // print(goals);
       });
     });
 
@@ -716,7 +716,7 @@ class _TestHomePageState extends State<TestHomePage> {
       if (!_serviceEnabled) {
         _serviceEnabled = await location.requestService();
         if (!_serviceEnabled) {
-          print("No Thanks");
+          // print("No Thanks");
           setState(() {
             lat = "17.4538444";
             lng = "78.416675";
@@ -724,7 +724,7 @@ class _TestHomePageState extends State<TestHomePage> {
           });
           return;
         } else {
-          print("Clicked Ok");
+          // print("Clicked Ok");
           _locationData = await location.getLocation();
           print("lat : " +
               _locationData.latitude.toString() +
@@ -1003,193 +1003,195 @@ class _TestHomePageState extends State<TestHomePage> {
     );
   }
 
-  Future<void> add(userId, userName, userImage, index) async{
+  Future<void> add(userId, userName, userImage, index) async {
     bool checkStatus = false;
     TextEditingController messageController = new TextEditingController();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String msg = prefs.getString('DefaultMessage') ?? "";
     messageController.text = "";
     setState(() {
-      if(msg!=""){
-          messageController.text = msg;
-          checkStatus=true;
-      }
-      else{
+      if (msg != "") {
+        messageController.text = msg;
+        checkStatus = true;
+      } else {
         messageController.clear();
       }
     });
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return StatefulBuilder( // StatefulBuilder
-          builder: (context, setState) {
+          return StatefulBuilder(// StatefulBuilder
+              builder: (context, setState) {
             return BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-            child: Dialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                      Radius.circular(15.0))), //this right here
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.40,
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Send A Message",
-                        style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.height / 35,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w600),
-                      ),
-                      Container(
-                        height: 15,
-                      ),
-                      TextField(
-                        keyboardType: TextInputType.multiline,
-                        textCapitalization: TextCapitalization.sentences,
-                        maxLines: 3,
-                        style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.w500),
-                        controller: messageController,
-                        decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Colors.grey[300], width: 1.0),
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: Dialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                        Radius.circular(15.0))), //this right here
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.40,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Send A Message",
+                          style: TextStyle(
+                              fontSize: MediaQuery.of(context).size.height / 35,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        Container(
+                          height: 15,
+                        ),
+                        TextField(
+                          keyboardType: TextInputType.multiline,
+                          textCapitalization: TextCapitalization.sentences,
+                          maxLines: 3,
+                          style: TextStyle(
+                              color: Colors.black, fontWeight: FontWeight.w500),
+                          controller: messageController,
+                          decoration: InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Colors.grey[300], width: 1.0),
+                              ),
+                              hintText: 'Enter a Message'),
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Checkbox(
+                              value: checkStatus,
+                              onChanged: (value) {
+                                setState(() {
+                                  checkStatus = value;
+                                });
+                                rememberMessage(value, messageController.text);
+                              },
                             ),
-                            hintText: 'Enter a Message'),
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Checkbox(
-                            value: checkStatus,
-                            onChanged: (value) {
-                              setState(() {
-                                checkStatus = value;
-                              });
-                              rememberMessage(value, messageController.text);
-                            },
-                          ),
-                          Text("Set as Default")
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Container(
-                            width: MediaQuery.of(context).size.width / 2.2,
-                          ),
-                          Expanded(
-                            child: SizedBox(
-                              width: 100,
-                              child: RaisedButton(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)),
-                                  onPressed: () async {
-                                    var msg = messageController.text;
-                                    var db = DataBaseHelper();
-                                    messageController.clear();
-                                    rememberMessage(checkStatus, msg);
-                                    SharedPreferences prefs =
-                                        await SharedPreferences.getInstance();
-                                    String id = prefs.getString('id') ?? "";
-                                    print("UID IS EMPTY? $uid");
-                                    await http.post(
-                                        'https://march.lbits.co/api/worker.php',
-                                        body: json.encode(<String, dynamic>{
-                                          "serviveName": "",
-                                          "work": "add new request",
-                                          "uid": "$uid",
-                                          "sender": "$id",
-                                          "receiver": "$userId",
-                                          "message": "$msg",
-                                          "requestStatus": "pending"
-                                        }),
-                                        headers: {
-                                          'Authorization': 'Bearer $token',
-                                          'Content-Type': 'application/json'
-                                        }).then((value) {
-                                      var resp = json.decode(value.body);
-                                      if (resp['response'] == 200) {
-                                        print('res:200');
-                                        Navigator.pop(context,(){
+                            Text("Set as Default")
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Container(
+                              width: MediaQuery.of(context).size.width / 2.2,
+                            ),
+                            Expanded(
+                              child: SizedBox(
+                                width: 100,
+                                child: RaisedButton(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    onPressed: () async {
+                                      var msg = messageController.text;
+                                      var db = DataBaseHelper();
+                                      messageController.clear();
+                                      rememberMessage(checkStatus, msg);
+                                      SharedPreferences prefs =
+                                          await SharedPreferences.getInstance();
+                                      String id = prefs.getString('id') ?? "";
+                                      print("UID IS EMPTY? $uid");
+                                      await http.post(
+                                          'https://march.lbits.co/api/worker.php',
+                                          body: json.encode(<String, dynamic>{
+                                            "serviveName": "",
+                                            "work": "add new request",
+                                            "uid": "$uid",
+                                            "sender": "$id",
+                                            "receiver": "$userId",
+                                            "message": "$msg",
+                                            "requestStatus": "pending"
+                                          }),
+                                          headers: {
+                                            'Authorization': 'Bearer $token',
+                                            'Content-Type': 'application/json'
+                                          }).then((value) {
+                                        var resp = json.decode(value.body);
+                                        if (resp['response'] == 200) {
+                                          print('res:200');
                                           setState(() {
                                             details.removeAt(index);
                                             allProfiles.removeAt(index);
                                             crossCheckList.removeAt(index);
+                                            stackedCards.removeAt(index);
                                           });
-                                        });
-                                        var key = UniqueKey();
-                                        socketIO.sendMessage(
-                                            "New user Request",
-                                            json.encode({
-                                              "msgCode": "$key",
-                                              "message": "$msg",
-                                              "sender": id,
-                                              "receiver": userId,
-                                              "containsImage": "0",
-                                              "imageUrl": "none",
-                                              "time": '${DateTime.now()}',
-                                            }));
-                                        Map<String, dynamic> messageMap = {
-                                          DataBaseHelper.seenStatus: '0',
-                                          DataBaseHelper.messageCode: '$key',
-                                          DataBaseHelper.messageOtherId: userId,
-                                          DataBaseHelper.messageSentBy: id,
-                                          DataBaseHelper.messageText: msg,
-                                          DataBaseHelper.messageContainsImage:
-                                              '0',
-                                          DataBaseHelper.messageImage: 'null',
-                                          DataBaseHelper.messageTime:
-                                              "${DateTime.now()}"
-                                        };
-
-                                        imageSaver(userImage).then((value) {
-                                          Map<String, dynamic> friendsMap = {
-                                            DataBaseHelper.friendId: userId,
-                                            DataBaseHelper.friendName: userName,
-                                            DataBaseHelper.friendPic:
-                                                value['image'],
-                                            DataBaseHelper.friendSmallPic:
-                                                value['small_image'],
-                                            DataBaseHelper.friendLastMessage:
-                                                msg,
-                                            DataBaseHelper
-                                                    .friendLastMessageTime:
+                                          Navigator.pop(context);
+                                          var key = UniqueKey();
+                                          socketIO.sendMessage(
+                                              "New user Request",
+                                              json.encode({
+                                                "msgCode": "$key",
+                                                "message": "$msg",
+                                                "sender": id,
+                                                "receiver": userId,
+                                                "containsImage": "0",
+                                                "imageUrl": "none",
+                                                "time": '${DateTime.now()}',
+                                              }));
+                                          Map<String, dynamic> messageMap = {
+                                            DataBaseHelper.seenStatus: '0',
+                                            DataBaseHelper.messageCode: '$key',
+                                            DataBaseHelper.messageOtherId:
+                                                userId,
+                                            DataBaseHelper.messageSentBy: id,
+                                            DataBaseHelper.messageText: msg,
+                                            DataBaseHelper.messageContainsImage:
+                                                '0',
+                                            DataBaseHelper.messageImage: 'null',
+                                            DataBaseHelper.messageTime:
                                                 "${DateTime.now()}"
                                           };
-                                          db.addUser(friendsMap);
-                                          db.addMessage(messageMap);
-                                          db.peopleFinderRemovePerson(userId);
-                                          db.removePersonGoals(userId);
-                                        });
-                                      } else {
-                                        print("res: "+"$resp");
-                                      }
-                                    });
-                                    StatusAlert.show(context,
-                                        duration: Duration(seconds: 2),
-                                        title: "Added",
-                                        configuration: IconConfiguration(
-                                            icon: Icons.done));
-                                  },
-                                  child: Text(
-                                    "Add",
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                  color: Theme.of(context).primaryColor),
+
+                                          imageSaver(userImage).then((value) {
+                                            Map<String, dynamic> friendsMap = {
+                                              DataBaseHelper.friendId: userId,
+                                              DataBaseHelper.friendName:
+                                                  userName,
+                                              DataBaseHelper.friendPic:
+                                                  value['image'],
+                                              DataBaseHelper.friendSmallPic:
+                                                  value['small_image'],
+                                              DataBaseHelper.friendLastMessage:
+                                                  msg,
+                                              DataBaseHelper
+                                                      .friendLastMessageTime:
+                                                  "${DateTime.now()}"
+                                            };
+                                            db.addUser(friendsMap);
+                                            db.addMessage(messageMap);
+                                            db.peopleFinderRemovePerson(userId);
+                                            db.removePersonGoals(userId);
+                                          });
+                                        } else {
+                                          print("res: " + "$resp");
+                                        }
+                                      });
+                                      StatusAlert.show(context,
+                                          duration: Duration(seconds: 2),
+                                          title: "Added",
+                                          configuration: IconConfiguration(
+                                              icon: Icons.done));
+                                    },
+                                    child: Text(
+                                      "Add",
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                    color: Theme.of(context).primaryColor),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
+            );
           });
         });
   }
