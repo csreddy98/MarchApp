@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +54,7 @@ class _TestHomePageState extends State<TestHomePage> {
   List allProfiles = [];
   List allProfilesCrossCheck = [];
   String defaultMsg = "";
-
+  bool nearSendAgain = true, allSendAgain = true;
   @override
   void initState() {
     _load();
@@ -64,6 +66,7 @@ class _TestHomePageState extends State<TestHomePage> {
     socketIO.connect();
     _getAllPeople();
     super.initState();
+    timecounter();
   }
 
   BoxDecoration selected() {
@@ -93,115 +96,124 @@ class _TestHomePageState extends State<TestHomePage> {
   Future<List<Widget>> _getPeople() async {
     // if (token != null && id != null && check == 1) {
     _getAllPeople();
-    var ur = 'https://march.lbits.co/api/worker.php';
-    Map nearbyReqs = <String, dynamic>{
-      'serviceName': "",
-      'work': "search with distance",
-      'lat': '$lat',
-      'lng': '$lng',
-      'goals': "$goals",
-      'radius': '$radius',
-      'maxAge': '$maxAge',
-      'minAge': '$minAge',
-      'uid': id
-    };
-    var resp = await http.post(
-      ur,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token'
-      },
-      body: json.encode(nearbyReqs),
-    );
-    var result = json.decode(resp.body);
-    // print(result);
-    stackedCards.clear();
-    if (result['response'] == 200) {
-      int l = result['result'].length;
-      List requiredRes = result['result'].toList()..shuffle();
-      for (var i = 0; i < l; i++) {
-        db.getPersonWithId(requiredRes[i]['user_info']['id']).then((value) {
-          if (value[0]['personCount'].toString() == '0') {
-            db.insertPersonForPeopleFinder({
-              DataBaseHelper.peopleFinderid: requiredRes[i]['user_info']['id'],
-              DataBaseHelper.peopleFinderName: requiredRes[i]['user_info']
-                  ['fullName'],
-              DataBaseHelper.peopleFinderPic: requiredRes[i]['user_info']
-                  ['profile_pic'],
-              DataBaseHelper.peopleFinderProfession: requiredRes[i]['user_info']
-                  ['profession'],
-              DataBaseHelper.peopleFinderLocation:
-                  "${requiredRes[i]['user_info']['distance']} Km away",
-              DataBaseHelper.peopleFinderBio: requiredRes[i]['user_info']
-                  ['bio'],
-              DataBaseHelper.peopleFinderGender: requiredRes[i]['user_info']
-                  ['sex'],
-              DataBaseHelper.peopleFinderAge: requiredRes[i]['user_info']
-                  ['age'],
-            }).then((value) {
-              requiredRes[i]['goal_info'].toList().forEach((element) {
-                db.addPersonGoal({
-                  DataBaseHelper.peopleFinderPersonId: requiredRes[i]
-                      ['user_info']['id'],
-                  DataBaseHelper.peopleFinderGoalName:
-                      element['personGoalName'],
-                  DataBaseHelper.peopleFinderGoalLevel:
-                      element['personGoalLevel']
-                }).then((value) => print("ADDED"));
+
+    if (nearSendAgain) {
+      var ur = 'https://march.lbits.co/api/worker.php';
+      Map nearbyReqs = <String, dynamic>{
+        'serviceName': "",
+        'work': "search with distance",
+        'lat': '$lat',
+        'lng': '$lng',
+        'goals': "$goals",
+        'radius': '$radius',
+        'maxAge': '$maxAge',
+        'minAge': '$minAge',
+        'uid': id
+      };
+      var resp = await http.post(
+        ur,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: json.encode(nearbyReqs),
+      );
+      var result = json.decode(resp.body);
+      print(result);
+      stackedCards.clear();
+      if (result['response'] == 200) {
+        nearSendAgain = false;
+        int l = result['result'].length;
+        List requiredRes = result['result'].toList()..shuffle();
+        for (var i = 0; i < l; i++) {
+          db.getPersonWithId(requiredRes[i]['user_info']['id']).then((value) {
+            if (value[0]['personCount'].toString() == '0') {
+              db.insertPersonForPeopleFinder({
+                DataBaseHelper.peopleFinderid: requiredRes[i]['user_info']
+                    ['id'],
+                DataBaseHelper.peopleFinderName: requiredRes[i]['user_info']
+                    ['fullName'],
+                DataBaseHelper.peopleFinderPic: requiredRes[i]['user_info']
+                    ['profile_pic'],
+                DataBaseHelper.peopleFinderProfession: requiredRes[i]
+                    ['user_info']['profession'],
+                DataBaseHelper.peopleFinderLocation:
+                    "${requiredRes[i]['user_info']['distance']} Km away",
+                DataBaseHelper.peopleFinderBio: requiredRes[i]['user_info']
+                    ['bio'],
+                DataBaseHelper.peopleFinderGender: requiredRes[i]['user_info']
+                    ['sex'],
+                DataBaseHelper.peopleFinderAge: requiredRes[i]['user_info']
+                    ['age'],
+              }).then((value) {
+                requiredRes[i]['goal_info'].toList().forEach((element) {
+                  db.addPersonGoal({
+                    DataBaseHelper.peopleFinderPersonId: requiredRes[i]
+                        ['user_info']['id'],
+                    DataBaseHelper.peopleFinderGoalName:
+                        element['personGoalName'],
+                    DataBaseHelper.peopleFinderGoalLevel:
+                        element['personGoalLevel']
+                  }).then((value) => print("ADDED"));
+                });
               });
-            });
-          }
-        });
+            }
+          });
+        }
       }
     }
+
     return stackedCards;
   }
 
   _getAllPeople() async {
-    var ur = 'https://march.lbits.co/api/worker.php';
-    Map xxx = <String, dynamic>{
-      'serviceName': "",
-      'work': "get all profiles",
-      'maxAge': '$maxAge',
-      'minAge': '$minAge',
-      'goals': "$goals",
-      'uid': id,
-    };
-    http
-        .post(
-      ur,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token'
-      },
-      body: json.encode(xxx),
-    )
-        .then((resp) {
-      var jsonResp = json.decode(resp.body);
-      // print(jsonResp);
-      if (jsonResp['response'] == 200) {
+    if (allSendAgain) {
+      var ur = 'https://march.lbits.co/api/worker.php';
+      Map xxx = <String, dynamic>{
+        'serviceName': "",
+        'work': "get all profiles",
+        'maxAge': '$maxAge',
+        'minAge': '$minAge',
+        'goals': "$goals",
+        'uid': id,
+      };
+      http
+          .post(
+        ur,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: json.encode(xxx),
+      )
+          .then((resp) {
+        var jsonResp = json.decode(resp.body);
         // print(jsonResp);
-        List allprofs = jsonResp['result'].toList()..shuffle();
-        if (allprofs.length == 0) {
-          setState(() {
-            alen = 1;
-            //alen is 0 before checking , 1 if len is 0,
-          });
-        } else {
-          setState(() {
-            alen = 0;
-          });
-        }
-        allprofs.forEach((element) {
-          if (!allProfilesCrossCheck.contains(element['user_info']['id'])) {
+        if (jsonResp['response'] == 200) {
+          allSendAgain = false;
+          print(jsonResp);
+          List allprofs = jsonResp['result'].toList()..shuffle();
+          if (allprofs.length == 0) {
             setState(() {
-              allProfiles.add(element);
-              allProfilesCrossCheck.add(element['user_info']['id']);
+              alen = 1;
+              //alen is 0 before checking , 1 if len is 0,
+            });
+          } else {
+            setState(() {
+              alen = 0;
             });
           }
-        });
-      }
-    });
+          allprofs.forEach((element) {
+            if (!allProfilesCrossCheck.contains(element['user_info']['id'])) {
+              setState(() {
+                allProfiles.add(element);
+                allProfilesCrossCheck.add(element['user_info']['id']);
+              });
+            }
+          });
+        }
+      });
+    }
   }
 
   Widget goalBox(goal, BuildContext context) {
@@ -387,7 +399,6 @@ class _TestHomePageState extends State<TestHomePage> {
                           InkWell(
                             onTap: () {
                               add(id, name, pic, index);
-                              deleteItem(index, id);
                             },
                             child: Container(
                               width: size.width * 0.35,
@@ -469,6 +480,15 @@ class _TestHomePageState extends State<TestHomePage> {
     });
 
     return stackedCards;
+  }
+
+  timecounter() async {
+    Timer.periodic(Duration(seconds: 5), (Timer t) {
+      setState(() {
+        nearSendAgain = true;
+        allSendAgain = true;
+      });
+    });
   }
 
   @override
@@ -661,9 +681,22 @@ class _TestHomePageState extends State<TestHomePage> {
   }
 
   deleteItem(index, id) {
+    int x, y;
+    // details.removeAt(index);
+    details.forEach((val) {
+      x = (val['user_info']['id'] == id) ? details.indexOf(val) : 0;
+    });
+    allProfiles.forEach((val) {
+      y = (val['user_info']['id'] == id) ? allProfiles.indexOf(val) : 0;
+    });
     setState(() {
-      details.removeAt(index);
-      crossCheckList.removeAt(index);
+      print("x: $x, y: $y");
+      details.removeAt(x);
+      allProfiles.removeAt(y);
+      crossCheckList.removeAt(crossCheckList.indexOf(id));
+      allProfilesCrossCheck.removeAt(allProfilesCrossCheck.indexOf(id));
+      db.peopleFinderRemovePerson(id);
+      db.removePersonGoals(id);
     });
     db.peopleFinderRemovePerson(id);
     db.removePersonGoals(id);
@@ -805,6 +838,11 @@ class _TestHomePageState extends State<TestHomePage> {
   Widget showAllProfiles() {
     Size size = MediaQuery.of(context).size;
     print("$allProfiles");
+    (pageNo == 0)
+        ? _getPeople().then((value) {
+            _getDataFromLocalDb();
+          })
+        : _getAllPeople();
     return Center(
       child: Container(
         child: (allProfiles.length == 0)
@@ -1112,14 +1150,10 @@ class _TestHomePageState extends State<TestHomePage> {
                                             'Content-Type': 'application/json'
                                           }).then((value) {
                                         var resp = json.decode(value.body);
+                                        print(resp);
+                                        deleteItem(index, userId);
                                         if (resp['response'] == 200) {
                                           print('res:200');
-                                          setState(() {
-                                            details.removeAt(index);
-                                            allProfiles.removeAt(index);
-                                            crossCheckList.removeAt(index);
-                                            stackedCards.removeAt(index);
-                                          });
                                           Navigator.pop(context);
                                           var key = UniqueKey();
                                           socketIO.sendMessage(
