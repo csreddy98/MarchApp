@@ -220,8 +220,7 @@ class DataBaseHelper {
 
   Future<List> getGoal(int id) async {
     var dbClient = await db;
-    var result = await dbClient
-        .rawQuery("SELECT * FROM $goalTable WHERE $columnGoalName LIMIT 3");
+    var result = await dbClient.rawQuery("SELECT * FROM $goalTable");
     return result;
   }
 

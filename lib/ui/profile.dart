@@ -56,6 +56,7 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    print("Goal List: ${this.goals}");
     return Scaffold(
         // appBar: AppBar(
         //   centerTitle: true,
@@ -86,170 +87,182 @@ class _ProfileState extends State<Profile> {
         //   ],
         // ),
         body: Container(
-          color: Theme.of(context).primaryColor,
-          child: SafeArea(
-           child: Container(
-             color: Colors.white,
-            child: SingleChildScrollView(
+      color: Theme.of(context).primaryColor,
+      child: SafeArea(
+        child: Container(
+          color: Colors.white,
+          child: SingleChildScrollView(
             child: Column(
-            children: <Widget>[
-              CustomPaint(
-                painter: BackProfile(context),
-                child: Column(children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          SizedBox(
-                            width: size.width/10,
-                          ),
-                          Expanded(
+              children: <Widget>[
+                CustomPaint(
+                  painter: BackProfile(context),
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            SizedBox(
+                              width: size.width / 10,
+                            ),
+                            Expanded(
                               child: Center(
-                                child: Text("Your Profile",
-                                 style: TextStyle(
+                                child: Text(
+                                  "Your Profile",
+                                  style: TextStyle(
                                     fontSize: size.height / 32,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ),
-                          ),
-                     InkWell(
-                         onTap: () {
-                           Navigator.push(
-                             context,
-                             MaterialPageRoute(builder: (context) => Settings()),
-                            );
-                         },
-                     child: Padding(
-                         padding: const EdgeInsets.only(right:20.0),
-                         child: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(25)),
-                          child: Icon(Icons.settings),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Settings()),
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 20.0),
+                                child: ClipRRect(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(25)),
+                                  child: Icon(Icons.settings),
+                                ),
+                              ),
+                            )
+                          ],
                         ),
-                    ),
-                )
-                         ],
-                        ),
-                  ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Hero(
-                  tag: "$name ",
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    color: Colors.transparent,
-                    child: ProfileTop(
-                        name: "$name",
-                        picUrl: "$pic",
-                        profession: "$profession",
-                        // location: "Age",
-                    ),
-                  ),
-                  ),
-                ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10.0, vertical: 10.0),
-                child: Text(
-                "Age: $age",
-                textAlign: TextAlign.justify,
-                style: TextStyle(
-                  fontFamily: 'Nunito',
-                  fontSize: size.height / 45,
-                  height: 1.2,
-                  fontWeight: FontWeight.normal,
-                ),
-                ),
-              ),
-              SizedBox(
-                height: size.height / 18,
-              )
-              ],),),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8.0,0,8,8),
-                child: Text(
-                        "About",
-                        style: TextStyle(
-                            color: Colors.blueGrey , fontWeight: FontWeight.w600, fontSize: size.height / 46),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20.0, vertical: 13.0),
-                child: Text(
-                "$bio",
-                maxLines: 4,
-                textAlign: TextAlign.justify,
-                style: TextStyle(
-                  fontFamily: 'Nunito',
-                  fontSize: size.height / 42,
-                  height: 1.2,
-                  fontWeight: FontWeight.normal,
-                ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                      "Your Goals",
-                      style: TextStyle(
-                          color: Colors.blueGrey , fontWeight: FontWeight.w600, fontSize: size.height / 46),
-                  ),
-                ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                mainAxisSize: MainAxisSize.min,
-                children: List.generate(
-                      this.goals.length,
-                          (index) => Expanded(
-                          child: goalCardGenerator(
-                              context,
-                              "${this.goals[index]['goalName']}",
-                              int.parse(this.goals[index]['level'])))),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Text(
-                "Here’s what others are saying about you",
-                style: TextStyle(fontWeight: FontWeight.w600, fontSize: size.height / 43),
-                ),
-              ),
-              Container(
-                child: testimonials.length > 0
-                      ? Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: List.generate(
-                          testimonials.length,
-                              (index) => testimonial(
-                              context,
-                              testimonials[index]['profile_pic'],
-                              testimonials[index]['fullName'],
-                              testimonials[index]['message'])))
-                      : Padding(
-                  padding: const EdgeInsets.only(top: 15.0),
-                  child: Center(
-                      child: Text(
-                        "Ughh Nobody wrote about you.\nTry Socializing more...",
-                        style: TextStyle(fontSize: size.height / 48),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: Hero(
+                          tag: "$name ",
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            color: Colors.transparent,
+                            child: ProfileTop(
+                              name: "$name",
+                              picUrl: "$pic",
+                              profession: "$profession",
+                              // location: "Age",
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 10.0),
+                        child: Text(
+                          "Age: $age",
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                            fontFamily: 'Nunito',
+                            fontSize: size.height / 45,
+                            height: 1.2,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: size.height / 18,
+                      )
+                    ],
                   ),
-                )),
-            ],
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8.0, 0, 8, 8),
+                  child: Text(
+                    "About",
+                    style: TextStyle(
+                        color: Colors.blueGrey,
+                        fontWeight: FontWeight.w600,
+                        fontSize: size.height / 46),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0, vertical: 13.0),
+                  child: Text(
+                    "$bio",
+                    maxLines: 4,
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                      fontFamily: 'Nunito',
+                      fontSize: size.height / 42,
+                      height: 1.2,
+                      fontWeight: FontWeight.normal,
                     ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "Your Goals",
+                        style: TextStyle(
+                            color: Colors.blueGrey,
+                            fontWeight: FontWeight.w600,
+                            fontSize: size.height / 46),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(
+                        this.goals.length,
+                        (index) => Expanded(
+                            child: goalCardGenerator(
+                                context,
+                                "${this.goals[index]['goalName']}",
+                                int.parse(this.goals[index]['level'])))),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Text(
+                    "Here’s what others are saying about you",
+                    style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: size.height / 43),
+                  ),
+                ),
+                Container(
+                    child: testimonials.length > 0
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: List.generate(
+                                testimonials.length,
+                                (index) => testimonial(
+                                    context,
+                                    testimonials[index]['profile_pic'],
+                                    testimonials[index]['fullName'],
+                                    testimonials[index]['message'])))
+                        : Padding(
+                            padding: const EdgeInsets.only(top: 15.0),
+                            child: Center(
+                              child: Text(
+                                "Ughh Nobody wrote about you.\nTry Socializing more...",
+                                style: TextStyle(fontSize: size.height / 48),
+                              ),
+                            ),
+                          )),
+              ],
+            ),
           ),
-        ));
+        ),
+      ),
+    ));
   }
 
   void _load() async {
