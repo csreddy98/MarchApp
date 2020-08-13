@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'March',
+      color: Color(0xffFFBF46),
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'Nunito',
@@ -68,32 +69,25 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int n;
-  AssetImage myImage;
   @override
   void initState() {
     _load();
-    myImage = AssetImage("assets/images/logo.png");
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    precacheImage(myImage, context);
-  }
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: SplashScreen(
-        seconds: 4,
+        seconds: 7,
         navigateAfterSeconds: n == 1 ? Home('') : Login(),
-        image: new Image(
-          image: myImage,
-        ),
-        photoSize: 200,
+        image: Image.asset(
+              "assets/images/splash1.gif",
+            ),
+        photoSize: MediaQuery.of(context).size.height*0.25,
         backgroundColor: Theme.of(context).primaryColor,
-        loaderColor: Colors.black,
+        loaderColor: Theme.of(context).primaryColor,
       ),
     );
   }
