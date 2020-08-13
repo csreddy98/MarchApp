@@ -78,18 +78,23 @@ Widget goalCardGenerator(context, String goalName, int goalLevel) {
       'textColor': Color(0xFF926D51)
     },
   ];
+   
+  List c=[Colors.red,Colors.blue,Colors.green];
+  
   Size size = MediaQuery.of(context).size;
   print(size.width * 0.26);
   return SizedBox(
     width: size.width * 0.26,
     child: Card(
       elevation: 10,
+      shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.all( Radius.circular(10))),
       child: Container(
-        height: 130,
+        height: size.height*0.2,
         width: size.width * 0.26,
         decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
           color: goalAssets[goalLevel]['bgColor'],
-  
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
