@@ -66,7 +66,13 @@ class _TestHomePageState extends State<TestHomePage> {
     socketIO.connect();
     _getAllPeople();
     super.initState();
-    timecounter();
+    Timer.periodic(Duration(seconds: 5), (Timer t) {
+      print("FIRED");
+      setState(() {
+        nearSendAgain = true;
+        allSendAgain = true;
+      });
+    });
   }
 
   BoxDecoration selected() {
