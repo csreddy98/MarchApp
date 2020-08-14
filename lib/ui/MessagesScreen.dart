@@ -11,6 +11,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:march/ui/ChatScreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:march/ui/ChatScreen2.dart';
+import 'package:march/ui/profileScreen.dart';
 import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
@@ -131,11 +132,12 @@ class _MessagesScreenState extends State<MessagesScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Inbox",
-        style: TextStyle(
-          fontSize: size.height / 30,
-          fontWeight: FontWeight.w500,
-        ),
+        title: Text(
+          "Inbox",
+          style: TextStyle(
+            fontSize: size.height / 30,
+            fontWeight: FontWeight.w500,
+          ),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -238,18 +240,41 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: Card(
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.all(12.0),
-                                          child: ClipRRect(
-                                            child: CachedNetworkImage(
-                                                imageUrl: pending[i]['user_info']['profile_pic'],
-                                                width: MediaQuery.of(context).size.width / 4.5,
-                                                height: MediaQuery.of(context).size.width / 4.5,
-                                                
-                                                ),
-                                            borderRadius: BorderRadius.circular(10.0),
+                                        InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        ProfileScreen(
+                                                          fromNetwork: true,
+                                                          userId: pending[i]
+                                                                  ['user_info']
+                                                              ['sender_id'],
+                                                        )));
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(12.0),
+                                            child: ClipRRect(
+                                              child: CachedNetworkImage(
+                                                imageUrl: pending[i]
+                                                        ['user_info']
+                                                    ['profile_pic'],
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    4.5,
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    4.5,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                            ),
                                           ),
                                         ),
                                         Column(
@@ -262,16 +287,16 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                               text: TextSpan(
                                                   text: "Name: ",
                                                   style: TextStyle(
-                                                      color: Theme.of(context).primaryColor,
-                                                      fontSize: 16 ),
+                                                      color: Theme.of(context)
+                                                          .primaryColor,
+                                                      fontSize: 16),
                                                   children: [
                                                     TextSpan(
                                                         text:
                                                             "${pending[i]['user_info']['fullName']}",
                                                         style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 17
-                                                        ))
+                                                            color: Colors.black,
+                                                            fontSize: 17))
                                                   ]),
                                             ),
                                             RichText(
@@ -286,9 +311,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                         text:
                                                             "${pending[i]['user_info']['age']}",
                                                         style: TextStyle(
-                                                            color:Colors.black,
-                                                            fontSize: 17
-                                                                ))
+                                                            color: Colors.black,
+                                                            fontSize: 17))
                                                   ]),
                                             ),
                                             Container(
@@ -305,10 +329,11 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                         fontSize: 16),
                                                     children: [
                                                       TextSpan(
-                                                          text: "$goalString",
-                                                          style: TextStyle( fontSize: 17,
-                                                              color:
-                                                                  Colors.black,),
+                                                        text: "$goalString",
+                                                        style: TextStyle(
+                                                          fontSize: 17,
+                                                          color: Colors.black,
+                                                        ),
                                                       ),
                                                     ]),
                                                 maxLines: 2,
@@ -336,6 +361,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                 ),
                                               ),
                                               onTap: () {
+                                                print(
+                                                    "Message: ${pending[i]['user_info']}");
                                                 showDialog(
                                                     context: context,
                                                     child: AlertDialog(
@@ -423,11 +450,13 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                                       'user_info']
                                                                   ['fullName'],
                                                               DataBaseHelper
-                                                                  .friendPic: pending[
-                                                                          i][
-                                                                      'user_info']
-                                                                  [
-                                                                  'profile_pic'],
+                                                                      .friendPic:
+                                                                  value[
+                                                                      'image'],
+                                                              DataBaseHelper
+                                                                      .friendSmallPic:
+                                                                  value[
+                                                                      'small_image'],
                                                               DataBaseHelper
                                                                   .friendLastMessage: pending[
                                                                           i][
@@ -438,6 +467,9 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                                   '${DateTime.now()}'
                                                             };
                                                             var newMessage = {
+                                                              DataBaseHelper
+                                                                      .messageCode:
+                                                                  UniqueKey().toString(),
                                                               DataBaseHelper
                                                                   .messageText: pending[
                                                                           i][
@@ -483,24 +515,36 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                       });
                                                     },
                                                     child: Container(
-                                              width: size.width * 0.26,
-                                              height: size.height * 0.05,
-                                              decoration: BoxDecoration(
-                                                  color: Theme.of(context).primaryColor,
-                                                  border: Border.all(
-                                                      width: 1,
-                                                      color: Theme.of(context).primaryColor),
-                                                  borderRadius:
-                                                      BorderRadius.all(Radius.circular(10))),
-                                              child: Center(
-                                                child: Text(
-                                                  "Accept",
-                                                  style: TextStyle(
-                                                      fontSize: size.height / 44,
-                                                      fontWeight: FontWeight.bold),
-                                                ),
-                                              ),
-                                            ),
+                                                      width: size.width * 0.26,
+                                                      height:
+                                                          size.height * 0.05,
+                                                      decoration: BoxDecoration(
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .primaryColor,
+                                                          border: Border.all(
+                                                              width: 1,
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .primaryColor),
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          10))),
+                                                      child: Center(
+                                                        child: Text(
+                                                          "Accept",
+                                                          style: TextStyle(
+                                                              fontSize:
+                                                                  size.height /
+                                                                      44,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                      ),
+                                                    ),
                                                     // color: Theme.of(context).primaryColor,
                                                   ),
                                                   SizedBox(width: 40),
@@ -557,20 +601,32 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                     },
                                                     child: Container(
                                                       width: size.width * 0.26,
-                                                      height: size.height * 0.05,
+                                                      height:
+                                                          size.height * 0.05,
                                                       decoration: BoxDecoration(
-                                                          color: Theme.of(context).primaryColor,
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .primaryColor,
                                                           border: Border.all(
                                                               width: 1,
-                                                              color: Theme.of(context).primaryColor),
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .primaryColor),
                                                           borderRadius:
-                                                              BorderRadius.all(Radius.circular(10))),
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          10))),
                                                       child: Center(
                                                         child: Text(
                                                           "Reject",
                                                           style: TextStyle(
-                                                              fontSize: size.height / 44,
-                                                              fontWeight: FontWeight.bold),
+                                                              fontSize:
+                                                                  size.height /
+                                                                      44,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
                                                         ),
                                                       ),
                                                     ),
