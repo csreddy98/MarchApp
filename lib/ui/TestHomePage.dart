@@ -222,8 +222,22 @@ class _TestHomePageState extends State<TestHomePage> {
     }
   }
 
-  Widget goalBox(goal, BuildContext context) {
+  Widget goalBox(goal, BuildContext context,int cnt) {
     Size size = MediaQuery.of(context).size;
+    List<Map> colors=[
+       {
+        'bgColor': Color(0xFFCCEEED),
+        'textColor': Color(0xFF00ACA3)
+        },
+        {
+          'bgColor': Color(0xFFF1D3B5),
+          'textColor': Color(0xFF926D51)
+        }, 
+        {
+          'bgColor': Color(0xFFF2C5D3),
+          'textColor': Color(0xFF926D51)
+        }
+    ];
     List<Map> goalAssets = [
       {
         'name': 'Newbie',
@@ -258,15 +272,14 @@ class _TestHomePageState extends State<TestHomePage> {
     ];
     return Container(
       decoration: BoxDecoration(
-          color: goalAssets[int.parse(goal['personGoalLevel'])]['bgColor'],
+          color: colors[cnt]['bgColor'],
           borderRadius: BorderRadius.all(Radius.circular(20))),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
         child: Text(
           goal['personGoalName'],
           style: TextStyle(
-              color: goalAssets[int.parse(goal['personGoalLevel'])]
-                  ['textColor'],
+              color: colors[cnt]['textColor'],
               fontSize: size.height / 60,
               fontWeight: FontWeight.w600),
         ),
@@ -332,19 +345,19 @@ class _TestHomePageState extends State<TestHomePage> {
                         profession: "$profession",
                         location: "$location"),
                   ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(
+                  //       horizontal: 15.0, vertical: 10.0),
+                  //   child: Text(
+                  //     "$description",
+                  //     style: TextStyle(
+                  //         fontFamily: 'Nunito',
+                  //         fontSize: size.height / 47,
+                  //         fontWeight: FontWeight.w500),
+                  //   ),
+                  // ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15.0, vertical: 10.0),
-                    child: Text(
-                      "$description",
-                      style: TextStyle(
-                          fontFamily: 'Nunito',
-                          fontSize: size.height / 47,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 25),
+                    padding: const EdgeInsets.only(left: 25,top: 15),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
@@ -367,7 +380,7 @@ class _TestHomePageState extends State<TestHomePage> {
                             (index) => Padding(
                                   padding:
                                       const EdgeInsets.fromLTRB(0, 5, 5, 5),
-                                  child: goalBox(goals[index], context),
+                                  child: goalBox(goals[index], context,index),
                                 )),
                       ),
                     ),

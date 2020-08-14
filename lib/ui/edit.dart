@@ -202,6 +202,7 @@ class _EditProfileState extends State<Edit_Profile> {
                             fontSize: 15
                         ),
                           decoration: InputDecoration(
+                              labelText: "Name",
                               hintText: "Name",
                               border: OutlineInputBorder(),
                               hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
@@ -225,6 +226,7 @@ class _EditProfileState extends State<Edit_Profile> {
                             fontSize: 15
                         ),
                           decoration: InputDecoration(
+                              labelText: "Profession",
                               hintText: "Profession",
                               border: OutlineInputBorder(),
                               hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
@@ -283,6 +285,7 @@ class _EditProfileState extends State<Edit_Profile> {
                             fontSize: 15
                         ),
                           decoration: InputDecoration(
+                              labelText: "Bio",
                               hintText: "Bio",
                               border: OutlineInputBorder(),
                               hintStyle: TextStyle(color: Colors.black26, fontSize: 15.0)),
