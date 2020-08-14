@@ -803,15 +803,42 @@ class _MessagesScreenState extends State<MessagesScreen> {
                       Expanded(
                         child: Row(
                           children: <Widget>[
-                            ClipRRect(
-                              child: Image.file(
-                                  File.fromUri(Uri.file(lastMessages[index]
-                                          ['small_pic'] ??
-                                      lastMessages[index]['profile_pic'])),
-                                  height: 55,
-                                  width: 55,
-                                  fit: BoxFit.cover),
-                              borderRadius: BorderRadius.circular(10.0),
+                            GestureDetector(
+                             onTap: (){
+                              showDialog(
+                                 context: context,
+                                  builder: (BuildContext context){
+                                     return Scaffold(
+                                       appBar: AppBar(
+                                          elevation: 0,
+                                          backgroundColor: Color(0xFFFFFFFF),
+                                          leading: IconButton(
+                                             onPressed: (){
+                                               Navigator.of(context).pop();
+                                             },
+                                             icon: Icon(Icons.clear),
+                                           )
+                                       ),
+                                       body: Center(
+                                         child: Image.file(
+                                      File.fromUri(Uri.file(lastMessages[index]
+                                              ['small_pic'] ??
+                                          lastMessages[index]['profile_pic'])),
+                                     fit: BoxFit.cover),
+                                       ));
+                                     }
+                                 );
+                               },
+                              child: ClipRRect(
+                                child: Image.file(
+                                    File.fromUri(Uri.file(lastMessages[index]
+                                            ['small_pic'] ??
+                                        lastMessages[index]['profile_pic'])),
+                                    height: 55,
+                                    width: 55,
+                                    fit: BoxFit.cover),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
                             ),
                             SizedBox(
                               width: 10.0,

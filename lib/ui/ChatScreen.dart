@@ -179,13 +179,37 @@ class _TextingScreenState extends State<TextingScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            ClipRRect(
-              child: Image.file(
-                  File.fromUri(Uri.file(widget.user['profile_pic'])),
-                  height: 50,
-                  width: 50,
-                  fit: BoxFit.cover),
-              borderRadius: BorderRadius.circular(10.0),
+            GestureDetector(
+              onTap: (){
+                         showDialog(
+                                  context: context,
+                                  builder: (BuildContext context){
+                                     return Scaffold(
+                                       appBar: AppBar(
+                                          elevation: 0,
+                                          backgroundColor: Color(0xFFFFFFFF),
+                                          leading: IconButton(
+                                             onPressed: (){
+                                               Navigator.of(context).pop();
+                                             },
+                                             icon: Icon(Icons.clear),
+                                           )
+                                       ),
+                                       body: Center(
+                                         child:  Image.file( File.fromUri(Uri.file(widget.user['profile_pic'])),
+                                         fit: BoxFit.cover),
+                                       ));
+                                     }
+                                 );
+              },     
+              child: ClipRRect(
+                child: Image.file(
+                    File.fromUri(Uri.file(widget.user['profile_pic'])),
+                    height: 50,
+                    width: 50,
+                    fit: BoxFit.cover),
+                borderRadius: BorderRadius.circular(10.0),
+              ),
             ),
             SizedBox(width: 10),
             Expanded(

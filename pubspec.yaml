@@ -45,6 +45,7 @@ dependencies:
   status_alert: ^0.1.2
   flutter_webview_plugin: ^0.3.10+1
   url_launcher: ^5.4.1
+  full_screen_image: ^1.0.2
 
 dev_dependencies:
   flutter_test:

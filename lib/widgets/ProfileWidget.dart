@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:full_screen_image/full_screen_image.dart';
 
 class ProfileTop extends StatelessWidget {
   ProfileTop(
@@ -23,12 +24,16 @@ class ProfileTop extends StatelessWidget {
           decoration: BoxDecoration(
               // border: Border.all(width: 5, color: Colors.white),
               borderRadius: BorderRadius.all(Radius.circular(10))),
-          child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              child: CachedNetworkImage(
-                imageUrl: "$picUrl",
-                fit: BoxFit.cover,
-              )),
+          child: FullScreenWidget(
+                child: Center(
+                  child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  child: CachedNetworkImage(
+                    imageUrl: "$picUrl",
+                    fit: BoxFit.cover,
+                  )),
+                ),
+          ),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 10.0),
