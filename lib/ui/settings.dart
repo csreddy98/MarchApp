@@ -254,14 +254,14 @@ class _SettingsState extends State<Settings> {
                               icon: Icon(Icons.arrow_forward_ios),
                               iconSize: 20,
                               onPressed: () =>
-                                  _launchURL('http://march.lbits.co/'),
+                                  _launchURL('http://march.lbits.co/privacy-policy.html'),
                             )
                           ],
                         ),
                         height: 50,
                         width: double.infinity,
                       ),
-                      onTap: () => _launchURL('http://march.lbits.co/'),
+                      onTap: () => _launchURL('http://march.lbits.co/privacy-policy.html'),
                     ),
                     Divider(
                       thickness: 1,
@@ -293,7 +293,7 @@ class _SettingsState extends State<Settings> {
                               icon: Icon(Icons.arrow_forward_ios),
                               iconSize: 20,
                               onPressed: () => _launchURL(
-                                  'https://letsmarch.in/termsofuse.html'),
+                                  'http://march.lbits.co/terms-and-conditions.html'),
                             )
                           ],
                         ),
@@ -301,7 +301,7 @@ class _SettingsState extends State<Settings> {
                         width: double.infinity,
                       ),
                       onTap: () =>
-                          _launchURL('https://letsmarch.in/termsofuse.html'),
+                          _launchURL('http://march.lbits.co/terms-and-conditions.html'),
                     ),
                     Divider(
                       thickness: 1,

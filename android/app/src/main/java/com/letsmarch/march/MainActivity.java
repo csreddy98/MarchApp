@@ -1,4 +1,4 @@
-package com.example.march;
+package com.letsmarch.march;
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity;

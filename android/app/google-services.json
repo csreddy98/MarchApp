@@ -8,12 +8,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:441476196278:android:8c13d11fc5eb8f4bcf4317",
+        "mobilesdk_app_id": "1:441476196278:android:f02813125e4a51edcf4317",
         "android_client_info": {
-          "package_name": "com.example.march"
+          "package_name": "com.letsmarch.march"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "441476196278-kp2fefrqpqutvq41f0dipi1n66rk08mj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.letsmarch.march",
+            "certificate_hash": "6ec5c3b2a2109418f969e59a7666da93f2edd928"
+          }
+        },
         {
           "client_id": "441476196278-6e4d62n51kcp6hgl5vg7cq8066dhf9r4.apps.googleusercontent.com",
           "client_type": 3
@@ -30,6 +38,13 @@
             {
               "client_id": "441476196278-6e4d62n51kcp6hgl5vg7cq8066dhf9r4.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "441476196278-hgu9keelaog9dou5e9de0gnenslo48u5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.marchapp.goals"
+              }
             }
           ]
         }

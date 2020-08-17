@@ -1,4 +1,4 @@
-package com.example.march;
+package com.letsmarch.march;
 
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugins.firebasemessaging.FirebaseMessagingPlugin;
