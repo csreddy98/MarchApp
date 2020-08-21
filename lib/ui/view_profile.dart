@@ -65,7 +65,7 @@ class _ViewProfileState extends State<ViewProfile> {
                             borderRadius:
                             BorderRadius.all(Radius.circular(15.0))), //this right here
                         child: Container(
-                          height: 250,
+                          height: MediaQuery.of(context).size.height*0.46,
                           child: Padding(
                             padding: const EdgeInsets.all(20.0),
                             child: Column(

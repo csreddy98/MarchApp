@@ -14,6 +14,7 @@ import 'package:march/utils/database_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:march/support/functions.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:notification_permissions/notification_permissions.dart';
 
 import 'home.dart';
 
@@ -42,6 +43,17 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
       if (state == PhoneAuthState.Verified) {
         FirebaseAuth.instance.currentUser().then((val) async {
           _onLoading(context);
+           String st;
+           Future<PermissionStatus> permissionStatus =
+           NotificationPermissions.getNotificationPermissionStatus();
+           permissionStatus.then((PermissionStatus status) {
+           if(status==PermissionStatus.granted){
+              setState((){
+               st="permitted";
+              });
+              print('permitted');
+            }});
+
           var url = 'https://march.lbits.co/api/worker.php';
           http
               .post(
@@ -142,7 +154,7 @@ class _PhoneAuthVerifyState extends State<PhoneAuthVerify> {
                         resultx['result'][i]['goal_number'],
                       ));
                       print("goal saved :$savedGoal");
-                      if (resultx['result'][i]['remindEveryDay'] == "1") {
+                      if (resultx['result'][i]['remindEveryDay'] == "1" &&st=="permitted") {
                         var reminderTime = DateTime.parse("0000-00-00 " +
                             resultx['result'][i]['everyDayRemindTime']);
                         _showNotification(

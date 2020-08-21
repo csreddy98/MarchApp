@@ -19,6 +19,7 @@ import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'home.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:notification_permissions/notification_permissions.dart';
 
 
 class Login extends StatefulWidget {
@@ -46,6 +47,17 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 
   Future _signIn() async {
     try{
+      String st;
+      Future<PermissionStatus> permissionStatus =
+      NotificationPermissions.getNotificationPermissionStatus();
+      permissionStatus.then((PermissionStatus status) {
+       if(status==PermissionStatus.granted){
+         setState((){
+           st="permitted";
+         });
+         print('permitted');
+       }});
+
     GoogleSignInAccount googleSignInAccount = await google.signIn();
     GoogleSignInAuthentication gsa = await googleSignInAccount.authentication;
     final AuthCredential credential = GoogleAuthProvider.getCredential(
@@ -61,6 +73,7 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 
     final FirebaseUser currentUser = await _auth.currentUser();
     assert(user.uid == currentUser.uid);
+    _onLoading();
     print(user.displayName);
     print(user.uid);
 
@@ -162,7 +175,7 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
                   resultx['result'][i]['goal_number'],
                 ));
                 print("goal saved :$savedGoal");
-                if (resultx['result'][i]['remindEveryDay'] == "1") {
+                if (resultx['result'][i]['remindEveryDay'] == "1" && st=="permitted") {
                         var reminderTime = DateTime.parse(
                          "0000-00-00 "+ resultx['result'][i]['everyDayRemindTime']);
                         _showNotification(
@@ -238,6 +251,16 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       print(result.toString());
       _onLoading();
       try {
+              String st;
+              Future<PermissionStatus> permissionStatus =
+              NotificationPermissions.getNotificationPermissionStatus();
+              permissionStatus.then((PermissionStatus status) {
+                  if(status==PermissionStatus.granted){
+                    setState((){
+                      st="permitted";
+                        });
+                   }});
+
         final facebookAuthCred =
             FacebookAuthProvider.getCredential(accessToken: result);
         final FirebaseUser user =
@@ -345,7 +368,7 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
                       resultx['result'][i]['goal_number'],
                     ));
                     print("goal saved :$savedGoal");
-                    if (resultx['result'][i]['remindEveryDay'] == "1") {
+                    if (resultx['result'][i]['remindEveryDay'] == "1" && st=="permitted") {
                         var reminderTime = DateTime.parse(
                            "0000-00-00 "+ resultx['result'][i]['everyDayRemindTime']);
                         _showNotification(

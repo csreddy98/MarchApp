@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -127,7 +128,7 @@ class _GRegisterState extends State<GRegister> {
     for (Gender gender in genders) {
       items.add(DropdownMenuItem(
         value: gender,
-        child: Text(gender.gender),
+        child: Text(gender.gender,style: TextStyle(fontSize: 14),),
       ));
     }
     return items;
@@ -436,12 +437,13 @@ class _GRegisterState extends State<GRegister> {
                               child: Padding(
                                 padding: const EdgeInsets.all(3.0),
                                 child: Center(
-                                  child: Text(
+                                  child: AutoSizeText(
                                     'Date of birth',
                                     style: TextStyle(
                                       fontSize: 16,
                                       color: Colors.grey[500]
                                     ),
+                                    maxLines: 1,
                                   ),
                                 ),
                               ),
@@ -456,15 +458,15 @@ class _GRegisterState extends State<GRegister> {
                                     "-" +
                                     _value.substring(5, 7) +
                                     "-" +
-                                    _value.substring(0, 4),
-                                style: TextStyle(fontSize: 16),
+                                    _value.substring(0, 4)+" ",
+                                style: TextStyle(fontSize: size.height*0.019),
                               ),
-                              IconButton(
-                                icon: Icon(
+                              GestureDetector(
+                                child: Icon(
                                   Icons.edit,
-                                  size: 16,
+                                  size: size.height*0.021,
                                 ),
-                                onPressed: () {
+                                onTap: () {
                                   _selectDate();
                                 },
                               ),
@@ -479,7 +481,7 @@ class _GRegisterState extends State<GRegister> {
                         children: <Widget>[
                           Text(
                             'Gender: ',
-                            style: TextStyle(fontSize: 16),
+                            style: TextStyle(fontSize: size.height*0.02),
                           ),
                           SizedBox(
                             width: 5,

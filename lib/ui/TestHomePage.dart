@@ -546,14 +546,14 @@ class _TestHomePageState extends State<TestHomePage> {
                           height: 100,
                         )),
                     Positioned(
-                      top: 40,
+                      top: size.height*0.05,
                       left: 25,
                       child: RichText(
                         text: TextSpan(
                             text: "A New Great Day,\n",
                             style: TextStyle(
                                 fontWeight: FontWeight.normal,
-                                fontSize: 22,
+                                fontSize: size.height*0.028,
                                 color: Colors.black,
                                 wordSpacing: 1,
                                 letterSpacing: 0,
@@ -576,7 +576,7 @@ class _TestHomePageState extends State<TestHomePage> {
                             style: TextStyle(
                                 color: Colors.black,
                                 textBaseline: TextBaseline.alphabetic,
-                                fontSize: 14,
+                                fontSize: size.height*0.02,
                                 fontStyle: FontStyle.italic,
                                 fontWeight: FontWeight.w500),
                           )),
@@ -1086,7 +1086,7 @@ class _TestHomePageState extends State<TestHomePage> {
                     borderRadius: BorderRadius.all(
                         Radius.circular(15.0))), //this right here
                 child: Container(
-                  height: MediaQuery.of(context).size.height * 0.40,
+                  height: MediaQuery.of(context).size.height * 0.46,
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Column(

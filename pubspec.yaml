@@ -46,6 +46,7 @@ dependencies:
   flutter_webview_plugin: ^0.3.10+1
   url_launcher: ^5.4.1
   full_screen_image: ^1.0.2
+  notification_permissions: ^0.4.7
 
 dev_dependencies:
   flutter_test:

@@ -9,6 +9,7 @@ import 'package:march/models/goal.dart';
 import 'package:march/models/user.dart';
 import 'package:march/ui/show_goals.dart';
 import 'package:march/utils/database_helper.dart';
+import 'package:notification_permissions/notification_permissions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'home.dart';
@@ -24,6 +25,7 @@ class EditGoal extends StatefulWidget {
 
 class _EditGoalState extends State<EditGoal> {
   GlobalKey<AutoCompleteTextFieldState<String>> key = new GlobalKey();
+  Future<PermissionStatus> permissionStatus;
   String token;
   String selectedGoal = "";
   final GlobalKey<ScaffoldState> _sk = GlobalKey<ScaffoldState>();
@@ -381,21 +383,25 @@ class _EditGoalState extends State<EditGoal> {
                     value: checkedValue,
                     activeColor: Theme.of(context).primaryColor,
                     onChanged: (newValue) {
-                      setState(() {
-                        checkedValue = newValue;
-                      });
-                      if(checkedValue==true){
-                        setState(() {
-                          sendTime='${time.hour}:${time.minute}:00';
-                        });
-                        _pickTime();
-                      }
-                      else{
-                        setState(() {
-                          sendTime='none';
-                          print(sendTime);
-                        });
-                      }
+                      permissionStatus = NotificationPermissions.requestNotificationPermissions();
+                     permissionStatus.then((PermissionStatus status) {
+                        if(status==PermissionStatus.granted){
+                            setState(() {
+                               checkedValue = newValue;
+                               sendTime='${time.hour}:${time.minute}:00';
+                            });
+                              _pickTime();
+                            print('granted');
+                         }
+                        else{
+                          setState(() {
+                             sendTime='none';
+                             print(sendTime);
+                           });
+                           print('rejected');
+                        }
+                       });
+
                     },
                     controlAffinity: ListTileControlAffinity
                         .leading, //  <-- leading Checkbox
@@ -896,6 +902,9 @@ class _EditGoalState extends State<EditGoal> {
   }
 
   void _load() async {
+
+   permissionStatus = NotificationPermissions.requestNotificationPermissions();
+     
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userToken = prefs.getString('token') ?? "";
     setState(() {

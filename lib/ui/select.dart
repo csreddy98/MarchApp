@@ -7,6 +7,7 @@ import 'package:march/models/goal.dart';
 import 'package:march/ui/home.dart';
 import 'package:http/http.dart' as http;
 import 'package:march/utils/database_helper.dart';
+import 'package:notification_permissions/notification_permissions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
@@ -20,6 +21,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
   String currentText = "";
   String currentText1 = "";
   int click = 0;
+  Future<PermissionStatus> permissionStatus;
   GlobalKey<AutoCompleteTextFieldState<String>> key = new GlobalKey();
   GlobalKey<AutoCompleteTextFieldState<String>> key1 = new GlobalKey();
   int count = 0;
@@ -151,8 +153,8 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                   shape: BoxShape.circle,
                                   border: Border.all(
                                       width: 0.5, color: activeColor)),
-                              width: dotSize + 15,
-                              height: dotSize + 15,
+                              width: dotSize + 13,
+                              height: dotSize + 13,
                               child: Center(
                                 child: Container(
                                     width: dotSize,
@@ -189,8 +191,8 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                       color: cnt >= 2
                                           ? activeColor
                                           : Colors.grey)),
-                              width: dotSize + 15,
-                              height: dotSize + 15,
+                              width: dotSize + 13,
+                              height: dotSize + 13,
                               child: Center(
                                 child: Container(
                                   width: dotSize,
@@ -231,8 +233,8 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                                     color: cnt >= 3 ? activeColor : Colors.grey,
                                     // color: activeColor
                                   )),
-                              width: dotSize + 15,
-                              height: dotSize + 15,
+                              width: dotSize + 13,
+                              height: dotSize + 13,
                               child: Center(
                                 child: Container(
                                   width: dotSize,
@@ -254,7 +256,7 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
               ),
               Container(
                 margin: EdgeInsets.only(bottom: 8),
-                padding: EdgeInsets.only(left: 14, right: 20),
+                padding: EdgeInsets.only(left: 10, right: 22),
                 width: MediaQuery.of(context).size.width,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -490,21 +492,25 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
                 value: checkedValue,
                 activeColor: Theme.of(context).primaryColor,
                 onChanged: (newValue) {
-                  setState(() {
-                    checkedValue = newValue;
-                  });
-                  if(checkedValue==true){
-                    setState(() {
-                      sendTime='${time.hour}:${time.minute}:00';
-                    });
-                    _pickTime();
-                  }
-                  else{
-                    setState(() {
-                      sendTime='none';
-                      print(sendTime);
-                    });
-                  }
+                   permissionStatus = NotificationPermissions.requestNotificationPermissions();
+                     permissionStatus.then((PermissionStatus status) {
+                        if(status==PermissionStatus.granted){
+                            setState(() {
+                               checkedValue = newValue;
+                               sendTime='${time.hour}:${time.minute}:00';
+                            });
+                              _pickTime();
+                            print('granted');
+                         }
+                        else{
+                          setState(() {
+                             sendTime='none';
+                             print(sendTime);
+                           });
+                           print('rejected');
+                        }
+                       });
+
                 },
                 controlAffinity:
                     ListTileControlAffinity.leading, //  <-- leading Checkbox
@@ -990,6 +996,9 @@ class _SelectState extends State<Select> with SingleTickerProviderStateMixin {
   }
 
   void _load() async {
+
+    permissionStatus = NotificationPermissions.requestNotificationPermissions();
+
     SharedPreferences pref = await SharedPreferences.getInstance();
     setState(() {
       token = pref.getString('token');
