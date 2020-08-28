@@ -55,6 +55,7 @@ class _TestHomePageState extends State<TestHomePage> {
   List allProfilesCrossCheck = [];
   String defaultMsg = "";
   bool nearSendAgain = true, allSendAgain = true;
+  List<bool> showButton = [];
   @override
   void initState() {
     _load();
@@ -215,6 +216,15 @@ class _TestHomePageState extends State<TestHomePage> {
                 allProfiles.add(element);
                 allProfilesCrossCheck.add(element['user_info']['id']);
               });
+              db.getSingleUser(element['user_info']['id']).then((value) {
+                setState(() {
+                  if (value[0]['user_count'].toString() != '0') {
+                    showButton.add(false);
+                  } else {
+                    showButton.add(true);
+                  }
+                });
+              });
             }
           });
         }
@@ -222,21 +232,12 @@ class _TestHomePageState extends State<TestHomePage> {
     }
   }
 
-  Widget goalBox(goal, BuildContext context,int cnt) {
+  Widget goalBox(goal, BuildContext context, int cnt) {
     Size size = MediaQuery.of(context).size;
-    List<Map> colors=[
-       {
-        'bgColor': Color(0xFFCCEEED),
-        'textColor': Color(0xFF00ACA3)
-        },
-        {
-          'bgColor': Color(0xFFF1D3B5),
-          'textColor': Color(0xFF926D51)
-        }, 
-        {
-          'bgColor': Color(0xFFF2C5D3),
-          'textColor': Color(0xFF926D51)
-        }
+    List<Map> colors = [
+      {'bgColor': Color(0xFFCCEEED), 'textColor': Color(0xFF00ACA3)},
+      {'bgColor': Color(0xFFF1D3B5), 'textColor': Color(0xFF926D51)},
+      {'bgColor': Color(0xFFF2C5D3), 'textColor': Color(0xFF926D51)}
     ];
     List<Map> goalAssets = [
       {
@@ -357,7 +358,7 @@ class _TestHomePageState extends State<TestHomePage> {
                   //   ),
                   // ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 25,top: 15),
+                    padding: const EdgeInsets.only(left: 25, top: 15),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
@@ -380,7 +381,7 @@ class _TestHomePageState extends State<TestHomePage> {
                             (index) => Padding(
                                   padding:
                                       const EdgeInsets.fromLTRB(0, 5, 5, 5),
-                                  child: goalBox(goals[index], context,index),
+                                  child: goalBox(goals[index], context, index),
                                 )),
                       ),
                     ),
@@ -415,30 +416,52 @@ class _TestHomePageState extends State<TestHomePage> {
                               ),
                             ),
                           ),
-                          InkWell(
-                            onTap: () {
-                              add(id, name, pic, index);
-                            },
-                            child: Container(
-                              width: size.width * 0.35,
-                              height: size.height * 0.06,
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColor,
-                                  border: Border.all(
-                                      width: 1,
-                                      color: Theme.of(context).primaryColor),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              child: Center(
-                                child: Text(
-                                  "Connect",
-                                  style: TextStyle(
-                                      fontSize: size.height / 44,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ),
-                          )
+                          (showButton[index])
+                              ? InkWell(
+                                  onTap: () {
+                                    add(id, name, pic, index);
+                                  },
+                                  child: Container(
+                                    width: size.width * 0.35,
+                                    height: size.height * 0.06,
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context).primaryColor,
+                                        border: Border.all(
+                                            width: 1,
+                                            color:
+                                                Theme.of(context).primaryColor),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    child: Center(
+                                      child: Text(
+                                        "Connect",
+                                        style: TextStyle(
+                                            fontSize: size.height / 44,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : Container(
+                                  width: size.width * 0.35,
+                                  height: size.height * 0.06,
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      border: Border.all(
+                                          width: 1,
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: Center(
+                                    child: Text(
+                                      "Connect",
+                                      style: TextStyle(
+                                          fontSize: size.height / 44,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                )
                         ],
                       ),
                     ),

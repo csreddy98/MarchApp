@@ -469,7 +469,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                             var newMessage = {
                                                               DataBaseHelper
                                                                       .messageCode:
-                                                                  UniqueKey().toString(),
+                                                                  UniqueKey()
+                                                                      .toString(),
                                                               DataBaseHelper
                                                                   .messageText: pending[
                                                                           i][
@@ -742,46 +743,46 @@ class _MessagesScreenState extends State<MessagesScreen> {
                             )));
                   },
                 ),
-                IconSlideAction(
-                  caption: 'Delete',
-                  color: Color(0xFFFF3B30),
-                  icon: Icons.delete,
-                  closeOnTap: true,
-                  onTap: () {
-                    var msg = "Deleted";
-                    http
-                        .post("https://march.lbits.co/api/worker.php",
-                            headers: {
-                              'Content-Type': 'application/json',
-                              'Authorization': 'Bearer $token'
-                            },
-                            body: json.encode(<String, dynamic>{
-                              'serviceName': '',
-                              'work': 'delete request',
-                              'myId': '$myId',
-                              'otherId': '${lastMessages[index]['user_id']}'
-                            }))
-                        .then((value) async {
-                      print(value.body);
-                      var res = json.decode(value.body);
-                      if (res['response'] == 200) {
-                        await db.deleteSingleUser(
-                            '${lastMessages[index]['user_id']}');
-                        Toast.show('$msg', context,
-                            duration: Toast.LENGTH_SHORT,
-                            gravity: Toast.BOTTOM);
-                      } else {
-                        msg = "Failed, Try later";
-                      }
-                    }).catchError((err) {
-                      msg = "Failed, Try Later";
-                      Toast.show('$msg', context,
-                          duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
-                    });
-                    Toast.show('Deleting', context,
-                        duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
-                  },
-                ),
+                // IconSlideAction(
+                //   caption: 'Delete',
+                //   color: Color(0xFFFF3B30),
+                //   icon: Icons.delete,
+                //   closeOnTap: true,
+                //   onTap: () {
+                //     var msg = "Deleted";
+                //     http
+                //         .post("https://march.lbits.co/api/worker.php",
+                //             headers: {
+                //               'Content-Type': 'application/json',
+                //               'Authorization': 'Bearer $token'
+                //             },
+                //             body: json.encode(<String, dynamic>{
+                //               'serviceName': '',
+                //               'work': 'delete request',
+                //               'myId': '$myId',
+                //               'otherId': '${lastMessages[index]['user_id']}'
+                //             }))
+                //         .then((value) async {
+                //       print(value.body);
+                //       var res = json.decode(value.body);
+                //       if (res['response'] == 200) {
+                //         await db.deleteSingleUser(
+                //             '${lastMessages[index]['user_id']}');
+                //         Toast.show('$msg', context,
+                //             duration: Toast.LENGTH_SHORT,
+                //             gravity: Toast.BOTTOM);
+                //       } else {
+                //         msg = "Failed, Try later";
+                //       }
+                //     }).catchError((err) {
+                //       msg = "Failed, Try Later";
+                //       Toast.show('$msg', context,
+                //           duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+                //     });
+                //     Toast.show('Deleting', context,
+                //         duration: Toast.LENGTH_SHORT, gravity: Toast.BOTTOM);
+                //   },
+                // ),
               ],
               child: GestureDetector(
                 onTap: () =>
@@ -804,31 +805,32 @@ class _MessagesScreenState extends State<MessagesScreen> {
                         child: Row(
                           children: <Widget>[
                             GestureDetector(
-                             onTap: (){
-                              showDialog(
-                                 context: context,
-                                  builder: (BuildContext context){
-                                     return Scaffold(
-                                       appBar: AppBar(
-                                          elevation: 0,
-                                          backgroundColor: Color(0xFFFFFFFF),
-                                          leading: IconButton(
-                                             onPressed: (){
-                                               Navigator.of(context).pop();
-                                             },
-                                             icon: Icon(Icons.clear),
-                                           )
-                                       ),
-                                       body: Center(
-                                         child: Image.file(
-                                      File.fromUri(Uri.file(lastMessages[index]
-                                              ['small_pic'] ??
-                                          lastMessages[index]['profile_pic'])),
-                                     fit: BoxFit.cover),
-                                       ));
-                                     }
-                                 );
-                               },
+                              onTap: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return Scaffold(
+                                          appBar: AppBar(
+                                              elevation: 0,
+                                              backgroundColor:
+                                                  Color(0xFFFFFFFF),
+                                              leading: IconButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                icon: Icon(Icons.clear),
+                                              )),
+                                          body: Center(
+                                            child: Image.file(
+                                                File.fromUri(Uri.file(
+                                                    lastMessages[index]
+                                                            ['small_pic'] ??
+                                                        lastMessages[index]
+                                                            ['profile_pic'])),
+                                                fit: BoxFit.cover),
+                                          ));
+                                    });
+                              },
                               child: ClipRRect(
                                 child: Image.file(
                                     File.fromUri(Uri.file(lastMessages[index]
