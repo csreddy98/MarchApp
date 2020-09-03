@@ -55,6 +55,7 @@ class _TestHomePageState extends State<TestHomePage> {
   List allProfilesCrossCheck = [];
   String defaultMsg = "";
   bool nearSendAgain = true, allSendAgain = true;
+  List<bool> showButton = [];
   @override
   void initState() {
     _load();
@@ -216,27 +217,27 @@ class _TestHomePageState extends State<TestHomePage> {
                 allProfilesCrossCheck.add(element['user_info']['id']);
               });
             }
+            db.getSingleUser(element['user_info']['id']).then((value) {
+              setState(() {
+                if (value[0]['user_count'].toString() != '0') {
+                  showButton.add(false);
+                } else {
+                  showButton.add(true);
+                }
+              });
+            });
           });
         }
       });
     }
   }
 
-  Widget goalBox(goal, BuildContext context,int cnt) {
+  Widget goalBox(goal, BuildContext context, int cnt) {
     Size size = MediaQuery.of(context).size;
-    List<Map> colors=[
-       {
-        'bgColor': Color(0xFFCCEEED),
-        'textColor': Color(0xFF00ACA3)
-        },
-        {
-          'bgColor': Color(0xFFF1D3B5),
-          'textColor': Color(0xFF926D51)
-        }, 
-        {
-          'bgColor': Color(0xFFF2C5D3),
-          'textColor': Color(0xFF926D51)
-        }
+    List<Map> colors = [
+      {'bgColor': Color(0xFFCCEEED), 'textColor': Color(0xFF00ACA3)},
+      {'bgColor': Color(0xFFF1D3B5), 'textColor': Color(0xFF926D51)},
+      {'bgColor': Color(0xFFF2C5D3), 'textColor': Color(0xFF926D51)}
     ];
     List<Map> goalAssets = [
       {
@@ -345,19 +346,8 @@ class _TestHomePageState extends State<TestHomePage> {
                         profession: "$profession",
                         location: "$location"),
                   ),
-                  // Padding(
-                  //   padding: const EdgeInsets.symmetric(
-                  //       horizontal: 15.0, vertical: 10.0),
-                  //   child: Text(
-                  //     "$description",
-                  //     style: TextStyle(
-                  //         fontFamily: 'Nunito',
-                  //         fontSize: size.height / 47,
-                  //         fontWeight: FontWeight.w500),
-                  //   ),
-                  // ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 25,top: 15),
+                    padding: const EdgeInsets.only(left: 25, top: 15),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
@@ -380,7 +370,7 @@ class _TestHomePageState extends State<TestHomePage> {
                             (index) => Padding(
                                   padding:
                                       const EdgeInsets.fromLTRB(0, 5, 5, 5),
-                                  child: goalBox(goals[index], context,index),
+                                  child: goalBox(goals[index], context, index),
                                 )),
                       ),
                     ),
@@ -415,30 +405,52 @@ class _TestHomePageState extends State<TestHomePage> {
                               ),
                             ),
                           ),
-                          InkWell(
-                            onTap: () {
-                              add(id, name, pic, index);
-                            },
-                            child: Container(
-                              width: size.width * 0.35,
-                              height: size.height * 0.06,
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColor,
-                                  border: Border.all(
-                                      width: 1,
-                                      color: Theme.of(context).primaryColor),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              child: Center(
-                                child: Text(
-                                  "Connect",
-                                  style: TextStyle(
-                                      fontSize: size.height / 44,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ),
-                          )
+                          (showButton[index])
+                              ? InkWell(
+                                  onTap: () {
+                                    add(id, name, pic, index);
+                                  },
+                                  child: Container(
+                                    width: size.width * 0.35,
+                                    height: size.height * 0.06,
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context).primaryColor,
+                                        border: Border.all(
+                                            width: 1,
+                                            color:
+                                                Theme.of(context).primaryColor),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(10))),
+                                    child: Center(
+                                      child: Text(
+                                        "Connect",
+                                        style: TextStyle(
+                                            fontSize: size.height / 44,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : Container(
+                                  width: size.width * 0.35,
+                                  height: size.height * 0.06,
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      border: Border.all(
+                                          width: 1,
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: Center(
+                                    child: Text(
+                                      "Connect",
+                                      style: TextStyle(
+                                          fontSize: size.height / 44,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                )
                         ],
                       ),
                     ),
@@ -546,14 +558,14 @@ class _TestHomePageState extends State<TestHomePage> {
                           height: 100,
                         )),
                     Positioned(
-                      top: size.height*0.05,
+                      top: size.height * 0.05,
                       left: 25,
                       child: RichText(
                         text: TextSpan(
                             text: "A New Great Day,\n",
                             style: TextStyle(
                                 fontWeight: FontWeight.normal,
-                                fontSize: size.height*0.028,
+                                fontSize: size.height * 0.028,
                                 color: Colors.black,
                                 wordSpacing: 1,
                                 letterSpacing: 0,
@@ -576,7 +588,7 @@ class _TestHomePageState extends State<TestHomePage> {
                             style: TextStyle(
                                 color: Colors.black,
                                 textBaseline: TextBaseline.alphabetic,
-                                fontSize: size.height*0.02,
+                                fontSize: size.height * 0.02,
                                 fontStyle: FontStyle.italic,
                                 fontWeight: FontWeight.w500),
                           )),
