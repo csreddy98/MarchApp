@@ -216,6 +216,15 @@ class _TestHomePageState extends State<TestHomePage> {
                 allProfiles.add(element);
                 allProfilesCrossCheck.add(element['user_info']['id']);
               });
+              db.getSingleUser(element['user_info']['id']).then((value) {
+                setState(() {
+                  if (value[0]['user_count'].toString() != '0') {
+                    showButton.add(false);
+                  } else {
+                    showButton.add(true);
+                  }
+                });
+              });
             }
             db.getSingleUser(element['user_info']['id']).then((value) {
               setState(() {
