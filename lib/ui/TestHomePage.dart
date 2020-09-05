@@ -733,8 +733,8 @@ class _TestHomePageState extends State<TestHomePage> {
       print("x: $x, y: $y");
       details.removeAt(x);
       allProfiles.removeAt(y);
-      crossCheckList.removeAt(crossCheckList.indexOf(id));
-      allProfilesCrossCheck.removeAt(allProfilesCrossCheck.indexOf(id));
+      // crossCheckList.removeAt(crossCheckList.indexOf(id));
+      // allProfilesCrossCheck.removeAt(allProfilesCrossCheck.indexOf(id));
       db.peopleFinderRemovePerson(id);
       db.removePersonGoals(id);
     });
