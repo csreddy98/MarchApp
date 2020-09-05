@@ -83,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
         seconds: 7,
         navigateAfterSeconds: n == 1 ? Home('') : Login(),
         image: Image.asset(
-              "assets/images/splash1.gif",
+              "assets/images/march-Stroked.gif",
             ),
         photoSize: MediaQuery.of(context).size.height*0.25,
         backgroundColor: Theme.of(context).primaryColor,

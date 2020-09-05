@@ -618,7 +618,6 @@ class _GRegisterState extends State<GRegister> {
                                 Navigator.pop(context);
                                 _sk.currentState.showSnackBar(SnackBar(
                                   content: Text(
-                                    result['response'] +
                                         result['result'].toString(),
                                     style: TextStyle(
                                       fontStyle: FontStyle.italic,
